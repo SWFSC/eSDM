@@ -1,0 +1,440 @@
+ui.createEns <- function() {
+  tabItem(tabName = "createEns",
+          conditionalPanel(
+            condition = "output.ens_display_flag == false", 
+            ui.no.model.pred.loaded2()
+          ), 
+          conditionalPanel(
+            condition = "output.ens_display_flag",
+            fluidRow(
+              ##################################################################### Choose overlaid models to be udes in ensemble
+              box(
+                title = "Overlaid Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
+                conditionalPanel("input.create_ens_table_subset == false", tableOutput("create_ens_table")),
+                conditionalPanel("input.create_ens_table_subset == true", DT::dataTableOutput("create_ens_datatable")),
+                column(4, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid models")), 
+                column(8, conditionalPanel("input.create_ens_table_subset", helpText("Click on a row to select models to use in ensemble")))
+              )
+            ), 
+            
+            fluidRow(
+              ##################################################################### Ensembling method
+              box(
+                title = "Create Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
+                fluidRow(
+                  box(width = 7,
+                      fluidRow(
+                        column(width = 4, 
+                               radioButtons("create_ens_type", "Ensembling method", 
+                                            choices = list("Unweighted" = 1, "Weighted" = 2), 
+                                            selected = 2), 
+                               column(12, 
+                                      conditionalPanel(
+                                        condition = "input.create_ens_type == 2", 
+                                        radioButtons("create_ens_weight_type", h5("Weighted ensembling method"), 
+                                                     choices = list("Manual entry" = 1, "Evaluation metric" = 2, 
+                                                                    "Pixel-level spatial weights" = 3, "Polygon(s) with weights" = 4), 
+                                                     selected = 4)
+                                      )
+                               )
+                        ), 
+                        ########################################################### Unweighted ensembling options
+                        # None
+                        
+                        ########################################################### Weighted ensembling options
+                        column(8, br(), 
+                               conditionalPanel(
+                                 condition = "output.ens_overlaid_selected_flag == false", 
+                                 strong("Please select at least two sets of overlaid model predictions to ensemble")), 
+                               conditionalPanel(
+                                 condition = "input.create_ens_type == 2 && output.ens_overlaid_selected_flag", 
+                                 fluidRow(
+                                   ####################################### Weighting by manual entry
+                                   conditionalPanel(
+                                     condition = "input.create_ens_weight_type == 1",
+                                     box(width = 12, 
+                                         helpText(strong("Weighted ensembling method 1: Manual entry"), br(), 
+                                                  "Entered weights correspond to the order of the overlaid model predictions in above table.", br(), 
+                                                  "Weights must be entered in the following format: \'weight, weight, ..., weight\'"),
+                                         uiOutput("create_ens_weight_manual_uiOut_text")
+                                     )
+                                   ),
+                                   ####################################### Weighting by evaluation metric
+                                   conditionalPanel(
+                                     condition = "input.create_ens_weight_type == 2", 
+                                     box(width = 12, 
+                                         helpText(strong("Weighted ensembling method 2: Evaluation metric"), br(), 
+                                                  "To use this weighting method, please go to the 'Evaluation Metrics' tab and calculate", 
+                                                  "the metric you wish to use as a weight for all of the overlaid models you plan to use in", 
+                                                  "the ensemble.", br(), 
+                                                  "The table displays both the calculated metric values and the relative weights for the", 
+                                                  "predictions given the metric values"), 
+                                         conditionalPanel(
+                                           condition = "output.create_ens_weights_metric_flag == false", 
+                                           helpText(strong("No metrics have been calculated for the selected overlaid model predictions"))), 
+                                         conditionalPanel(
+                                           condition = "output.create_ens_weights_metric_flag", 
+                                           fluidRow(
+                                             column(width = 4, 
+                                                    uiOutput("create_ens_weights_metric_uiOut_radio")
+                                             ), 
+                                             column(width = 8, 
+                                                    tableOutput("create_ens_weights_metric_table_out")
+                                             )
+                                           )
+                                         )
+                                     )
+                                   ), 
+                                   ####################################### Weighting by pixel-level spatial weights
+                                   conditionalPanel(
+                                     condition = "input.create_ens_weight_type == 3", 
+                                     box(width = 12, 
+                                         helpText(strong("Weighted ensembling method 3: Pixel-level spatial weights"), br(), 
+                                                  "Overlaid predictions are multiplied by corresponding spatial weight. These pixel-level", 
+                                                  "spatial weights were specified when each set of model predictions was initally", 
+                                                  "loaded into the app", br(), 
+                                                  "If a set of overlaid model predictions does not have pixel-level spatial weights,", 
+                                                  "then the row corresponding to that set will say 'No' in the below table and",
+                                                  "those predictions will have spatial weights of 1 when the enseble is created"), 
+                                         conditionalPanel(
+                                           condition = "output.create_ens_weights_pix_flag == false", 
+                                           helpText(strong("At least 1 of the selected overlaid predictions must have spatial weights"))), 
+                                         conditionalPanel(
+                                           condition = "output.create_ens_weights_pix_flag", 
+                                           tableOutput("create_ens_weights_pix_table_out"))
+                                     )
+                                   ), 
+                                   ####################################### Weighting by polygon spatial weights
+                                   conditionalPanel(
+                                     condition = "input.create_ens_weight_type == 4",
+                                     box(width = 12, 
+                                         helpText(strong("Weighted ensembling method 4: Polygon(s) with weights"), br(), 
+                                                  "Select one or more overlaid model predictions and load weight polygons to assign to the",
+                                                  "selected predictions. These weight polygons designate areas in which the selected predictions", 
+                                                  "will be weighted.",br(), 
+                                                  "Currently you may only assign one weight for each weight polygon; however, you can load", 
+                                                  "multiple polygons if you wish to apply different weights to different prediction regions.", 
+                                                  "If multiple polygons are loaded and they both overlap a prediction at the given percentage,", 
+                                                  "then the last weight that was assigned will be used for that prediction.", br(), 
+                                                  "If any overlaid model predictions are not overlapped at the given percentage with any of their", 
+                                                  "assigned weight polygons, then those predictions will have a weight of 1."), 
+                                         fluidRow(
+                                           column(7, uiOutput("create_ens_weights_poly_model_uiOut_selectize")), 
+                                           column(5, selectInput("create_ens_weights_poly_type", h5("File type"), 
+                                                                 choices = file.type.list2, selected = 1))
+                                         ), 
+                                         box(width = 12, 
+                                             ##################### File type: csv
+                                             conditionalPanel(
+                                               condition = "input.create_ens_weights_poly_type == 1",
+                                               ui.csv.poly.instructions(), 
+                                               fluidRow(
+                                                 column(6, fileInput("create_ens_weights_poly_csv_file", h5("Upload .csv file"), accept = ".csv")), 
+                                                 column(width = 4, offset = 1, 
+                                                        conditionalPanel(
+                                                          condition = "output.create_ens_weights_poly_csv_flag == false",
+                                                          ui.new.line(), 
+                                                          strong("For csv file, please choose a file that has a .csv file extension")
+                                                        ),
+                                                        conditionalPanel(
+                                                          condition = "output.create_ens_weights_poly_csv_flag",
+                                                          numericInput("create_ens_weights_poly_csv_weight", h5("Weight for csv polygon(s)"), 
+                                                                       min = 0, value = 1, step = 0.1)
+                                                        )
+                                                 )
+                                               )
+                                             ),
+                                             ##################### File type: raster
+                                             conditionalPanel(
+                                               condition = "input.create_ens_weights_poly_type == 2",
+                                               ui.gis.raster.instructions(), 
+                                               fluidRow(
+                                                 column(6, fileInput("create_ens_weights_poly_raster_file", 
+                                                                     h5("Upload raster .tif file"), accept = ".tif")), 
+                                                 column(5, offset = 1, 
+                                                        conditionalPanel(
+                                                          condition = "output.create_ens_weights_poly_raster_flag == false",
+                                                          ui.new.line(), 
+                                                          strong("Could not load GIS raster using the provided file and band number")
+                                                        )
+                                                 )
+                                               ), 
+                                               fluidRow(
+                                                 column(6, radioButtons("create_ens_weights_poly_raster_weight_type", NULL, 
+                                                                         choices = list("Enter single weight for area covered by raster" = 1, 
+                                                                                        "Select band number with weights" = 2), 
+                                                                        selected = 1)), 
+                                                 column(6, 
+                                                        conditionalPanel(
+                                                          condition = "input.create_ens_weights_poly_raster_weight_type == 1",
+                                                          numericInput("create_ens_weights_poly_raster_weight", 
+                                                                       h5("Weight for area covered by raster"), 
+                                                                       value = 1, min = 0, step = 0.1)
+                                                        ), 
+                                                        conditionalPanel(
+                                                          condition = "input.create_ens_weights_poly_raster_weight_type == 2",
+                                                          helpText("This functionality is not yet implemented")
+                                                          # numericInput("create_ens_weights_poly_raster_band", h5("Band number of weight(s)"), 
+                                                          #              value = 1, min = 1, step = 1)
+                                                        )
+                                                 )
+                                               )
+                                             ), 
+                                             ##################### File type: shp
+                                             conditionalPanel(
+                                               condition = "input.create_ens_weights_poly_type == 3",
+                                               ui.gis.shp.intructions(), 
+                                               fluidRow(
+                                                 column(6, fileInput("create_ens_weights_poly_shp_files", h5("Upload GIS files"), multiple = T)), 
+                                                 column(5, offset = 1, 
+                                                        conditionalPanel(
+                                                          condition = "output.create_ens_weights_poly_shp_flag == false",
+                                                          strong("Could not load GIS shapefile using the provided file(s)")
+                                                        )
+                                                 )
+                                               ), 
+                                               fluidRow(
+                                                 conditionalPanel(
+                                                   condition = "output.create_ens_weights_poly_shp_flag",
+                                                   column(6, radioButtons("create_ens_weights_poly_shp_weight_type", NULL, 
+                                                                          choices = list("Enter single weight for area covered by shapefile" = 1, 
+                                                                                         "Select data column with weights" = 2), 
+                                                                          selected = 2)), 
+                                                   
+                                                   column(6, 
+                                                          conditionalPanel(
+                                                            condition = "input.create_ens_weights_poly_shp_weight_type == 1",
+                                                            numericInput("create_ens_weights_poly_shp_weight", 
+                                                                         h5("Weight for area covered by shapefile"), 
+                                                                         value = 1, min = 0, step = 0.1)
+                                                          ), 
+                                                          conditionalPanel(
+                                                            condition = "input.create_ens_weights_poly_shp_weight_type == 2",
+                                                            helpText("This functionality is not yet implemented")
+                                                            # uiOutput("create_ens_weights_poly_shp_field_uiOut_select") 
+                                                          )
+                                                   )
+                                                 )
+                                               )
+                                             ),
+                                             ##################### File type: gdb
+                                             conditionalPanel(
+                                               condition = "input.create_ens_weights_poly_type == 4",
+                                               ui.gis.gdb.intructions(), 
+                                               fluidRow(
+                                                 column(6, textInput("create_ens_weights_poly_gdb_path", h5(".gdb path"), value = "")),
+                                                 column(6, textInput("create_ens_weights_poly_gdb_name", h5("Filename within .gbd folder"), 
+                                                                     value = ""))
+                                               ),
+                                               fluidRow(
+                                                 column(6, actionButton("create_ens_weights_poly_gdb_load", "Load file from specified path")), 
+                                                 column(6, 
+                                                        conditionalPanel(
+                                                          condition = "output.create_ens_weights_poly_gdb_flag == false",
+                                                          strong("Could not load GIS file using the provided path and filename")
+                                                        )
+                                                 )
+                                               ), 
+                                               fluidRow(
+                                                 conditionalPanel(
+                                                   condition = "output.create_ens_weights_poly_gdb_flag",
+                                                   column(6, radioButtons("create_ens_weights_poly_gdb_weight_type", NULL, 
+                                                                          choices = list("Enter single weight for area covered by .gdb file" = 1, 
+                                                                                         "Select data column with weights" = 2), 
+                                                                          selected = 2)),
+                                                   column(6, 
+                                                          conditionalPanel(
+                                                            condition = "input.create_ens_weights_poly_gdb_weight_type == 1",
+                                                            numericInput("create_ens_weights_poly_gdb_weight", 
+                                                                         h5("Weight for area covered by file geodatabase file"), 
+                                                                         value = 1, min = 0, step = 0.1)
+                                                          ), 
+                                                          conditionalPanel(
+                                                            condition = "input.create_ens_weights_poly_gdb_weight_type == 2",
+                                                            helpText("This functionality is not yet implemented")
+                                                            # uiOutput("create_ens_weights_poly_gdb_field_uiOut_select")
+                                                          )
+                                                   )
+                                                 )
+                                               )
+                                             )
+                                         ),
+                                         sliderInput("create_ens_weights_poly_coverage", 
+                                                     h5("Percentage of prediction polygon that must be covered by weight polygon", 
+                                                        "for prediction polygon to be weighted.", 
+                                                        "If '0' is selected then prediction polygon will be weighted if there is any overlap"), 
+                                                     min = 0, max = 100, value = 100), 
+                                         fluidRow(
+                                           column(6, actionButton("create_ens_weights_poly_add_execute", 
+                                                                  "Assign loaded weight polygon to selected prediction(s)")), 
+                                           column(4, offset = 1, textOutput("create_ens_weights_poly_add_text"))
+                                         )
+                                     )
+                                   )
+                                 )
+                               )
+                        )
+                      ), 
+                      conditionalPanel(
+                        condition = "input.create_ens_type == 2 && output.ens_overlaid_selected_flag && input.create_ens_weight_type == 4",
+                        h5("Summary table of loaded polygon file(s) and weight(s) for models to be used in ensemble"), 
+                        fluidRow(
+                          column(7, tableOutput("create_ens_weights_poly_table_out")), 
+                          column(5, 
+                                 uiOutput("create_ens_weights_poly_remove_choices_uiOut_select"), 
+                                 actionButton("create_ens_weights_poly_remove_execute", "Remove selected weight polygons"), 
+                                 textOutput("create_ens_weights_poly_remove_text")
+                                 )
+                        )
+                        # tags$style(type="text/css", "#create_ens_weights_poly_table_out td:first-child {font-weight:bold;}")
+                      )
+                  ),
+                  
+                  ##################################################################### Rescale predictions
+                  column(width = 3, 
+                  box(width = 12,
+                      conditionalPanel(
+                        condition = "output.ens_rescale_none_flag == false", 
+                        helpText(strong("Note: All prediction types are not aboslute density, and thus the model predictions must be rescaled")
+                        )
+                      ),
+                      uiOutput("create_ens_rescale_type_uiOut_radio"),
+                      column(12,
+                             conditionalPanel(
+                               condition = "input.create_ens_rescale_type == 1",
+                               helpText(strong("Description: Model predictions will not be altered"))
+                             ), 
+                             conditionalPanel(
+                               condition = "input.create_ens_rescale_type == 2",
+                               numericInput("create_ens_rescale_abund", h5("Abundance to which to rescale predictions"),
+                                            value = 0, min = 0, step = 1), 
+                               helpText(strong("Description: Model predictions (densities) will be rescaled so that the predicted", 
+                                               "abundance of each set of predictions will be the value entered above"))
+                             ), 
+                             conditionalPanel(
+                               condition = "input.create_ens_rescale_type == 3",
+                               helpText(strong("Description: Normalization rescales densities (X) into a range of [0,1]", 
+                                               "using the following formula:"), 
+                                        column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -", 
+                                                                 paste0("X", tags$sub("min"), ")"), "/", 
+                                                                 paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")")))
+                                        )
+                               )
+                             ), 
+                             conditionalPanel(
+                               condition = "input.create_ens_rescale_type == 4",
+                               helpText(strong("Description: Standardization rescales densities (X) to have a mean", HTML("(&mu;)"), 
+                                               "of 0 and", "standard deviation", HTML("(&sigma;)"), 
+                                               "of 1 (unit variance) using the following formula:")), 
+                               column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
+                             ), 
+                             conditionalPanel(
+                               condition = "input.create_ens_rescale_type == 5",
+                               helpText(strong("Description: Sum to 1 rescales the model predictions (densities) so that the", 
+                                               "densities for each set of predictions sum to 1"))
+                             )
+                      )
+                  ), 
+                  conditionalPanel(
+                    condition = "input.create_ens_weight_type == 4",
+                    box(width = 12, 
+                        helpText(strong("Additional polygon-based weighting functionality:"), br(), 
+                           "Preview weighted polygons for selected overlaid predictions"),
+                        fluidRow(
+                          column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")), 
+                          column(4, br(), br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))
+                        ), 
+                        withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
+                    )
+                  )
+                  ),
+                  ##################################################################### Create ensemble button
+                  box(width = 2, 
+                      actionButton("create_ens_create_action", "Create ensemble"), 
+                      ui.new.line(), 
+                      uiOutput("ens_create_ensemble_text")
+                  )
+                )
+              )
+            ),
+            
+            ############################################################################### Created ensemble models
+            conditionalPanel(
+              condition = "output.ens_display_ens_flag",  # This flag also checks if any ensemble predictions have been created
+              fluidRow(
+                box(
+                  title = "Created Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
+                  DT::dataTableOutput("ens_datatable_ensembles"),
+                  column(12, helpText("Click on row(s) to select model(s) to perform an action")), 
+                  column(3, radioButtons("ens_select_action", h5("Select action to perform with selected ensemble predictions"), 
+                                         choices = list("Plot preview" = 1, "Download preview" = 2, "Remove from app" = 3, 
+                                                        "Calculate predicted abundance" = 4),
+                                         selected = 1)),
+                  column(8, offset = 1, 
+                         br(), 
+                         h5("Action option(s)"), 
+                         fluidRow(
+                           box(title = NULL, width = 12, 
+                               ####################################### Preview ensemble(s)
+                               conditionalPanel(
+                                 condition = "input.ens_select_action == 1", 
+                                 column(3, radioButtons("ens_preview_perc", h5("Units"), choices = list("Percentages" = 1, "Values" = 2), 
+                                                        selected = 1)), 
+                                 column(3, ui.new.line(),
+                                        actionButton("ens_preview_execute", "Preview selected ensemble predictions")
+                                 )
+                               ),
+                               ####################################### Download preview of ensemble(s)
+                               conditionalPanel(
+                                 condition = "input.ens_select_action == 2", 
+                                 fluidRow(
+                                   column(3, radioButtons("ens_download_preview_perc", h5("Units"),
+                                                          choices = list("Percentages" = 1, "Values" = 2),
+                                                          selected = 1)
+                                   ), 
+                                   column(3, radioButtons("ens_download_preview_res", h5("Resolution"),
+                                                          choices = list("High (300 ppi)" = 1, 
+                                                                         "Low (72 ppi)" = 2),
+                                                          selected = 2)
+                                   ),
+                                   column(3, radioButtons("ens_download_preview_format", h5("File format"),
+                                                          choices = list("jpeg" = 1, "pdf" = 2, "png" = 3),
+                                                          selected = 3)
+                                   ), 
+                                   column(3, br(), br(), br(), downloadButton("ens_download_preview_execute", "Download"))
+                                 ), 
+                                 fluidRow(
+                                   column(9, uiOutput("ens_download_preview_name_uiOut_text"))
+                                 )
+                               ),
+                               ####################################### Remove ensemble(s)
+                               conditionalPanel(
+                                 condition = "input.ens_select_action == 3", 
+                                 column(3, 
+                                        actionButton("ens_remove_execute", "Remove selected ensemble predictions"), 
+                                        uiOutput("ens_remove_text")
+                                 )
+                               ), 
+                               ####################################### Calculate abundance of ensemble(s)
+                               conditionalPanel(
+                                 condition = "input.ens_select_action == 4", 
+                                 uiOutput("ens_calc_abund_execute_uiOut_button"), 
+                                 br(), br(), 
+                                 tableOutput("ens_abund_table_out"), 
+                                 tags$style(type="text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
+                                 #tr:first-child for first row
+                               )
+                           )
+                         )
+                  )
+                ),
+                ################################################# Preview of ensemble(s)
+                box(
+                  title = "Ensemble Preview", status = "primary", solidHeader = TRUE, width = 6, collapsible = TRUE,
+                  withSpinner(plotOutput("ens_pix_preview_plot"), type = 1)
+                )
+              )
+            )
+          )
+  )
+}

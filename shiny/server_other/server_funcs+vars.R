@@ -1,0 +1,212 @@
+### Most non-reactive functions and variables for Ensemble Shiny App
+### Some functions are in tab-specific '..._func.R' files
+
+
+###############################################################################
+# For General Use
+EPSG.all <- make_EPSG()
+crs.ll <- CRS(subset(EPSG.all, code == 4326)[,3]) # WGS 84
+# Aka CRS("+init=epsg:4326"), but use other one because
+#   imported GIS objects don't have "+init..." in their crs
+crs.cea <- CRS(paste0("+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 ", 
+                      "+datum=WGS84 +units=m +no_defs", 
+                      " +ellps=WGS84 +towgs84=0,0,0"))
+# From proj4string() of JVR model, 
+#   Had Projected Coordinate System 'World_Cylindrical_Equal_Area'
+
+### Adapted from http://robinlovelace.net/r/2014/07/29/clipping-with-r.html
+# Clip shp by extent of bb (plus buf)
+gClipExtent <- function(shp, bb, buf = NULL) {
+  validate(
+    need(identicalCRS(shp, bb), "gClipExtent(): CRS arguments are not equal")
+  )
+  if (class(bb) == "matrix") {
+    b_poly <- as(extent(as.vector(t(bb))), "SpatialPolygons")
+  } else {
+    b.ext <- extent(bb)
+    if (!is.null(buf)) {
+      b.ext <- extent(b.ext@xmin - buf, b.ext@xmax + buf, 
+                      b.ext@ymin - buf, b.ext@ymax + buf)
+    }
+    b_poly <- as(b.ext, "SpatialPolygons")
+  }
+  proj4string(b_poly) <- crs(bb)
+  
+  gIntersection(shp, b_poly, byid = TRUE)
+}
+
+
+
+na.which <- function(data.vec) {
+  na.char <- c("N/A", "n/a", "na", "NaN", "")
+  
+  na.idx <- suppressWarnings(c(which(is.na(data.vec)),
+                               which(is.nan(data.vec)),
+                               which(data.vec %in% na.char),
+                               which(data.vec < 0)))
+  na.idx <- unique(na.idx)
+  if (length(na.idx) == 0) na.idx <- NA
+  
+  return(na.idx)
+}
+
+na.which.message <- function(na.which.out) {
+  x <- na.which.out
+  
+  if (anyNA(x)) {
+    na.len <- "No prediction values were classified as NA"
+  } else {
+    if (length(x) == 1) 
+      na.len <- paste(length(x), "prediction value was classified as NA")
+    if (length(x) > 1) 
+      na.len <- paste(length(x), "prediction values were classified as NA")
+  }
+}
+
+###############################################################################
+##### For plotting
+
+col.ramp <- c("#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0", 
+              "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026")
+breaks <- seq(1, 0, -0.1)
+labels.at <- seq(0.95, 0.05, -0.1)
+labels.lab <- rev(c("Lowest 60%", "35 - 40%", "30 - 35%", "25 - 30%", 
+                    "20 - 25%", "15 - 20%", "10 - 15%", 
+                    "5 - 10%", "2 - 5%", "Highest 2%"))
+
+mround <- function(x,base){ 
+  base*round(x/base) 
+} 
+
+
+### Calculate brak points for density intervals
+#   Breaks at top 2%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%
+breaks.calc <- function(sp.data) {
+  breaks <- rev(c(0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40))
+  # if (any(is.na(sp.data))) warning("NA's removed")
+  # if (any(sp.data == 0, na.rm = T)) warning("Densities contain 0's")
+  # if (any(sp.data < 0, na.rm = T)) warning("Densities contain values < 0")
+  
+  sp.data <- sp.data[!is.na(sp.data)] 
+  
+  data.len <- length(sp.data)
+  data.max <- max(sp.data)
+  data.min <- min(sp.data)
+  
+  sp.data.sort <- sort(sp.data, decreasing = T)
+  data.breaks.mid <- sapply(breaks, 
+                            function(i) sp.data.sort[ceiling(i * data.len)])
+  data.breaks <- c(data.min, data.breaks.mid, data.max)
+  
+  return(data.breaks)
+}
+
+###############################################################################
+##### Functions for spdfs with prediction data
+
+### Normalize model predictions
+normalize <- function(x) {
+  num <- (x - min(x, na.rm = T))
+  denom <- (max(x, na.rm = T) - min(x, na.rm = T))
+  return (num / denom)
+}
+
+
+### Sort data by one or two specified column(s)
+#   column.1 is primary sort and column.2 is secondary sort
+#   column.2 is sorted first (if necessary), then column.1
+data.sort <- function(data.in, column.1 = 1, column.2 = NA) {
+  data.sort <- data.in
+  if (!is.na(column.2)) data.sort <- data.sort[order(data.sort[,column.2]), ]
+  data.sort <- data.sort[order(data.sort[,column.1]), ]
+  
+  return(data.sort)
+}
+
+
+### Rescale spdf.orig columns cols.data to data in new.abundances
+models.rescale <- function(spdf.list, abund.new) {
+  spdf.list.rescaled <- lapply(spdf.list, function(s) {
+    abund.orig <- model.abundance(s, cols.data = "Pred.overlaid")
+    frac <- abund.orig / abund.new
+    s$Pred.overlaid <- s$Pred.overlaid / frac
+    s
+  })
+  
+  return(spdf.list.rescaled)
+}
+
+
+### Calculate abundances for each of cols.data
+# Assumes that all cols.data have NAs at same place
+# Abundance depends on crs code of provided spdf
+model.abundance <- function(spdf, cols.data = "Pred") {
+  # Remove NAs, assumes NAs are consistent across cols.data
+  spdf.nona <- spdf[-which(is.na(spdf@data[,cols.data[1]])), ]
+  if (length(spdf.nona) == 0) spdf.nona <- spdf
+  
+  # Calculate areas of polygons with no NAs
+  spdf.area <- raster::area(spdf.nona)/1000000
+  
+  abunds <- sapply(cols.data, function(j) sum(spdf.nona@data[,j] * spdf.area))
+  
+  return(abunds)
+}
+
+
+###############################################################################
+##### Other
+
+### Load csv file from given shiny file input
+read.csv.in <- function(file.in) {
+  req(file.in)
+  
+  return(list(file.in$name, read.csv(file.in$datapath, 
+                                     stringsAsFactors = FALSE)))
+}
+
+### Load GIS shapefile from given shiny file input
+#   Used loading shapefiles in Load Model Preds and Overlay sections
+read.shp.in <- function(file.in) {
+  infiles <- file.in$datapath
+  dir <- unique(dirname(infiles))
+  outfiles <- file.path(dir, file.in$name)
+  purrr::walk2(infiles, outfiles, ~file.rename(.x, .y))
+  
+  gis.file <- try(readOGR(dir, strsplit(file.in$name[1], "\\.")[[1]][1], 
+                          verbose = FALSE), 
+                  silent = TRUE)
+  
+  return(gis.file)
+}
+
+
+### Sort by lat and then long; return crs.ll and orig proj version of file
+#   Requires that 'gis.loaded' is an SPolyDF
+gis.model.check <- function(gis.loaded) {
+  validate(
+    need(class(gis.loaded)[1] %in% c("SpatialPolygonsDataFrame", 
+                                     "SpatialPointsDataFrame"), 
+         "Object passed to gis.model.check() is not a SPolyDF")
+  )
+  
+  # Sort spdf by lat and then long so polygons are ordered bottom up
+  coords <- data.frame(idx = seq_along(gis.loaded), coordinates(gis.loaded))
+  idx.sorted <- data.sort(coords, 3, 2)[,1] # Lat is primary sort
+  gis.loaded <- gis.loaded[idx.sorted,]
+  
+  # Check crs arguments and project as necessary
+  crs.curr <- crs(gis.loaded)
+  # print(paste("CRS of loaded GIS file is", proj.curr))
+  
+  validate(
+    need(!is.na(crs.curr), "Error: GIS file does not have defined projection")
+  )
+  
+  if (identical(crs.curr, crs.ll)) { 
+    list(gis.loaded, gis.loaded)
+  } else {
+    list(spTransform(gis.loaded, crs.ll), gis.loaded)
+  }
+}
+###############################################################################
