@@ -19,9 +19,9 @@ overlay_crs <- reactive({
 ### Top-level function of OverlayModels
 
 overlay_all <- eventReactive(input$overlay_create_overlaid_models, { 
-  t.1 <- Sys.time() # For testing purposes
+  # t.1 <- Sys.time() # For testing purposes
   #########################################################
-  ### Reset vals$overlaid... vars in case an overlay has already been done
+  ### Reset vals$overlaid... and vals$ensemble... before creating new overlaid
   vals$overlay.crs <- NULL
   vals$overlay.base.idx <- NULL
   vals$overlay.base.sp <- NULL
@@ -29,6 +29,12 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   vals$overlaid.models <- list()
   vals$overlaid.models.specs <- list()
   
+  vals$ensemble.pix <- NULL
+  vals$ensemble.models <- list()
+  vals$ensemble.method <- NULL
+  vals$ensemble.weights <- NULL
+  vals$ensemble.rescaling <- NULL
+  vals$ensemble.overlaid.idx <- NULL
   vals$ensemble.wpoly.filename <- NULL
   vals$ensemble.wpoly.spdf <- NULL
   vals$ensemble.wpoly.coverage <- NULL
@@ -109,12 +115,12 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     vals$overlay.base.sp <- base.sp
     vals$overlay.base.specs <- base.specs
     
-    print("Creating/processing base grid took:"); print(Sys.time() - t.1)
+    # print("Creating/processing base grid took:"); print(Sys.time() - t.1)
     
     
     #####################################
     ### Create overlaid models
-    t.2 <- Sys.time()
+    # t.2 <- Sys.time()
     overlap.perc <- input$overlay_grid_coverage / 100
     models.overlaid.all <- mapply(function(model, prog.num) {
       incProgress(0.9 / prog.total,
@@ -124,7 +130,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     }, models.to.overlay, 2:(prog.total-1), SIMPLIFY = FALSE)
 
     incProgress(0.9 / prog.total, detail = "Finishing overlay process")
-    print("Overlaying of models took:"); print(Sys.time() - t.2)
+    # print("Overlaying of models took:"); print(Sys.time() - t.2)
 
 
     #####################################
@@ -190,7 +196,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   })
   
   #########################################################
-  print("The entire overlay process took"); print(Sys.time() - t.1)
+  # print("The entire overlay process took"); print(Sys.time() - t.1)
   
   return(c(gIsValid(base.spdf), gIsValid(base.sp), 
            all(sapply(models.overlaid, gIsValid))))

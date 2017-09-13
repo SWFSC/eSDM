@@ -128,8 +128,9 @@ load_envir <- eventReactive(input$load_app_envir_file, {
 ### Save data
 # There is nothing to validate or return, so we don't need eventReactive
 output$save_app_envir <- downloadHandler(
-  filename = input$save_app_envir_name, 
-  
+  filename = function() {
+    input$save_app_envir_name
+  }, 
   content = function(file) {
     withProgress(message = "Saving app data", value = 0.3, {
       vals.save <- reactiveValuesToList(vals)
