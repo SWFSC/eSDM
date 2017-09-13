@@ -1,6 +1,4 @@
-### ensOverlay_OverlayModels_overlay_func
-## Function to overlay models on base polygons
-# By Sam Woodman
+### Function to overlay models onto base polygons
 
 
 ###############################################################################

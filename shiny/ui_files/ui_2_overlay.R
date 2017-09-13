@@ -7,14 +7,14 @@ ui.overlay <- function() {
               column(4,
                      fluidRow(
                        box(
-                         title = "Load Boundary Area/Study Area Polygon", status = "warning", solidHeader = FALSE, 
+                         title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, 
                          width = 12, collapsible = TRUE, 
-                         checkboxInput("overlay_bound_gis", "Use a boundary area polygon in overlay process", value = FALSE),
+                         checkboxInput("overlay_bound_gis", "Use a study area polygon in overlay process", value = FALSE),
                          conditionalPanel(
                            condition = "input.overlay_bound_gis == true", 
                            fluidRow(
                              column(6, radioButtons("overlay_bound_file_type", h5("File type"), choices = file.type.list1, selected = 1)), 
-                             column(5, br(), helpText("Uncheck box to remove loaded boundary area polygon"))
+                             column(5, br(), helpText("Uncheck box to remove loaded study area polygon"))
                            ), 
                            box(width = 12, 
                                conditionalPanel(
@@ -59,12 +59,12 @@ ui.overlay <- function() {
                        ), 
                        
                        box(
-                         title = "Load Land/Coastline Polygon", status = "warning", solidHeader = FALSE, 
+                         title = "Load Land Polygon", status = "warning", solidHeader = FALSE, 
                          width = 12, collapsible = TRUE, 
                          checkboxInput("overlay_land_gis", "Use a land area polygon in overlay process", value = FALSE),
                          conditionalPanel(
                            condition = "input.overlay_land_gis == true", 
-                           helpText("Uncheck box to remove loaded boundary area polygon"), 
+                           helpText("Uncheck box to remove loaded study area polygon"), 
                            br(), 
                            fluidRow(
                              column(6, radioButtons("overlay_land_load_type", h5("Land polygon source"), 
@@ -176,10 +176,10 @@ ui.overlay <- function() {
                          width = 7, collapsible = TRUE, 
                          conditionalPanel(
                            condition = "output.overlay_loaded_table != null",
-                           helpText(strong("Reminder: loaded boundary area and land polygons will be used in overlay process")),
-                           # strong("Reminder: loaded boundary area and land polygons will be used in overlay process"),
-                           # helpText("Reminder: loaded boundary area and land polygons will be used in overlay process"),
-                           # h5("Reminder: loaded boundary area and land polygons will be used in overlay process"),
+                           helpText(strong("Reminder: loaded study area and land polygons will be used in overlay process")),
+                           # strong("Reminder: loaded study area and land polygons will be used in overlay process"),
+                           # helpText("Reminder: loaded study area and land polygons will be used in overlay process"),
+                           # h5("Reminder: loaded study area and land polygons will be used in overlay process"),
                            h5("Overlay options:"), 
                            box(width = 11, 
                                helpText("A major element of the overlay process is calculating the area of polygons", 

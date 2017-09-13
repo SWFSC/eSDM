@@ -9,7 +9,7 @@ ui.prettyPlot <- function() {
                 withSpinner(plotOutput("pretty_plot"), type = 1)
               ),
               box(
-                title = "Loaded Model Predictions", solidHeader = FALSE, status = "warning", collapsible = TRUE, width = 6, 
+                title = "Select Predictions to Plot", solidHeader = FALSE, status = "warning", collapsible = TRUE, width = 6, 
                 DT::dataTableOutput("pretty_table_orig_out"), 
                 br(), 
                 DT::dataTableOutput("pretty_table_over_out"), 
@@ -57,7 +57,7 @@ ui.prettyPlot <- function() {
                 conditionalPanel("output.pretty_pred_selected_flag == 1", 
                                  fluidRow(
                                    column(3, 
-                                          strong("Plot range"), 
+                                          strong("Map range"), 
                                           fluidRow(
                                             box(width = 12, 
                                                 fluidRow(
@@ -72,7 +72,7 @@ ui.prettyPlot <- function() {
                                           )
                                    ), 
                                    column(3, 
-                                          strong("Plot title and labels"), 
+                                          strong("Title and axis labels"), 
                                           fluidRow(
                                             box(width = 12, 
                                                 uiOutput("pretty_plot_title_uiOut_text"), 
@@ -88,7 +88,7 @@ ui.prettyPlot <- function() {
                                           )
                                    ), 
                                    column(3, 
-                                          strong("Plot tick marks and labels"), 
+                                          strong("Tick marks and tick labels"), 
                                           fluidRow(
                                             box(width = 12, 
                                                 checkboxInput("pretty_plot_tick", "Plot tick marks and/or their labels", value = TRUE), 

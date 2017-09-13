@@ -92,6 +92,12 @@ server <- function(input, output, session) {
   source(file.path("server_6_export", "server_6_export_renderUI.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   
   
+  # Manual
+  output$manual_pdf <- renderUI({
+    tags$iframe(style = "height:800px; width:100%", src = "Ensemble_manual_app.pdf")
+  })
+  
+  
   # General server code
   source(file.path("server_other", "server_funcs+vars.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_other", "server_plots.R"), local = TRUE, echo = FALSE, chdir = TRUE)

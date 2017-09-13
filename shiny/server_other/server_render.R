@@ -94,20 +94,20 @@ output$overlay_loaded_stats_table <- DT::renderDataTable({
 }, 
 options = list(dom = 't'), selection = "none")
 
-### Boundary polygon error outputs
+### Boundary (study area) polygon error outputs
 output$overlay_bound_csv_text <- renderText(overlay_bound_csv())
 output$overlay_bound_gis_shp_text <- renderText(overlay_bound_gis_shp())
 output$overlay_bound_gis_gdb_text <- renderText(overlay_bound_gis_gdb())
 
 ### Boundary polygon loaded messages
 output$overlay_bound_csv_message <- renderText({
-  if (!is.null(vals$overlay.bound)) "A boundary polygon is loaded"
+  if (!is.null(vals$overlay.bound)) "A study area polygon is loaded"
 })
 output$overlay_bound_gis_shp_message <- renderText({
-  if (!is.null(vals$overlay.bound)) "A boundary polygon is loaded"
+  if (!is.null(vals$overlay.bound)) "A study area polygon is loaded"
 })
 output$overlay_bound_gis_gdb_message <- renderText({
-  if (!is.null(vals$overlay.bound)) "A boundary polygon is loaded"
+  if (!is.null(vals$overlay.bound)) "A study area polygon is loaded"
 })
 
 ### Land polygon error outputs
