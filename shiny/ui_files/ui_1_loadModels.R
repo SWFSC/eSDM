@@ -111,7 +111,7 @@ ui.loadModels <- function() {
                          condition = "input.model_load_type == 3",
                          ui.gis.shp.intructions(), 
                          ui.load.data.instructions(), 
-                         fileInput("model_gis_shp_files", h5("Upload GIS files"), multiple = T),
+                         fileInput("model_gis_shp_files", h5("Upload GIS shapefile files"), multiple = TRUE),
                          conditionalPanel(
                            condition = "output.read_model_gis_shp_flag == false", 
                            box(width = 12, strong("Could not load GIS shapefile using the provided file(s)"))
@@ -148,7 +148,7 @@ ui.loadModels <- function() {
                            column(12,
                                   ui.gis.gdb.intructions(), 
                                   ui.load.data.instructions(), 
-                                  textInput("model_gis_gdb_path", h5(".gdb path"), 
+                                  textInput("model_gis_gdb_path", h5("Path to .gdb folder"), 
                                             value = "C:/Ensemble Shiny/Ensemble_R_Shiny/Models/Original Models/JVR_CCE.gdb")
                            ),
                            column(6, textInput("model_gis_gdb_name", h5("Filename within .gbd folder"), value = "PredCCE_ModelCCE_gdb")),
@@ -218,8 +218,7 @@ ui.loadModels <- function() {
                                 br(),
                                 fluidRow(
                                   column(3,
-                                         radioButtons("model_select_action", 
-                                                      h5("Select action to perform with selected model predictions"), 
+                                         radioButtons("model_select_action", h5("Action to perform with selected model predictions"), 
                                                       choices = list("Plot preview" = 1, "Download preview" = 2, "Remove from app" = 3),
                                                       selected = 1)
                                   ),
@@ -249,14 +248,11 @@ ui.loadModels <- function() {
                                                                        selected = 2)),
                                                    column(3, radioButtons("model_download_preview_format", h5("File format"),
                                                                        choices = list("jpeg" = 1, "pdf" = 2, "png" = 3),
-                                                                       selected = 3)), 
-                                                   column(3, 
-                                                          ui.new.line(), 
-                                                          downloadButton("model_download_preview_execute", "Download")
-                                                   )
+                                                                       selected = 3))
                                                  ), 
                                                  fluidRow(
-                                                   column(9, uiOutput("model_download_preview_name_uiOut_text"))
+                                                   column(9, uiOutput("model_download_preview_name_uiOut_text")), 
+                                                   column(3, downloadButton("model_download_preview_execute", "Download"))
                                                  )
                                                ),
                                                conditionalPanel(

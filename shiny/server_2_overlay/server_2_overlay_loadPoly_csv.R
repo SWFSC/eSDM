@@ -20,7 +20,7 @@ overlay_bound_read_csv <- reactive({
     need(!anyNA(csv.df), 
          "Please load a csv file without NAs in the long and lat columns")
   )
-
+  
   return(csv.df)
 })
 
@@ -76,16 +76,21 @@ overlay_land_csv <- reactive({
   withProgress(message = 'Loading land polygon', value = 0.7, {
     csv.df <- overlay_land_read_csv()
     Sys.sleep(0.5)
-
+    
     csv.df.na <- c(0, which(is.na(csv.df$lon) & is.na(csv.df$lat)), 
                    nrow(csv.df) + 1)
-    csv.df.nona <- mapply(function(i, j) {cbind(csv.df[(i+1):(j-1),], (i+1):(j-1)) }, 
-                          csv.df.na[1:16], csv.df.na[2:17], SIMPLIFY = FALSE)
+    
+    csv.df.nona <- mapply(function(i, j) {
+      cbind(csv.df[(i+1):(j-1),], (i+1):(j-1)) 
+    }, 
+    csv.df.na[1:16], csv.df.na[2:17], SIMPLIFY = FALSE)
     csv.df.nona <- csv.df.nona[sapply(csv.df.nona, function(i) nrow(i) >= 4)]
     
     land.csv <- disaggregate(SpatialPolygons(list(
       Polygons(
-        lapply(csv.df.nona, function(i) Polygon(cbind(i[,1], i[,2]), hole = FALSE)), 
+        lapply(csv.df.nona, function(i) {
+          Polygon(cbind(i[,1], i[,2]), hole = FALSE)
+        }), 
         ID = "land"))))
     crs(land.csv) <- crs.ll
     
@@ -96,3 +101,5 @@ overlay_land_csv <- reactive({
   
   return("")
 })
+
+###############################################################################

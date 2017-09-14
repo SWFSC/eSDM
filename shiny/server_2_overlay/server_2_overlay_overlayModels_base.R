@@ -1,5 +1,5 @@
 ### Reactive functions for creating base.spdf object
-### Function to make polys valid
+### Function to make polygons valid is in ...overlay_funcs.R
 ### All of these functions have no req() lines and thus assume...
 ### ...if they're called all their inputs exist
 
@@ -13,21 +13,25 @@ overlay_create_base_spdf <- reactive({
   overlay.land <- vals$overlay.land
   
   # If boundary polygon and land exist, clip land by boundary extent
-  if(!is.null(overlay.bound) & !is.null(overlay.land)) {
+  if (!is.null(overlay.bound) & !is.null(overlay.land)) {
     base.spdf <- overlay_clip_base_bound()
     overlay.land <- overlay_clip_land_bound()
   } else {
     # If only boundary exists, clip base with boundary
-    if(!is.null(overlay.bound)) base.spdf <- overlay_clip_base_bound()
+    if (!is.null(overlay.bound)) base.spdf <- overlay_clip_base_bound()
     # If only land exists, clip land with base
-    if(!is.null(overlay.land)) overlay.land <- overlay_clip_land_base()
+    if (!is.null(overlay.land)) overlay.land <- overlay_clip_land_base()
   }
   
   # Remove land from base polygon
-  if(!is.null(overlay.land)) {
+  if (!is.null(overlay.land)) {
     base.spdf <- erase(base.spdf, overlay.land)
     # Report any sort of 'stats', ie area erased?
-    
+  }
+  
+  # Make sure final version of base polygon is valid
+  if (!suppressWarnings(gIsValid(base.spdf))) {
+    base.spdf <- validate.poly(base.spdf, "Base final")
   }
   
   base.spdf
@@ -46,10 +50,10 @@ overlay_clip_land_base <- reactive({
   land.base.try <- try(gClipExtent(overlay.land, base.spdf), 
                        silent = TRUE)
   
-  if(class(land.base.try) == "try-error") {
+  if (class(land.base.try) == "try-error") {
     gClipExtent(overlay_valid_land(), base.spdf)
   } else {
-    if(!suppressWarnings(gIsValid(land.base.try))) {
+    if (!suppressWarnings(gIsValid(land.base.try))) {
       land.base.try <- validate.poly(land.base.try, "land.base.try")
     }
     land.base.try
@@ -66,10 +70,10 @@ overlay_clip_land_bound <- reactive({
   land.bound.try <- try(gClipExtent(overlay.land, overlay.bound, 0), 
                         silent = TRUE)
   
-  if(class(land.bound.try) == "try-error") {
+  if (class(land.bound.try) == "try-error") {
     gClipExtent(overlay_valid_land(), overlay_valid_bound(), 0)
   } else {
-    if(!suppressWarnings(gIsValid(land.bound.try))) {
+    if (!suppressWarnings(gIsValid(land.bound.try))) {
       land.bound.try <- validate.poly(land.bound.try, "land.base.try")
     }
     land.bound.try
@@ -83,7 +87,7 @@ overlay_clip_base_bound <- reactive({
   
   base.bound.try <- try(intersect(base.spdf, overlay.bound), silent = TRUE)
   
-  if(class(base.bound.try) == "try-error") {
+  if (class(base.bound.try) == "try-error") {
     intersect(base.spdf, overlay_valid_bound())
   } else {
     base.bound.try
@@ -99,7 +103,7 @@ overlay_clip_base_bound <- reactive({
 overlay_valid_base <- reactive({
   base.spdf <- overlay_proj_base()
   
-  if(!suppressWarnings(gIsValid(base.spdf))) {
+  if (!suppressWarnings(gIsValid(base.spdf))) {
     validate.poly(base.spdf, "Base")
   } else {
     base.spdf
@@ -110,7 +114,7 @@ overlay_valid_base <- reactive({
 overlay_valid_bound <- reactive({
   overlay.bound <- overlay_proj_bound()
   
-  if(!suppressWarnings(gIsValid(overlay.bound))) { 
+  if (!suppressWarnings(gIsValid(overlay.bound))) { 
     validate.poly(overlay.bound, "Boundary")
   } else {
     overlay.bound
@@ -121,37 +125,12 @@ overlay_valid_bound <- reactive({
 overlay_valid_land <- reactive({
   overlay.land <- overlay_proj_land()
   
-  if(!suppressWarnings(gIsValid(overlay.land))) {
+  if (!suppressWarnings(gIsValid(overlay.land))) {
     validate.poly(overlay.land, "Land")
   } else {
     overlay.land
   }
 })
-
-
-### Validate a polygon by adding a buffer of width 0 around it
-validate.poly <- function(poly.invalid, description = NULL) {
-  # print(paste("Validating", description))
-  poly.maybe <- suppressWarnings(gBuffer(poly.invalid, byid = TRUE, width = 0))
-  # Warnings suppressed for if poly.invalid has crs.ll
-  
-  if(!(suppressWarnings(gIsValid(poly.maybe)) & 
-       (sum(area(poly.maybe)) - sum(area(poly.invalid))) < 1e+06)) {
-    print("Using clgeo_Clean() on polygon", description)
-    poly.maybe <- cleangeo::clgeo_Clean(poly.invalid)
-  }
-  
-  validate(
-    need(suppressWarnings(gIsValid(poly.maybe)), 
-         paste("Could not make polygon", description, "valid")),
-    need((sum(area(poly.maybe)) - sum(area(poly.invalid))) < 1e+06, 
-         paste("While being made valid, the area of polygon", description, 
-               "changed by more than 1,000,000 square kilometers")
-    )
-  )
-  
-  poly.maybe
-}
 
 
 ###############################################################################
@@ -167,10 +146,10 @@ overlay_proj_base <- reactive({
   base.orig <- vals$models.orig[[base.idx]]
   
   # Project if needed
-  if(identical(overlay_crs(), crs.ll)) {
+  if (identical(overlay_crs(), crs.ll)) {
     overlay_base_llpre()
   } else {
-    if(identical(overlay_crs(), crs(base.orig))) {
+    if (identical(overlay_crs(), crs(base.orig))) {
       base.orig
     } else {
       spTransform(overlay_base_llpre(), overlay_crs())
@@ -182,7 +161,7 @@ overlay_proj_base <- reactive({
 overlay_proj_bound <- reactive({
   bound.curr <- vals$overlay.bound
   
-  if(!identical(overlay_crs(), crs.ll)) {
+  if (!identical(overlay_crs(), crs.ll)) {
     bound.curr <- spTransform(bound.curr, overlay_crs())
   }
   
@@ -193,7 +172,7 @@ overlay_proj_bound <- reactive({
 overlay_proj_land <- reactive({
   land.curr <- overlay_clip_land_base_llpre()
   
-  if(!identical(overlay_crs(), crs.ll)) {
+  if (!identical(overlay_crs(), crs.ll)) {
     land.curr <- spTransform(land.curr, overlay_crs())
   }
   
@@ -212,7 +191,7 @@ overlay_clip_land_base_llpre <- reactive({
   
   overlay.land.clipll <- try(gClipExtent(overlay.land, base.pre, 2), 
                              silent = TRUE)
-  if(class(overlay.land.clipll) != "try-error") {
+  if (class(overlay.land.clipll) != "try-error") {
     overlay.land.clipll      
   } else {
     warning("Could not clip land_ll by base_ll, projecting could take a while")

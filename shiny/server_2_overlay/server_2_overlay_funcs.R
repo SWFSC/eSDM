@@ -1,7 +1,67 @@
-### Function to overlay models onto base polygons
+### Functions used in Overlay tab
+
+
 
 
 ###############################################################################
+### Check that provided SPoly has a valid crs, and return crs.ll version
+
+overlay.gis.crs <- function(gis.loaded) {
+  validate(
+    need(class(gis.loaded)[1] == "SpatialPolygons", 
+         "Object passed to overlay.gis.crs() is not a SPoly")
+  )
+  
+  crs.curr <- crs(gis.loaded)
+  validate(
+    need(!is.na(crs.curr), "Error: GIS file does not have defined projection")
+  )
+  
+  if(identical(crs.curr, crs.ll)) { 
+    gis.loaded
+  } else {
+    spTransform(gis.loaded, crs.ll)
+  }
+  
+  return(gis.loaded)
+}
+
+
+###############################################################################
+### Validate an invalid polygon (poly.invalid)
+
+validate.poly <- function(poly.invalid, description = NULL) {
+  # print(paste("Validating", description))
+  poly.maybe <- suppressWarnings(gBuffer(poly.invalid, byid = TRUE, width = 0))
+  # Warnings suppressed for if poly.invalid has crs.ll
+  
+  # Is gBuffer method didn't work, then try clgeo_Clean()
+  if (!(suppressWarnings(gIsValid(poly.maybe)) | 
+        (sum(area(poly.maybe)) - sum(area(poly.invalid))) < 1e+06)) {
+    # print("Using clgeo_Clean() on polygon", description)
+    poly.maybe <- cleangeo::clgeo_Clean(poly.invalid)
+  }
+  
+  # Is gBuffer method didn't work, then try clgeo_Clean()
+  validate(
+    need(suppressWarnings(gIsValid(poly.maybe)), 
+         paste("Could not make polygon", description, "valid")),
+    need((sum(area(poly.maybe)) - sum(area(poly.invalid))) < 1e+06, 
+         paste("While being made valid, the area of the polygon", description, 
+               "changed by more than 1 square kilometer")
+    )
+  )
+  
+  poly.maybe
+}
+
+
+###############################################################################
+### Function to overlay models onto base polygons
+# pol.base is base polygon
+# pol.spdf is preds being overlaid
+# overlap.perc is the percentage of each base polygon that must be...
+# ...overlapped by pol.spdf poly(s) for the new density to not be NA
 
 overlay.func <- function(pol.base, pol.spdf, overlap.perc)
 {

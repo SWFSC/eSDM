@@ -78,14 +78,21 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     if (identical(overlay_crs(), crs.ll)) {
       models.to.overlay <- vals$models.ll[-base.idx]
     } else {
-      models.to.overlay <- lapply(vals$models.orig[-base.idx], 
-                                  function(i) {
-                                    if (identical(overlay_crs(), crs(i))) {
-                                      i
-                                    } else {
-                                      spTransform(i, overlay_crs())
-                                    }
-                                  })
+      models.to.overlay <- lapply(vals$models.orig[-base.idx], function(spdf) {
+        # Project spdf if necessary
+        if (identical(overlay_crs(), crs(spdf))) {
+          spdf <- spdf
+        } else {
+          spdf <- spTransform(spdf, overlay_crs())
+        }
+        
+        # Make spdf valid if it is not
+        if (!suppressWarnings(gIsValid(spdf))) {
+          spdf <- validate.poly(spdf, "Overlaid model predictions")
+        }
+        
+        spdf
+      })
     }
     
     
@@ -117,7 +124,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     
     # print("Creating/processing base grid took:"); print(Sys.time() - t.1)
     
-    
+
     #####################################
     ### Create overlaid models
     # t.2 <- Sys.time()
@@ -163,7 +170,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     vals$ensemble.wpoly.filename <- list.null
     vals$ensemble.wpoly.coverage <- list.null
     
-    ### Create SPixDF of pixel nums for ensemble previews
+    ### Use rasterize() to create an SPixDF of pixel nums for ensemble previews
     ens.sp <- vals$overlay.base.sp # base.sp is used as ensemble base
     ens.data <- data.frame(pix = 1:length(ens.sp))
     ens.spdf <- SpatialPolygonsDataFrame(ens.sp, ens.data, match.ID = FALSE)

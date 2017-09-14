@@ -1,32 +1,7 @@
 ### Code for loading a boundary or land polygon from shp or gdb source
+## overlaid.gis.crs is in ...overlay_funcs.R
 
-
-############################################################################
-# Non-reactive function
-
-### Check that provided SPoly has a valid crs, and return crs.ll version
-overlay.gis.crs <- function(gis.loaded) {
-  validate(
-    need(class(gis.loaded)[1] == "SpatialPolygons", 
-         "Object passed to gis.model.check() is not a SPoly")
-  )
-  
-  crs.curr <- crs(gis.loaded)
-  validate(
-    need(!is.na(crs.curr), "Error: GIS file does not have defined projection")
-  )
-  
-  if(identical(crs.curr, crs.ll)) { 
-    gis.loaded
-  } else {
-    spTransform(gis.loaded, crs.ll)
-  }
-  
-  return(gis.loaded)
-}
-
-
-############################################################################
+###############################################################################
 # Boundary polygon
 
 ### Shapefile
@@ -53,7 +28,7 @@ overlay_bound_gis_shp <- reactive({
   return("")
 })
 
-# .gdb
+### .gdb
 overlay_bound_gis_gdb <- eventReactive(input$overlay_bound_gis_gdb_load, { 
   bound.gdb.path <- input$overlay_bound_gis_gdb_path
   bound.gdb.name <- input$overlay_bound_gis_gdb_name
@@ -80,9 +55,10 @@ overlay_bound_gis_gdb <- eventReactive(input$overlay_bound_gis_gdb_load, {
 })
 
 
-############################################################################
-### Land polygon
-# Shapefile
+###############################################################################
+# Land polygon
+
+### Shapefile
 overlay_land_gis_shp <- reactive({
   req(input$overlay_land_gis_shp_files)
   
@@ -106,7 +82,7 @@ overlay_land_gis_shp <- reactive({
   return("")
 })
 
-# .gdb
+### .gdb
 overlay_land_gis_gdb <- eventReactive(input$overlay_land_gis_gdb_load, { 
   land.gdb.path <- input$overlay_land_gis_gdb_path
   land.gdb.name <- input$overlay_land_gis_gdb_name
@@ -131,3 +107,5 @@ overlay_land_gis_gdb <- eventReactive(input$overlay_land_gis_gdb_load, {
   
   return("")
 })
+
+###############################################################################

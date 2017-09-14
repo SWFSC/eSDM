@@ -60,8 +60,8 @@ server <- function(input, output, session) {
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_provided.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels_base.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_overlayModels_func.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_renderUI.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   
   
   # Create simple ensemble
