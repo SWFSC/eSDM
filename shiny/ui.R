@@ -1,5 +1,4 @@
-### ui.R 
-## For Ensemble Shiny App
+### ui.R for Ensemble Shiny App
 # Designed by Sam Woodman
 
 

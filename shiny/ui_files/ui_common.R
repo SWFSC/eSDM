@@ -44,7 +44,7 @@ ui.gis.gdb.intructions <- function() {
 
 ui.load.data.instructions <- function() {
   helpText("Please make sure that missing prediction values are one of the",
-           "following: 'NA', 'NaN', 'N/A', n/a', 'na', blank,", 
+           "following: 'NA', 'NaN', 'N/A', 'n/a', 'na', blank,", 
            "or a negative number.", br(), "For 'Prediction value type',",
            "select 'Relative' if predictions are probabilities of occurrence")
 }

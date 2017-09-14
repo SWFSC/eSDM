@@ -1,5 +1,4 @@
-### server.R 
-## For Ensemble Shiny App
+### server.R for Ensemble Shiny App
 # Designed by Sam Woodman
 
 
@@ -94,7 +93,7 @@ server <- function(input, output, session) {
   
   # Manual
   output$manual_pdf <- renderUI({
-    tags$iframe(style = "height:800px; width:100%", src = "Ensemble_manual_app.pdf")
+    tags$iframe(style = "height:800px; width:100%", src = "Ensemble_app_manual.pdf")
   })
   
   

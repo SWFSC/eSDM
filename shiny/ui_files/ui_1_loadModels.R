@@ -83,7 +83,7 @@ ui.loadModels <- function() {
                          fileInput("model_gis_raster_file", h5("Upload raster .tif file"), accept = ".tif"), 
                          conditionalPanel(
                            condition = "output.read_model_gis_raster_flag == false", 
-                           box(width = 12, strong("Could not load GIS raster using the provided file"))
+                           box(width = 12, strong("Could not load GIS raster using the provided file and band number"))
                          ), 
                          conditionalPanel(
                            condition = "output.read_model_gis_raster_flag", 
