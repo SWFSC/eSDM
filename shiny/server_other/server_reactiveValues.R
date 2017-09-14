@@ -58,13 +58,13 @@ load_envir <- eventReactive(input$load_app_envir_file, {
   
   file.load <- input$load_app_envir_file
   
-  withProgress(message = "Loading saved data", value = 0.5, {
+  withProgress(message = "Loading saved environment", value = 0.4, {
     load(file.load$datapath)
     validate(
       need(exists("vals.save"),
-           "Loaded .RDATA file does not contain data saved using this app")
+           paste0("Loaded .RDATA file does not contain an envirnment", 
+                  "saved using this app"))
     )
-    
     incProgress(0.4)
     
     vals$models.pix        <- vals.save[["models.pix"]]
@@ -84,8 +84,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$overlaid.models       <- vals.save[["overlaid.models"]]
     vals$overlaid.models.specs <- vals.save[["overlaid.models.specs"]]
     
-    vals$ensemble.pix <- vals.save[["ensemble.pix"]]
-    
+    vals$ensemble.pix            <- vals.save[["ensemble.pix"]]
     vals$ensemble.models         <- vals.save[["ensemble.models"]]
     vals$ensemble.method         <- vals.save[["ensemble.method"]]
     vals$ensemble.weights        <- vals.save[["ensemble.weights"]]
@@ -106,7 +105,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     
     vals$pretty.params.list <- vals.save[["pretty.params.list"]]
     
-    incProgress(0.05)
+    incProgress(1)
     
     # Update variable defaults
     if(!is.null(vals$overlay.bound)) {
@@ -116,13 +115,17 @@ load_envir <- eventReactive(input$load_app_envir_file, {
       updateCheckboxInput(session, "overlay_land_gis", value = TRUE)
     }
     
-    incProgress(0.05)
+    incProgress(1)
   })
   
   Sys.sleep(0.5)
   
   return(paste("App data loaded from", file.load$name))
 })
+
+# Have this observe statement so that selected saved app environment...
+# ...loads even if user isn't on first page
+observe(load_envir())
 
 
 ### Save data

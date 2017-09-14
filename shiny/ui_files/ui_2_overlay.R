@@ -1,6 +1,6 @@
 ui.overlay <- function() {
   tabItem(tabName = "overlay",
-          conditionalPanel(condition = "output.overlay_display_flag == false", ui.no.model.pred.loaded1()), 
+          conditionalPanel("output.overlay_display_flag == false", ui.no.model.pred.loaded1()), 
           conditionalPanel(
             condition = "output.overlay_display_flag", 
             fluidRow(
@@ -146,30 +146,23 @@ ui.overlay <- function() {
                          collapsible = TRUE, 
                          conditionalPanel("input.overlay_loaded_table_stats != true", DT::dataTableOutput("overlay_loaded_table")),
                          conditionalPanel("input.overlay_loaded_table_stats", DT::dataTableOutput("overlay_loaded_stats_table")),
-                         conditionalPanel(
-                           condition = "output.overlay_loaded_table != null", 
-                           fluidRow(
-                             column(4, 
-                                    checkboxInput("overlay_loaded_table_stats", "Display additional model information"),
-                                    uiOutput("overlay_preview_options_uiOut_checkGroup")
-                             ),
-                             column(8, 
-                                    conditionalPanel(
-                                      condition = "input.overlay_loaded_table_stats != true", 
-                                      helpText("Click on row(s) to select model predictions to perform an action")
-                                    ), 
-                                    conditionalPanel(
-                                      condition = "input.overlay_loaded_table_stats", 
-                                      helpText("Rows can only be selected if 'Display additional information' is unchecked")
-                                    ), 
-                                    ui.new.line(), 
-                                    actionButton("overlay_preview_execute", "Preview grid"), 
-                                    br(), 
-                                    helpText("Note: If the model is large and and is fairly high resolution,", 
-                                             "then the base grid preview likely will appear to be completely black")
-                             )
+                         fluidRow(
+                           column(4, checkboxInput("overlay_loaded_table_stats", "Display additional information")),
+                           column(8, 
+                                  conditionalPanel(
+                                    condition = "input.overlay_loaded_table_stats != true", 
+                                    helpText("Click on a row to select model predictions to use as base grid")
+                                  ), 
+                                  conditionalPanel(
+                                    condition = "input.overlay_loaded_table_stats", 
+                                    helpText("A row can only be selected if 'Display additional information' is unchecked")
+                                  )
                            )
-                         )
+                         ), 
+                         br(), 
+                         column(2, actionButton("overlay_preview_execute", "Preview base grid")),
+                         column(10, helpText("Note: If the model is large and and is fairly high resolution,", 
+                                             "then the base grid preview likely will appear to be completely black"))
                        ),
                        box(
                          title = "Overlay Model Predictions", status = "warning", solidHeader = FALSE, 
@@ -202,7 +195,7 @@ ui.overlay <- function() {
                            ), 
                            fluidRow(
                              column(6, 
-                                    actionButton("overlay_create_overlaid_models", "Overlay all models onto selected gird"),
+                                    actionButton("overlay_create_overlaid_models", "Overlay all predictions onto selected base grid"),
                                     textOutput("overlay_text_overlaid_models")
                              ), 
                              column(6, helpText("This will likely take several minutes"))
@@ -210,7 +203,7 @@ ui.overlay <- function() {
                          )
                        ),
                        box(
-                         title = "Preview of Overlay Base", status = "primary", solidHeader = TRUE, width = 5, collapsible = TRUE,
+                         title = "Preview of Base Grid", status = "primary", solidHeader = TRUE, width = 5, collapsible = TRUE,
                          shinycssloaders::withSpinner(plotOutput("overlay_preview_base"), type = 1)
                        )
                      )

@@ -206,12 +206,12 @@ ui.loadModels <- function() {
                                            condition = "input.models_loaded_table_stats != true", 
                                            helpText("Click on row(s) to select model predictions to perform an action", br(), 
                                                     "If multiple rows are selected and the 'Preview' button is clicked," , 
-                                                    "a multiplot of all selected predictions will be plotted")
+                                                    "then the app will generate a multiplot of all selected predictions")
                                          ), 
                                          conditionalPanel(
                                            condition = "input.models_loaded_table_stats", 
                                            helpText("Rows can only be selected if 'Display additional information' is unchecked", br(), 
-                                                    "'Resolution' information is approximate; if wrong, please note in feedback form")
+                                                    "'Resolution' information is approximate; please note any errors in the feedback form")
                                          )
                                   )
                                 ), 
@@ -251,7 +251,7 @@ ui.loadModels <- function() {
                                                                        choices = list("jpeg" = 1, "pdf" = 2, "png" = 3),
                                                                        selected = 3)), 
                                                    column(3, 
-                                                          br(), br(), br(),
+                                                          ui.new.line(), 
                                                           downloadButton("model_download_preview_execute", "Download")
                                                    )
                                                  ), 

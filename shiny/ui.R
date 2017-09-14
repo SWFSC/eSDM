@@ -42,6 +42,7 @@ source(file.path("ui_files", "ui_common.R"), local = TRUE, echo = FALSE, chdir =
 ###############################################################################
 ### UI object for Shiny app
 ui <- dashboardPage(
+  skin = "blue", 
   dashboardHeader(title = "Ensemble App"),
   
   dashboardSidebar(
@@ -62,18 +63,9 @@ ui <- dashboardPage(
                          icon = icon("book")), 
                 menuItem("Submit feedback", tabName = "feedbackForm", 
                          icon = icon("commenting"))
-    ), 
-    # hand-rock-o hand-paper-o hand-scissors-o 
-    # hand-lizard-o hand-spock-o hand-peace-o money
+    ),
     br(), 
-    actionButton("close_app", label = "Close App"), 
-    
-    ###################################### TEMP Start
-    ui.new.line(),
-    ui.new.line(), 
-    actionButton("load_all", "Load default"),
-    actionButton("save_all", "Save current list.all") 
-    ###################################### TEMP End
+    actionButton("close_app", label = "Close App")
   ),
   
   dashboardBody(
