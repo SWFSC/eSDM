@@ -50,40 +50,63 @@ model_pix <- reactive({
 ###############################################################################
 # Overlay tab
 
-### Generate preview of overlay grid to plot in-app
-plot_overlay_preview <- eventReactive(input$overlay_preview_execute, {
-  b.inc <- !is.null(vals$overlay.bound)
-  l.inc <- !is.null(vals$overlay.land)
-  
-  validate(
-    if(input$overlay_bound_gis) 
-      need(!is.null(vals$overlay.bound),
-           "Please either uncheck boundary box or load a boundary polygon"),
-    if(input$overlay_land_gis) 
-      need(!is.null(vals$overlay.land),
-           "Please either uncheck land box or load a land polygon")
-  )
-  
-  model.toplot <- overlay_preview_model()  # Func in ensOverlay.R
-  if(b.inc) {
-    bound.toplot <- vals$overlay.bound
-    plot.extent <- extent(bound.toplot)
-  } else {
-    plot.extent <- extent(model.toplot)
+#################################################
+### Generate preview of base grid to plot in-app
+plot_overlay_preview_base <- eventReactive(
+  input$overlay_preview_base_execute, 
+  {
+    b.inc <- !is.null(vals$overlay.bound)
+    l.inc <- !is.null(vals$overlay.land)
     
+    validate(
+      if(input$overlay_bound_gis) 
+        need(!is.null(vals$overlay.bound),
+             "Please either uncheck boundary box or load a boundary polygon"),
+      if(input$overlay_land_gis) 
+        need(!is.null(vals$overlay.land),
+             "Please either uncheck land box or load a land polygon")
+    )
+    
+    model.toplot <- overlay_preview_model()  # Func in ensOverlay.R
+    if(b.inc) {
+      bound.toplot <- vals$overlay.bound
+      plot.extent <- extent(bound.toplot)
+    } else {
+      plot.extent <- extent(model.toplot)
+      
+    }
+    plot.xlim <- c(plot.extent@xmin, plot.extent@xmax)
+    plot.ylim <- c(plot.extent@ymin, plot.extent@ymax)
+    
+    plot(model.toplot, xlim = plot.xlim, ylim = plot.ylim, axes = T)
+    if(l.inc) {
+      plot(overlay_preview_land(), add = T, border = NA, col = "tan")
+      # Func in ensOverlay.R
+    }
+    if(b.inc) {
+      plot(vals$overlay.bound, add = T, border = "red", col = NA, lwd = 2)
+    }
   }
-  plot.xlim <- c(plot.extent@xmin, plot.extent@xmax)
-  plot.ylim <- c(plot.extent@ymin, plot.extent@ymax)
-  
-  plot(model.toplot, xlim = plot.xlim, ylim = plot.ylim, axes = T)
-  if(l.inc) {
-    plot(overlay_preview_land(), add = T, border = NA, col = "tan")
-    # Func in ensOverlay.R
+)
+
+
+#################################################
+### Generate preview of overlaid model predictions to plot in-app
+plot_overlay_preview_overlaid <- eventReactive(
+  input$overlay_preview_overlaid_execute, 
+  {
+    pix.list.toplot <- overlay_preview_overlaid_pix()
+    overlaid.which <- sort(as.numeric(input$overlay_preview_overlaid_models))
+    
+    plot.titles <- paste("Overlaid", overlaid.which)
+    
+    list.toplot <- list(models.toplot = pix.list.toplot, 
+                        data.name = "Pred.overlaid", 
+                        plot.titles = plot.titles, perc.num = 1)
+    
+    plot.multi.display(list.toplot)
   }
-  if(b.inc) {
-    plot(vals$overlay.bound, add = T, border = "red", col = NA, lwd = 2)
-  }
-})
+)
 
 
 ###############################################################################
@@ -126,7 +149,7 @@ ens_pix <- reactive({
     paste0("Ensembling method: ", vals$ensemble.method[i], "\n", 
            "Rescaling method: ", vals$ensemble.rescaling[i])
   })
-
+  
   perc.ind <- input$ens_select_action
   if(perc.ind == 1) perc.num <- input$ens_preview_perc
   if(perc.ind == 2) perc.num <- input$ens_download_preview_perc

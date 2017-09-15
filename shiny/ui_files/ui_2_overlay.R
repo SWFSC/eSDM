@@ -206,7 +206,7 @@ ui.overlay <- function() {
                                fluidRow(
                                  column(9, helpText("Note: If model predictions were made at a high resolution,", 
                                                     "then preview may appear to be completely black")), 
-                                 column(3, br(), actionButton("overlay_preview_execute", "Preview"))
+                                 column(3, br(), actionButton("overlay_preview_base_execute", "Preview"))
                                )
                            )
                          ),
@@ -217,8 +217,7 @@ ui.overlay <- function() {
                          fluidRow(
                            box(width = 12, 
                                fluidRow(
-                                 column(9, selectizeInput("overlay_preview_overlaid_models", "oladi to plot", choices = NULL, 
-                                                          multiple = TRUE)), 
+                                 column(9, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")), 
                                  column(3, br(), actionButton("overlay_preview_overlaid_execute", "Preview"))
                                )
                            )

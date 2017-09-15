@@ -159,7 +159,7 @@ output$overlay_preview_base <- renderPlot({
 
 ### Preview of overlaid model predictions
 output$overlay_preview_overlaid <- renderPlot({ 
-  plot_overlay_preview_overlaid() 
+  grid.arrange(plot_overlay_preview_overlaid())
 })
 
 
