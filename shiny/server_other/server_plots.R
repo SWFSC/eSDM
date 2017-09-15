@@ -52,9 +52,8 @@ model_pix <- reactive({
 
 ### Generate preview of overlay grid to plot in-app
 plot_overlay_preview <- eventReactive(input$overlay_preview_execute, {
-  p.options <- input$overlay_preview_options
-  b.inc <- (("1" %in% p.options) & !is.null(vals$overlay.bound))
-  l.inc <- (("2" %in% p.options) & !is.null(vals$overlay.land))
+  b.inc <- !is.null(vals$overlay.bound)
+  l.inc <- !is.null(vals$overlay.land)
   
   validate(
     if(input$overlay_bound_gis) 

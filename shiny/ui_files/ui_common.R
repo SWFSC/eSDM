@@ -79,19 +79,4 @@ ui.no.model.pred.loaded2 <- function() {
   )
 }
 
-
-#######################################
-### Description of world shape assumptions for lat/long area calculations
-ui.areacalc.ll.assumptions <- function() {
-  tagList(span(class="help-block", "Assumptions when calculating area from",
-               "lat/long coordinates in WGS84 datum:", 
-               "'Equatorial axis of ellipsoid' = 6378137 and", 
-               "'Inverse flattening of ellipsoid' = 1/298.257223563.", 
-               "See", 
-               a("this paper", 
-                 href = paste0("https://link.springer.com/article/", 
-                               "10.1007%2Fs00190-012-0578-z")), 
-               "for more details"))
-}
-
 ###############################################################################

@@ -7,8 +7,7 @@ ui.overlay <- function() {
               column(4,
                      fluidRow(
                        box(
-                         title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, 
-                         width = 12, collapsible = TRUE, 
+                         title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
                          checkboxInput("overlay_bound_gis", "Use a study area polygon in overlay process", value = FALSE),
                          conditionalPanel(
                            condition = "input.overlay_bound_gis == true", 
@@ -59,8 +58,7 @@ ui.overlay <- function() {
                        ), 
                        
                        box(
-                         title = "Load Land Polygon", status = "warning", solidHeader = FALSE, 
-                         width = 12, collapsible = TRUE, 
+                         title = "Load Land Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
                          checkboxInput("overlay_land_gis", "Use a land area polygon in overlay process", value = FALSE),
                          conditionalPanel(
                            condition = "input.overlay_land_gis == true", 
@@ -68,8 +66,8 @@ ui.overlay <- function() {
                            br(), 
                            fluidRow(
                              column(6, radioButtons("overlay_land_load_type", h5("Land polygon source"), 
-                                                 choices = list("Use provided" = 1, "Load personal" = 2), 
-                                                 selected = 1)), 
+                                                    choices = list("Use provided" = 1, "Load personal" = 2), 
+                                                    selected = 1)), 
                              column(6, 
                                     conditionalPanel(
                                       condition = "input.overlay_land_load_type == 2 ", 
@@ -158,27 +156,22 @@ ui.overlay <- function() {
                                     helpText("A row can only be selected if 'Display additional information' is unchecked")
                                   )
                            )
-                         ), 
-                         br(), 
-                         column(2, actionButton("overlay_preview_execute", "Preview base grid")),
-                         column(10, helpText("Note: If the model is large and and is fairly high resolution,", 
-                                             "then the base grid preview likely will appear to be completely black"))
+                         )
                        ),
                        box(
-                         title = "Overlay Model Predictions", status = "warning", solidHeader = FALSE, 
-                         width = 7, collapsible = TRUE, 
-                         conditionalPanel(
-                           condition = "output.overlay_loaded_table != null",
-                           helpText(strong("Reminder: loaded study area and land polygons will be used in overlay process")),
-                           # strong("Reminder: loaded study area and land polygons will be used in overlay process"),
-                           # helpText("Reminder: loaded study area and land polygons will be used in overlay process"),
-                           # h5("Reminder: loaded study area and land polygons will be used in overlay process"),
-                           h5("Overlay options:"), 
-                           box(width = 11, 
+                         title = "Overlay Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
+                         fluidRow(
+                           box(width = 6, 
+                               h5("Overlay projection options:"), 
                                helpText("A major element of the overlay process is calculating the area of polygons", 
-                                        "and their overlap. Thus, the projection of the model predictions when the", 
-                                        "overlay process is performed can alter the overlay results"), 
-                               ui.areacalc.ll.assumptions(), 
+                                        "and their overlap. Thus, the projection of the model predictions during the overlay process", 
+                                        "can have an effect on the overlay results"), 
+                               helpText("Assumptions when calculating area from lat/long geographic coordinates in WGS84 datum:", 
+                                        "1) 'Equatorial axis of ellipsoid' = 6378137 and", 
+                                        "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", br(), 
+                                        "See", a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"), 
+                                        "for more details about assumptions that must be made when calculating the area", 
+                                        "using geographic coordinates."), 
                                checkboxInput("overlay_proj_ll", "Perform overlay in lat/long WGS84 geographic coordinates", value = TRUE), 
                                conditionalPanel(
                                  condition = "input.overlay_proj_ll", 
@@ -186,25 +179,51 @@ ui.overlay <- function() {
                                ), 
                                conditionalPanel("input.overlay_proj_ll == false", column(12, uiOutput("overlay_proj_which_uiOut_select")))
                            ), 
-                           box(width = 11, 
-                               sliderInput("overlay_grid_coverage", 
-                                           h5("The percentage of a base grid cell that must be covered by original", 
-                                              "model predictions for the base grid cell not to have a value of NA.", 
-                                              "If '0' is selected, then the base grid cell will not have a value of NA if there is any overlap"), 
-                                           min = 0, max = 100, value = 100)
-                           ), 
-                           fluidRow(
-                             column(6, 
-                                    actionButton("overlay_create_overlaid_models", "Overlay all predictions onto selected base grid"),
-                                    textOutput("overlay_text_overlaid_models")
-                             ), 
-                             column(6, helpText("This will likely take several minutes"))
+                           column(6, 
+                                  fluidRow(
+                                    box(width = 12, 
+                                        h5("Overlay percent overlap options:"), 
+                                        helpText("The percentage of a base grid cell that must be covered by original model predictions", 
+                                                 "for that base grid cell not to have a value of NA. If '0' is selected,", 
+                                                 "then the base grid cell will not have a value of NA if there is any overlap"),
+                                        sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 100)
+                                    ), 
+                                    box(width = 12,
+                                        helpText(strong("Reminder: loaded study area and land polygons will be used during", 
+                                                        "the overlay process"), br(), 
+                                                 "This process may take several minutes"),
+                                        actionButton("overlay_create_overlaid_models", "Overlay all predictions onto specified base grid"),
+                                        textOutput("overlay_text_overlaid_models")
+                                    )
+                                  )
                            )
                          )
                        ),
                        box(
-                         title = "Preview of Base Grid", status = "primary", solidHeader = TRUE, width = 5, collapsible = TRUE,
+                         title = "Preview of Base Grid", status = "primary", solidHeader = TRUE, width = 6, collapsible = TRUE, 
+                         fluidRow(
+                           box(width = 12, 
+                               fluidRow(
+                                 column(9, helpText("Note: If model predictions were made at a high resolution,", 
+                                                    "then preview may appear to be completely black")), 
+                                 column(3, br(), actionButton("overlay_preview_execute", "Preview"))
+                               )
+                           )
+                         ),
                          shinycssloaders::withSpinner(plotOutput("overlay_preview_base"), type = 1)
+                       ), 
+                       box(
+                         title = "Preview of Overlaid Model Predictions", status = "primary", solidHeader = TRUE, width = 6, collapsible = TRUE,
+                         fluidRow(
+                           box(width = 12, 
+                               fluidRow(
+                                 column(9, selectizeInput("overlay_preview_overlaid_models", "oladi to plot", choices = NULL, 
+                                                          multiple = TRUE)), 
+                                 column(3, br(), actionButton("overlay_preview_overlaid_execute", "Preview"))
+                               )
+                           )
+                         ),
+                         shinycssloaders::withSpinner(plotOutput("overlay_preview_overlaid"), type = 1)
                        )
                      )
               )
