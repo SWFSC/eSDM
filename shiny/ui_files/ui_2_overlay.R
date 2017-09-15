@@ -20,7 +20,7 @@ ui.overlay <- function() {
                                  condition = "input.overlay_bound_file_type == 1",
                                  ui.csv.poly.instructions(), 
                                  fluidRow(
-                                   column(6, fileInput("overlay_bound_csv_file", h5("Load csv file"), accept = ".csv")), 
+                                   column(6, fileInput("overlay_bound_csv_file", h5("Upload csv file"), accept = ".csv")), 
                                    column(6, 
                                           br(), br(), 
                                           textOutput("overlay_bound_csv_message"), 
@@ -32,7 +32,7 @@ ui.overlay <- function() {
                                  condition = "input.overlay_bound_file_type == 2",
                                  ui.gis.shp.intructions(),
                                  fluidRow(
-                                   column(6, fileInput("overlay_bound_gis_shp_files", h5("Load GIS files"), multiple = T)),
+                                   column(6, fileInput("overlay_bound_gis_shp_files", h5("Upload GIS files"), multiple = T)),
                                    column(6,
                                           br(), br(),
                                           textOutput("overlay_bound_gis_shp_message"),
@@ -46,7 +46,7 @@ ui.overlay <- function() {
                                  textInput("overlay_bound_gis_gdb_path", h5(".gbd path"), value = "C:/Ensemble Shiny/Ensemble_R_Shiny/.gdb"),
                                  textInput("overlay_bound_gis_gdb_name", h5("Filename within .gbd folder"), value = ""),
                                  fluidRow(
-                                   column(6, actionButton("overlay_bound_gis_gdb_load", "Load file from specified path")),
+                                   column(6, actionButton("overlay_bound_gis_gdb_load", "Upload file from specified path")),
                                    column(6,
                                           textOutput("overlay_bound_gis_gdb_message"),
                                           textOutput("overlay_bound_gis_gdb_text")
@@ -59,14 +59,14 @@ ui.overlay <- function() {
                        
                        box(
                          title = "Load Land Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-                         checkboxInput("overlay_land_gis", "Use a land area polygon in overlay process", value = FALSE),
+                         checkboxInput("overlay_land", "Use a land polygon in overlay process", value = FALSE),
                          conditionalPanel(
-                           condition = "input.overlay_land_gis == true", 
-                           helpText("Uncheck box to remove loaded study area polygon"), 
+                           condition = "input.overlay_land == true", 
+                           helpText("Uncheck box to remove loaded land polygon"), 
                            br(), 
                            fluidRow(
                              column(6, radioButtons("overlay_land_load_type", h5("Land polygon source"), 
-                                                    choices = list("Use provided" = 1, "Load personal" = 2), 
+                                                    choices = list("Use provided" = 1, "Upload personal" = 2), 
                                                     selected = 1)), 
                              column(6, 
                                     conditionalPanel(
@@ -78,17 +78,16 @@ ui.overlay <- function() {
                            conditionalPanel(
                              condition = "input.overlay_land_load_type == 1", 
                              box(width = 12, 
-                                 tagList(span(class="help-block", "The provided land polygon is from the Global", 
-                                              "Self-consistent, Hierarchical, High-resolution Geography Database. See the", 
-                                              a("GSHHG homepage", href="http://www.soest.hawaii.edu/pwessel/gshhg/"),
-                                              "for resolution details or other information"
-                                 )), 
+                                 helpText("The provided land polygon is from the Global Self-consistent, Hierarchical,", 
+                                          "High-resolution Geography (GSHHG) Database.", br(), 
+                                          "See the", a("GSHHG website", href="http://www.soest.hawaii.edu/pwessel/gshhg/"),
+                                          "for more information about these land polygons"), 
                                  fluidRow(
-                                   column(5, selectInput("overlay_land_provided_res", h5("Resolution of file to load"), 
+                                   column(3, selectInput("overlay_land_provided_res", h5("Resolution of land polygon"), 
                                                          choices = list("Full" = 1, "High" = 2, "Intermediate" = 3, "Low" = 4, "Crude" = 5), 
                                                          selected = 1)), 
-                                   column(3, br(), br(), actionButton("overlay_land_provided", "Load file")), 
-                                   column(4, ui.new.line(), textOutput("overlay_land_provided_message")))
+                                   column(5, ui.new.line(), br(), actionButton("overlay_land_provided", "Load provided land polygon")), 
+                                   column(4, ui.new.line(), br(), textOutput("overlay_land_provided_message")))
                              )
                            ), 
                            conditionalPanel(
@@ -96,7 +95,7 @@ ui.overlay <- function() {
                              box(width = 12, 
                                  ui.csv.poly.instructions(), 
                                  fluidRow(
-                                   column(6, fileInput("overlay_land_csv_file", h5("Load csv file"), accept = ".csv")),
+                                   column(6, fileInput("overlay_land_csv_file", h5("Upload csv file"), accept = ".csv")),
                                    column(6, br(), br(),
                                           textOutput("overlay_land_csv_message"),
                                           textOutput("overlay_land_csv_text"))
@@ -108,7 +107,7 @@ ui.overlay <- function() {
                              box(width = 12, 
                                  ui.gis.shp.intructions(), 
                                  fluidRow(
-                                   column(6, fileInput("overlay_land_gis_shp_files", h5("Load GIS files"), multiple = T)),
+                                   column(6, fileInput("overlay_land_gis_shp_files", h5("Upload GIS files"), multiple = T)),
                                    column(6,
                                           br(), br(),
                                           textOutput("overlay_land_gis_shp_message"), 
@@ -124,7 +123,7 @@ ui.overlay <- function() {
                                  textInput("overlay_land_gis_gdb_path", h5(".gbd path"), value = "C:/Ensemble Shiny/Ensemble_R_Shiny/.gdb"),
                                  textInput("overlay_land_gis_gdb_name", h5("Name of file within .gbd"), value = ""), 
                                  fluidRow(
-                                   column(6, actionButton("overlay_land_gis_gdb_load", "Load file from specified path")),
+                                   column(6, actionButton("overlay_land_gis_gdb_load", "Upload file from specified path")),
                                    column(6,
                                           textOutput("overlay_land_gis_gdb_message"), 
                                           textOutput("overlay_land_gis_gdb_text")

@@ -227,7 +227,7 @@ ui.createEns <- function() {
                                                                      value = ""))
                                                ),
                                                fluidRow(
-                                                 column(6, actionButton("create_ens_weights_poly_gdb_load", "Load file from specified path")), 
+                                                 column(6, actionButton("create_ens_weights_poly_gdb_load", "Upload file from specified path")), 
                                                  column(6, 
                                                         conditionalPanel(
                                                           condition = "output.create_ens_weights_poly_gdb_flag == false",

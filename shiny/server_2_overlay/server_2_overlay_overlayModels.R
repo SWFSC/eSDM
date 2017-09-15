@@ -54,7 +54,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     if (input$overlay_bound_gis) 
       need(!is.null(vals$overlay.bound),
            "Please either uncheck boundary box or load a boundary polygon"),
-    if (input$overlay_land_gis) 
+    if (input$overlay_land) 
       need(!is.null(vals$overlay.land),
            "Please either uncheck land box or load a land polygon")
   )

@@ -154,7 +154,7 @@ ui.loadModels <- function() {
                            column(6, textInput("model_gis_gdb_name", h5("Filename within .gbd folder"), value = "PredCCE_ModelCCE_gdb")),
                            column(6, 
                                   br(), br(), 
-                                  actionButton("model_gis_gdb_load", "Load file from specified path")
+                                  actionButton("model_gis_gdb_load", "Upload file from specified path")
                            )
                          ),
                          br(), 

@@ -24,8 +24,8 @@ observeEvent(input$overlay_bound_gis, {
 })
 
 ### Remove land polygon if 'include land' box is unchecked
-observeEvent(input$overlay_land_gis, {
-  if(!input$overlay_land_gis){
+observeEvent(input$overlay_land, {
+  if(!input$overlay_land){
     vals$overlay.land <- NULL
     
     shinyjs::reset("overlay_land_csv_file")

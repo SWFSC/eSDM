@@ -31,7 +31,7 @@ ui.evalMetrics <- function() {
                 conditionalPanel(
                   condition = "input.eval_load_type_1 == 1",
                   helpText("Excel csv file must have lat/long coordinates for points and a column with presence/absence/count data"), 
-                  fileInput("eval_csv_1", h5("Load Excel .csv file")),
+                  fileInput("eval_csv_1", h5("Upload Excel .csv file")),
                   conditionalPanel("output.eval_csv_1_flag == false", strong("For csv file, please choose a file that has a .csv file extension")),
                   conditionalPanel(
                     condition = "output.eval_csv_1_flag", 
@@ -55,7 +55,7 @@ ui.evalMetrics <- function() {
                 conditionalPanel(
                   condition = "input.eval_load_type_1 == 2",
                   ui.gis.shp.intructions(),
-                  fileInput("eval_gis_shp_1", label = h5("Load GIS files"), multiple = T), 
+                  fileInput("eval_gis_shp_1", label = h5("Upload GIS shapefile files"), multiple = T), 
                   conditionalPanel(
                     condition = "output.eval_gis_1_shp_flag == false", 
                     strong("Could not load GIS shapefile using the provided file(s)")
@@ -70,7 +70,7 @@ ui.evalMetrics <- function() {
                     column(6, textInput("eval_gis_gdb_name_1", h5("Name of file within .gbd"), value = "PA_5km_gdb")), 
                     column(6, 
                            br(), br(), 
-                           actionButton("eval_gis_gdb_load_1", "Load file from specified path")
+                           actionButton("eval_gis_gdb_load_1", "Upload file from specified path")
                     )
                   ), 
                   br(), 
@@ -118,7 +118,7 @@ ui.evalMetrics <- function() {
                 #       conditionalPanel(
                 #         condition = "input.eval_load_type_2p == 1",
                 #         helpText("Select lat and long columns after uploading csv file"),
-                #         fileInput("eval_csv_2p", label = h5("Load presence .csv file")),
+                #         fileInput("eval_csv_2p", label = h5("Upload presence .csv file")),
                 #         uiOutput("eval_csv_names_2p_uiOut_select")
                 #       ),
                 #       
@@ -130,14 +130,14 @@ ui.evalMetrics <- function() {
                 #         conditionalPanel(
                 #           condition = "input.eval_gis_file_type_2p == 1",
                 #           ui.gis.shp.intructions(),
-                #           fileInput("eval_gis_shp_2p", h5("Load GIS files"), multiple=T)
+                #           fileInput("eval_gis_shp_2p", h5("Upload GIS files"), multiple=T)
                 #         ),
                 #         conditionalPanel(
                 #           condition = "input.eval_gis_file_type_2p == 2",
                 #           ui.gis.gdb.intructions(),
                 #           textInput("eval_gis_gdb_path_2p", "GBD path", value = "C:/Ensemble Shiny/Ensemble_R_Shiny/"),
                 #           textInput("eval_gis_gdb_name_2p", "Name of file within .gbd", value = ""),
-                #           actionButton("eval_gis_gdb_load_2p", "Load file from specified path")
+                #           actionButton("eval_gis_gdb_load_2p", "Upload file from specified path")
                 #         )
                 #       )
                 #     ),
@@ -151,7 +151,7 @@ ui.evalMetrics <- function() {
                 #       conditionalPanel(
                 #         condition = "input.eval_load_type_2a == 1",
                 #         helpText("Select lat and long columns after uploading csv file"),
-                #         fileInput("eval_csv_2a", h5("Load absence .csv file")),
+                #         fileInput("eval_csv_2a", h5("Upload absence .csv file")),
                 #         uiOutput("eval_csv_names_2a_uiOut_select")
                 #         
                 #       ),
@@ -163,14 +163,14 @@ ui.evalMetrics <- function() {
                 #         conditionalPanel(
                 #           condition = "input.eval_gis_file_type_2a == 1",
                 #           ui.gis.shp.intructions(),
-                #           fileInput("eval_gis_shp_2a", h5("Load GIS files"), multiple=T)
+                #           fileInput("eval_gis_shp_2a", h5("Upload GIS files"), multiple=T)
                 #         ),
                 #         conditionalPanel(
                 #           condition = "input.eval_gis_file_type_2a == 2",
                 #           ui.gis.gdb.intructions(),
                 #           textInput("eval_gis_gdb_path_2a", "GBD path", value = "C:/Ensemble Shiny/Ensemble_R_Shiny/"),
                 #           textInput("eval_gis_gdb_name_2a", "Name of file within .gbd", value = ""),
-                #           actionButton("eval_gis_gdb_load_2a", "Load file from specified path")
+                #           actionButton("eval_gis_gdb_load_2a", "Upload file from specified path")
                 #         )
                 #       )
                 #     )
