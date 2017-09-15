@@ -25,50 +25,58 @@ output$save_envir_text <- renderText({
 ###############################################################################
 ##### Load Models tab #####
 
-# Created spdf message for csv
+###########################################################
+# Created spdf messages
+
+### Created spdf message for csv
 output$create_spdf_csv_text <- renderText({
   req(read_model_csv())
   create_spdf_csv()
 })
 
-# Created spdf message for gis raster
+### Created spdf message for gis raster
 output$create_spdf_gis_raster_text <- renderText({ 
   req(read_model_gis_raster())
   create_spdf_gis_raster() 
 })
 
-# Created spdf message for gis shp
+### Created spdf message for gis shp
 output$create_spdf_gis_shp_text <- renderText({ 
   req(read_model_gis_shp())
   create_spdf_gis_shp() 
 })
 
-# Created spdf message for gis gdb
+### Created spdf message for gis gdb
 output$create_spdf_gis_gdb_text <- renderText({ 
   req(read_model_gis_gdb())
   create_spdf_gis_gdb() 
 })
 
-# Display table of loaded original model preds
+###########################################################
+# Tables
+
+### Table of loaded original model preds
 output$models_loaded_table <- DT::renderDataTable({
   req(table_orig())
   table_orig()
 }, 
 options = list(dom = 't'), selection = "multiple")
 
-# Display table of stats of loaded original model preds
+### Table of stats of loaded original model preds
 output$models_loaded_table_stats <- DT::renderDataTable({
   req(table_orig())
   table_orig_stats()
 }, 
 options = list(dom = 't'), selection = "none")
 
-# Message for when no models are loaded
+###########################################################
+### Message for when no models are loaded
 output$models_text_none_loaded <- renderText({
   if (length(vals$models.ll) == 0) "No model predictions are loaded"
 })
 
-# Plot/preview of individual model
+###########################################################
+### Plot/preview of individual model
 output$model_pix_preview_plot <- renderPlot({
   input$model_remove_execute # Make more specific?
   req(model_pix_preview_event())
@@ -79,6 +87,9 @@ output$model_pix_preview_plot <- renderPlot({
 
 ###############################################################################
 ##### Overlay tab #####
+
+###########################################################
+# Tables
 
 ### Table of loaded model predictions
 output$overlay_loaded_table <- DT::renderDataTable({
@@ -93,6 +104,9 @@ output$overlay_loaded_stats_table <- DT::renderDataTable({
   table_orig_stats()
 }, 
 options = list(dom = 't'), selection = "none")
+
+###########################################################
+# Polygon error outputs and loaded messages
 
 ### Boundary (study area) polygon error outputs
 output$overlay_bound_csv_text <- renderText(overlay_bound_csv())
@@ -129,85 +143,103 @@ output$overlay_land_gis_gdb_message <- renderText({
   if (!is.null(vals$overlay.land)) "A land polygon is loaded"
 })
 
-### Plot of base grid
-output$overlay_preview_base <- renderPlot({ plot_overlay_preview() })
-
+###########################################################
 ### Overlaying process error outputs
 output$overlay_text_overlaid_models <- renderText({
   if (all(overlay_all())) "All model predictions overlaid successfully"
+})
+
+###########################################################
+# Previews
+
+### Preview of base grid
+output$overlay_preview_base <- renderPlot({ 
+  plot_overlay_preview_base() 
+})
+
+### Preview of overlaid model predictions
+output$overlay_preview_overlaid <- renderPlot({ 
+  plot_overlay_preview_overlaid() 
 })
 
 
 ###############################################################################
 ##### Create Ensembles tab #####
 
-# Display table of overlaid predictions and info
+###########################################################
+# Tables
+
+### Display table of overlaid predictions and info
 output$create_ens_table <- renderTable({ 
   table_overlaid() 
 }, 
 rownames = TRUE)
 
-# Datatable of overlaid predictions and info
+### Datatable of overlaid predictions and info
 output$create_ens_datatable <- DT::renderDataTable({ 
   table_overlaid() 
 }, 
 options = list(dom = 't'))
 
-### Weights
-# Table of metric values to be used as weights
+###########################################################
+# Weights outputs
+
+### Table of metric values to be used as weights
 output$create_ens_weights_metric_table_out <- renderTable({
   create_ens_weights_metric_table()
 },
 rownames = FALSE, digits = 3)
 
-# Table of if overlaid models have spatial pixel weights
+### Table of if overlaid models have spatial pixel weights
 output$create_ens_weights_pix_table_out <- renderTable({
   create_ens_weights_pix_table()
 },
 rownames = FALSE, align = "lr")
 
-# Table summarizing overlaid models and their polygon weights
+### Table summarizing overlaid models and their polygon weights
 output$create_ens_weights_poly_table_out <- renderTable({
   create_ens_weights_poly_table()
 }, 
 rownames = FALSE)
 
-# Preview plot of weight polygons
+### Preview plot of weight polygons
 output$create_ens_weights_poly_preview_plot <- renderPlot({
   create_ens_weights_poly_preview()
 })
 
 
-# Text output for removing loaded weight polygons
+### Text output for removing loaded weight polygons
 output$create_ens_weights_poly_remove_text <- renderText({
   create_ens_weights_poly_remove()
 })
 
-# Output for adding polygon weight(s) to reactiveValues
+### Output for adding polygon weight(s) to reactiveValues
 output$create_ens_weights_poly_add_text <- renderText({
   create_ens_weights_poly_add()
 })
 
+###########################################################
+# Created ensemble things
 
-# Create ensemble error/completion output
+### Create ensemble error/completion output
 output$ens_create_ensemble_text <- renderUI({ HTML(create_ensemble()) })
 
-# Table of created ensemble predictions
+### Table of created ensemble predictions
 output$ens_datatable_ensembles <- DT::renderDataTable({
   table_ensembles()
 }, 
 options = list(dom = 't'))
 
-# Remove ensemble error output
+### Remove ensemble error output
 output$ens_remove_text <- renderUI({ HTML(ens_remove()) })
 
-# Plot preview of ensemble predictions
+### Plot preview of ensemble predictions
 output$ens_pix_preview_plot <- renderPlot({
   req(ens_pix_preview_event())
   grid.arrange(ens_pix_preview_event())
 })
 
-# Table of abundances of created ensemble predictions
+### Table of abundances of created ensemble predictions
 output$ens_abund_table_out <- renderTable({ 
   table_ens_abund() 
 }, 
@@ -217,25 +249,30 @@ rownames = TRUE, colnames = FALSE, align = "r")
 ###############################################################################
 ##### Model Evaluation Metrics tab #####
 
-# Table of orig model predictions
+###########################################################
+# Tables
+
+### Table of orig model predictions
 output$eval_models_table_orig_out <- DT::renderDataTable({
   table_orig()[,1:4]
 }, 
 options = list(dom = 't'))
 
-# Table of overlaid model predictions
+### Table of overlaid model predictions
 output$eval_models_table_over_out <- DT::renderDataTable({
   table_overlaid()[,1:4]
 }, 
 options = list(dom = 't'))
 
-# Table of ensemble models
+### Table of ensemble models
 output$eval_models_table_ens_out <- DT::renderDataTable({
   table_ensembles()
 }, 
 options = list(dom = 't'))
 
-## Messages for is presence/absence points are loaded
+###########################################################
+# Presence/absence loaded message, error outputs, and table
+
 # Presence and absence points
 output$eval_data_1_message <- renderText({
   eval.data.list <- vals$eval.data.list
@@ -263,7 +300,8 @@ output$table_pa_pts_out <- renderTable({
 }, 
 colnames = FALSE)
 
-# Metrics table
+###########################################################
+### Metrics table
 output$table_eval_metrics_out <- renderTable({ 
   table_eval_metrics()
 }, 
@@ -273,19 +311,22 @@ rownames = FALSE, digits = 3)
 ###############################################################################
 ##### High Quality Maps #####
 
-# Table of orig model predictions
+###########################################################
+# Tables
+
+### Table of orig model predictions
 output$pretty_table_orig_out <- DT::renderDataTable({
   table_orig()[,1:4]
 }, 
 options = list(dom = 't'))
 
-# Table of overlaid model predictions
+### Table of overlaid model predictions
 output$pretty_table_over_out <- DT::renderDataTable({
   table_overlaid()[,1:4]
 }, 
 options = list(dom = 't'))
 
-# Table of ensemble model predictions
+### Table of ensemble model predictions
 output$pretty_table_ens_out <- DT::renderDataTable({
   table_ensembles()
 }, 
@@ -295,7 +336,8 @@ output$pretty_plot_values_event_text <- renderText({
   pretty_plot_values_event()
 })
 
-# Pretty plot
+###########################################################
+### Pretty plot
 output$pretty_plot <- renderPlot({
   print(pretty_plot_plot())
 })
@@ -304,25 +346,29 @@ output$pretty_plot <- renderPlot({
 ###############################################################################
 ##### Export Model Predictions #####
 
-# Table of orig model predictions
+###########################################################
+# Tables
+
+### Table of orig model predictions
 output$export_table_orig_out <- DT::renderDataTable({
   table_orig()[,1:4]
 }, 
 options = list(dom = 't'), selection = "single")
 
-# Table of overlaid model predictions
+### Table of overlaid model predictions
 output$export_table_over_out <- DT::renderDataTable({
   table_overlaid()[,1:4]
 }, 
 options = list(dom = 't'), selection = "single")
 
-# Table of ensemble models
+### Table of ensemble models
 output$export_table_ens_out <- DT::renderDataTable({
   table_ensembles()
 }, 
 options = list(dom = 't'), selection = "single")
 
-# Text output of model predictions
+###########################################################
+### Text output of model predictions
 output$export_out_text <- renderText({
   export_out()
 })
