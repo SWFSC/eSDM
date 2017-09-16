@@ -11,8 +11,8 @@ output$overlay_proj_which_uiOut_select <- renderUI({
   names(choices.list) <- choices.list.names
   
   selectInput("overlay_proj_which", 
-              h5("Use projection from selected model predictions in", 
-                 "overlay process"), 
+              h5("Use the selected model predictions' projection", 
+                 "during the overlay process"), 
               choices = choices.list, selected = 1)
 })
 

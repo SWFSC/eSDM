@@ -59,10 +59,10 @@ plot_overlay_preview_base <- eventReactive(
     l.inc <- !is.null(vals$overlay.land)
     
     validate(
-      if(input$overlay_bound_gis) 
+      if(input$overlay_bound) 
         need(!is.null(vals$overlay.bound),
              "Please either uncheck boundary box or load a boundary polygon"),
-      if(input$overlay_land_gis) 
+      if(input$overlay_land) 
         need(!is.null(vals$overlay.land),
              "Please either uncheck land box or load a land polygon")
     )
@@ -96,7 +96,7 @@ plot_overlay_preview_overlaid <- eventReactive(
   input$overlay_preview_overlaid_execute, 
   {
     pix.list.toplot <- overlay_preview_overlaid_pix()
-    overlaid.which <- sort(as.numeric(input$overlay_preview_overlaid_models))
+    overlaid.which <- input$overlay_preview_overlaid_models
     
     plot.titles <- paste("Overlaid", overlaid.which)
     

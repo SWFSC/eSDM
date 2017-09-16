@@ -105,17 +105,17 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     
     vals$pretty.params.list <- vals.save[["pretty.params.list"]]
     
-    incProgress(1)
+    incProgress(0.1)
     
     # Update variable defaults
     if(!is.null(vals$overlay.bound)) {
-      updateCheckboxInput(session, "overlay_bound_gis", value = TRUE)
+      updateCheckboxInput(session, "overlay_bound", value = TRUE)
     }
     if(!is.null(vals$overlay.land)) {
-      updateCheckboxInput(session, "overlay_land_gis", value = TRUE)
+      updateCheckboxInput(session, "overlay_land", value = TRUE)
     }
     
-    incProgress(1)
+    incProgress(0.1)
   })
   
   Sys.sleep(0.5)

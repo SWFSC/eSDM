@@ -8,9 +8,9 @@ ui.overlay <- function() {
                      fluidRow(
                        box(
                          title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-                         checkboxInput("overlay_bound_gis", "Use a study area polygon in overlay process", value = FALSE),
+                         checkboxInput("overlay_bound", "Use a study area polygon in the overlay process", value = FALSE),
                          conditionalPanel(
-                           condition = "input.overlay_bound_gis == true", 
+                           condition = "input.overlay_bound == true", 
                            fluidRow(
                              column(6, radioButtons("overlay_bound_file_type", h5("File type"), choices = file.type.list1, selected = 1)), 
                              column(5, br(), helpText("Uncheck box to remove loaded study area polygon"))
@@ -59,7 +59,7 @@ ui.overlay <- function() {
                        
                        box(
                          title = "Load Land Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-                         checkboxInput("overlay_land", "Use a land polygon in overlay process", value = FALSE),
+                         checkboxInput("overlay_land", "Use a land polygon in the overlay process", value = FALSE),
                          conditionalPanel(
                            condition = "input.overlay_land == true", 
                            helpText("Uncheck box to remove loaded land polygon"), 
@@ -165,25 +165,28 @@ ui.overlay <- function() {
                                helpText("A major element of the overlay process is calculating the area of polygons", 
                                         "and their overlap. Thus, the projection of the model predictions during the overlay process", 
                                         "can have an effect on the overlay results"), 
-                               helpText("Assumptions when calculating area from lat/long geographic coordinates in WGS84 datum:", 
+                               helpText("Assumptions when calculating area from lat/long geographic coordinates in WGS 84 datum:", 
                                         "1) 'Equatorial axis of ellipsoid' = 6378137 and", 
                                         "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", br(), 
                                         "See", a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"), 
                                         "for more details about assumptions that must be made when calculating the area", 
                                         "using geographic coordinates."), 
-                               checkboxInput("overlay_proj_ll", "Perform overlay in lat/long WGS84 geographic coordinates", value = TRUE), 
+                               checkboxInput("overlay_proj_ll", "Perform overlay in lat/long WGS 84 geographic coordinates", value = TRUE), 
                                conditionalPanel(
                                  condition = "input.overlay_proj_ll", 
                                  helpText("Area calculations will be performed using lat/long geographic coordinates")
                                ), 
-                               conditionalPanel("input.overlay_proj_ll == false", column(12, uiOutput("overlay_proj_which_uiOut_select")))
+                               conditionalPanel(
+                                 condition = "input.overlay_proj_ll == false", 
+                                 column(12, uiOutput("overlay_proj_which_uiOut_select"))
+                               )
                            ), 
                            column(6, 
                                   fluidRow(
                                     box(width = 12, 
                                         h5("Overlay percent overlap options:"), 
                                         helpText("The percentage of a base grid cell that must be covered by original model predictions", 
-                                                 "for that base grid cell not to have a value of NA. If '0' is selected,", 
+                                                 "for that base grid cell not to have a value of NA. If \"0\" is selected,", 
                                                  "then the base grid cell will not have a value of NA if there is any overlap"),
                                         sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 100)
                                     ), 

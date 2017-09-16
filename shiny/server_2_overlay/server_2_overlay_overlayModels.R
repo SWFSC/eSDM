@@ -51,7 +51,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
          "Please select exactly one model from table to use as overlay base"),
     need(models.num > 1, 
          "Please add more than one model to the app before overlaying"), 
-    if (input$overlay_bound_gis) 
+    if (input$overlay_bound) 
       need(!is.null(vals$overlay.bound),
            "Please either uncheck boundary box or load a boundary polygon"),
     if (input$overlay_land) 

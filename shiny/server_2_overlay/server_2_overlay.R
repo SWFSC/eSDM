@@ -11,8 +11,8 @@ outputOptions(output, "overlay_display_flag", suspendWhenHidden = FALSE)
 
 
 ### Remove boundary polygon if 'include boundary' box is unchecked
-observeEvent(input$overlay_bound_gis, {
-  if(!input$overlay_bound_gis) {
+observeEvent(input$overlay_bound, {
+  if(!input$overlay_bound) {
     vals$overlay.bound <- NULL
     
     shinyjs::reset("overlay_bound_csv_file")
@@ -93,7 +93,7 @@ overlay_preview_land <- reactive({
 ###############################################################################
 ### Generate list of SPixDF objects for overlaid model predictions preview
 overlay_preview_overlaid_pix <- reactive({
-  overlaid.which <- sort(as.numeric(input$overlay_preview_overlaid_models))
+  overlaid.which <- as.numeric(input$overlay_preview_overlaid_models)
   
   validate(
     need(length(overlaid.which) > 0,
