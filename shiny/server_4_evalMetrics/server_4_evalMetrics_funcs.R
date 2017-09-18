@@ -92,7 +92,7 @@ auc.func <- function(pres.pts, abs.pts, model.data, model.dens.idx,
                      plot.name = "", helper.pred.result = NA) {
   # Get overlap of pres/abs data and model and create prediction object
   pred <- helper.pred.result
-  if (suppressWarnings(is.na(pred))){ 
+  if (suppressWarnings(is.na(pred))) { 
     pred <- helper.pred(pres.pts, abs.pts, model.data, model.dens.idx)
   }
   
