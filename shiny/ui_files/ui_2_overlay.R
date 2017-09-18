@@ -81,7 +81,7 @@ ui.overlay <- function() {
                                  helpText("The provided land polygon is from the Global Self-consistent, Hierarchical,", 
                                           "High-resolution Geography (GSHHG) Database.", br(), 
                                           "See the", a("GSHHG website", href="http://www.soest.hawaii.edu/pwessel/gshhg/"),
-                                          "for more information about these land polygons"), 
+                                          "for more information about the provided land polygons."), 
                                  fluidRow(
                                    column(3, selectInput("overlay_land_provided_res", h5("Resolution of land polygon"), 
                                                          choices = list("Full" = 1, "High" = 2, "Intermediate" = 3, "Low" = 4, "Crude" = 5), 
@@ -162,19 +162,19 @@ ui.overlay <- function() {
                          fluidRow(
                            box(width = 6, 
                                h5("Overlay projection options:"), 
-                               helpText("A major element of the overlay process is calculating the area of polygons", 
-                                        "and their overlap. Thus, the projection of the model predictions during the overlay process", 
-                                        "can have an effect on the overlay results"), 
-                               helpText("Assumptions when calculating area from lat/long geographic coordinates in WGS 84 datum:", 
+                               helpText("A major element of the overlay process is calculating the area of polygons and their overlap.", 
+                                        "Thus, the projection of the model predictions during the overlay process", 
+                                        "can have an effect on the overlay results."), 
+                               helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:", 
                                         "1) 'Equatorial axis of ellipsoid' = 6378137 and", 
                                         "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", br(), 
                                         "See", a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"), 
                                         "for more details about assumptions that must be made when calculating the area", 
-                                        "using geographic coordinates."), 
-                               checkboxInput("overlay_proj_ll", "Perform overlay in lat/long WGS 84 geographic coordinates", value = TRUE), 
+                                        "using WGS 84 geographic coordinates."), 
+                               checkboxInput("overlay_proj_ll", "Perform overlay in WGS 84 geographic coordinates", value = TRUE), 
                                conditionalPanel(
                                  condition = "input.overlay_proj_ll", 
-                                 helpText("Area calculations will be performed using lat/long geographic coordinates")
+                                 helpText("Area calculations will be performed in WGS 84 geographic coordinates")
                                ), 
                                conditionalPanel(
                                  condition = "input.overlay_proj_ll == false", 

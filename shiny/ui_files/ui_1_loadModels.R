@@ -39,9 +39,7 @@ ui.loadModels <- function() {
                        ),
                        conditionalPanel(
                          condition = "input.model_load_type == 1",
-                         helpText("CSV data must be lat/long points that are equally spaced in decimal degrees.", br(), 
-                                  "Select names of lat, long, and other applicable columns after uploading csv file.", br(), 
-                                  "Then click the button to load model predictions"),
+                         ui.csv.instructions(),
                          ui.load.data.instructions(), 
                          fileInput("model_csv_file", h5("Upload .csv file"), accept = ".csv"),
                          conditionalPanel(
@@ -149,12 +147,10 @@ ui.loadModels <- function() {
                                   ui.gis.gdb.intructions(), 
                                   ui.load.data.instructions(), 
                                   textInput("model_gis_gdb_path", h5("Path to .gdb folder"), 
-                                            value = "C:/Ensemble Shiny/Ensemble_R_Shiny/Models/Original Models/JVR_CCE.gdb")
+                                            value = ".../folder.gdb")
                            ),
-                           column(6, textInput("model_gis_gdb_name", h5("Filename within .gbd folder"), value = "PredCCE_ModelCCE_gdb")),
-                           column(6, 
-                                  br(), br(), 
-                                  actionButton("model_gis_gdb_load", "Upload file from specified path")
+                           column(6, textInput("model_gis_gdb_name", h5("Filename within .gbd folder"), value = "")),
+                           column(6, br(), br(), actionButton("model_gis_gdb_load", "Upload file from specified path")
                            )
                          ),
                          br(), 
