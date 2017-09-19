@@ -216,15 +216,22 @@ ui.overlay <- function() {
                        ), 
                        box(
                          title = "Preview of Overlaid Model Predictions", status = "primary", solidHeader = TRUE, width = 6, collapsible = TRUE,
-                         fluidRow(
-                           box(width = 12, 
-                               fluidRow(
-                                 column(9, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")), 
-                                 column(3, br(), actionButton("overlay_preview_overlaid_execute", "Preview"))
-                               )
-                           )
-                         ),
-                         shinycssloaders::withSpinner(plotOutput("overlay_preview_overlaid"), type = 1)
+                         conditionalPanel(
+                           condition = "output.overlay_preview_display_flag == false", 
+                           ui.no.model.pred.loaded2(box.width = 12)
+                         ), 
+                         conditionalPanel(
+                           condition = "output.overlay_preview_display_flag",
+                           fluidRow(
+                             box(width = 12, 
+                                 fluidRow(
+                                   column(9, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")), 
+                                   column(3, br(), actionButton("overlay_preview_overlaid_execute", "Preview"))
+                                 )
+                             )
+                           ),
+                           shinycssloaders::withSpinner(plotOutput("overlay_preview_overlaid"), type = 1)
+                         )
                        )
                      )
               )

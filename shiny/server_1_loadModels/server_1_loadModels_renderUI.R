@@ -6,16 +6,6 @@
 
 ###########################################################
 # CSV
-### Lat
-output$model_csv_names_lat_uiOut_select <- renderUI({
-  req(read_model_csv())
-  
-  choice.input <- csv_names_choice_input()
-  
-  selectInput("model_csv_names_lat", h5("Column with latitude data"),
-              choices = choice.input, selected = 1)
-})
-
 ### Lon
 output$model_csv_names_lon_uiOut_select <- renderUI({
   req(read_model_csv())
@@ -23,6 +13,16 @@ output$model_csv_names_lon_uiOut_select <- renderUI({
   choice.input <- csv_names_choice_input()
   
   selectInput("model_csv_names_lon", h5("Column with longitude data"),
+              choices = choice.input, selected = 1)
+})
+
+### Lat
+output$model_csv_names_lat_uiOut_select <- renderUI({
+  req(read_model_csv())
+  
+  choice.input <- csv_names_choice_input()
+  
+  selectInput("model_csv_names_lat", h5("Column with latitude data"),
               choices = choice.input, selected = 2)
 })
 
@@ -53,7 +53,7 @@ output$model_csv_names_error_uiOut_select <- renderUI({
   choice.input <- c("N/A" = 1, choice.input + 1)
   
   selectInput("model_csv_names_error", h5("Column with error data"),
-              choices = choice.input, selected = 1)
+              choices = choice.input, selected = NULL)
 })
 
 ### Weight
@@ -64,7 +64,7 @@ output$model_csv_names_weight_uiOut_select <- renderUI({
   choice.input <- c("N/A" = 1, choice.input + 1)
   
   selectInput("model_csv_names_weight", h5("Column with weight data"),
-              choices = choice.input, selected = 1)
+              choices = choice.input, selected = NULL)
 })
 
 ### Message with number of NA predictions

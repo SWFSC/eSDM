@@ -79,8 +79,8 @@ ui.no.model.pred.loaded1 <- function() {
   )
 }
 
-ui.no.model.pred.loaded2 <- function() {
-  box(width = 4, 
+ui.no.model.pred.loaded2 <- function(box.width = 4) {
+  box(width = box.width, 
       h4("Overlaid model predictions have not been created"), 
       h5("Please create overlaid model predictions", 
          "to use this section of the app")

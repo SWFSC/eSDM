@@ -3,11 +3,20 @@
 
 ###############################################################################
 
-### Flag for whether or not to display overlay page items
+### Flag for whether or not to display overlay tab items
 output$overlay_display_flag <- reactive({
   length(vals$models.ll) != 0
 })
 outputOptions(output, "overlay_display_flag", suspendWhenHidden = FALSE)
+
+
+### Flag for if overlaid models have been created
+output$overlay_preview_display_flag <- reactive({
+  length(vals$overlaid.models) != 0
+  
+})
+outputOptions(output, "overlay_preview_display_flag", 
+              suspendWhenHidden = FALSE)
 
 
 ### Remove boundary polygon if 'include boundary' box is unchecked
@@ -53,9 +62,7 @@ overlay_preview_model <- reactive({
   
   # If boundary polygon is loaded, get intersection of model and boundary poly
   sp.clipper <- vals$overlay.bound
-  if(is.null(sp.clipper) | !("1" %in% input$overlay_preview_options)) {
-    return(model.toplot)
-  }
+  if(is.null(sp.clipper)) return(model.toplot)
   
   model.intersect.try <- try(gIntersection(model.toplot, sp.clipper, 
                                            byid = TRUE), 
