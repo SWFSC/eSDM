@@ -22,7 +22,7 @@ plot.ll <- function(spdf.ll, data.name, title.ll, perc, axis.cex, main.cex,
                                          at = labels.at),
                            width = 1, 
                            axis.text = list(cex = axis.cex)),
-           scales = list(draw = T, alternating = 1, tck = c(1, 0), 
+           scales = list(draw = TRUE, alternating = 1, tck = c(1, 0), 
                          x = list(at = x.at), y = list(at = y.at), 
                          cex = axis.cex)
     )

@@ -27,14 +27,14 @@ ui.createEns <- function() {
                         column(width = 4, 
                                radioButtons("create_ens_type", "Ensembling method", 
                                             choices = list("Unweighted" = 1, "Weighted" = 2), 
-                                            selected = 2), 
+                                            selected = 1), 
                                column(12, 
                                       conditionalPanel(
                                         condition = "input.create_ens_type == 2", 
                                         radioButtons("create_ens_weight_type", h5("Weighted ensembling method"), 
                                                      choices = list("Manual entry" = 1, "Evaluation metric" = 2, 
                                                                     "Pixel-level spatial weights" = 3, "Polygon(s) with weights" = 4), 
-                                                     selected = 4)
+                                                     selected = 1)
                                       )
                                )
                         ), 
@@ -109,15 +109,15 @@ ui.createEns <- function() {
                                      condition = "input.create_ens_weight_type == 4",
                                      box(width = 12, 
                                          helpText(strong("Weighted ensembling method 4: Polygon(s) with weights"), br(), 
-                                                  "Select one or more overlaid model predictions and load weight polygons to assign to the",
+                                                  "Select one or more sets of overlaid model predictions and load weight polygons to assign to the",
                                                   "selected predictions. These weight polygons designate areas in which the selected predictions", 
                                                   "will be weighted.",br(), 
-                                                  "Currently you may only assign one weight for each weight polygon; however, you can load", 
+                                                  "Currently you may only assign one weight for each weight polygon; however, you may load", 
                                                   "multiple polygons if you wish to apply different weights to different prediction regions.", 
                                                   "If multiple polygons are loaded and they both overlap a prediction at the given percentage,", 
                                                   "then the last weight that was assigned will be used for that prediction.", br(), 
-                                                  "If any overlaid model predictions are not overlapped at the given percentage with any of their", 
-                                                  "assigned weight polygons, then those predictions will have a weight of 1."), 
+                                                  "If the percentage of any prediction cells that is overlapped by their weight polygons is less", 
+                                                  "than the given percentage, then those predictions will have a weight of 1."), 
                                          fluidRow(
                                            column(7, uiOutput("create_ens_weights_poly_model_uiOut_selectize")), 
                                            column(5, selectInput("create_ens_weights_poly_type", h5("File type"), 
@@ -260,9 +260,9 @@ ui.createEns <- function() {
                                              )
                                          ),
                                          sliderInput("create_ens_weights_poly_coverage", 
-                                                     h5("Percentage of prediction polygon that must be covered by weight polygon", 
-                                                        "for prediction polygon to be weighted.", 
-                                                        "If '0' is selected then prediction polygon will be weighted if there is any overlap"), 
+                                                     h5("Percentage of prediction polygon that must be covered by the weight polygon(s)", 
+                                                        "for the prediction polygon to be weighted.", 
+                                                        "If '0' is selected then the prediction polygon will be weighted if there is any overlap."), 
                                                      min = 0, max = 100, value = 100), 
                                          fluidRow(
                                            column(6, actionButton("create_ens_weights_poly_add_execute", 
@@ -336,7 +336,7 @@ ui.createEns <- function() {
                       )
                   ), 
                   conditionalPanel(
-                    condition = "input.create_ens_weight_type == 4",
+                    condition = "input.create_ens_type == 2 && input.create_ens_weight_type == 4",
                     box(width = 12, 
                         helpText(strong("Additional polygon-based weighting functionality:"), br(), 
                            "Preview weighted polygons for selected overlaid predictions"),

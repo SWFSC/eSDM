@@ -61,7 +61,7 @@ ui.load.data.instructions <- function() {
 ui.csv.poly.instructions <- function() {
   helpText("The .csv file must have headers, the first column must be the", 
            "longitude values, and the second column must be the", 
-           "latitude values The longitudes and latitudes must be in", 
+           "latitude values. The longitudes and latitudes must be in", 
            "geographic coordinates. Multiple polygons can be demarcated", 
            "using blank cells or cells with 'NA'.", br(), 
            "If the provided points don't form a closed polygon,", 
