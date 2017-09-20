@@ -4,31 +4,6 @@
 
 
 ###############################################################################
-### Generate table with presence/absence info
-table_data_pts <- reactive({
-  data.list <- vals$eval.data.list
-  req(data.list)
-
-  pres.data <- data.list[[1]]
-  data.type <- vals$eval.data.specs
-  
-  pres.num <- length(pres.data)
-  abs.num <- length(data.list[[2]])
-  count.range <- "NA"
-  if (data.type == 1) {
-    count.range <- paste(range(round(pres.data$pa.num, 2)), collapse = " to ")
-  }
-  
-  table.out.col1<- c("Number of presence points", "Number of absence points", 
-                     "Range of counts")
-  table.out.col2 <- c(pres.num, abs.num, count.range)
-  table.out <- data.frame(x = table.out.col1, y = table.out.col2)
-  
-  table.out
-})
-
-
-###############################################################################
 # Flags for conditionalPanel()'s
 
 ### CSV error message and inputs
@@ -96,8 +71,7 @@ eval_data_1_csv <- eventReactive(input$eval_csv_execute_1, {
   
   csv.selected <- csv.all[ ,columns.all]
   
-  if (data.type == 1) {
-    ## Count data
+  if (data.type == 1) { ## Count data
     validate(
       need(is.numeric(csv.selected[,3]) | is.integer(csv.selected[,3]), 
            paste("Selected data column is not numeric.", 
@@ -106,8 +80,8 @@ eval_data_1_csv <- eventReactive(input$eval_csv_execute_1, {
     
     p.data <- csv.selected[csv.selected[,3] >  0, ]
     a.data <- csv.selected[csv.selected[,3] == 0, ]
-  } else { 
-    ## Presence/absence data
+    
+  } else { ## Presence/absence data
     p.codes <- input$eval_csv_codes_1_p
     a.codes <- input$eval_csv_codes_1_a
     num.codes <- length(p.codes) + length(a.codes)

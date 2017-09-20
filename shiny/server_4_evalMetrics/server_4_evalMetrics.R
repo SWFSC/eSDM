@@ -15,11 +15,50 @@ output$eval_display_flag <- reactive({
 })
 outputOptions(output, "eval_display_flag", suspendWhenHidden = FALSE)
 
+### Flag for if validation data has been loaded
 output$eval_display_calc_metrics_flag <- reactive({
   all(!is.na(vals$eval.data.list))
 })
 outputOptions(output, "eval_display_calc_metrics_flag", 
               suspendWhenHidden = FALSE)
+
+
+###############################################################################
+### Generate table with validation data stats
+table_data_pts <- reactive({
+  data.list <- vals$eval.data.list
+  data.type <- vals$eval.data.specs
+  req(all(!is.na(data.list)), data.type)
+  
+  pres.data <- data.list[[1]]
+  
+  pres.num <- length(pres.data)
+  abs.num <- length(data.list[[2]])
+
+  if (data.type == 1) {
+    count.range <- paste(range(round(pres.data$pa.num, 2)), collapse = " to ")
+    table.out.col1<- c("Number of points with non-zero counts", 
+                       "Number of points with counts of 0", 
+                       "Range of non-zero counts")
+    table.out.col2 <- c(pres.num, abs.num, count.range)
+    table.out <- data.frame(x = table.out.col1, y = table.out.col2)
+    
+  } else if (data.type == 2) {
+    table.out.col1<- c("Number of presence points", "Number of absence points")
+    table.out.col2 <- c(pres.num, abs.num)
+    table.out <- data.frame(x = table.out.col1, y = table.out.col2)
+    
+  } else {
+    table.out <- NULL
+  }
+  
+  validate(
+    need(!is.null(table.out), 
+         "Error in validation data: vals$eval.data.specs is not 1 or 2")
+  )
+  
+  table.out
+})
 
 
 ###############################################################################
