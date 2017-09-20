@@ -12,6 +12,8 @@
 # doesn't need it though.
 outputOptions(output, "overlay_preview_base", suspendWhenHidden = FALSE)
 outputOptions(output, "overlay_preview_overlaid", suspendWhenHidden = FALSE)
+outputOptions(output, "create_ens_weights_poly_preview_plot", 
+              suspendWhenHidden = FALSE)
 outputOptions(output, "ens_pix_preview_plot", suspendWhenHidden = FALSE)
 outputOptions(output, "pretty_plot", suspendWhenHidden = FALSE)
 
@@ -34,6 +36,12 @@ observeEvent(input$overlay_preview_overlaid_execute, {
   shinyjs::show("overlay_preview_overlaid", time = 0)
 })
 
+### Show overlaid model + weight polygon preview
+observeEvent(input$create_ens_weights_poly_preview_execute, {
+  shinyjs::show("create_ens_weights_poly_preview_plot", time = 0)
+})
+
+
 ### Show 'ensemble created' message when ensemble is created
 observeEvent(input$create_ens_create_action, {
   shinyjs::show("ens_create_ensemble_text", time = 0)
@@ -54,6 +62,7 @@ observeEvent(input$pretty_plot_execute, {
 ### Hide elements when 'create overlaid models' button is clicked
 observeEvent(input$overlay_create_overlaid_models, {
   shinyjs::hide("overlay_preview_overlaid", time = 0)
+  shinyjs::hide("create_ens_weights_poly_preview_plot", time = 0)
   shinyjs::hide("ens_create_ensemble_text", time = 0)
   shinyjs::hide("ens_pix_preview_plot", time = 0)
 })
@@ -65,6 +74,7 @@ observeEvent(input$load_app_envir_file, {
   shinyjs::hide("model_pix_preview_plot", time = 0)
   shinyjs::hide("overlay_preview_base", time = 0)
   shinyjs::hide("overlay_preview_overlaid", time = 0)
+  shinyjs::hide("create_ens_weights_poly_preview_plot", time = 0)
   shinyjs::hide("ens_create_ensemble_text", time = 0)
   shinyjs::hide("pretty_plot", time = 0)
   shinyjs::hide("ens_pix_preview_plot", time = 0)
