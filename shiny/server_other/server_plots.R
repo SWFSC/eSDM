@@ -6,28 +6,15 @@
 
 #################################################
 ### Get preview of predictions to plot in-app
-#
 model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
-  model.pix <- model_pix()
+  req(length(vals$models.pix) > 0)
   
-  plot.multi.display(model.pix)
-})
-
-### Get preview of predictions to download
-model_pix_download <- reactive({
-  model.pix <- model_pix()
+  perc.num <- as.numeric(input$model_preview_perc)
   
-  # Plot
-  plot.multi.download(model.pix)
-})
-
-
-#################################################
-### Create list of objects to be used for preview of orig model predictions
-model_pix <- reactive({
-  if (length(vals$models.pix) == 0) return()
-  
+  #----------------------------------------------
+  # Same code as in model_pix_download()
   idx.selected <- sort(as.numeric(input$models_loaded_table_rows_selected))
+  
   validate(
     need(length(idx.selected) > 0, 
          "Please select at least one model from table to preview")
@@ -39,12 +26,43 @@ model_pix <- reactive({
     paste0("Model file: ", vals$models.names[i], "\n", 
            "Data header: ", vals$models.data.names[[i]][1])
   })
-  perc.ind <- input$model_select_action
-  if (perc.ind == 1) perc.num <- input$model_preview_perc
-  if (perc.ind == 2) perc.num <- input$model_download_preview_perc
   
-  list(models.toplot = models.toplot, data.name = "Pred", 
-       plot.titles = plot.titles, perc.num = perc.num)
+  model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
+                         plot.titles = plot.titles, perc.num = perc.num)
+  
+  plot.multi.download(model.pix.list)
+  #----------------------------------------------
+})
+
+
+#################################################
+### Get preview of predictions to download
+model_pix_download <- reactive({
+  req(length(vals$models.pix) > 0)
+
+  perc.num <- as.numeric(input$model_download_preview_perc)
+  
+  #----------------------------------------------
+  # Same code as in model_pix_preview_event()
+  idx.selected <- sort(as.numeric(input$models_loaded_table_rows_selected))
+  
+  validate(
+    need(length(idx.selected) > 0, 
+         "Please select at least one model from table to preview")
+  )
+
+  models.toplot <- vals$models.pix[idx.selected]
+  
+  plot.titles <- sapply(idx.selected, function(i) {
+    paste0("Model file: ", vals$models.names[i], "\n", 
+           "Data header: ", vals$models.data.names[[i]][1])
+  })
+  
+  model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
+                         plot.titles = plot.titles, perc.num = perc.num)
+  
+  plot.multi.download(model.pix.list)
+  #----------------------------------------------
 })
 
 
@@ -118,32 +136,15 @@ plot_overlay_preview_overlaid <- eventReactive(
 # Create Ensembles tab
 
 #################################################
-# Functions for plotting in-app and for downloading
-
 ### Get preview of ensemble predictions to plot in-app
 # 
 ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
-  ens.pix <- ens_pix()
+  req(length(vals$ensemble.models) > 0)
   
-  plot.multi.display(ens.pix)
-})
-
-
-#######################################
-### Get preview of ensemble predictions to download
-ens_pix_download <- reactive({
-  ens.pix <- ens_pix()
-  
-  # Plot
-  plot.multi.download(ens.pix)
-})
-
-
-#################################################
-### Create list of objects to be used for preview of ensemble predictions
-ens_pix <- reactive({
-  req(length(vals$ensemble.models) != 0)
-  
+  perc.num <- input$ens_preview_perc
+    
+  #----------------------------------------------
+  # Same code as in ens_pix_download()
   ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
   validate(
     need(length(ensemble.which) > 0,
@@ -157,12 +158,41 @@ ens_pix <- reactive({
            "Rescaling method: ", vals$ensemble.rescaling[i])
   })
   
-  perc.ind <- input$ens_select_action
-  if (perc.ind == 1) perc.num <- input$ens_preview_perc
-  if (perc.ind == 2) perc.num <- input$ens_download_preview_perc
+  ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens", 
+                       plot.titles = plot.titles, perc.num = perc.num)
   
-  list(models.toplot = models.toplot, data.name = "Pred.ens", 
-       plot.titles = plot.titles, perc.num = perc.num)
+  plot.multi.display(ens.pix.list)
+  #----------------------------------------------
+})
+
+
+#################################################
+### Get preview of ensemble predictions to download
+ens_pix_download <- reactive({
+  req(length(vals$ensemble.models) > 0)
+
+  perc.num <- input$ens_download_preview_perc
+
+  #----------------------------------------------
+  # Same code as in ens_pix_preview_event()
+  ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
+  validate(
+    need(length(ensemble.which) > 0,
+         "Please select at least one model from table to preview")
+  )
+  
+  models.toplot <- create_ens_preview_model()
+  
+  plot.titles <- sapply(ensemble.which, function(i) {
+    paste0("Ensembling method: ", vals$ensemble.method[i], "\n", 
+           "Rescaling method: ", vals$ensemble.rescaling[i])
+  })
+  
+  ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens", 
+                       plot.titles = plot.titles, perc.num = perc.num)
+  
+  plot.multi.display(ens.pix.list)
+  #----------------------------------------------
 })
 
 ###############################################################################
