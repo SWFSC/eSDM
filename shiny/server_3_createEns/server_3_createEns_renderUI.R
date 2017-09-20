@@ -112,7 +112,7 @@ output$create_ens_weights_poly_gdb_field_uiOut_select <- renderUI({
 #######################################
 ### Select loaded polygons to delete
 output$create_ens_weights_poly_remove_choices_uiOut_select <- renderUI({
-  req(sum(sapply(vals$ensemble.wpoly.filename, is.null)) != 3)
+  req(!all(sapply(vals$ensemble.wpoly.filename, is.null)))
   
   poly.table <- create_ens_weights_poly_table()
   
@@ -138,7 +138,7 @@ output$create_ens_weights_poly_remove_choices_uiOut_select <- renderUI({
   names(choices.list) <- unlist(choices.list.names)
   
   selectizeInput("create_ens_weights_poly_remove_choices", 
-                 h5("Select loaded weight polygon to remove"), 
+                 h5("Select loaded weight polygon(s) to remove"), 
                  choices = choices.list, selected = NULL, multiple = TRUE)
 })
 

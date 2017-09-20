@@ -21,6 +21,8 @@ overlay_crs <- reactive({
 overlay_all <- eventReactive(input$overlay_create_overlaid_models, { 
   # t.1 <- Sys.time() # For testing purposes
   #########################################################
+  # Reset/hide things
+  
   ### Reset vals$overlaid... and vals$ensemble... before creating new overlaid
   vals$overlay.crs <- NULL
   vals$overlay.base.idx <- NULL
@@ -38,6 +40,9 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   vals$ensemble.wpoly.filename <- NULL
   vals$ensemble.wpoly.spdf <- NULL
   vals$ensemble.wpoly.coverage <- NULL
+  
+
+  ### Hide elements: this is done in server_hide_show.R
   
   
   #########################################################

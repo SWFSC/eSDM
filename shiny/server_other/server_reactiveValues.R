@@ -7,7 +7,7 @@
 vals <- reactiveValues(
   # Objects that store loaded models and related info
   models.pix = list(),            # List of models as SpatialPixelsDFs or rasters
-  models.ll  = list(),             # List of models; crs is crs.ll
+  models.ll  = list(),            # List of models; crs is crs.ll
   models.orig = list(),           # List of models; crs is crs of predictions when loaded
   models.names = NULL,            # Vector of model names
   models.data.names = list(),     # List of vectors of model, error, and weights names
@@ -123,9 +123,11 @@ load_envir <- eventReactive(input$load_app_envir_file, {
   return(paste("App data loaded from", file.load$name))
 })
 
-# Have this observe statement so that selected saved app environment...
+### This is here so that the selected saved app environment...
 # ...loads even if user isn't on first page
-observe(load_envir())
+observe({
+  load_envir()
+})
 
 
 ### Save data

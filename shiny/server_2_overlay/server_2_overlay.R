@@ -13,7 +13,6 @@ outputOptions(output, "overlay_display_flag", suspendWhenHidden = FALSE)
 ### Flag for if overlaid models have been created
 output$overlay_preview_display_flag <- reactive({
   length(vals$overlaid.models) != 0
-  
 })
 outputOptions(output, "overlay_preview_display_flag", 
               suspendWhenHidden = FALSE)
@@ -21,7 +20,7 @@ outputOptions(output, "overlay_preview_display_flag",
 
 ### Remove boundary polygon if 'include boundary' box is unchecked
 observeEvent(input$overlay_bound, {
-  if(!input$overlay_bound) {
+  if (!input$overlay_bound) {
     vals$overlay.bound <- NULL
     
     shinyjs::reset("overlay_bound_csv_file")
@@ -34,7 +33,7 @@ observeEvent(input$overlay_bound, {
 
 ### Remove land polygon if 'include land' box is unchecked
 observeEvent(input$overlay_land, {
-  if(!input$overlay_land){
+  if (!input$overlay_land){
     vals$overlay.land <- NULL
     
     shinyjs::reset("overlay_land_csv_file")
@@ -47,49 +46,51 @@ observeEvent(input$overlay_land, {
 
 
 ###############################################################################
-# Helper reaction functions for plot_overlay_preview()
+# Helper reaction functions for plot_overlay_preview_base()
 
 ### Get selected model with crs of crs.ll
-overlay_preview_model <- reactive({
-  idx.model <- as.numeric(input$overlay_loaded_table_rows_selected)
+overlay_preview_base_model <- reactive({
+  base.which <- as.numeric(input$overlay_loaded_table_rows_selected)
+
   validate(
-    need(length(idx.model) == 1, 
+    need(length(base.which) == 1, 
          paste("Please select exactly one model from the", 
                "table to use as grid for preview"))
   )
   
-  model.toplot <- vals$models.ll[[idx.model]]
+  model.toplot <- vals$models.ll[[base.which]]
   
-  # If boundary polygon is loaded, get intersection of model and boundary poly
+  # If study area polygon is loaded,
+  # then get intersection of model and study area poly
   sp.clipper <- vals$overlay.bound
-  if(is.null(sp.clipper)) return(model.toplot)
+  if (is.null(sp.clipper)) return(model.toplot)
   
   model.intersect.try <- try(gIntersection(model.toplot, sp.clipper, 
                                            byid = TRUE), 
                              silent = TRUE)
   
-  if(class(model.intersect.try) == "try-error") {
+  if (class(model.intersect.try) == "try-error") {
     model.toplot
   } else {
     model.intersect.try
   }
 })
 
-### Clip land by extent of boundary (if provided) or selected model
+### Clip land by extent of study area (if provided) or selected model
 # For overlay base preview
-overlay_preview_land <- reactive({
+overlay_preview_base_land <- reactive({
   overlay.land <- vals$overlay.land
   
-  # If boundary polygon is loaded, clip land by boundary poly extent
+  # If study area polygon is loaded, clip land by study area poly extent
   sp.clipper <- vals$overlay.bound
-  if(is.null(sp.clipper)  | !("1" %in% input$overlay_preview_options)) {
-    sp.clipper <- overlay_preview_model()
+  if (is.null(sp.clipper)  | !("1" %in% input$overlay_preview_options)) {
+    sp.clipper <- overlay_preview_base_model()
   }
 
   land.clip.try <- try(gClipExtent(overlay.land, sp.clipper), 
                        silent = TRUE)
   
-  if(class(land.clip.try) == "try-error") {
+  if (class(land.clip.try) == "try-error") {
     overlay.land
   } else {
     land.clip.try
@@ -101,7 +102,7 @@ overlay_preview_land <- reactive({
 ### Generate list of SPixDF objects for overlaid model predictions preview
 overlay_preview_overlaid_pix <- reactive({
   overlaid.which <- as.numeric(input$overlay_preview_overlaid_models)
-  
+
   validate(
     need(length(overlaid.which) > 0,
          paste("Please select at least one set of overlaid", 

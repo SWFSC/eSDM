@@ -161,8 +161,8 @@ ui.createEns <- function() {
                                                ), 
                                                fluidRow(
                                                  column(6, radioButtons("create_ens_weights_poly_raster_weight_type", NULL, 
-                                                                         choices = list("Enter single weight for area covered by raster" = 1, 
-                                                                                        "Select band number with weights" = 2), 
+                                                                        choices = list("Enter single weight for area covered by raster" = 1, 
+                                                                                       "Select band number with weights" = 2), 
                                                                         selected = 1)), 
                                                  column(6, 
                                                         conditionalPanel(
@@ -284,7 +284,7 @@ ui.createEns <- function() {
                                  uiOutput("create_ens_weights_poly_remove_choices_uiOut_select"), 
                                  actionButton("create_ens_weights_poly_remove_execute", "Remove selected weight polygons"), 
                                  textOutput("create_ens_weights_poly_remove_text")
-                                 )
+                          )
                         )
                         # tags$style(type="text/css", "#create_ens_weights_poly_table_out td:first-child {font-weight:bold;}")
                       )
@@ -292,61 +292,62 @@ ui.createEns <- function() {
                   
                   ##################################################################### Rescale predictions
                   column(width = 3, 
-                  box(width = 12,
-                      conditionalPanel(
-                        condition = "output.ens_rescale_none_flag == false", 
-                        helpText(strong("Note: All prediction types are not aboslute density, and thus the model predictions must be rescaled")
-                        )
-                      ),
-                      uiOutput("create_ens_rescale_type_uiOut_radio"),
-                      column(12,
+                         box(width = 12,
                              conditionalPanel(
-                               condition = "input.create_ens_rescale_type == 1",
-                               helpText(strong("Description: Model predictions will not be altered"))
-                             ), 
-                             conditionalPanel(
-                               condition = "input.create_ens_rescale_type == 2",
-                               numericInput("create_ens_rescale_abund", h5("Abundance to which to rescale predictions"),
-                                            value = 0, min = 0, step = 1), 
-                               helpText(strong("Description: Model predictions (densities) will be rescaled so that the predicted", 
-                                               "abundance of each set of predictions will be the value entered above"))
-                             ), 
-                             conditionalPanel(
-                               condition = "input.create_ens_rescale_type == 3",
-                               helpText(strong("Description: Normalization rescales densities (X) into a range of [0,1]", 
-                                               "using the following formula:"), 
-                                        column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -", 
-                                                                 paste0("X", tags$sub("min"), ")"), "/", 
-                                                                 paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")")))
-                                        )
+                               condition = "output.ens_rescale_none_flag == false", 
+                               helpText(strong("Note: All prediction types are not aboslute density,", 
+                                               "and thus the model predictions must be rescaled")
                                )
-                             ), 
-                             conditionalPanel(
-                               condition = "input.create_ens_rescale_type == 4",
-                               helpText(strong("Description: Standardization rescales densities (X) to have a mean", HTML("(&mu;)"), 
-                                               "of 0 and", "standard deviation", HTML("(&sigma;)"), 
-                                               "of 1 (unit variance) using the following formula:")), 
-                               column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
-                             ), 
-                             conditionalPanel(
-                               condition = "input.create_ens_rescale_type == 5",
-                               helpText(strong("Description: Sum to 1 rescales the model predictions (densities) so that the", 
-                                               "densities for each set of predictions sum to 1"))
+                             ),
+                             uiOutput("create_ens_rescale_type_uiOut_radio"),
+                             column(12,
+                                    conditionalPanel(
+                                      condition = "input.create_ens_rescale_type == 1",
+                                      helpText(strong("Description: Model predictions will not be altered"))
+                                    ), 
+                                    conditionalPanel(
+                                      condition = "input.create_ens_rescale_type == 2",
+                                      numericInput("create_ens_rescale_abund", h5("Abundance to which to rescale predictions"),
+                                                   value = 0, min = 0, step = 1), 
+                                      helpText(strong("Description: Model predictions (densities) will be rescaled so that the predicted", 
+                                                      "abundance of each set of predictions will be the value entered above"))
+                                    ), 
+                                    conditionalPanel(
+                                      condition = "input.create_ens_rescale_type == 3",
+                                      helpText(strong("Description: Normalization rescales densities (X) into a range of [0,1]", 
+                                                      "using the following formula:"), 
+                                               column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -", 
+                                                                        paste0("X", tags$sub("min"), ")"), "/", 
+                                                                        paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")")))
+                                               )
+                                      )
+                                    ), 
+                                    conditionalPanel(
+                                      condition = "input.create_ens_rescale_type == 4",
+                                      helpText(strong("Description: Standardization rescales densities (X) to have a mean", HTML("(&mu;)"), 
+                                                      "of 0 and", "standard deviation", HTML("(&sigma;)"), 
+                                                      "of 1 (unit variance) using the following formula:")), 
+                                      column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
+                                    ), 
+                                    conditionalPanel(
+                                      condition = "input.create_ens_rescale_type == 5",
+                                      helpText(strong("Description: Sum to 1 rescales the model predictions (densities) so that the", 
+                                                      "densities for each set of predictions sum to 1"))
+                                    )
                              )
-                      )
-                  ), 
-                  conditionalPanel(
-                    condition = "input.create_ens_type == 2 && input.create_ens_weight_type == 4",
-                    box(width = 12, 
-                        helpText(strong("Additional polygon-based weighting functionality:"), br(), 
-                           "Preview weighted polygons for selected overlaid predictions"),
-                        fluidRow(
-                          column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")), 
-                          column(4, br(), br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))
-                        ), 
-                        withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
-                    )
-                  )
+                         ), 
+                         conditionalPanel(
+                           condition = "input.create_ens_type == 2 && input.create_ens_weight_type == 4",
+                           box(width = 12, 
+                               helpText(strong("Additional polygon-based weighting functionality:"), br(), 
+                                        "Preview weighted polygons for selected overlaid predictions"),
+                               fluidRow(
+                                 column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")), 
+                                 column(4, br(), br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))
+                               ), 
+                               withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
+                           )
+                         )
                   ),
                   ##################################################################### Create ensemble button
                   box(width = 2, 

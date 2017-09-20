@@ -14,8 +14,8 @@ ui.loadModels <- function() {
                          column(width = 6, 
                                 textInput("save_app_envir_name", h5("Filename with which to save environment"), 
                                           value = "Ens_App_Save_Envir.RDATA"), 
-                                downloadButton("save_app_envir", "Save current app environment"), 
-                                textOutput("save_envir_text")
+                                downloadButton("save_app_envir", "Save current app environment")
+                                # textOutput("save_envir_text")
                          )
                        )
                      ), 
@@ -77,7 +77,7 @@ ui.loadModels <- function() {
                          condition = "input.model_load_type == 2",
                          helpText("Load the file that has the extension '.tif and thus is a TIFF file.", br(), 
                                   "The raster can be in any projection, but the raster coordinates must be between -180 and 180 degrees"), 
-                         ui.load.data.instructions(), 
+                         ui.load.data.instructions.raster(), 
                          fileInput("model_gis_raster_file", h5("Upload raster .tif file"), accept = ".tif"), 
                          conditionalPanel(
                            condition = "output.read_model_gis_raster_flag == false", 
@@ -230,7 +230,7 @@ ui.loadModels <- function() {
                                                                      selected = 1)), 
                                                  column(3, 
                                                         ui.new.line(), 
-                                                        actionButton("model_preview_execute", "Preview selected model predictions")
+                                                        actionButton("model_pix_preview_execute", "Preview selected model predictions")
                                                  )
                                                ),
                                                conditionalPanel(

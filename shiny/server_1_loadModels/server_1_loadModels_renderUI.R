@@ -52,7 +52,8 @@ output$model_csv_names_error_uiOut_select <- renderUI({
   choice.input <- csv_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
   
-  selectInput("model_csv_names_error", h5("Column with error data"),
+  selectInput("model_csv_names_error", 
+              h5("Column with error data (optional)"), 
               choices = choice.input, selected = NULL)
 })
 
@@ -63,7 +64,8 @@ output$model_csv_names_weight_uiOut_select <- renderUI({
   choice.input <- csv_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
   
-  selectInput("model_csv_names_weight", h5("Column with weight data"),
+  selectInput("model_csv_names_weight", 
+              h5("Column with weight data (optional)"),
               choices = choice.input, selected = NULL)
 })
 
@@ -130,7 +132,8 @@ output$model_gis_shp_names_error_uiOut_select <- renderUI({
   choice.input <- shp_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
   
-  selectInput("model_gis_shp_names_error", h5("Column with error data"),
+  selectInput("model_gis_shp_names_error", 
+              h5("Column with error data (optional)"),
               choices = choice.input, selected = 1)
 })
 
@@ -141,7 +144,8 @@ output$model_gis_shp_names_weight_uiOut_select <- renderUI({
   choice.input <- shp_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
   
-  selectInput("model_gis_shp_names_weight", h5("Column with weight data"),
+  selectInput("model_gis_shp_names_weight", 
+              h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
 })
 
@@ -184,7 +188,8 @@ output$model_gis_gdb_names_error_uiOut_select <- renderUI({
   choice.input <- gdb_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
   
-  selectInput("model_gis_gdb_names_error", h5("Column with error data"),
+  selectInput("model_gis_gdb_names_error", 
+              h5("Column with error data (optional)"),
               choices = choice.input, selected = 1)
 })
 
@@ -195,7 +200,8 @@ output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
   choice.input <- gdb_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
   
-  selectInput("model_gis_gdb_names_weight", h5("Column with weight data"),
+  selectInput("model_gis_gdb_names_weight", 
+              h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
 })
 
