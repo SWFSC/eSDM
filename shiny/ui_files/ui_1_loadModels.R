@@ -266,7 +266,7 @@ ui.loadModels <- function() {
                        condition = "output.models_loaded_table != null", 
                        box(
                          title = "Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
-                         withSpinner(plotOutput("model_pix_preview_plot"), type = 1)
+                         shinycssloaders::withSpinner(plotOutput("model_pix_preview_plot"), type = 1)
                        )
                      )
                    )

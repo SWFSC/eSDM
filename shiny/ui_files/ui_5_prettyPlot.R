@@ -6,7 +6,7 @@ ui.prettyPlot <- function() {
             fluidRow(
               box(
                 solidHeader = FALSE, status = "primary", width = 6, height = 500, 
-                withSpinner(plotOutput("pretty_plot"), type = 1)
+                shinycssloaders::withSpinner(plotOutput("pretty_plot"), type = 1)
               ),
               box(
                 title = "Select Predictions to Plot", solidHeader = FALSE, status = "warning", collapsible = TRUE, width = 6, 
