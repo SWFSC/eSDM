@@ -43,7 +43,7 @@ ui.overlay <- function() {
                                conditionalPanel(
                                  condition = "input.overlay_bound_file_type == 3",
                                  ui.gis.gdb.intructions(),
-                                 textInput("overlay_bound_gis_gdb_path", h5(".gbd path"), value = "C:/Ensemble Shiny/Ensemble_R_Shiny/.gdb"),
+                                 textInput("overlay_bound_gis_gdb_path", h5(".gbd path"), value = ".../folder.gdb"),
                                  textInput("overlay_bound_gis_gdb_name", h5("Filename within .gbd folder"), value = ""),
                                  fluidRow(
                                    column(6, actionButton("overlay_bound_gis_gdb_load", "Upload file from specified path")),
@@ -120,7 +120,7 @@ ui.overlay <- function() {
                              condition = "input.overlay_land_load_type == 2 && input.overlay_land_file_type == 3",
                              box(width = 12, 
                                  ui.gis.gdb.intructions(),
-                                 textInput("overlay_land_gis_gdb_path", h5(".gbd path"), value = "C:/Ensemble Shiny/Ensemble_R_Shiny/.gdb"),
+                                 textInput("overlay_land_gis_gdb_path", h5(".gbd path"), value = ".../folder.gdb"),
                                  textInput("overlay_land_gis_gdb_name", h5("Name of file within .gbd"), value = ""), 
                                  fluidRow(
                                    column(6, actionButton("overlay_land_gis_gdb_load", "Upload file from specified path")),

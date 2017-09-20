@@ -222,7 +222,8 @@ ui.createEns <- function() {
                                                condition = "input.create_ens_weights_poly_type == 4",
                                                ui.gis.gdb.intructions(), 
                                                fluidRow(
-                                                 column(6, textInput("create_ens_weights_poly_gdb_path", h5(".gdb path"), value = "")),
+                                                 column(6, textInput("create_ens_weights_poly_gdb_path", h5(".gdb path"), 
+                                                                     value = ".../folder.gdb")),
                                                  column(6, textInput("create_ens_weights_poly_gdb_name", h5("Filename within .gbd folder"), 
                                                                      value = ""))
                                                ),
@@ -381,9 +382,7 @@ ui.createEns <- function() {
                                  condition = "input.ens_select_action == 1", 
                                  column(3, radioButtons("ens_preview_perc", h5("Units"), choices = list("Percentages" = 1, "Values" = 2), 
                                                         selected = 1)), 
-                                 column(3, ui.new.line(),
-                                        actionButton("ens_preview_execute", "Preview selected ensemble predictions")
-                                 )
+                                 column(3, ui.new.line(), actionButton("ens_preview_execute", "Preview selected ensemble predictions"))
                                ),
                                ####################################### Download preview of ensemble(s)
                                conditionalPanel(

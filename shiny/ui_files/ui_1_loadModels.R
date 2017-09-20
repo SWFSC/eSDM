@@ -146,8 +146,7 @@ ui.loadModels <- function() {
                            column(12,
                                   ui.gis.gdb.intructions(), 
                                   ui.load.data.instructions(), 
-                                  textInput("model_gis_gdb_path", h5("Path to .gdb folder"), 
-                                            value = ".../folder.gdb")
+                                  textInput("model_gis_gdb_path", h5("Path to .gdb folder"), value = ".../folder.gdb")
                            ),
                            column(6, textInput("model_gis_gdb_name", h5("Filename within .gbd folder"), value = "")),
                            column(6, br(), br(), actionButton("model_gis_gdb_load", "Upload file from specified path")

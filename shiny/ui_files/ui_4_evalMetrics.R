@@ -65,13 +65,10 @@ ui.evalMetrics <- function() {
                 conditionalPanel(
                   condition = "input.eval_load_type_1 == 3",
                   ui.gis.gdb.intructions(),
-                  textInput("eval_gis_gdb_path_1", h5("GBD path"), value = "C:/Ensemble Shiny/Ensemble_R_Shiny/Pts_pres_abs/PA_5km.gdb"),
+                  textInput("eval_gis_gdb_path_1", h5("GBD path"), value = ".../folder.gdb"),
                   fluidRow(
-                    column(6, textInput("eval_gis_gdb_name_1", h5("Name of file within .gbd"), value = "PA_5km_gdb")), 
-                    column(6, 
-                           br(), br(), 
-                           actionButton("eval_gis_gdb_load_1", "Upload file from specified path")
-                    )
+                    column(6, textInput("eval_gis_gdb_name_1", h5("Name of file within .gbd"), value = "")), 
+                    column(6, br(), br(), actionButton("eval_gis_gdb_load_1", "Upload file from specified path"))
                   ), 
                   br(), 
                   conditionalPanel(

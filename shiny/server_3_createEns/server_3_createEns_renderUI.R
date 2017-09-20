@@ -55,7 +55,6 @@ output$create_ens_weights_poly_model_uiOut_selectize <- renderUI({
   input.val <- as.list(paste("Overlaid", models.which))
   selectizeInput("create_ens_weights_poly_model", 
                  h5("Overlaid predictions to which to apply polygon weights"),
-                 # h5("Overlaid predictions to be weighted"), 
                  choices = input.val, selected = NULL, multiple = TRUE)
 })
 
@@ -168,7 +167,8 @@ output$ens_calc_abund_execute_uiOut_button <- renderUI({
                "'Standardization', or 'Sum to 1' methods"))
   )
   
-  actionButton("ens_calc_abund_execute", "Calculate abundance for selected ensembles")
+  actionButton("ens_calc_abund_execute", 
+               "Calculate abundance for selected ensembles")
 })
 
 ### textInput with default filename for download of ensemble preview

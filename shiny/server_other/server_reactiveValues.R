@@ -25,7 +25,7 @@ vals <- reactiveValues(
   overlaid.models.specs = list(), # models.spec info about overlaid models
   
   # Objects that store elements used by ensemble and overlaid models
-  ens.over.pix = NULL,            # SPixDF of rasterized ensemble with pixel num as data; set in ensOverlay_OverlayModels.R
+  ens.over.pix = NULL,            # SPixDF of rasterized base grid with pixel num as data; set in ensOverlay_OverlayModels.R
   ens.over.wpoly.filename = NULL, # List of filenames of polygons with weights; idx corresponds to overlaid pred idx
   ens.over.wpoly.spdf = NULL,     # List of polygons with weights; idx corresponds to overlaid pred idx
   ens.over.wpoly.coverage = NULL, # List of overlap perc for weight to be applied; idx corresponds to overlaid pred idx
