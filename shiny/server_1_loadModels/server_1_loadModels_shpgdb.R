@@ -1,6 +1,4 @@
 ### Code for reading in and processing model predictions from .shp or .gdb
-### Code for loading GIS shapefile into Shiny from: 
-###    https://github.com/leonawicz/nwtapp/blob/master/mod_shpPoly.R
 
 
 ###############################################################################

@@ -36,7 +36,16 @@ gClipExtent <- function(shp, bb, buf = NULL) {
 }
 
 
+### From Hadley 
+zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
+  if (length(x) == 1) return(TRUE)
+  x <- range(x) / mean(x)
+  isTRUE(all.equal(x[1], x[2], tolerance = tol))
+}
 
+
+### Determine which elements of the vector data.vec are 
+# one of "N/A", "n/a", "na", "NaN", or ""
 na.which <- function(data.vec) {
   na.char <- c("N/A", "n/a", "na", "NaN", "")
   
@@ -50,6 +59,8 @@ na.which <- function(data.vec) {
   return(na.idx)
 }
 
+### Generate message reporting length of na.which.out
+# It is assumed this message is describing prediction values
 na.which.message <- function(na.which.out) {
   x <- na.which.out
   
@@ -74,8 +85,10 @@ labels.lab <- rev(c("Lowest 60%", "35 - 40%", "30 - 35%", "25 - 30%",
                     "20 - 25%", "15 - 20%", "10 - 15%", 
                     "5 - 10%", "2 - 5%", "Highest 2%"))
 
-mround <- function(x,base){ 
-  base*round(x/base) 
+
+### Round 'x' to nearest 'base' value
+mround <- function(x, base){ 
+  base * round(x / base) 
 } 
 
 
@@ -84,8 +97,8 @@ mround <- function(x,base){
 breaks.calc <- function(sp.data) {
   breaks <- rev(c(0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40))
   # if (any(is.na(sp.data))) warning("NA's removed")
-  # if (any(sp.data == 0, na.rm = T)) warning("Densities contain 0's")
-  # if (any(sp.data < 0, na.rm = T)) warning("Densities contain values < 0")
+  # if (any(sp.data == 0, na.rm = TRUE)) warning("Densities contain 0's")
+  # if (any(sp.data < 0, na.rm = TRUE)) warning("Densities contain values < 0")
   
   sp.data <- sp.data[!is.na(sp.data)] 
   
@@ -93,7 +106,7 @@ breaks.calc <- function(sp.data) {
   data.max <- max(sp.data)
   data.min <- min(sp.data)
   
-  sp.data.sort <- sort(sp.data, decreasing = T)
+  sp.data.sort <- sort(sp.data, decreasing = TRUE)
   data.breaks.mid <- sapply(breaks, 
                             function(i) sp.data.sort[ceiling(i * data.len)])
   data.breaks <- c(data.min, data.breaks.mid, data.max)
@@ -102,12 +115,12 @@ breaks.calc <- function(sp.data) {
 }
 
 ###############################################################################
-##### Functions for spdfs with prediction data
+# Functions for spdfs with prediction data
 
-### Normalize model predictions
+### Normalize vector of model predictions, 'x'
 normalize <- function(x) {
-  num <- (x - min(x, na.rm = T))
-  denom <- (max(x, na.rm = T) - min(x, na.rm = T))
+  num <- (x - min(x, na.rm = TRUE))
+  denom <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
   return (num / denom)
 }
 
@@ -130,6 +143,7 @@ models.rescale <- function(spdf.list, abund.new) {
     abund.orig <- model.abundance(s, cols.data = "Pred.overlaid")
     frac <- abund.orig / abund.new
     s$Pred.overlaid <- s$Pred.overlaid / frac
+    
     s
   })
   
@@ -146,7 +160,7 @@ model.abundance <- function(spdf, cols.data = "Pred") {
   if (length(spdf.nona) == 0) spdf.nona <- spdf
   
   # Calculate areas of polygons with no NAs
-  spdf.area <- raster::area(spdf.nona)/1000000
+  spdf.area <- raster::area(spdf.nona) / 1e+06
   
   abunds <- sapply(cols.data, function(j) sum(spdf.nona@data[,j] * spdf.area))
   
@@ -161,12 +175,15 @@ model.abundance <- function(spdf, cols.data = "Pred") {
 read.csv.in <- function(file.in) {
   req(file.in)
   
-  return(list(file.in$name, read.csv(file.in$datapath, 
-                                     stringsAsFactors = FALSE)))
+  list.out <- list(file.in$name, read.csv(file.in$datapath, 
+                                          stringsAsFactors = FALSE))
+  
+  return(list.out)
 }
 
-### Load GIS shapefile from given shiny file input
-#   Used loading shapefiles in Load Model Preds and Overlay sections
+### Load GIS shapefile from given shiny file input, 'file.in'
+# Used for loading shapefiles in Load Model Preds and Overlay sections
+# From https://github.com/leonawicz/nwtapp/blob/master/mod_shpPoly.R
 read.shp.in <- function(file.in) {
   infiles <- file.in$datapath
   dir <- unique(dirname(infiles))
@@ -182,7 +199,7 @@ read.shp.in <- function(file.in) {
 
 
 ### Sort by lat and then long; return crs.ll and orig proj version of file
-#   Requires that 'gis.loaded' is an SPolyDF
+#   Requires that 'gis.loaded' is an SPolyDF or SPtsDF
 gis.model.check <- function(gis.loaded) {
   validate(
     need(class(gis.loaded)[1] %in% c("SpatialPolygonsDataFrame", 
@@ -193,12 +210,11 @@ gis.model.check <- function(gis.loaded) {
   # Sort spdf by lat and then long so polygons are ordered bottom up
   coords <- data.frame(idx = seq_along(gis.loaded), coordinates(gis.loaded))
   idx.sorted <- data.sort(coords, 3, 2)[,1] # Lat is primary sort
-  gis.loaded <- gis.loaded[idx.sorted,]
+  gis.loaded <- gis.loaded[idx.sorted, ]
   
-  # Check crs arguments and project as necessary
+  # Check crs arguments and project to crs.ll if necessary
   crs.curr <- crs(gis.loaded)
-  # print(paste("CRS of loaded GIS file is", proj.curr))
-  
+
   validate(
     need(!is.na(crs.curr), "Error: GIS file does not have defined projection")
   )

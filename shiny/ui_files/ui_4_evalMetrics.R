@@ -261,7 +261,13 @@ ui.evalMetrics <- function() {
                            column(5,
                                   conditionalPanel(
                                     condition = "output.table_eval_metrics_out != null", 
-                                    downloadButton("eval_metrics_table_save", "Download metrics")
+                                    downloadButton("eval_metrics_table_save", "Download metrics"), 
+                                    br(), br(), 
+                                    helpText(strong("Note:"), 
+                                             "The downloaded Excel csv file will have both metric values and model information", 
+                                             "for each set of predictions. Because ensemble predictions have different information", 
+                                             "than original and overlaid predictions, some column headers are formatted as", 
+                                             "'Original+Overlaid info/Ensemble info'.")
                                   )
                            )
                          )

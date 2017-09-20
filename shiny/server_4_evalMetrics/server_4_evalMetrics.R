@@ -25,6 +25,43 @@ outputOptions(output, "eval_display_calc_metrics_flag",
 ###############################################################################
 # Functions for calculating metrics
 
+###########################################################
+# Prep
+
+### Generate indicies of models for which to calculate metrics
+eval_models_toeval_idx <- reactive({
+  eval.models.idx <- list(input$eval_models_table_orig_out_rows_selected, 
+                          input$eval_models_table_over_out_rows_selected, 
+                          input$eval_models_table_ens_out_rows_selected)
+  
+  lapply(eval.models.idx, function(i) {
+    if (!is.null(i)) sort(i) else i
+  })
+})
+
+### Generate list of crs.ll models with which to calculate metrics
+# Validating done in eval_metrics()
+eval_models_toeval <- reactive({
+  eval.models.idx <- eval_models_toeval_idx()
+  
+  models.list.orig <- vals$models.ll[eval.models.idx[[1]]]
+  models.list.over <- vals$overlaid.models[eval.models.idx[[2]]]
+  models.list.ens <- vals$ensemble.models[eval.models.idx[[3]]]
+  
+  models.all <- c(models.list.orig, models.list.over, models.list.ens)
+  models.all.ll <- lapply(models.all, function(j) {
+    if (identical(crs(j), crs.ll)) {
+      j
+    } else {
+      spTransform(j, crs.ll)
+    }
+  })
+  
+  models.all.ll
+})
+
+
+###########################################################
 ### Calculate metrics
 eval_metrics <- eventReactive(input$eval_metrics_execute, {
   # Reset eval reactiveValues
@@ -91,42 +128,10 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 })
 
 
-### Generate indicies of models for which to calculate metrics
-eval_models_toeval_idx <- reactive({
-  eval.models.idx <- list(input$eval_models_table_orig_out_rows_selected, 
-                          input$eval_models_table_over_out_rows_selected, 
-                          input$eval_models_table_ens_out_rows_selected)
-  
-  lapply(eval.models.idx, function(i) {
-    if (!is.null(i)) sort(i) else i
-  })
-})
-
-### Generate list of crs.ll models with which to calculate metrics
-# Validating done in eval_metrics()
-eval_models_toeval <- reactive({
-  eval.models.idx <- eval_models_toeval_idx()
-  
-  models.list.orig <- vals$models.ll[eval.models.idx[[1]]]
-  models.list.over <- vals$overlaid.models[eval.models.idx[[2]]]
-  models.list.ens <- vals$ensemble.models[eval.models.idx[[3]]]
-  
-  models.all <- c(models.list.orig, models.list.over, models.list.ens)
-  models.all.ll <- lapply(models.all, function(j) {
-    if (identical(crs(j), crs.ll)) {
-      j
-    } else {
-      spTransform(j, crs.ll)
-    }
-  })
-  
-  models.all.ll
-})
-
-
 ###############################################################################
-# Evaluation metrics table
+# Evaluation metrics table: generate/download
 
+###########################################################
 ### Generate table of calculated metrics
 table_eval_metrics <- reactive({
   req(length(vals$eval.metrics) > 0, vals$eval.metrics.names)
@@ -151,38 +156,49 @@ table_eval_metrics <- reactive({
   metrics.table
 })
 
+
+###########################################################
 ### Download table
 output$eval_metrics_table_save <- downloadHandler(
   filename = paste0("Eval_metrics.csv"),
+  
   content = function(file) {
-    # browser()
     eval.metrics <- table_eval_metrics()
     
-    # Get info about selected predictions
+    # Get applicable info for models that have metrics calculated
     models.which <- vals$eval.models.idx
+    
     orig.models <- cbind(table_orig()[models.which[[1]],], 
                          table_orig_stats()[models.which[[1]],2:6])
     over.models <- table_overlaid()[models.which[[2]],]
-    # orig.over.models <- rbind(orig.models, over.models)
     ens.models <- cbind(table_ensembles()[models.which[[3]],], 
                         NA, NA, NA, NA, NA, NA)
+    
+    # Create names describing orig+over/ens columns
     all.models.names <- c(paste(names(orig.models), names(ens.models), 
                                 sep = "/")[1:4], 
                           names(orig.models)[5:10])
-    
     names(orig.models) <- all.models.names
     names(over.models) <- all.models.names
     names(ens.models) <- all.models.names
-    all.models <- rbind(orig.models, over.models, ens.models)
     
-    eval.metrics.models <- cbind(eval.metrics, all.models)
+    # Combine tables
+    models.list.all <- list(orig.models, over.models, ens.models)
+    validate(
+      need(zero_range(sapply(models.list.all, ncol)), 
+           paste("Error in downloading metrics: orig, over, and ens", 
+                 "info tables have different numbers of columns"))
+    )
+    all.models.info <- do.call(rbind, models.list.all)
     
-    # eval.metrics.ens.which <- which(grepl("Ensemble", eval.metrics$Model))
-    # eval.metrics.orig.over <- cbind(eval.metrics[-eval.metrics.ens.which,], 
-    #                                 orig.over.models)
-    # eval.metrics.ens <- cbind(eval.metrics[eval.metrics.ens.which,], ens.models)
-    # write.csv(eval.metrics.ens, file = "Eval_metrics_ensemble.csv", row.names = FALSE)
+    validate(
+      need(nrow(all.models.info) == nrow(eval.metrics), 
+           paste("Error in downloading table: metrics and model info tables", 
+                 "have different number of rows"))
+    )
+    eval.metrics.models <- cbind(eval.metrics, all.models.info)
     
+    # Write csv
     write.csv(eval.metrics.models, file = file, row.names = FALSE)
   }
 )
