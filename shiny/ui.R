@@ -11,19 +11,23 @@ library(shinycssloaders)
 
 
 ###############################################################################
-# Naming convention, tab-specific ui scripts, and commonly used objects
+# Naming convention, commonly used ui objects, and tab-specific ui scripts
 
 ###########################################################
 ### Naming convention
-# File names are 'server' or 'ui' _ tab number _ tab camelCase _ details
-# Use '_' as separator for reactive function names
-# Use '.' as separator for variables that aren't passed from server to ui, 
-#     including reactiveValues, 
-# First part of reactiveValue variables name is tab code of where value was set
-# renderUI output$... names are: 'inputId + _uiOut_(type of widget)'
+# File names: 'server/ui' + 'tab number' + camelCase + description
+# File names (cont): '_' used as separator
+# Separator for variable and reactive function names: '_'
+# Separator for variables that aren't being passed from server to ui: '.'
+#    This includes reactiveValues
+# Separator for non-reactive functions: '.'
+# renderUI output names for widgets: 'output$inputId_uiOut_(widget type)'
 
 
 ###########################################################
+### ui code (lists, instructions, etc) used in multiple tabs
+source(file.path("ui_files", "ui_common.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+
 ### ui code parsed by tabName
 source(file.path("ui_files", "ui_1_loadModels.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_2_overlay.R"), local = TRUE, echo = FALSE, chdir = TRUE)
@@ -33,9 +37,6 @@ source(file.path("ui_files", "ui_5_prettyPlot.R"), local = TRUE, echo = FALSE, c
 source(file.path("ui_files", "ui_6_export.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_7_manual.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_8_feedbackForm.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-
-### ui code (lists, instructions, etc) used in multiple tabs
-source(file.path("ui_files", "ui_common.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 
 
 ###############################################################################
@@ -68,16 +69,16 @@ ui <- dashboardPage(
   ),
   
   dashboardBody(
-    useShinyjs(),        # Required by shinyjs package
+    useShinyjs(),       # Required by shinyjs package
     
-    tabItems(
+    tabItems(           # Tab name:
       ui.loadModels(),   # Load Model Predictions
       ui.overlay(),      # Overlay Model Predictions
-      ui.createEns(),    # Create Ensemble tab
-      ui.evalMetrics(),  # Evaluation Metrics tab
-      ui.prettyPlot(),   # High Quality Maps tab
-      ui.export(),       # High Quality Maps tab
-      ui.manual(),       # Manual tab
+      ui.createEns(),    # Create Ensemble
+      ui.evalMetrics(),  # Evaluation Metrics
+      ui.prettyPlot(),   # High Quality Maps
+      ui.export(),       # Export Predictions
+      ui.manual(),       # Manual
       ui.feedbackForm()  # Feedback form
     )
   )

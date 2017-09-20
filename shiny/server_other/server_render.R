@@ -12,14 +12,14 @@ output$load_envir_text <- renderText({
   load_envir()
 })
 
-# Save environment output
-output$save_envir_text <- renderText({
-  input$save_app_envir
-  
-  if (file.exists(paste0("Saved_app_envir/", input$save_app_envir_name))) { 
-    "File with provided name currently exists and thus would be overwritten"
-  }
-})
+# # Save environment output
+# output$save_envir_text <- renderText({
+#   input$save_app_envir
+#   
+#   if (file.exists(paste0("Saved_app_envir/", input$save_app_envir_name))) { 
+#     "File with provided name currently exists and thus would be overwritten"
+#   }
+# })
 
 
 ###############################################################################
@@ -78,9 +78,6 @@ output$models_text_none_loaded <- renderText({
 ###########################################################
 ### Plot/preview of individual model
 output$model_pix_preview_plot <- renderPlot({
-  input$model_remove_execute # Make more specific?
-  req(model_pix_preview_event())
-  
   grid.arrange(model_pix_preview_event())
 })
 
@@ -93,7 +90,6 @@ output$model_pix_preview_plot <- renderPlot({
 
 ### Table of loaded model predictions
 output$overlay_loaded_table <- DT::renderDataTable({
-  req(table_orig())
   table_orig()
 }, 
 options = list(dom = 't'), selection = "single")
@@ -153,12 +149,14 @@ output$overlay_text_overlaid_models <- renderText({
 # Previews
 
 ### Preview of base grid
-output$overlay_preview_base <- renderPlot({ 
-  plot_overlay_preview_base() 
+# 'suspendWhenHidden = FALSE' in server_hide+show.R
+output$overlay_preview_base <- renderPlot({
+  plot_overlay_preview_base()
 })
 
 ### Preview of overlaid model predictions
-output$overlay_preview_overlaid <- renderPlot({ 
+# 'suspendWhenHidden = FALSE' in server_hide+show.R
+output$overlay_preview_overlaid <- renderPlot({
   grid.arrange(plot_overlay_preview_overlaid())
 })
 
@@ -222,7 +220,9 @@ output$create_ens_weights_poly_add_text <- renderText({
 # Created ensemble things
 
 ### Create ensemble error/completion output
-output$ens_create_ensemble_text <- renderUI({ HTML(create_ensemble()) })
+output$ens_create_ensemble_text <- renderUI({ 
+  HTML(create_ensemble()) 
+})
 
 ### Table of created ensemble predictions
 output$ens_datatable_ensembles <- DT::renderDataTable({
@@ -231,11 +231,13 @@ output$ens_datatable_ensembles <- DT::renderDataTable({
 options = list(dom = 't'))
 
 ### Remove ensemble error output
-output$ens_remove_text <- renderUI({ HTML(ens_remove()) })
+output$ens_remove_text <- renderUI({ 
+  HTML(ens_remove()) 
+})
 
 ### Plot preview of ensemble predictions
+# 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$ens_pix_preview_plot <- renderPlot({
-  req(ens_pix_preview_event())
   grid.arrange(ens_pix_preview_event())
 })
 
@@ -338,6 +340,7 @@ output$pretty_plot_values_event_text <- renderText({
 
 ###########################################################
 ### Pretty plot
+# 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$pretty_plot <- renderPlot({
   print(pretty_plot_plot())
 })

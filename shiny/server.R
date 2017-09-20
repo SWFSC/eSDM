@@ -4,16 +4,17 @@
 
 ###############################################################################
 ### Naming convention
-# File names are camelCase + '_' + ...
-# Use '_' as separator for variable and reactive function names
-# Use '.' as separator for variables that aren't being passed 
-#     from server to ui, including reactive values
-# USe '.' as separator for non-reactive functions
-# renderUI output names for widgets are 'output$inputId_uiOut_(widget type)'
+# File names: 'server/ui' + 'tab number' + camelCase + description
+# File names (cont): '_' used as separator
+# Separator for variable and reactive function names: '_'
+# Separator for variables that aren't being passed from server to ui: '.'
+#    This includes reactiveValues
+# Separator for non-reactive functions: '.'
+# renderUI output names for widgets: 'output$inputId_uiOut_(widget type)'
 
 
 ###############################################################################
-library(dplyr)
+library(dplyr) # Loaded first so other packages mask dplyr functions
 library(sp)
 library(rgdal)
 library(rgeos)
@@ -29,6 +30,7 @@ library(DT)
 options(shiny.maxRequestSize = 200 * 1024^2) 
 
 `%then%` <- shiny:::`%OR%` # For non-simultaneous validate checks
+
 
 ###############################################################################
 ### Server function
@@ -84,7 +86,7 @@ server <- function(input, output, session) {
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_download.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_renderUI.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-
+  
   
   # Export model predictions
   source(file.path("server_6_export", "server_6_export.R"), local = TRUE, echo = FALSE, chdir = TRUE)
@@ -99,12 +101,21 @@ server <- function(input, output, session) {
   
   # General server code
   source(file.path("server_other", "server_funcs+vars.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_other", "server_hide+show.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_other", "server_plots.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_other", "server_plots_download.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   # server_reactiveValues.R is sourced at the top of the server code in order to initialize reactiveValues
   source(file.path("server_other", "server_render.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_other", "server_render_tables.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  
+  
+  ### Hide plot outputs
+  shinyjs::hide("model_pix_preview_plot", time = 0)
+  shinyjs::hide("overlay_preview_base", time = 0)
+  shinyjs::hide("overlay_preview_overlaid", time = 0)
+  shinyjs::hide("ens_pix_preview_plot", time = 0)
+  shinyjs::hide("pretty_plot", time = 0)
 }
 
 ###############################################################################
