@@ -39,12 +39,12 @@ create_ens_weights_num <- reactive({
 ###############################################################################
 # Weighted ensembling method 2: 'Weight all model predictions by metric'
 
-### Flag for if evaluation metrics have been calculated
+### Flag for if metrics have been calculated for selected overlaid model preds
 output$create_ens_weights_metric_flag <- reactive({
-  ens.which <- create_ens_overlaid_idx()
-  eval.which <- vals$eval.models.idx[[2]]
+  ens.overlaid.which <- create_ens_overlaid_idx()
+  eval.overlaid.which <- vals$eval.models.idx[[2]]
   
-  all(ens.which %in% eval.which) #& (length(vals$eval.metrics) > 0)
+  all(ens.overlaid.which %in% eval.overlaid.which)
 })
 outputOptions(output, "create_ens_weights_metric_flag", 
               suspendWhenHidden = FALSE)
@@ -53,12 +53,16 @@ outputOptions(output, "create_ens_weights_metric_flag",
 create_ens_weights_metric_table <- reactive({
   req(input$create_ens_weights_metric)
   
+  # Get desired metric for overlaid models from eval metrics table
   eval.metrics <- table_eval_metrics()
-  idx <- c(1, which(names(eval.metrics) == input$create_ens_weights_metric))
+  idx.col <- which(names(eval.metrics) == input$create_ens_weights_metric)
+  idx.row <- grep("Overlaid", eval.metrics$Model)
+  weights.table <- eval.metrics[idx.row ,c(1, idx.col)]
   
-  weights.table <- eval.metrics[,idx]
+  # Prep for display
   weights.table$R.weights <- weights.table[,2] / max(weights.table[,2])
   names(weights.table)[3] <- "Relative weights"
+  row.names(weights.table) <- 1:nrow(weights.table)
   
   weights.table
 })
