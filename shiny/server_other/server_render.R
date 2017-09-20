@@ -78,7 +78,7 @@ output$models_text_none_loaded <- renderText({
 ###########################################################
 ### Plot/preview of individual model
 output$model_pix_preview_plot <- renderPlot({
-  grid.arrange(model_pix_preview_event())
+  grid.arrange(model_pix_preview_event()[[1]])
 })
 
 
@@ -238,7 +238,7 @@ output$ens_remove_text <- renderUI({
 ### Plot preview of ensemble predictions
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$ens_pix_preview_plot <- renderPlot({
-  grid.arrange(ens_pix_preview_event())
+  grid.arrange(ens_pix_preview_event()[[1]])
 })
 
 ### Table of abundances of created ensemble predictions

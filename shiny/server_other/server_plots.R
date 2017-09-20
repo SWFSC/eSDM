@@ -13,25 +13,25 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
   
   #----------------------------------------------
   # Same code as in model_pix_download()
-  idx.selected <- sort(as.numeric(input$models_loaded_table_rows_selected))
+  model.which <- sort(as.numeric(input$models_loaded_table_rows_selected))
   
   validate(
-    need(length(idx.selected) > 0, 
+    need(length(model.which) > 0, 
          "Please select at least one model from table to preview")
   )
   
-  models.toplot <- vals$models.pix[idx.selected]
+  models.toplot <- vals$models.pix[model.which]
   
-  plot.titles <- sapply(idx.selected, function(i) {
+  plot.titles <- sapply(model.which, function(i) {
     paste0("Model file: ", vals$models.names[i], "\n", 
            "Data header: ", vals$models.data.names[[i]][1])
   })
   
   model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
                          plot.titles = plot.titles, perc.num = perc.num)
-  
-  plot.multi.download(model.pix.list)
   #----------------------------------------------
+  
+  list(plot.multi.display(model.pix.list), model.which)
 })
 
 
@@ -39,30 +39,30 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
 ### Get preview of predictions to download
 model_pix_download <- reactive({
   req(length(vals$models.pix) > 0)
-
+  
   perc.num <- as.numeric(input$model_download_preview_perc)
   
   #----------------------------------------------
   # Same code as in model_pix_preview_event()
-  idx.selected <- sort(as.numeric(input$models_loaded_table_rows_selected))
+  model.which <- sort(as.numeric(input$models_loaded_table_rows_selected))
   
   validate(
-    need(length(idx.selected) > 0, 
+    need(length(model.which) > 0, 
          "Please select at least one model from table to preview")
   )
-
-  models.toplot <- vals$models.pix[idx.selected]
   
-  plot.titles <- sapply(idx.selected, function(i) {
+  models.toplot <- vals$models.pix[model.which]
+  
+  plot.titles <- sapply(model.which, function(i) {
     paste0("Model file: ", vals$models.names[i], "\n", 
            "Data header: ", vals$models.data.names[[i]][1])
   })
   
   model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
                          plot.titles = plot.titles, perc.num = perc.num)
+  #----------------------------------------------
   
   plot.multi.download(model.pix.list)
-  #----------------------------------------------
 })
 
 
@@ -142,7 +142,7 @@ ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
   req(length(vals$ensemble.models) > 0)
   
   perc.num <- input$ens_preview_perc
-    
+  
   #----------------------------------------------
   # Same code as in ens_pix_download()
   ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
@@ -160,9 +160,9 @@ ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
   
   ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens", 
                        plot.titles = plot.titles, perc.num = perc.num)
-  
-  plot.multi.display(ens.pix.list)
   #----------------------------------------------
+  
+  list(plot.multi.display(ens.pix.list), ensemble.which)
 })
 
 
@@ -170,9 +170,9 @@ ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
 ### Get preview of ensemble predictions to download
 ens_pix_download <- reactive({
   req(length(vals$ensemble.models) > 0)
-
+  
   perc.num <- input$ens_download_preview_perc
-
+  
   #----------------------------------------------
   # Same code as in ens_pix_preview_event()
   ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
@@ -190,9 +190,9 @@ ens_pix_download <- reactive({
   
   ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens", 
                        plot.titles = plot.titles, perc.num = perc.num)
-  
-  plot.multi.display(ens.pix.list)
   #----------------------------------------------
+
+  plot.multi.download(ens.pix.list)
 })
 
 ###############################################################################

@@ -101,13 +101,13 @@ server <- function(input, output, session) {
   
   # General server code
   source(file.path("server_other", "server_funcs+vars.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_other", "server_hide+show.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_other", "server_plots.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_other", "server_plots_download.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   # server_reactiveValues.R is sourced at the top of the server code in order to initialize reactiveValues
   source(file.path("server_other", "server_render.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   source(file.path("server_other", "server_render_tables.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_other", "server_hide+show.R"), local = TRUE, echo = FALSE, chdir = TRUE)
   
   
   ### Hide plot outputs
