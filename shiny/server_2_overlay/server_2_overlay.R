@@ -114,9 +114,9 @@ overlay_preview_overlaid_pix <- reactive({
   # Get SPixDF object, whose data being rasterized pixel indices
   # Pixel object was originally made for ensemble previews,...
   # ...but works for overlaid previews too
-  overlaid.pix <- vals$ensemble.pix
+  overlaid.pix <- vals$ens.over.pix
   names(overlaid.pix) <- "Pred.overlaid.pix"
-  overlaid.pix.idx <- vals$ensemble.pix$pix
+  overlaid.pix.idx <- vals$ens.over.pix$pix
   
   overlaid.pix.list <- lapply(overlaid.spdf.list, function(i) {
     overlaid.pix.curr <- overlaid.pix

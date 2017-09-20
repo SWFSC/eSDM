@@ -1,6 +1,6 @@
 ### Get crs in which to do overlay
 ### Overlay all models onto selected base grid
-### Create SPixDF object for ensemble plots
+### Create vals$ens.over... objects
 
 
 ###############################################################################
@@ -23,7 +23,8 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   #########################################################
   # Reset/hide things
   
-  ### Reset vals$overlaid... and vals$ensemble... before creating new overlaid
+  ### Reset vals$overlaid..., vals.ens.over... and vals$ensemble... 
+  # before creating new overlaid
   vals$overlay.crs <- NULL
   vals$overlay.base.idx <- NULL
   vals$overlay.base.sp <- NULL
@@ -31,15 +32,16 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   vals$overlaid.models <- list()
   vals$overlaid.models.specs <- list()
   
-  vals$ensemble.pix <- NULL
+  vals$ens.over.pix <- NULL
+  vals$ens.over.wpoly.filename <- NULL
+  vals$ens.over.wpoly.spdf <- NULL
+  vals$ens.over.wpoly.coverage <- NULL
+  
   vals$ensemble.models <- list()
   vals$ensemble.method <- NULL
   vals$ensemble.weights <- NULL
   vals$ensemble.rescaling <- NULL
   vals$ensemble.overlaid.idx <- NULL
-  vals$ensemble.wpoly.filename <- NULL
-  vals$ensemble.wpoly.spdf <- NULL
-  vals$ensemble.wpoly.coverage <- NULL
   
 
   ### Hide elements: this is done in server_hide_show.R
@@ -167,13 +169,13 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
     #########################################################
-    # Ensemble prep
+    # Ens.over prep
     
     ### Make relavent vals$ens.... lists the length of the num of models
     list.null <- lapply(1:models.num, function(d) NULL)
-    vals$ensemble.wpoly.spdf     <- list.null
-    vals$ensemble.wpoly.filename <- list.null
-    vals$ensemble.wpoly.coverage <- list.null
+    vals$ens.over.wpoly.spdf     <- list.null
+    vals$ens.over.wpoly.filename <- list.null
+    vals$ens.over.wpoly.coverage <- list.null
     
     ### Use rasterize() to create an SPixDF of pixel nums for ensemble previews
     ens.sp <- vals$overlay.base.sp # base.sp is used as ensemble base
@@ -204,7 +206,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     ens.pix <- as(ens.raster, "SpatialPixelsDataFrame")
     names(ens.pix) <- "pix"
     
-    vals$ensemble.pix <- ens.pix
+    vals$ens.over.pix <- ens.pix
   })
   
   #########################################################

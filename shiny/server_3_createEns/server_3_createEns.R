@@ -44,9 +44,18 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   
   validate(
     need(length(idx) > 0, 
-         "Please select one or more models to remove")
+         "Please select one or more sets of ensemble predictions to remove")
   )
   
+  # Hide preview if these predictions were plotted
+  plotted.which <- model_pix_preview_event()[[2]]
+  if (any(idx %in% plotted.which)) {
+    shinyjs::hide("model_pix_preview_plot", time = 0)
+  }
+  
+  browser()
+  
+  # Remove the reactiveValue info for selected set(s) of ensemble predicitons
   vals$ensemble.models <- vals$ensemble.models[-idx]
   vals$ensemble.method <- vals$ensemble.method[-idx]
   vals$ensemble.weights <- vals$ensemble.weights[-idx]
@@ -106,11 +115,10 @@ create_ens_preview_model <- reactive({
   )
   ensemble.spdf <- vals$ensemble.models[ensemble.which]
 
-  # browser()
   # Get SPixDF object with data being rasterized pixel indices
-  ens.pix <- vals$ensemble.pix 
+  ens.pix <- vals$ens.over.pix 
   names(ens.pix) <- "Pred.ens.pix"
-  ens.pix.idx <- vals$ensemble.pix$pix
+  ens.pix.idx <- vals$ens.over.pix$pix
   
   ens.pix.list <- lapply(ensemble.spdf, function(i) {
     ens.pix.curr <- ens.pix

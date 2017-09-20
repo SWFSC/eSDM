@@ -11,7 +11,7 @@
 output$create_ens_weight_manual_uiOut_text <- renderUI ({
   models.num <- length(vals$overlaid.models)
   
-  if(input$create_ens_table_subset) {
+  if (input$create_ens_table_subset) {
     models.num <- length(input$create_ens_datatable_rows_selected)
   }
   
@@ -47,20 +47,11 @@ output$create_ens_weights_metric_uiOut_radio <- renderUI({
 output$create_ens_weights_poly_model_uiOut_selectize <- renderUI({
   models.which <- seq_along(vals$overlaid.models)
   
-  if(input$create_ens_table_subset) {
+  if (input$create_ens_table_subset) {
     ens.selected <- input$create_ens_datatable_rows_selected
     models.which <- models.which[models.which %in% ens.selected]
   }
-  # 
-  # models.which.unw <- which(sapply(vals$ensemble.wpoly.filename, is.null))
-  # models.which <- models.which[models.which %in% models.which.unw]
-  # 
-  # validate(
-  #   need(length(models.which) > 0, 
-  #        paste("All overlaid models have a weight polygon assigned to them;", 
-  #              "remove loaded weight polygons to add new ones"))
-  # )
-  
+
   input.val <- as.list(paste("Overlaid", models.which))
   selectizeInput("create_ens_weights_poly_model", 
                  h5("Overlaid predictions to which to apply polygon weights"),
@@ -74,7 +65,7 @@ output$create_ens_weights_poly_model_uiOut_selectize <- renderUI({
 output$create_ens_weights_poly_preview_model_uiOut_select <- renderUI({
   models.which <- seq_along(vals$overlaid.models)
   
-  if(input$create_ens_table_subset) {
+  if (input$create_ens_table_subset) {
     ens.selected <- input$create_ens_datatable_rows_selected
     models.which <- models.which[models.which %in% ens.selected]
   }
@@ -112,7 +103,7 @@ output$create_ens_weights_poly_gdb_field_uiOut_select <- renderUI({
 #######################################
 ### Select loaded polygons to delete
 output$create_ens_weights_poly_remove_choices_uiOut_select <- renderUI({
-  req(!all(sapply(vals$ensemble.wpoly.filename, is.null)))
+  req(!all(sapply(vals$ens.over.wpoly.filename, is.null)))
   
   poly.table <- create_ens_weights_poly_table()
   
@@ -152,7 +143,7 @@ output$create_ens_rescale_type_uiOut_radio <- renderUI({
   
   choices.list <- list("None" = 1, "Abundance" = 2, "Normalization" = 3,
                        "Standardization" = 4, "Sum to 1" = 5)
-  if(!all(pred.type == "1")) choices.list <- choices.list[2:5]
+  if (!all(pred.type == "1")) choices.list <- choices.list[2:5]
   
   radioButtons("create_ens_rescale_type", "Rescaling method", 
                choices = choices.list, selected = choices.list[[1]])
@@ -191,7 +182,7 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
                      "1" = ".jpeg", "2" = ".pdf", "3" = ".png")
   
   # Multi
-  if(length(input$ens_datatable_ensembles_rows_selected) > 1) {
+  if (length(input$ens_datatable_ensembles_rows_selected) > 1) {
     f.val <- paste0("Multi_", perc.txt, res.txt, file.ext)
   }
   # Single

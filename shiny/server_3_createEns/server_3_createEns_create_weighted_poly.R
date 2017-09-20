@@ -5,7 +5,7 @@
 ### Create weighted ensemble using polygon weights
 create_ens_weighted_poly <- reactive({
   validate(
-    need(sum(!sapply(vals$ensemble.wpoly.filename, is.null)) > 0, 
+    need(sum(!sapply(vals$ens.over.wpoly.filename, is.null)) > 0, 
          paste("Please load at least one weight polygon in order to", 
                "use this weighted ensembling method"))
   )
@@ -25,9 +25,9 @@ create_ens_weights_poly_preds <- reactive({
   # browser()
   # i <- 2; j <- 1
   # pred.spdf <- vals$overlaid.models[[i]]
-  # # wpoly.filename <- vals$ensemble.wpoly.filename[[i]]
-  # wpoly.spdf.list <- vals$ensemble.wpoly.spdf[[i]]
-  # wpoly.coverage.vec <- vals$ensemble.wpoly.coverage[[i]]
+  # # wpoly.filename <- vals$ens.over.wpoly.filename[[i]]
+  # wpoly.spdf.list <- vals$ens.over.wpoly.spdf[[i]]
+  # wpoly.coverage.vec <- vals$ens.over.wpoly.coverage[[i]]
   # wpoly.spdf <- wpoly.spdf.list[[j]]
   # ###########################################################
   
@@ -95,8 +95,8 @@ create_ens_weights_poly_preds <- reactive({
       pred.out
     }
   }, 
-  vals$overlaid.models, vals$ensemble.wpoly.spdf, 
-  vals$ensemble.wpoly.coverage, 
+  vals$overlaid.models, vals$ens.over.wpoly.spdf, 
+  vals$ens.over.wpoly.coverage, 
   SIMPLIFY = FALSE)
   
   as.data.frame(code.out)
@@ -167,8 +167,8 @@ create_ens_weights_poly_preview <- eventReactive(
     plot(vals$overlaid.models[[overlaid.which]], axes = T, 
          col = "black", border = NA)
     
-    if (!is.null(vals$ensemble.wpoly.spdf[[overlaid.which]])) {
-      for(spdf.toplot in vals$ensemble.wpoly.spdf[[overlaid.which]]) {
+    if (!is.null(vals$ens.over.wpoly.spdf[[overlaid.which]])) {
+      for(spdf.toplot in vals$ens.over.wpoly.spdf[[overlaid.which]]) {
         plot(spdf.toplot, add = T, col = NA, border = "red")
       }
     }
@@ -209,18 +209,18 @@ create_ens_weights_poly_remove <- eventReactive(
       idx.model <- idx.model + 1
       
       if (!is.null(idx.poly)){
-        x <- vals$ensemble.wpoly.filename[[idx.model]][-idx.poly]
-        y <- vals$ensemble.wpoly.spdf[[idx.model]][-idx.poly]
-        z <- vals$ensemble.wpoly.coverage[[idx.model]][-idx.poly]
+        x <- vals$ens.over.wpoly.filename[[idx.model]][-idx.poly]
+        y <- vals$ens.over.wpoly.spdf[[idx.model]][-idx.poly]
+        z <- vals$ens.over.wpoly.coverage[[idx.model]][-idx.poly]
         
         if (length(x) == 0) {
-          vals$ensemble.wpoly.filename[idx.model] <- list(NULL)
-          vals$ensemble.wpoly.spdf[idx.model] <- list(NULL)
-          vals$ensemble.wpoly.coverage[idx.model] <- list(NULL)
+          vals$ens.over.wpoly.filename[idx.model] <- list(NULL)
+          vals$ens.over.wpoly.spdf[idx.model] <- list(NULL)
+          vals$ens.over.wpoly.coverage[idx.model] <- list(NULL)
         } else {
-          vals$ensemble.wpoly.filename[[idx.model]] <- x
-          vals$ensemble.wpoly.spdf[[idx.model]] <- y
-          vals$ensemble.wpoly.coverage[[idx.model]] <- z
+          vals$ens.over.wpoly.filename[[idx.model]] <- x
+          vals$ens.over.wpoly.spdf[[idx.model]] <- y
+          vals$ens.over.wpoly.coverage[[idx.model]] <- z
         }
       }
     }
@@ -233,7 +233,7 @@ create_ens_weights_poly_remove <- eventReactive(
 ###############################################################################
 ### Table summarizing loaded polygon weights
 create_ens_weights_poly_table <- reactive({
-  req(vals$ensemble.wpoly.filename)
+  req(vals$ens.over.wpoly.filename)
   
   models.which <- seq_along(vals$overlaid.models)
   if(input$create_ens_table_subset) {
@@ -245,22 +245,22 @@ create_ens_weights_poly_table <- reactive({
   
   # browser()
   overlaid.names <- paste("Overlaid", models.which)
-  if (all(sapply(vals$ensemble.wpoly.filename[models.which], is.null))) {
+  if (all(sapply(vals$ens.over.wpoly.filename[models.which], is.null))) {
     overlaid.filenames <- ""
     overlaid.weights <- ""
     overlaid.coverage <- ""
   } else {
-    overlaid.filenames <- sapply(vals$ensemble.wpoly.filename, 
+    overlaid.filenames <- sapply(vals$ens.over.wpoly.filename, 
                                  paste, collapse = ", ")[models.which]
 
-    overlaid.weights <- sapply(vals$ensemble.wpoly.spdf, function(l.spdf) {
+    overlaid.weights <- sapply(vals$ens.over.wpoly.spdf, function(l.spdf) {
       paste(lapply(l.spdf, function(spdf) {
         ifelse(length(unique(spdf$Weight)) > 1, "Multiple", spdf$Weight[1])
       }), 
       collapse = ", ")
     })[models.which]
 
-    overlaid.coverage <- sapply(vals$ensemble.wpoly.coverage, 
+    overlaid.coverage <- sapply(vals$ens.over.wpoly.coverage, 
                                 paste, collapse = ", ")[models.which]
   }
 
@@ -275,7 +275,7 @@ create_ens_weights_poly_table <- reactive({
 
 ###############################################################################
 ### Add filename, weighted polygon, and coverage percentage to...
-# ...vals$ensemble.wpoly... objects
+# ...vals$ens.over.wpoly... objects
 create_ens_weights_poly_add <- eventReactive(
   input$create_ens_weights_poly_add_execute, 
   {
@@ -352,7 +352,7 @@ create_ens_weights_poly_add <- eventReactive(
     ### Make sure that new polygon doesn't overlap with loaded polygons
     # assigned to same overlaid model
     sapply(overlaid.selected, function(overlaid.idx) {
-      if (!is.null(vals$ensemble.wpoly.spdf[[overlaid.idx]])) {
+      if (!is.null(vals$ens.over.wpoly.spdf[[overlaid.idx]])) {
         mapply(function(poly.loaded, poly.idx) {
           validate(
             need(is.null(gIntersection(poly.spdf, poly.loaded, byid = TRUE)), 
@@ -361,24 +361,24 @@ create_ens_weights_poly_add <- eventReactive(
                        poly.idx, "of overlaid model", overlaid.idx))
           )
         }, 
-        vals$ensemble.wpoly.spdf[[overlaid.idx]], 
-        seq_along(vals$ensemble.wpoly.spdf[[overlaid.idx]]))
+        vals$ens.over.wpoly.spdf[[overlaid.idx]], 
+        seq_along(vals$ens.over.wpoly.spdf[[overlaid.idx]]))
       }
     })
     
     ### Add poly.spdf and coverage val to applicable indices of vals$ens...
-    ewf.selected <- vals$ensemble.wpoly.filename[overlaid.selected]
+    ewf.selected <- vals$ens.over.wpoly.filename[overlaid.selected]
     ewf.selected.new <- lapply(ewf.selected, function(l) c(l, poly.filename))
-    vals$ensemble.wpoly.filename[overlaid.selected] <- ewf.selected.new
+    vals$ens.over.wpoly.filename[overlaid.selected] <- ewf.selected.new
     
-    ews.selected <- vals$ensemble.wpoly.spdf[overlaid.selected]
+    ews.selected <- vals$ens.over.wpoly.spdf[overlaid.selected]
     ews.selected.new <- lapply(ews.selected, function(l) c(l, poly.spdf))
-    vals$ensemble.wpoly.spdf[overlaid.selected] <- ews.selected.new
+    vals$ens.over.wpoly.spdf[overlaid.selected] <- ews.selected.new
     
     poly.coverage <- input$create_ens_weights_poly_coverage
-    ewc.selected <- vals$ensemble.wpoly.coverage[overlaid.selected]
+    ewc.selected <- vals$ens.over.wpoly.coverage[overlaid.selected]
     ewc.selected.new <- lapply(ewc.selected, function(l) c(l, poly.coverage))
-    vals$ensemble.wpoly.coverage[overlaid.selected] <- ewc.selected.new
+    vals$ens.over.wpoly.coverage[overlaid.selected] <- ewc.selected.new
     
     ### Output message
     paste(poly.filetype.txt, "weight polygon added as weight for:", 
@@ -479,6 +479,7 @@ create_ens_weights_poly_raster_read <- reactive({
     if (gis.file.success) {
       poly.pix <- as(gis.file.raster, "SpatialPixelsDataFrame")
       names(poly.pix) <- "Weight"
+      
       if (weight.type == 1) {
         poly.pix$Weight <- input$create_ens_weights_poly_raster_weight
       }

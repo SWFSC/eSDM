@@ -24,16 +24,18 @@ vals <- reactiveValues(
   overlaid.models = list(),       # List of overlaid models
   overlaid.models.specs = list(), # models.spec info about overlaid models
   
+  # Objects that store elements used by ensemble and overlaid models
+  ens.over.pix = NULL,            # SPixDF of rasterized ensemble with pixel num as data; set in ensOverlay_OverlayModels.R
+  ens.over.wpoly.filename = NULL, # List of filenames of polygons with weights; idx corresponds to overlaid pred idx
+  ens.over.wpoly.spdf = NULL,     # List of polygons with weights; idx corresponds to overlaid pred idx
+  ens.over.wpoly.coverage = NULL, # List of overlap perc for weight to be applied; idx corresponds to overlaid pred idx
+  
   # Objects that store spdfs of and data on created ensembles
-  ensemble.pix = NULL,            # SPixDF of rasterized ensemble with pixel num as data; set in ensOverlay_OverlayModels.R
   ensemble.models = list(),       # Ensemble model predictions
   ensemble.method = NULL,         # Vector of ensembling methods used
   ensemble.weights = NULL,        # Strings of weights used (if any)
   ensemble.rescaling = NULL,      # Vector of rescaling methods used
   ensemble.overlaid.idx = NULL,   # Strings of indices of overlaid model predictions used
-  ensemble.wpoly.filename = NULL, # List of filenames of polygons with weights; idx corresponds to overlaid pred idx
-  ensemble.wpoly.spdf = NULL,     # List of polygons with weights; idx corresponds to overlaid pred idx
-  ensemble.wpoly.coverage = NULL, # List of overlap perc for weight to be applied; idx corresponds to overlaid pred idx
   
   # Objects that store data for evaluation metrics section. 'valid' refers to validation
   eval.models.idx = NULL,         # List of indices of evaluated models
@@ -84,15 +86,16 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$overlaid.models       <- vals.save[["overlaid.models"]]
     vals$overlaid.models.specs <- vals.save[["overlaid.models.specs"]]
     
-    vals$ensemble.pix            <- vals.save[["ensemble.pix"]]
+    vals$ens.over.pix            <- vals.save[["ens.over.pix"]]
+    vals$ens.over.wpoly.filename <- vals.save[["ens.over.wpoly.filename"]]
+    vals$ens.over.wpoly.spdf     <- vals.save[["ens.over.wpoly.spdf"]]
+    vals$ens.over.wpoly.coverage <- vals.save[["ens.over.wpoly.coverage"]]
+    
     vals$ensemble.models         <- vals.save[["ensemble.models"]]
     vals$ensemble.method         <- vals.save[["ensemble.method"]]
     vals$ensemble.weights        <- vals.save[["ensemble.weights"]]
     vals$ensemble.rescaling      <- vals.save[["ensemble.rescaling"]]
     vals$ensemble.overlaid.idx   <- vals.save[["ensemble.overlaid.idx"]]
-    vals$ensemble.wpoly.filename <- vals.save[["ensemble.wpoly.filename"]]
-    vals$ensemble.wpoly.spdf     <- vals.save[["ensemble.wpoly.spdf"]]
-    vals$ensemble.wpoly.coverage <- vals.save[["ensemble.wpoly.coverage"]]
     
     vals$eval.models.idx       <- vals.save[["eval.models.idx"]]
     vals$eval.data.list        <- vals.save[["eval.data.list"]]

@@ -19,15 +19,15 @@ observe({
   vals$overlay.base.specs
   vals$overlaid.models
   vals$overlaid.models.specs
-  vals$ensemble.pix
+  vals$ens.over.pix
+  vals$ens.over.wpoly.filename
+  vals$ens.over.wpoly.spdf
+  vals$ens.over.wpoly.coverage
   vals$ensemble.models
   vals$ensemble.method
   vals$ensemble.weights
   vals$ensemble.rescaling
   vals$ensemble.overlaid.idx
-  vals$ensemble.wpoly.filename
-  vals$ensemble.wpoly.spdf
-  vals$ensemble.wpoly.coverage
   vals$eval.models.idx
   vals$eval.data.list
   vals$eval.data.specs
