@@ -114,6 +114,7 @@ server <- function(input, output, session) {
   shinyjs::hide("model_pix_preview_plot", time = 0)
   shinyjs::hide("overlay_preview_base", time = 0)
   shinyjs::hide("overlay_preview_overlaid", time = 0)
+  shinyjs::hide("create_ens_weights_poly_preview_plot", time = 0)
   shinyjs::hide("ens_pix_preview_plot", time = 0)
   shinyjs::hide("pretty_plot", time = 0)
 }

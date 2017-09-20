@@ -13,19 +13,25 @@ ui.createEns <- function() {
                 conditionalPanel("input.create_ens_table_subset == false", tableOutput("create_ens_table")),
                 conditionalPanel("input.create_ens_table_subset == true", DT::dataTableOutput("create_ens_datatable")),
                 column(4, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid models")), 
-                column(8, conditionalPanel("input.create_ens_table_subset", helpText("Click on a row to select models to use in ensemble")))
+                column(8, 
+                       conditionalPanel(
+                         condition = "input.create_ens_table_subset", 
+                         helpText("Click on a row to select models to use in ensemble")
+                       )
+                )
               )
             ), 
             
             fluidRow(
-              ##################################################################### Ensembling method
+              ##################################################################### Ensembling method box
               box(
                 title = "Create Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
                 fluidRow(
                   box(width = 7,
                       fluidRow(
                         column(width = 4, 
-                               radioButtons("create_ens_type", "Ensembling method", 
+                               strong("Ensembling method"), 
+                               radioButtons("create_ens_type", NULL, 
                                             choices = list("Unweighted" = 1, "Weighted" = 2), 
                                             selected = 1), 
                                column(12, 
@@ -38,86 +44,104 @@ ui.createEns <- function() {
                                       )
                                )
                         ), 
-                        ########################################################### Unweighted ensembling options
-                        # None
-                        
-                        ########################################################### Weighted ensembling options
-                        column(8, br(), 
+                        column(width = 8, 
+                               br(), 
                                conditionalPanel(
                                  condition = "output.ens_overlaid_selected_flag == false", 
-                                 strong("Please select at least two sets of overlaid model predictions to ensemble")), 
-                               conditionalPanel(
-                                 condition = "input.create_ens_type == 2 && output.ens_overlaid_selected_flag", 
-                                 fluidRow(
-                                   ####################################### Weighting by manual entry
+                                 strong("Please select at least two sets of overlaid model predictions to ensemble")
+                               ), 
+                               
+                               fluidRow(
+                                 #################################################### Unweighted ensembling options
+                                 conditionalPanel(
+                                   condition = "output.ens_overlaid_selected_flag && input.create_ens_type == 1", 
+                                   box(width = 12, 
+                                       helpText(strong("Unweighted ensembling method:"), 
+                                                "Calculate the simple mean of all predictions in each grid cell.")
+                                   )
+                                 ),
+                                 
+                                 #################################################### Weighted ensembling options
+                                 conditionalPanel(
+                                   condition = "output.ens_overlaid_selected_flag && input.create_ens_type == 2", 
+                                   
+                                   ################################## Weighting by manual entry
                                    conditionalPanel(
                                      condition = "input.create_ens_weight_type == 1",
                                      box(width = 12, 
-                                         helpText(strong("Weighted ensembling method 1: Manual entry"), br(), 
-                                                  "Entered weights correspond to the order of the overlaid model predictions in above table.", br(), 
-                                                  "Weights must be entered in the following format: \'weight, weight, ..., weight\'"),
+                                         helpText(strong("Weighted ensembling method:"), 
+                                                  "Calculate the weighted mean of all predictions in each grid cell."), 
+                                         helpText(strong("Manual entry method:"), 
+                                                  "Entered weights correspond to the order of the models in the", 
+                                                  "overlaid model predictions table.", 
+                                                  "Weights must be entered in the following format: \"weight, weight, ..., weight\"."),
                                          uiOutput("create_ens_weight_manual_uiOut_text")
                                      )
                                    ),
-                                   ####################################### Weighting by evaluation metric
+                                   ################################## Weighting by evaluation metric
                                    conditionalPanel(
                                      condition = "input.create_ens_weight_type == 2", 
                                      box(width = 12, 
-                                         helpText(strong("Weighted ensembling method 2: Evaluation metric"), br(), 
-                                                  "To use this weighting method, please go to the 'Evaluation Metrics' tab and calculate", 
-                                                  "the metric you wish to use as a weight for all of the overlaid models you plan to use in", 
-                                                  "the ensemble.", br(), 
-                                                  "The table displays both the calculated metric values and the relative weights for the", 
-                                                  "predictions given the metric values"), 
+                                         helpText(strong("Weighted ensembling method:"), 
+                                                  "Calculate the weighted mean of all predictions in each grid cell."), 
+                                         helpText(strong("Evaluation metric method:"), 
+                                                  "The table displays both the evaluation metric values and the relative weights for the models.", 
+                                                  "The relative weights are the metric values rescalued so that the maximum value is one."), 
                                          conditionalPanel(
                                            condition = "output.create_ens_weights_metric_flag == false", 
-                                           helpText(strong("No metrics have been calculated for the selected overlaid model predictions"))), 
+                                           helpText(strong("No metrics have been calculated for the selected overlaid model predictions"), br(), 
+                                                    "To use this weighting method, please go to the 'Evaluation Metrics' tab and,", 
+                                                    "for all of the overlaid models you plan to use in the ensemble, calculate", 
+                                                    "the metric you wish to use as a weight.")
+                                         ), 
                                          conditionalPanel(
                                            condition = "output.create_ens_weights_metric_flag", 
                                            fluidRow(
-                                             column(width = 4, 
-                                                    uiOutput("create_ens_weights_metric_uiOut_radio")
-                                             ), 
-                                             column(width = 8, 
-                                                    tableOutput("create_ens_weights_metric_table_out")
-                                             )
+                                             column(width = 4, uiOutput("create_ens_weights_metric_uiOut_radio")), 
+                                             column(width = 8, tableOutput("create_ens_weights_metric_table_out"))
                                            )
                                          )
                                      )
                                    ), 
-                                   ####################################### Weighting by pixel-level spatial weights
+                                   ################################## Weighting by pixel-level spatial weights
                                    conditionalPanel(
                                      condition = "input.create_ens_weight_type == 3", 
                                      box(width = 12, 
-                                         helpText(strong("Weighted ensembling method 3: Pixel-level spatial weights"), br(), 
-                                                  "Overlaid predictions are multiplied by corresponding spatial weight. These pixel-level", 
-                                                  "spatial weights were specified when each set of model predictions was initally", 
-                                                  "loaded into the app", br(), 
+                                         helpText(strong("Weighted ensembling method:"), 
+                                                  "Calculate the weighted mean of all predictions in each grid cell."), 
+                                         helpText(strong("Pixel-level spatial weights method:"), 
+                                                  "Overlaid predictions are multiplied by their corresponding spatial weight. These pixel-level", 
+                                                  "spatial weights were specified by the 'Column with weight data' input", 
+                                                  "when each set of model predictions was initally loaded into the app.", 
                                                   "If a set of overlaid model predictions does not have pixel-level spatial weights,", 
-                                                  "then the row corresponding to that set will say 'No' in the below table and",
-                                                  "those predictions will have spatial weights of 1 when the enseble is created"), 
+                                                  "then the row corresponding to that set will say \"No\" in the table below and",
+                                                  "those predictions will have a weight of one when the enseble is created"), 
                                          conditionalPanel(
                                            condition = "output.create_ens_weights_pix_flag == false", 
-                                           helpText(strong("At least 1 of the selected overlaid predictions must have spatial weights"))), 
+                                           helpText(strong("At least one of the selected overlaid predictions", 
+                                                           "must have pixel-level spatial weights"))
+                                         ), 
                                          conditionalPanel(
                                            condition = "output.create_ens_weights_pix_flag", 
-                                           tableOutput("create_ens_weights_pix_table_out"))
+                                           tableOutput("create_ens_weights_pix_table_out")
+                                         )
                                      )
                                    ), 
-                                   ####################################### Weighting by polygon spatial weights
+                                   ################################## Weighting by polygon spatial weights
                                    conditionalPanel(
                                      condition = "input.create_ens_weight_type == 4",
                                      box(width = 12, 
-                                         helpText(strong("Weighted ensembling method 4: Polygon(s) with weights"), br(), 
-                                                  "Select one or more sets of overlaid model predictions and load weight polygons to assign to the",
-                                                  "selected predictions. These weight polygons designate areas in which the selected predictions", 
-                                                  "will be weighted.",br(), 
-                                                  "Currently you may only assign one weight for each weight polygon; however, you may load", 
-                                                  "multiple polygons if you wish to apply different weights to different prediction regions.", 
-                                                  "If multiple polygons are loaded and they both overlap a prediction at the given percentage,", 
-                                                  "then the last weight that was assigned will be used for that prediction.", br(), 
-                                                  "If the percentage of any prediction cells that is overlapped by their weight polygons is less", 
-                                                  "than the given percentage, then those predictions will have a weight of 1."), 
+                                         helpText(strong("Weighted ensembling method:"), 
+                                                  "Calculate the weighted mean of all predictions in each grid cell."), 
+                                         helpText(strong("Polygon(s) with weights method"), 
+                                                  "Select one or more sets of overlaid model predictions and load weight polygons", 
+                                                  "to assign to the selected sets of predictions. These weight polygons designate area(s)", 
+                                                  "in which the selected sets of predictions will be weighted.", 
+                                                  "Currently you may only assign one weight for each weight polygon, but you may load", 
+                                                  "multiple polygons to apply unique weights to multiple prediction regions", 
+                                                  "for one set of predictions. However, these polygons must not overlap.", 
+                                                  "All predictions whose grid cell overlaps with a weight polygon by less than the percentage", 
+                                                  "specified below, including those with no overlap, will have a weight of one."), 
                                          fluidRow(
                                            column(7, uiOutput("create_ens_weights_poly_model_uiOut_selectize")), 
                                            column(5, selectInput("create_ens_weights_poly_type", h5("File type"), 
@@ -276,6 +300,8 @@ ui.createEns <- function() {
                                )
                         )
                       ), 
+                      
+                      ################################## Weighting by polygon spatial weights pt 2
                       conditionalPanel(
                         condition = "input.create_ens_type == 2 && output.ens_overlaid_selected_flag && input.create_ens_weight_type == 4",
                         h5("Summary table of loaded polygon file(s) and weight(s) for models to be used in ensemble"), 
@@ -291,62 +317,59 @@ ui.createEns <- function() {
                       )
                   ),
                   
-                  ##################################################################### Rescale predictions
+                  ##################################################################### Rescale predictions box
                   column(width = 3, 
                          box(width = 12,
+                             strong("Rescaling method"), 
                              conditionalPanel(
                                condition = "output.ens_rescale_none_flag == false", 
-                               helpText(strong("Note: All prediction types are not aboslute density,", 
-                                               "and thus the model predictions must be rescaled")
-                               )
+                               helpText(strong("Note: All prediction types are not \"Absolute density\",", 
+                                               "and thus the model predictions must be rescaled"))
                              ),
                              uiOutput("create_ens_rescale_type_uiOut_radio"),
                              column(12,
                                     conditionalPanel(
                                       condition = "input.create_ens_rescale_type == 1",
-                                      helpText(strong("Description: Model predictions will not be altered"))
+                                      helpText(strong("Description: Model predictions will not be changed"))
                                     ), 
                                     conditionalPanel(
                                       condition = "input.create_ens_rescale_type == 2",
                                       numericInput("create_ens_rescale_abund", h5("Abundance to which to rescale predictions"),
                                                    value = 0, min = 0, step = 1), 
-                                      helpText(strong("Description: Model predictions (densities) will be rescaled so that the predicted", 
-                                                      "abundance of each set of predictions will be the value entered above"))
+                                      helpText(strong("Description: For each model, rescale predictions so that the predicted", 
+                                                      "abundance is the value entered above"))
                                     ), 
                                     conditionalPanel(
                                       condition = "input.create_ens_rescale_type == 3",
-                                      helpText(strong("Description: Normalization rescales densities (X) into a range of [0,1]", 
-                                                      "using the following formula:"), 
-                                               column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -", 
-                                                                        paste0("X", tags$sub("min"), ")"), "/", 
-                                                                        paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")")))
-                                               )
-                                      )
+                                      helpText(strong("Description: For each model, rescale predictions (X) into a range of [0,1]", 
+                                                      "using the following formula:")), 
+                                      column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -", 
+                                                               paste0("X", tags$sub("min"), ")"), "/", 
+                                                               paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")"))))
                                     ), 
                                     conditionalPanel(
                                       condition = "input.create_ens_rescale_type == 4",
-                                      helpText(strong("Description: Standardization rescales densities (X) to have a mean", HTML("(&mu;)"), 
+                                      helpText(strong("Description: For each model, rescale predictions (X) to have a mean", HTML("(&mu;)"), 
                                                       "of 0 and", "standard deviation", HTML("(&sigma;)"), 
                                                       "of 1 (unit variance) using the following formula:")), 
                                       column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
                                     ), 
                                     conditionalPanel(
                                       condition = "input.create_ens_rescale_type == 5",
-                                      helpText(strong("Description: Sum to 1 rescales the model predictions (densities) so that the", 
-                                                      "densities for each set of predictions sum to 1"))
+                                      helpText(strong("Description: For each model, rescale the predictions so that they sum to one"))
                                     )
                              )
                          ), 
                          conditionalPanel(
                            condition = "input.create_ens_type == 2 && input.create_ens_weight_type == 4",
                            box(width = 12, 
-                               helpText(strong("Additional polygon-based weighting functionality:"), br(), 
-                                        "Preview weighted polygons for selected overlaid predictions"),
+                               helpText(strong("Polygon(s) with weights (cont)")), 
+                               helpText("Preview weighted polygons for selected overlaid predictions"),
                                fluidRow(
                                  column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")), 
                                  column(4, br(), br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))
                                ), 
-                               withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
+                               shinycssloaders::withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
                            )
                          )
                   ),
@@ -376,7 +399,7 @@ ui.createEns <- function() {
                          br(), 
                          h5("Action option(s)"), 
                          fluidRow(
-                           box(title = NULL, width = 12, 
+                           box(width = 12, 
                                ####################################### Preview ensemble(s)
                                conditionalPanel(
                                  condition = "input.ens_select_action == 1", 
@@ -393,8 +416,7 @@ ui.createEns <- function() {
                                                           selected = 1)
                                    ), 
                                    column(3, radioButtons("ens_download_preview_res", h5("Resolution"),
-                                                          choices = list("High (300 ppi)" = 1, 
-                                                                         "Low (72 ppi)" = 2),
+                                                          choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
                                                           selected = 2)
                                    ),
                                    column(3, radioButtons("ens_download_preview_format", h5("File format"),
@@ -431,7 +453,7 @@ ui.createEns <- function() {
                 ################################################# Preview of ensemble(s)
                 box(
                   title = "Ensemble Preview", status = "primary", solidHeader = TRUE, width = 6, collapsible = TRUE,
-                  withSpinner(plotOutput("ens_pix_preview_plot"), type = 1)
+                  shinycssloaders::withSpinner(plotOutput("ens_pix_preview_plot"), type = 1)
                 )
               )
             )

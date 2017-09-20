@@ -144,7 +144,7 @@ output$create_ens_rescale_type_uiOut_radio <- renderUI({
                        "Standardization" = 4, "Sum to 1" = 5)
   if (!all(pred.type == "1")) choices.list <- choices.list[2:5]
   
-  radioButtons("create_ens_rescale_type", "Rescaling method", 
+  radioButtons("create_ens_rescale_type", NULL, 
                choices = choices.list, selected = choices.list[[1]])
 })
 
