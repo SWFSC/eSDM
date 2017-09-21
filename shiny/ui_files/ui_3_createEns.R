@@ -155,12 +155,12 @@ ui.createEns <- function() {
                                                condition = "input.create_ens_weights_poly_type == 1",
                                                ui.csv.poly.instructions(), 
                                                fluidRow(
-                                                 column(6, fileInput("create_ens_weights_poly_csv_file", h5("Upload .csv file"), accept = ".csv")), 
+                                                 column(6, fileInput("create_ens_weights_poly_csv_file", label.csv.upload, accept = ".csv")), 
                                                  column(width = 4, offset = 1, 
                                                         conditionalPanel(
                                                           condition = "output.create_ens_weights_poly_csv_flag == false",
                                                           ui.new.line(), 
-                                                          strong("For csv file, please choose a file that has a .csv file extension")
+                                                          ui.upload.error.csv
                                                         ),
                                                         conditionalPanel(
                                                           condition = "output.create_ens_weights_poly_csv_flag",
@@ -176,12 +176,12 @@ ui.createEns <- function() {
                                                ui.gis.raster.instructions(), 
                                                fluidRow(
                                                  column(6, fileInput("create_ens_weights_poly_raster_file", 
-                                                                     h5("Upload raster .tif file"), accept = ".tif")), 
+                                                                     label.raster.upload, accept = ".tif")), 
                                                  column(5, offset = 1, 
                                                         conditionalPanel(
                                                           condition = "output.create_ens_weights_poly_raster_flag == false",
                                                           ui.new.line(), 
-                                                          strong("Could not load GIS raster using the provided file and band number")
+                                                          ui.upload.error.raster
                                                         )
                                                  )
                                                ), 
@@ -211,11 +211,11 @@ ui.createEns <- function() {
                                                condition = "input.create_ens_weights_poly_type == 3",
                                                ui.gis.shp.intructions(), 
                                                fluidRow(
-                                                 column(6, fileInput("create_ens_weights_poly_shp_files", h5("Upload GIS files"), multiple = T)), 
+                                                 column(6, fileInput("create_ens_weights_poly_shp_files", label.shp.upload, multiple = TRUE)), 
                                                  column(5, offset = 1, 
                                                         conditionalPanel(
                                                           condition = "output.create_ens_weights_poly_shp_flag == false",
-                                                          strong("Could not load GIS shapefile using the provided file(s)")
+                                                          ui.upload.error.shp
                                                         )
                                                  )
                                                ), 
@@ -248,17 +248,17 @@ ui.createEns <- function() {
                                                condition = "input.create_ens_weights_poly_type == 4",
                                                ui.gis.gdb.intructions(), 
                                                fluidRow(
-                                                 column(6, textInput("create_ens_weights_poly_gdb_path", h5(".gdb path"), 
+                                                 column(6, textInput("create_ens_weights_poly_gdb_path", label.gdb.path, 
                                                                      value = ".../folder.gdb")),
-                                                 column(6, textInput("create_ens_weights_poly_gdb_name", h5("Filename within .gbd folder"), 
+                                                 column(6, textInput("create_ens_weights_poly_gdb_name", label.gdb.name, 
                                                                      value = ""))
                                                ),
                                                fluidRow(
-                                                 column(6, actionButton("create_ens_weights_poly_gdb_load", "Upload file from specified path")), 
+                                                 column(6, actionButton("create_ens_weights_poly_gdb_load", label.gdb.upload)), 
                                                  column(6, 
                                                         conditionalPanel(
                                                           condition = "output.create_ens_weights_poly_gdb_flag == false",
-                                                          strong("Could not load GIS file using the provided path and filename")
+                                                          ui.upload.error.gdb
                                                         )
                                                  )
                                                ), 

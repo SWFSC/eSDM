@@ -22,7 +22,7 @@ ui.overlay <- function() {
                                  condition = "input.overlay_bound_file_type == 1",
                                  ui.csv.poly.instructions(), 
                                  fluidRow(
-                                   column(6, fileInput("overlay_bound_csv_file", h5("Upload csv file"), accept = ".csv")), 
+                                   column(6, fileInput("overlay_bound_csv_file", label.csv.upload, accept = ".csv")), 
                                    column(6, 
                                           br(), br(), 
                                           textOutput("overlay_bound_csv_message"), 
@@ -34,7 +34,7 @@ ui.overlay <- function() {
                                  condition = "input.overlay_bound_file_type == 2",
                                  ui.gis.shp.intructions(),
                                  fluidRow(
-                                   column(6, fileInput("overlay_bound_gis_shp_files", h5("Upload GIS files"), multiple = T)),
+                                   column(6, fileInput("overlay_bound_gis_shp_files", label.shp.upload, multiple = TRUE)),
                                    column(6,
                                           br(), br(),
                                           textOutput("overlay_bound_gis_shp_message"),
@@ -48,8 +48,8 @@ ui.overlay <- function() {
                                  textInput("overlay_bound_gis_gdb_path", label.gdb.path, value = ".../folder.gdb"),
                                  textInput("overlay_bound_gis_gdb_name", label.gdb.name, value = ""),
                                  fluidRow(
-                                   column(6, actionButton("overlay_bound_gis_gdb_load", label.gdb.upload)),
-                                   column(6,
+                                   column(7, actionButton("overlay_bound_gis_gdb_load", label.gdb.upload)),
+                                   column(5,
                                           textOutput("overlay_bound_gis_gdb_message"),
                                           textOutput("overlay_bound_gis_gdb_text")
                                    )
@@ -97,7 +97,7 @@ ui.overlay <- function() {
                              box(width = 12, 
                                  ui.csv.poly.instructions(), 
                                  fluidRow(
-                                   column(6, fileInput("overlay_land_csv_file", h5("Upload csv file"), accept = ".csv")),
+                                   column(6, fileInput("overlay_land_csv_file", label.csv.upload, accept = ".csv")),
                                    column(6, br(), br(),
                                           textOutput("overlay_land_csv_message"),
                                           textOutput("overlay_land_csv_text"))
@@ -109,7 +109,7 @@ ui.overlay <- function() {
                              box(width = 12, 
                                  ui.gis.shp.intructions(), 
                                  fluidRow(
-                                   column(6, fileInput("overlay_land_gis_shp_files", h5("Upload GIS files"), multiple = T)),
+                                   column(6, fileInput("overlay_land_gis_shp_files", label.shp.upload, multiple = TRUE)),
                                    column(6,
                                           br(), br(),
                                           textOutput("overlay_land_gis_shp_message"), 
@@ -125,8 +125,8 @@ ui.overlay <- function() {
                                  textInput("overlay_land_gis_gdb_path", label.gdb.path, value = ".../folder.gdb"),
                                  textInput("overlay_land_gis_gdb_name", label.gdb.name, value = ""), 
                                  fluidRow(
-                                   column(6, actionButton("overlay_land_gis_gdb_load", label.gdb.upload)),
-                                   column(6,
+                                   column(7, actionButton("overlay_land_gis_gdb_load", label.gdb.upload)),
+                                   column(5,
                                           textOutput("overlay_land_gis_gdb_message"), 
                                           textOutput("overlay_land_gis_gdb_text")
                                    )
@@ -163,7 +163,7 @@ ui.overlay <- function() {
                          title = "Overlay Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
                          fluidRow(
                            box(width = 6, 
-                               h5("Overlay projection options:"), 
+                               h5("Overlay options: projection"), 
                                helpText("A major element of the overlay process is calculating the area of polygons and their overlap.", 
                                         "Thus, the projection of the model predictions during the overlay process", 
                                         "can have an effect on the overlay results."), 
@@ -186,11 +186,12 @@ ui.overlay <- function() {
                            column(6, 
                                   fluidRow(
                                     box(width = 12, 
-                                        h5("Overlay percent overlap options:"), 
-                                        helpText("The percentage of a base grid cell that must be covered by original model predictions", 
-                                                 "for that base grid cell not to have a value of NA. If \"0\" is selected,", 
-                                                 "then the base grid cell will not have a value of NA if there is any overlap"),
-                                        sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 100)
+                                        h5("Overlay options: percent overlap"), 
+                                        helpText("•	The slider bar specifies the percent that the original model prediction(s) must overlap", 
+                                                 "a base grid cell for that cell to have a non-NA overlaid prediction value.", 
+                                                 "A slider bar value of \"0\" means that cell will have a non-NA overlaid prediction value", 
+                                                 "if there is any overlap with any original model prediction."),
+                                        sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 50)
                                     ), 
                                     box(width = 12,
                                         helpText(strong("Reminder: loaded study area and land polygons will be used during", 

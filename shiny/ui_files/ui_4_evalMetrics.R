@@ -33,8 +33,8 @@ ui.evalMetrics <- function() {
                 conditionalPanel(
                   condition = "input.eval_load_type_1 == 1",
                   helpText("Excel csv file must have lat/long coordinates for points and a column with presence/absence/count data"), 
-                  fileInput("eval_csv_1", h5("Upload Excel .csv file")),
-                  conditionalPanel("output.eval_csv_1_flag == false", strong("For csv file, please choose a file that has a .csv file extension")),
+                  fileInput("eval_csv_1", label.csv.upload, accept = ".csv"),
+                  conditionalPanel("output.eval_csv_1_flag == false", ui.upload.error.csv),
                   conditionalPanel(
                     condition = "output.eval_csv_1_flag", 
                     box(width = 12, 
@@ -57,11 +57,8 @@ ui.evalMetrics <- function() {
                 conditionalPanel(
                   condition = "input.eval_load_type_1 == 2",
                   ui.gis.shp.intructions(),
-                  fileInput("eval_gis_shp_1", label = h5("Upload GIS shapefile files"), multiple = T), 
-                  conditionalPanel(
-                    condition = "output.eval_gis_1_shp_flag == false", 
-                    strong("Could not load GIS shapefile using the provided file(s)")
-                  )
+                  fileInput("eval_gis_shp_1", label.shp.upload, multiple = TRUE), 
+                  conditionalPanel("output.eval_gis_1_shp_flag == false", ui.upload.error.shp)
                 ), 
                 ######################################################### GIS gdb file
                 conditionalPanel(
@@ -73,11 +70,9 @@ ui.evalMetrics <- function() {
                     column(6, br(), br(), actionButton("eval_gis_gdb_load_1", label.gdb.upload))
                   ), 
                   br(), 
-                  conditionalPanel(
-                    condition = "output.eval_gis_1_gdb_flag == false", 
-                    strong("Could not load GIS file using the provided path and filename")
-                  )
+                  conditionalPanel("output.eval_gis_1_gdb_flag == false", ui.upload.error.gdb)
                 ), 
+                
                 ######################################################### GIS shp or gdb file
                 conditionalPanel(
                   condition = "output.eval_gis_1_flag",

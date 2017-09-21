@@ -43,12 +43,10 @@ ui.loadModels <- function() {
                          condition = "input.model_load_type == 1",
                          ui.csv.instructions(),
                          ui.load.data.instructions(), 
-                         fileInput("model_csv_file", h5("Upload .csv file"), accept = ".csv"),
+                         fileInput("model_csv_file", label.csv.upload, accept = ".csv"),
                          conditionalPanel(
                            condition = "output.read_model_csv_flag == false",
-                           box(width = 12, 
-                               strong("For csv file, please choose a file that has a .csv file extension")
-                           )
+                           box(width = 12, ui.upload.error.csv)
                          ),
                          conditionalPanel(
                            condition = "output.read_model_csv_flag", 
@@ -79,10 +77,10 @@ ui.loadModels <- function() {
                          condition = "input.model_load_type == 2",
                          ui.gis.raster.instructions(), 
                          ui.load.data.instructions.raster(), 
-                         fileInput("model_gis_raster_file", h5("Upload raster .tif file"), accept = ".tif"), 
+                         fileInput("model_gis_raster_file", label.raster.upload, accept = ".tif"), 
                          conditionalPanel(
                            condition = "output.read_model_gis_raster_flag == false", 
-                           box(width = 12, strong("Could not load GIS raster using the provided file and band number"))
+                           box(width = 12, ui.upload.error.raster)
                          ), 
                          conditionalPanel(
                            condition = "output.read_model_gis_raster_flag", 
@@ -110,10 +108,10 @@ ui.loadModels <- function() {
                          condition = "input.model_load_type == 3",
                          ui.gis.shp.intructions(), 
                          ui.load.data.instructions(), 
-                         fileInput("model_gis_shp_files", h5("Upload GIS shapefile files"), multiple = TRUE),
+                         fileInput("model_gis_shp_files", label.shp.upload, multiple = TRUE),
                          conditionalPanel(
                            condition = "output.read_model_gis_shp_flag == false", 
-                           box(width = 12, strong("Could not load GIS shapefile using the provided file(s)"))
+                           box(width = 12, ui.upload.error.shp)
                          ), 
                          conditionalPanel(
                            condition = "output.read_model_gis_shp_flag", 
@@ -156,7 +154,7 @@ ui.loadModels <- function() {
                          br(), 
                          conditionalPanel(
                            condition = "output.read_model_gis_gdb_flag == false", 
-                           box(width = 12, strong("Could not load GIS file using the provided path and filename"))
+                           box(width = 12, ui.upload.error.gdb)
                          ),
                          conditionalPanel(
                            condition = "output.read_model_gis_gdb_flag", 
