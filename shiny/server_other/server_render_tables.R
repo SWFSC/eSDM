@@ -88,9 +88,9 @@ table_ensembles <- reactive({
 
 ###############################################################################
 ### Table of orig and overlaid spdfs
-table_orig_overlaid <- reactive({
-  rbind(table_orig(), table_overlaid()[,1:5])
-})
+# table_orig_overlaid <- reactive({
+#   rbind(table_orig(), table_overlaid()[,1:5])
+# })
 
 
 ###############################################################################

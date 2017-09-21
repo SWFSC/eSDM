@@ -38,12 +38,12 @@ vals <- reactiveValues(
   ensemble.overlaid.idx = NULL,   # Strings of indices of overlaid model predictions used
   
   # Objects that store data for evaluation metrics section. 'valid' refers to validation
-  eval.models.idx = NULL,         # List of indices of evaluated models
   eval.data.list = list(NA, NA),  # List with sptsdf of pres & abs
-  eval.data.specs = NULL,         # File name, p/a codes, and length of p/a pts (not currently used 08242017)
+  eval.data.specs = NULL,         # Data type (1 = counts, 2 = p/a)
   eval.data.gis.file.1 = list(),  # Loaded gis spdf with p/a points
   eval.data.gis.file.2p = list(), # Loaded gis spdf with pres points
   eval.data.gis.file.2a = list(), # Loaded gis spdf with abs points
+  eval.models.idx = NULL,         # List of indices of evaluated models
   eval.metrics = list(),          # Metric values
   eval.metrics.names = NULL,      # Names of metrics calculated
   
@@ -91,18 +91,18 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$ens.over.wpoly.spdf     <- vals.save[["ens.over.wpoly.spdf"]]
     vals$ens.over.wpoly.coverage <- vals.save[["ens.over.wpoly.coverage"]]
     
-    vals$ensemble.models         <- vals.save[["ensemble.models"]]
-    vals$ensemble.method         <- vals.save[["ensemble.method"]]
-    vals$ensemble.weights        <- vals.save[["ensemble.weights"]]
-    vals$ensemble.rescaling      <- vals.save[["ensemble.rescaling"]]
-    vals$ensemble.overlaid.idx   <- vals.save[["ensemble.overlaid.idx"]]
+    vals$ensemble.models       <- vals.save[["ensemble.models"]]
+    vals$ensemble.method       <- vals.save[["ensemble.method"]]
+    vals$ensemble.weights      <- vals.save[["ensemble.weights"]]
+    vals$ensemble.rescaling    <- vals.save[["ensemble.rescaling"]]
+    vals$ensemble.overlaid.idx <- vals.save[["ensemble.overlaid.idx"]]
     
-    vals$eval.models.idx       <- vals.save[["eval.models.idx"]]
     vals$eval.data.list        <- vals.save[["eval.data.list"]]
     vals$eval.data.specs       <- vals.save[["eval.data.specs"]]
     vals$eval.data.gis.file.1  <- vals.save[["eval.data.gis.file.1"]]
     vals$eval.data.gis.file.2p <- vals.save[["eval.data.gis.file.2p"]]
     vals$eval.data.gis.file.2a <- vals.save[["eval.data.gis.file.2a"]]
+    vals$eval.models.idx       <- vals.save[["eval.models.idx"]]
     vals$eval.metrics          <- vals.save[["eval.metrics"]]
     vals$eval.metrics.names    <- vals.save[["eval.metrics.names"]]
     

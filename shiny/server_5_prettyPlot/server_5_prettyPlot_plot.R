@@ -1,4 +1,6 @@
 ### Plotting code for 'High Quality Maps' tab
+# NOTE: plot will 'regenerate if screen width changes, i.e. 
+# if the scroll down bar appears
 
 
 ###############################################################################
@@ -39,7 +41,7 @@ plot.pretty.ll <- function(spdf.ll, data.name, plot.lim, title.ll,
 # Plotting steps
 
 ### Reactive function to generate plot from reactiveValues
-pretty_plot_plot <- reactive({
+pretty_plot_generate <- reactive({
   req(length(vals$pretty.params.list) > 0)
 
   p.list <- vals$pretty.params.list

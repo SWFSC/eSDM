@@ -15,7 +15,7 @@ outputOptions(output, "overlay_preview_overlaid", suspendWhenHidden = FALSE)
 outputOptions(output, "create_ens_weights_poly_preview_plot", 
               suspendWhenHidden = FALSE)
 outputOptions(output, "ens_pix_preview_plot", suspendWhenHidden = FALSE)
-outputOptions(output, "pretty_plot", suspendWhenHidden = FALSE)
+outputOptions(output, "pretty_plot_plot", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
@@ -54,7 +54,7 @@ observeEvent(input$ens_preview_execute, {
 
 ### Show pretty plot
 observeEvent(input$pretty_plot_execute, {
-  shinyjs::show("pretty_plot", time = 0)
+  shinyjs::show("pretty_plot_plot", time = 0)
 })
 
 
@@ -65,6 +65,7 @@ observeEvent(input$overlay_create_overlaid_models, {
   shinyjs::hide("create_ens_weights_poly_preview_plot", time = 0)
   shinyjs::hide("ens_create_ensemble_text", time = 0)
   shinyjs::hide("ens_pix_preview_plot", time = 0)
+  shinyjs::hide("pretty_plot_plot", time = 0) # Make this more robust so it only happens when an overlaid or ensemble model is plotted
 })
 
 
@@ -76,8 +77,8 @@ observeEvent(input$load_app_envir_file, {
   shinyjs::hide("overlay_preview_overlaid", time = 0)
   shinyjs::hide("create_ens_weights_poly_preview_plot", time = 0)
   shinyjs::hide("ens_create_ensemble_text", time = 0)
-  shinyjs::hide("pretty_plot", time = 0)
   shinyjs::hide("ens_pix_preview_plot", time = 0)
+  shinyjs::hide("pretty_plot_plot", time = 0)
 })
 
 ###############################################################################

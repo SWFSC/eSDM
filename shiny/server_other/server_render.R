@@ -341,8 +341,8 @@ output$pretty_plot_values_event_text <- renderText({
 ###########################################################
 ### Pretty plot
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
-output$pretty_plot <- renderPlot({
-  print(pretty_plot_plot())
+output$pretty_plot_plot <- renderPlot({
+  print(pretty_plot_generate())
 })
 
 
