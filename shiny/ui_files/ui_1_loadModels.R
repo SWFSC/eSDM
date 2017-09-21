@@ -1,3 +1,5 @@
+### UI code for the 'Load Model Predictions' tab
+
 ui.loadModels <- function() {
   tabItem(tabName = "loadModels",
           fluidRow(
@@ -75,8 +77,7 @@ ui.loadModels <- function() {
                        
                        conditionalPanel(
                          condition = "input.model_load_type == 2",
-                         helpText("Load the file that has the extension '.tif and thus is a TIFF file.", br(), 
-                                  "The raster can be in any projection, but the raster coordinates must be between -180 and 180 degrees"), 
+                         ui.gis.raster.instructions(), 
                          ui.load.data.instructions.raster(), 
                          fileInput("model_gis_raster_file", h5("Upload raster .tif file"), accept = ".tif"), 
                          conditionalPanel(
@@ -146,10 +147,10 @@ ui.loadModels <- function() {
                            column(12,
                                   ui.gis.gdb.intructions(), 
                                   ui.load.data.instructions(), 
-                                  textInput("model_gis_gdb_path", h5("Path to .gdb folder"), value = ".../folder.gdb")
+                                  textInput("model_gis_gdb_path", label.gdb.path, value = ".../folder.gdb")
                            ),
-                           column(6, textInput("model_gis_gdb_name", h5("Filename within .gbd folder"), value = "")),
-                           column(6, br(), br(), actionButton("model_gis_gdb_load", "Upload file from specified path")
+                           column(6, textInput("model_gis_gdb_name", label.gdb.name, value = "")),
+                           column(6, br(), br(), actionButton("model_gis_gdb_load", label.gdb.upload)
                            )
                          ),
                          br(), 

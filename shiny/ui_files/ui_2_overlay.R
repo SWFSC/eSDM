@@ -1,3 +1,5 @@
+### UI code for the 'Overlay Model Predictions' tab
+
 ui.overlay <- function() {
   tabItem(tabName = "overlay",
           conditionalPanel("output.overlay_display_flag == false", ui.no.model.pred.loaded1()), 
@@ -43,10 +45,10 @@ ui.overlay <- function() {
                                conditionalPanel(
                                  condition = "input.overlay_bound_file_type == 3",
                                  ui.gis.gdb.intructions(),
-                                 textInput("overlay_bound_gis_gdb_path", h5(".gbd path"), value = ".../folder.gdb"),
-                                 textInput("overlay_bound_gis_gdb_name", h5("Filename within .gbd folder"), value = ""),
+                                 textInput("overlay_bound_gis_gdb_path", label.gdb.path, value = ".../folder.gdb"),
+                                 textInput("overlay_bound_gis_gdb_name", label.gdb.name, value = ""),
                                  fluidRow(
-                                   column(6, actionButton("overlay_bound_gis_gdb_load", "Upload file from specified path")),
+                                   column(6, actionButton("overlay_bound_gis_gdb_load", label.gdb.upload)),
                                    column(6,
                                           textOutput("overlay_bound_gis_gdb_message"),
                                           textOutput("overlay_bound_gis_gdb_text")
@@ -120,10 +122,10 @@ ui.overlay <- function() {
                              condition = "input.overlay_land_load_type == 2 && input.overlay_land_file_type == 3",
                              box(width = 12, 
                                  ui.gis.gdb.intructions(),
-                                 textInput("overlay_land_gis_gdb_path", h5(".gbd path"), value = ".../folder.gdb"),
-                                 textInput("overlay_land_gis_gdb_name", h5("Name of file within .gbd"), value = ""), 
+                                 textInput("overlay_land_gis_gdb_path", label.gdb.path, value = ".../folder.gdb"),
+                                 textInput("overlay_land_gis_gdb_name", label.gdb.name, value = ""), 
                                  fluidRow(
-                                   column(6, actionButton("overlay_land_gis_gdb_load", "Upload file from specified path")),
+                                   column(6, actionButton("overlay_land_gis_gdb_load", label.gdb.upload)),
                                    column(6,
                                           textOutput("overlay_land_gis_gdb_message"), 
                                           textOutput("overlay_land_gis_gdb_text")

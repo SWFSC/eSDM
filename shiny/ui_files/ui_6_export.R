@@ -1,3 +1,5 @@
+### UI code for the 'Export Predictions' tab
+
 ui.export <- function() {
   tabItem(tabName = "export",
           conditionalPanel(condition = "output.export_flag == false", ui.no.model.pred.loaded1()), 

@@ -1,3 +1,5 @@
+### UI code for the 'Manual' tab
+
 ui.manual <- function() {
   tabItem(tabName = "manual",
           fluidRow(

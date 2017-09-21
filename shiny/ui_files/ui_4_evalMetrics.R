@@ -1,3 +1,5 @@
+### UI code for the 'Evaluation Metrics' tab
+
 ui.evalMetrics <- function() {
   tabItem(tabName = "evalMetrics",
           conditionalPanel(condition = "output.eval_display_flag == false", ui.no.model.pred.loaded1()), 
@@ -65,10 +67,10 @@ ui.evalMetrics <- function() {
                 conditionalPanel(
                   condition = "input.eval_load_type_1 == 3",
                   ui.gis.gdb.intructions(),
-                  textInput("eval_gis_gdb_path_1", h5("GBD path"), value = ".../folder.gdb"),
+                  textInput("eval_gis_gdb_path_1", label.gdb.path, value = ".../folder.gdb"),
                   fluidRow(
-                    column(6, textInput("eval_gis_gdb_name_1", h5("Name of file within .gbd"), value = "")), 
-                    column(6, br(), br(), actionButton("eval_gis_gdb_load_1", "Upload file from specified path"))
+                    column(6, textInput("eval_gis_gdb_name_1", label.gdb.name, value = "")), 
+                    column(6, br(), br(), actionButton("eval_gis_gdb_load_1", label.gdb.upload))
                   ), 
                   br(), 
                   conditionalPanel(
@@ -127,14 +129,14 @@ ui.evalMetrics <- function() {
                 #         conditionalPanel(
                 #           condition = "input.eval_gis_file_type_2p == 1",
                 #           ui.gis.shp.intructions(),
-                #           fileInput("eval_gis_shp_2p", h5("Upload GIS files"), multiple=T)
+                #           fileInput("eval_gis_shp_2p", h5("Upload GIS files"), multiple = TRUE)
                 #         ),
                 #         conditionalPanel(
                 #           condition = "input.eval_gis_file_type_2p == 2",
                 #           ui.gis.gdb.intructions(),
-                #           textInput("eval_gis_gdb_path_2p", "GBD path", value = "C:/Ensemble Shiny/Ensemble_R_Shiny/"),
-                #           textInput("eval_gis_gdb_name_2p", "Name of file within .gbd", value = ""),
-                #           actionButton("eval_gis_gdb_load_2p", "Upload file from specified path")
+                #           textInput("eval_gis_gdb_path_2p", label.gdb.path, value = "C:/Ensemble Shiny/Ensemble_R_Shiny/"),
+                #           textInput("eval_gis_gdb_name_2p", label.gdb.name, value = ""),
+                #           actionButton("eval_gis_gdb_load_2p", label.gdb.upload)
                 #         )
                 #       )
                 #     ),
@@ -160,14 +162,14 @@ ui.evalMetrics <- function() {
                 #         conditionalPanel(
                 #           condition = "input.eval_gis_file_type_2a == 1",
                 #           ui.gis.shp.intructions(),
-                #           fileInput("eval_gis_shp_2a", h5("Upload GIS files"), multiple=T)
+                #           fileInput("eval_gis_shp_2a", h5("Upload GIS files"), multiple = TRUE)
                 #         ),
                 #         conditionalPanel(
                 #           condition = "input.eval_gis_file_type_2a == 2",
                 #           ui.gis.gdb.intructions(),
-                #           textInput("eval_gis_gdb_path_2a", "GBD path", value = "C:/Ensemble Shiny/Ensemble_R_Shiny/"),
-                #           textInput("eval_gis_gdb_name_2a", "Name of file within .gbd", value = ""),
-                #           actionButton("eval_gis_gdb_load_2a", "Upload file from specified path")
+                #           textInput("eval_gis_gdb_path_2a", label.gdb.path, value = "C:/Ensemble Shiny/Ensemble_R_Shiny/"),
+                #           textInput("eval_gis_gdb_name_2a", label.gdb.name, value = ""),
+                #           actionButton("eval_gis_gdb_load_2a", label.gdb.upload)
                 #         )
                 #       )
                 #     )

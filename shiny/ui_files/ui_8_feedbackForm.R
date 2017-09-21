@@ -1,3 +1,5 @@
+### UI code for the 'Submit Feedback' tab
+
 ui.feedbackForm <- function() {
   tabItem(tabName = "feedbackForm",
           fluidRow(
