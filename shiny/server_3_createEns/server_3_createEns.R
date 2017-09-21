@@ -47,7 +47,7 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
          "Please select one or more sets of ensemble predictions to remove")
   )
   
-  # Hide preview if these predictions were plotted
+  ### Hide preview if these predictions were plotted
   plotted.which <- model_pix_preview_event()[[2]]
   if (any(idx %in% plotted.which)) {
     shinyjs::hide("model_pix_preview_plot", time = 0)
@@ -55,7 +55,7 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   
   browser()
   
-  # Remove the reactiveValue info for selected set(s) of ensemble predicitons
+  ### Remove the reactiveValue info for selected set(s) of ensemble predicitons
   vals$ensemble.models <- vals$ensemble.models[-idx]
   vals$ensemble.method <- vals$ensemble.method[-idx]
   vals$ensemble.weights <- vals$ensemble.weights[-idx]
@@ -66,6 +66,24 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   if(length(vals$ensemble.weights) == 0) vals$ensemble.weights <- NULL
   if(length(vals$ensemble.rescaling) == 0) vals$ensemble.rescaling <- NULL
   if(length(vals$ensemble.overlaid.idx) == 0) vals$ensemble.overlaid.idx <- NULL
+  
+  # Could make this so it only removes ensemble metrics
+  # TODO: make smarter
+  if (!is.null(vals$eval.models.idx)) {
+    if (!is.null(vals$eval.models.idx[[3]])) {
+      vals$eval.models.idx <- NULL
+      vals$eval.metrics <- list()
+      vals$eval.metrics.names <- NULL
+    }
+  }
+  
+  # Reset pretty params only if an ensemble model was plotted
+  # TODO: make smarter
+  if (length(vals$pretty.params.list) != 0) {
+    if (!is.null(vals$pretty.params.list$model.idx[[3]])) {
+      vals$pretty.params.list <- list()
+    }
+  }
   
   return("")
 })
@@ -114,7 +132,7 @@ create_ens_preview_model <- reactive({
          "Please select at least one set of ensemble predictions from the table")
   )
   ensemble.spdf <- vals$ensemble.models[ensemble.which]
-
+  
   # Get SPixDF object with data being rasterized pixel indices
   ens.pix <- vals$ens.over.pix 
   names(ens.pix) <- "Pred.ens.pix"

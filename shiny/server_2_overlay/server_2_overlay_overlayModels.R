@@ -23,7 +23,8 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   #########################################################
   # Reset/hide things
   
-  ### Reset vals$overlaid..., vals.ens.over... and vals$ensemble... 
+  ### Reset vals$overlaid..., vals.ens.over..., vals$ensemble...,  
+  # and vals$eval... (if any overlaid metrics are calc'd) 
   # before creating new overlaid
   vals$overlay.crs <- NULL
   vals$overlay.base.idx <- NULL
@@ -43,7 +44,23 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   vals$ensemble.rescaling <- NULL
   vals$ensemble.overlaid.idx <- NULL
   
-
+  # Could make this so it only removes overlaid metrics
+  # TODO: make smarter
+  if (!is.null(vals$eval.models.idx)) {
+    if (!is.null(vals$eval.models.idx[[2]])){
+      vals$eval.models.idx <- NULL
+      vals$eval.metrics <- list()
+      vals$eval.metrics.names <- NULL
+    }
+  }
+  
+  # Reset pretty params only if an overlaid model was plotted
+  if (length(vals$pretty.params.list) != 0) {
+    if (!is.null(vals$pretty.params.list$model.idx[[2]])) {
+      vals$pretty.params.list <- list()
+    }
+  }
+  
   ### Hide elements: this is done in server_hide_show.R
   
   
