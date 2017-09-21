@@ -1,3 +1,5 @@
+### UI code for the 'Create Ensemble Predictions' tab
+
 ui.createEns <- function() {
   tabItem(tabName = "createEns",
           conditionalPanel(
