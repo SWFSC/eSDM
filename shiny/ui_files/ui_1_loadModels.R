@@ -242,8 +242,8 @@ ui.loadModels <- function() {
                                                    column(3, radioButtons("model_download_preview_res", h5("Resolution"),
                                                                        choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
                                                                        selected = 2)),
-                                                   column(3, radioButtons("model_download_preview_format", h5("File format"),
-                                                                       choices = list("jpeg" = 1, "pdf" = 2, "png" = 3),
+                                                   column(3, radioButtons("model_download_preview_format", h5("Image file format"),
+                                                                       choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
                                                                        selected = 3))
                                                  ), 
                                                  fluidRow(

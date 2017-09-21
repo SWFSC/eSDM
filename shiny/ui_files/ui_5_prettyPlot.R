@@ -1,3 +1,5 @@
+### UI code for the 'High Quality Maps' tab
+
 ui.prettyPlot <- function() {
   tabItem(tabName = "prettyPlot",
           conditionalPanel(condition = "output.pretty_display_flag == false", ui.no.model.pred.loaded1()), 
@@ -42,8 +44,8 @@ ui.prettyPlot <- function() {
                           column(3, radioButtons("pretty_plot_download_res", h5("Resolution"),
                                                  choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
                                                  selected = 2)),
-                          column(2, radioButtons("pretty_plot_download_format", h5("File format"),
-                                                 choices = list("jpeg" = 1, "pdf" = 2, "png" = 3),
+                          column(2, radioButtons("pretty_plot_download_format", h5("Image file format"),
+                                                 choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
                                                  selected = 3)), 
                           column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
                         ), 
@@ -87,47 +89,23 @@ ui.prettyPlot <- function() {
                            strong("Tick marks and tick labels"), 
                            fluidRow(
                              box(width = 12, 
-                                 checkboxInput("pretty_plot_tick", "Plot tick marks and/or their labels", value = TRUE), 
-                                 conditionalPanel(
-                                   condition = "input.pretty_plot_tick==true",
-                                   h5(em("None of the below has been implemented")), 
-                                   fluidRow(
-                                     column(6, checkboxInput("pretty_plot_tick_notall", "Include ticks", value = TRUE)),
-                                     column(6, checkboxInput("pretty_plot_label", "Include tick labels", value = TRUE))
-                                   ), 
-                                   fluidRow(
-                                     column(width = 6,
-                                            # checkboxInput("tick.left", label = "Left", value = TRUE),
-                                            # checkboxInput("tick.bot", label = "Bottom", value = TRUE),
-                                            numericInput("pretty_plot_tick_interval_major", h5("Units between each major tick"),
-                                                         value = 5, min = 0, step = 5)
-                                            # selectInput("tick.style", label = h5("Tick label style"),
-                                            #             choices = list("120" = 1, "120W" = 2,
-                                            #                            "120°" = 3, "120°W" = 4),
-                                            #             selected = 4)
-                                     ),
-                                     column(width = 6,
-                                            # checkboxInput("tick.right", label = "Right", value = TRUE),
-                                            # checkboxInput("tick.top", label = "Top", value = TRUE),
-                                            numericInput("pretty_plot_tick_interval_minor", h5("Minor ticks between each major tick"),
-                                                         value = 4, min = 0, max = 45, step = 1),
+                                 fluidRow(
+                                   column(6, 
+                                          checkboxInput("pretty_plot_tick", "Plot tick marks", value = TRUE), 
+                                          conditionalPanel(
+                                            condition = "input.pretty_plot_tick",
+                                            numericInput("pretty_plot_tick_interval_major", h5("Units between each tick"),
+                                                         value = 5, min = 0, step = 5), 
                                             numericInput("pretty_plot_tick_length", h5("Tick length"),
                                                          value = 1.0, min = 0, step = 0.1)
-                                     )
-                                   ), 
-                                   fluidRow(
-                                     column(width = 6,
-                                            # checkboxInput("tick.left.lab", label = "Left", value = TRUE),
-                                            # checkboxInput("tick.bot.lab", label = "Bottom", value = TRUE),
+                                          )
+                                   ),
+                                   conditionalPanel(
+                                     condition = "input.pretty_plot_tick",
+                                     column(6, 
+                                            checkboxInput("pretty_plot_label", "Plot tick labels", value = TRUE), 
                                             numericInput("pretty_plot_label_lon_start", h5("Start longitude tick labels at"),
-                                                         value = 0)
-                                            # selectInput("label.tick.font", label = h5("Tick label font"),
-                                            #             choices = font.family,
-                                            #             selected = 1)
-                                     ),
-                                     column(width = 6,
-                                            # checkboxInput("tick.right.lab", label = "Right", value = TRUE),
-                                            # checkboxInput("tick.top.lab", label = "Top", value = TRUE),
+                                                         value = 0), 
                                             numericInput("pretty_plot_label_lat_start", h5("Start latitude tick labels at"),
                                                          value = 0),
                                             numericInput("pretty_plot_label_tick_size", h5("Tick label size"),
@@ -135,6 +113,25 @@ ui.prettyPlot <- function() {
                                      )
                                    )
                                  )
+                                 
+                                 # checkboxInput("tick.right.lab", label = "Right", value = TRUE),
+                                 # checkboxInput("tick.top.lab", label = "Top", value = TRUE),
+                                 # checkboxInput("tick.left.lab", label = "Left", value = TRUE),
+                                   # checkboxInput("tick.bot.lab", label = "Bottom", value = TRUE),
+                                   # selectInput("label.tick.font", label = h5("Tick label font"),
+                                   #             choices = font.family,
+                                   #             selected = 1)
+                                   # checkboxInput("tick.right", label = "Right", value = TRUE),
+                                   # checkboxInput("tick.top", label = "Top", value = TRUE),
+                                   # numericInput("pretty_plot_tick_interval_minor", h5("Minor ticks between each major tick"),
+                                   #              value = 4, min = 0, max = 45, step = 1),
+                                   # selectInput("tick.style", label = h5("Tick label style"),
+                                   #             choices = list("120" = 1, "120W" = 2,
+                                   #                            "120°" = 3, "120°W" = 4),
+                                   #             selected = 4)
+                                   # checkboxInput("tick.left", label = "Left", value = TRUE),
+                                   # checkboxInput("tick.bot", label = "Bottom", value = TRUE),
+                                   
                              )
                            )
                     ), 
