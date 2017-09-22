@@ -9,9 +9,7 @@ output$pretty_plot_download_execute <- downloadHandler(
   
   content = function(file) {
     withProgress(message = "Downloading high quality map", value = 0.4, { 
-      browser()
-      Sys.sleep(0.5)
-      plot.toprint <- pretty_plot_plot()
+      plot.toprint <- pretty_plot_generate()
       plot.res <- ifelse(input$pretty_plot_download_res == "1", 300, 72)
       plot.format <- input$pretty_plot_download_format
       incProgress(0.2)

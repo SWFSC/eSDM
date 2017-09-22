@@ -10,7 +10,7 @@
 ### Get extent of selected predictions
 pretty_plot_range <- reactive({
   req(pretty_plot_xyz_count() == 1)
-  model.preds <- pretty_model_toplot()[[3]]
+  model.preds <- pretty_plot_model_toplot()[[3]]
   round(extent(model.preds), 2)
 })
 
@@ -44,7 +44,7 @@ output$pretty_plot_range_ymax_uiOut_num <- renderUI({
 ### Title of plot
 output$pretty_plot_title_uiOut_text <- renderUI({
   req(pretty_plot_xyz_count() == 1)
-  list.selected <- pretty_model_toplot()
+  list.selected <- pretty_plot_model_toplot()
   
   table.idx <- list.selected[[1]]
   model.idx <- list.selected[[2]]
@@ -118,8 +118,7 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
                       ens.idx.txt, res.txt, file.ext)
     }
   }
-  #"C:/Ensemble Shiny/Ensemble_R_Shiny/Plots_downloaded/",
-  
+
   textInput("pretty_plot_download_name", h5("File name"), value = f.val)
 })
 
