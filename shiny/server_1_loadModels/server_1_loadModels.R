@@ -2,6 +2,14 @@
 
 
 ###############################################################################
+### Flag for if any model predictions are loaded
+output$loadModels_display_flag <- reactive({
+  length(vals$models.ll) != 0
+})
+outputOptions(output, "loadModels_display_flag", suspendWhenHidden = FALSE)
+
+
+###############################################################################
 ### Delete selected model
 observeEvent(input$model_remove_execute, {
   idx <- as.numeric(input$models_loaded_table_rows_selected)

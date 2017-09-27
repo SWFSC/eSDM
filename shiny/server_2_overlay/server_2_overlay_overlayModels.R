@@ -72,15 +72,17 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   
   validate(
     need(length(base.idx) == 1, 
-         "Please select exactly one model from table to use as overlay base"),
+         "Please select exactly one model from table to use as overlay base"), 
     need(models.num > 1, 
          "Please add more than one model to the app before overlaying"), 
-    if (input$overlay_bound) 
-      need(!is.null(vals$overlay.bound),
-           "Please either uncheck boundary box or load a boundary polygon"),
-    if (input$overlay_land) 
+    if (input$overlay_bound) {
+      need(!is.null(vals$overlay.bound), 
+           "Please either uncheck boundary box or load a boundary polygon")
+    }, 
+    if (input$overlay_land) {
       need(!is.null(vals$overlay.land),
            "Please either uncheck land box or load a land polygon")
+    }
   )
   
   vals$overlay.base.idx <- base.idx
@@ -141,14 +143,14 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     }
     base.specs[5] <- paste(as.character(round(extent(base.sp.ll), 0)), 
                            collapse = ", ")
-
+    
     # Store data
     vals$overlay.base.sp <- base.sp
     vals$overlay.base.specs <- base.specs
     
     # print("Creating/processing base grid took:"); print(Sys.time() - t.1)
     
-
+    
     #####################################
     ### Create overlaid models
     # t.2 <- Sys.time()
@@ -156,23 +158,23 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     models.overlaid.all <- mapply(function(model, prog.num) {
       incProgress(0.9 / prog.total,
                   detail = paste("Making overlaid model", prog.num))
-
+      
       overlay.func(base.sp, model, overlap.perc)
     }, models.to.overlay, 2:(prog.total-1), SIMPLIFY = FALSE)
-
+    
     incProgress(0.9 / prog.total, detail = "Finishing overlay process")
     # print("Overlaying of models took:"); print(Sys.time() - t.2)
-
-
+    
+    
     #####################################
     ### Store overlaid models and their info
     # models.overlaid <- lapply(models.overlaid.all, function(m) m[[1]])
     models.overlaid <- models.overlaid.all
-    models.overlaid <- append(models.overlaid, base.spdf,
+    models.overlaid <- append(models.overlaid, base.spdf, 
                               after = (base.idx - 1))
-
+    
     specs.list <- mapply(function(n, p) {
-      if(p == 1) {
+      if (p == 1) {
         n.abund <- unname(round(model.abundance(n, "Pred.overlaid")))
       } else {
         n.abund <- "N/A"
@@ -180,11 +182,11 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       list(c(base.specs[1], length(n), sum(!is.na(n$Pred.overlaid)),
              n.abund, base.specs[5]))
     }, models.overlaid, vals$models.pred.type)
-
+    
     vals$overlaid.models <- models.overlaid
     vals$overlaid.models.specs <- specs.list
-
-
+    
+    
     #########################################################
     # Ens.over prep
     
@@ -206,7 +208,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     ens.ext <- extent(ens.spdf)
     ens.xrange <- ens.ext@xmax - ens.ext@xmin
     ens.yrange <- ens.ext@ymax - ens.ext@ymin
-
+    
     if (ens.xrange >= ens.yrange) {
       r.ncol <- 80
       r.res <- ens.xrange / r.ncol

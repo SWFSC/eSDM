@@ -185,14 +185,13 @@ ui.loadModels <- function() {
             ),
             
             column(width = 7,
-                   fluidRow(
-                     box(
-                       title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width=12, collapsible = TRUE,
-                       textOutput("models_text_none_loaded"),
-                       conditionalPanel("input.models_loaded_table_stats != true", DT::dataTableOutput("models_loaded_table")), 
-                       conditionalPanel("input.models_loaded_table_stats", DT::dataTableOutput("models_loaded_table_stats")),
-                       conditionalPanel(
-                         condition = "output.models_loaded_table != null",
+                   conditionalPanel(
+                     condition = "output.loadModels_display_flag", 
+                     fluidRow(
+                       box(
+                         title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+                         conditionalPanel("input.models_loaded_table_stats != true", DT::dataTableOutput("models_loaded_table")), 
+                         conditionalPanel("input.models_loaded_table_stats", DT::dataTableOutput("models_loaded_table_stats")),
                          column(12, 
                                 fluidRow(
                                   column(4, checkboxInput("models_loaded_table_stats", "Display additional information")), 
@@ -225,8 +224,8 @@ ui.loadModels <- function() {
                                                conditionalPanel(
                                                  condition = "input.model_select_action == 1", 
                                                  column(3, radioButtons("model_preview_perc", h5("Preview model predictions using"),
-                                                                     choices = list("Percentages" = 1, "Values" = 2),
-                                                                     selected = 1)), 
+                                                                        choices = list("Percentages" = 1, "Values" = 2),
+                                                                        selected = 1)), 
                                                  column(3, 
                                                         ui.new.line(), 
                                                         actionButton("model_pix_preview_execute", "Preview selected model predictions")
@@ -236,14 +235,14 @@ ui.loadModels <- function() {
                                                  condition = "input.model_select_action == 2", 
                                                  fluidRow(
                                                    column(3, radioButtons("model_download_preview_perc", h5("Units"), 
-                                                                       choices = list("Percentages" = 1, "Values" = 2),
-                                                                       selected = 1)), 
+                                                                          choices = list("Percentages" = 1, "Values" = 2),
+                                                                          selected = 1)), 
                                                    column(3, radioButtons("model_download_preview_res", h5("Resolution"),
-                                                                       choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-                                                                       selected = 2)),
+                                                                          choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
+                                                                          selected = 2)),
                                                    column(3, radioButtons("model_download_preview_format", h5("Image file format"),
-                                                                       choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
-                                                                       selected = 3))
+                                                                          choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
+                                                                          selected = 3))
                                                  ), 
                                                  fluidRow(
                                                    column(9, uiOutput("model_download_preview_name_uiOut_text")), 
@@ -259,11 +258,11 @@ ui.loadModels <- function() {
                                   )
                                 )
                          )
-                       )
-                     ),
-                     
-                     conditionalPanel(
-                       condition = "output.models_loaded_table != null", 
+                         # )
+                       ),
+                       
+                       # conditionalPanel(
+                       #   condition = "output.models_loaded_table != null", 
                        box(
                          title = "Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
                          shinycssloaders::withSpinner(plotOutput("model_pix_preview_plot"), type = 1)

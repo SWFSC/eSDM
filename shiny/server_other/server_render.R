@@ -57,23 +57,21 @@ output$create_spdf_gis_gdb_text <- renderText({
 
 ### Table of loaded original model preds
 output$models_loaded_table <- DT::renderDataTable({
-  req(table_orig())
-  table_orig()
+  table_orig()[, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'), selection = "multiple")
 
 ### Table of stats of loaded original model preds
 output$models_loaded_table_stats <- DT::renderDataTable({
-  req(table_orig())
-  table_orig_stats()
+  table_orig_stats()[, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'), selection = "none")
 
 ###########################################################
 ### Message for when no models are loaded
-output$models_text_none_loaded <- renderText({
-  if (length(vals$models.ll) == 0) "No model predictions are loaded"
-})
+# output$models_text_none_loaded <- renderText({
+#   if (length(vals$models.ll) == 0) "No model predictions are loaded"
+# })
 
 ###########################################################
 ### Plot/preview of individual model
@@ -90,14 +88,13 @@ output$model_pix_preview_plot <- renderPlot({
 
 ### Table of loaded model predictions
 output$overlay_loaded_table <- DT::renderDataTable({
-  table_orig()
+  table_orig()[, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'), selection = "single")
 
 ### Table of stats of loaded model predictions
 output$overlay_loaded_stats_table <- DT::renderDataTable({
-  req(table_orig())
-  table_orig_stats()
+  table_orig_stats()[, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'), selection = "none")
 
@@ -169,13 +166,13 @@ output$overlay_preview_overlaid <- renderPlot({
 
 ### Display table of overlaid predictions and info
 output$create_ens_table <- renderTable({ 
-  table_overlaid() 
+  table_overlaid()[, -3] #'[, -3]' is to remove Error column
 }, 
 rownames = TRUE)
 
 ### Datatable of overlaid predictions and info
 output$create_ens_datatable <- DT::renderDataTable({ 
-  table_overlaid() 
+  table_overlaid()[, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'))
 
@@ -243,7 +240,7 @@ output$ens_pix_preview_plot <- renderPlot({
 
 ### Table of abundances of created ensemble predictions
 output$ens_abund_table_out <- renderTable({ 
-  table_ens_abund() 
+  table_ens_abund()
 }, 
 rownames = TRUE, colnames = FALSE, align = "r")
 
@@ -256,13 +253,13 @@ rownames = TRUE, colnames = FALSE, align = "r")
 
 ### Table of orig model predictions
 output$eval_models_table_orig_out <- DT::renderDataTable({
-  table_orig()[,1:4]
+  table_orig()[,1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'))
 
 ### Table of overlaid model predictions
 output$eval_models_table_over_out <- DT::renderDataTable({
-  table_overlaid()[,1:4]
+  table_overlaid()[,1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'))
 
@@ -318,13 +315,13 @@ rownames = FALSE, digits = 3)
 
 ### Table of orig model predictions
 output$pretty_table_orig_out <- DT::renderDataTable({
-  table_orig()[,1:4]
+  table_orig()[,1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'))
 
 ### Table of overlaid model predictions
 output$pretty_table_over_out <- DT::renderDataTable({
-  table_overlaid()[,1:4]
+  table_overlaid()[,1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'))
 
@@ -354,13 +351,13 @@ output$pretty_plot_plot <- renderPlot({
 
 ### Table of orig model predictions
 output$export_table_orig_out <- DT::renderDataTable({
-  table_orig()[,1:4]
+  table_orig()[,1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'), selection = "single")
 
 ### Table of overlaid model predictions
 output$export_table_over_out <- DT::renderDataTable({
-  table_overlaid()[,1:4]
+  table_overlaid()[,1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'), selection = "single")
 

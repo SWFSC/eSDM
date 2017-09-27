@@ -1,12 +1,13 @@
 ### Reactive functions that return display tables for various tabs
+# Most tables use 'if... return()' rather than 'req()' so that
+# subsequent reactive functions won't be stopped
 
 
 ###############################################################################
 ### Table of original models
 table_orig <- reactive({ 
-  if(is.null(vals$models.names)) return()
+  if (length(vals$models.ll) == 0) return()
   
-  # browser()
   table.out <- data.frame(x = vals$models.names, 
                           t(as.data.frame(vals$models.data.names)),
                           vals$models.pred.type, 
@@ -20,13 +21,14 @@ table_orig <- reactive({
                         "Weight", "Prediction type")
   row.names(table.out) <- paste("Original", 1:nrow(table.out))
   
-  table.out[, -3] #'[, -3]' is to remove Error column
+  table.out
 })
 
 
 ###############################################################################
 ### Table of original models with stats
 table_orig_stats <- reactive({
+  req(table_orig())
   table.out <- data.frame(x = vals$models.names, 
                           t(as.data.frame(vals$models.specs)), 
                           stringsAsFactors = FALSE)
@@ -42,8 +44,7 @@ table_orig_stats <- reactive({
 ###############################################################################
 ### Table of overlaid models
 table_overlaid <- reactive({
-  if(length(vals$overlaid.models) == 0) return()
-  req(vals$overlay.base.idx)
+  if (length(vals$overlaid.models) == 0) return()
   
   base.idx <- vals$overlay.base.idx
   base.name <- vals$models.names[base.idx]
@@ -61,15 +62,14 @@ table_overlaid <- reactive({
   
   table.out[is.na(table.out)] <- ""
   
-  table.out[, -3] #'[, -3]' is to remove Error column
+  table.out
 })
 
 
 ###############################################################################
 ### Table of created ensemble models
 table_ensembles <- reactive({
-  ens.models <- vals$ensemble.models
-  if(length(ens.models) == 0) return()
+  if (length(vals$ensemble.models) == 0) return()
   
   ens.overlaid.idx <- vals$ensemble.overlaid.idx
   ens.method <- vals$ensemble.method
@@ -89,13 +89,9 @@ table_ensembles <- reactive({
 
 
 ###############################################################################
-### Table of orig and overlaid spdfs
-# table_orig_overlaid <- reactive({
-#   rbind(table_orig(), table_overlaid()[,1:5])
-# })
+# Other tables
 
+### Table of model metrics is made in 'ensEvalMetrics.R'
+### Table of presence/absence points is made in 'ensEvalMetrics_loadData.R'
 
 ###############################################################################
-### Table of model metrics is made in 'ensEvalMetrics.R'
-
-### Table of presence/absence points is made in 'ensEvalMetrics_loadData.R'

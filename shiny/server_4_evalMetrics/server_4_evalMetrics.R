@@ -174,7 +174,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 ### Generate table of calculated metrics
 table_eval_metrics <- reactive({
   req(length(vals$eval.metrics) > 0, vals$eval.metrics.names)
-  
+
   metrics.table <- as.data.frame(t(as.data.frame(vals$eval.metrics)))
   names(metrics.table) <- vals$eval.metrics.names
   
@@ -188,8 +188,7 @@ table_eval_metrics <- reactive({
   metrics.table <- data.frame("Model" = c(row.names(table.orig), 
                                           row.names(table.over), 
                                           row.names(table.ensembles)),
-                              metrics.table, 
-                              stringsAsFactors = F)
+                              metrics.table, stringsAsFactors = FALSE)
   row.names(metrics.table) <- 1:nrow(metrics.table)
   
   metrics.table
