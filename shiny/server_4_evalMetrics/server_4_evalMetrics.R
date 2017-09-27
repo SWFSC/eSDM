@@ -197,47 +197,75 @@ table_eval_metrics <- reactive({
 
 ###########################################################
 ### Download table
+# Currently set for no Error column: #'[, -3]' is to remove Error column
 output$eval_metrics_table_save <- downloadHandler(
   filename = paste0("Eval_metrics.csv"),
   
   content = function(file) {
     eval.metrics <- table_eval_metrics()
-    
-    # Get applicable info for models that have metrics calculated
     models.which <- vals$eval.models.idx
     
-    orig.models <- cbind(table_orig()[models.which[[1]],], 
-                         table_orig_stats()[models.which[[1]],2:6])
-    over.models <- table_overlaid()[models.which[[2]],]
-    ens.models <- cbind(table_ensembles()[models.which[[3]],], 
-                        NA, NA, NA, NA, NA, NA)
+    ### Get info of models that have eval metrics calculated for them
+    orig.table <- cbind(table_orig(), table_orig_stats()[, -1])
+    orig.table <- orig.table[models.which[[1]], -3]
+    over.table <- table_overlaid()[models.which[[2]], -3]
+    ens.table  <- table_ensembles()[models.which[[3]], ]
     
-    # Create names describing orig+over/ens columns
-    all.models.names <- c(paste(names(orig.models), names(ens.models), 
-                                sep = "/")[1:4], 
-                          names(orig.models)[5:10])
-    names(orig.models) <- all.models.names
-    names(over.models) <- all.models.names
-    names(ens.models) <- all.models.names
+    if (!is.null(orig.table)) {if (nrow(orig.table) == 0) orig.table <- NULL}
+    if (!is.null(over.table)) {if (nrow(over.table) == 0) over.table <- NULL}
+    if (!is.null(ens.table))  {if (nrow(ens.table) == 0)  ens.table <- NULL}
     
-    # Combine tables
-    models.list.all <- list(orig.models, over.models, ens.models)
+    ### Create and set column names as necessary
+    if ((!is.null(orig.table) | !is.null(over.table)) & !is.null(ens.table)) {
+      if (!is.null(orig.table)) {
+        all.models.names <- c(paste(names(orig.table), names(ens.table), 
+                                    sep = "/")[1:4], 
+                              names(orig.table)[5:9])
+        
+        names(orig.table) <- all.models.names
+      }
+      if (!is.null(over.table)) {
+        all.models.names <- c(paste(names(over.table), names(ens.table), 
+                                    sep = "/")[1:4], 
+                              names(over.table)[5:9])
+      
+        names(over.table) <- all.models.names
+      }
+      
+      ens.table <- cbind(ens.table, NA, NA, NA, NA, NA)
+      names(ens.table) <- all.models.names
+    }
+    # Else: Either some combo of orig.table and over.table or it's only
+    #        the ens.table. Thus, names are already correct.
+    
+
+    ### Combine info tables
+    models.list.all <- list(orig.table, over.table, ens.table)
+    models.list.all <- models.list.all[!sapply(models.list.all, is.null)]
     validate(
       need(zero_range(sapply(models.list.all, ncol)), 
-           paste("Error in downloading metrics: orig, over, and ens", 
-                 "info tables have different numbers of columns"))
+           paste("Error in downloading metrics: data tables", 
+                 "info tables have different numbers of columns")), 
+      need(all(sapply(models.list.all, function(j, names.1) {
+        names(j) == names(models.list.all[[1]])
+      }, names.1 = models.list.all[[1]])), 
+      paste("Error in downloading metrics: data tables", 
+            "info tables have different names"))
     )
     all.models.info <- do.call(rbind, models.list.all)
     
+    
+    ### Combine metric table and info table
     validate(
       need(nrow(all.models.info) == nrow(eval.metrics), 
            paste("Error in downloading table: metrics and model info tables", 
                  "have different number of rows"))
     )
-    eval.metrics.models <- cbind(eval.metrics, all.models.info)
+    eval.metrics.models.info <- cbind(eval.metrics, all.models.info)
     
-    # Write csv
-    write.csv(eval.metrics.models, file = file, row.names = FALSE)
+    
+    ### Write csv
+    write.csv(eval.metrics.models.info, file = file, row.names = FALSE)
   }
 )
 

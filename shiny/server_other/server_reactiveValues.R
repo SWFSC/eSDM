@@ -39,7 +39,7 @@ vals <- reactiveValues(
   ensemble.overlaid.idx = NULL,   # Strings of indices of overlaid model predictions used
   ensemble.plotted.idx = NULL,    # Vector of the indicies of currently previewed ensemble models
   
-  # Objects that store data for evaluation metrics section. 'valid' refers to validation
+  # Objects that store data for evaluation metrics section
   eval.data.list = list(NA, NA),  # List with sptsdf of pres & abs
   eval.data.specs = NULL,         # Data type (1 = counts, 2 = p/a)
   eval.data.gis.file.1 = list(),  # Loaded gis spdf with p/a points

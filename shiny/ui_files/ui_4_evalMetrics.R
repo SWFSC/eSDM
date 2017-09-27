@@ -187,14 +187,14 @@ ui.evalMetrics <- function() {
                          conditionalPanel(
                            condition = "output.eval_display_calc_metrics_flag", 
                            fluidRow(
-                             column(4,
+                             column(5,
                                     h5("Validation data info"), 
                                     tableOutput("table_pa_pts_out"), 
                                     tags$style(type="text/css", "#table_pa_pts_out td:first-child {font-weight:bold;}")
                                     #tr:first-child for first row
                              ),
                              column(3, offset = 1, uiOutput("eval_metrics_which_uiOut_check")),
-                             column(4, br(), 
+                             column(3, br(), 
                                     actionButton("eval_metrics_execute", "Calculate metrics"), 
                                     textOutput("eval_metrics_text")
                              )
