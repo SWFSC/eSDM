@@ -105,7 +105,8 @@ server <- function(input, output, session) {
   
   
   # General server code
-  source(file.path("server_other", "server_funcs+vars.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_funcs.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_variables.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots_download.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, chdir = TRUE)
