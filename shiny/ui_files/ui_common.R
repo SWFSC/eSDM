@@ -76,8 +76,8 @@ ui.gis.gdb.intructions <- function() {
            "the desired file geodatabase feature class. The path and the", 
            "name of the feature class should be", 
            "exactly as they appear in ArcCatalog.", 
-           "This app does not currently support loading data from an", 
-           "ESRI personal geodatabase.")
+           "This app does not currently support loading a file geodatabse", 
+           "raster dataset or data from an ESRI personal geodatabase.")
 }
 
 ui.csv.poly.instructions <- function() {

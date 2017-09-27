@@ -81,7 +81,7 @@ create_spdf_gis_shp <- eventReactive(input$model_create_gis_shp, {
   model.list <- read_model_gis_shp()
   
   pred.idx <- as.numeric(input$model_gis_shp_names_pred)
-  error.idx <- as.numeric(input$model_gis_shp_names_error)
+  error.idx <- NA #as.numeric(input$model_gis_shp_names_error)
   weight.idx <- as.numeric(input$model_gis_shp_names_weight)
   
   model.name <- strsplit(input$model_gis_shp_files$name[1], "\\.")[[1]][1]
@@ -132,7 +132,7 @@ create_spdf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
   model.list <- read_model_gis_gdb()
   
   pred.idx <- as.numeric(input$model_gis_gdb_names_pred)
-  error.idx <- as.numeric(input$model_gis_gdb_names_error)
+  error.idx <- NA #as.numeric(input$model_gis_gdb_names_error)
   weight.idx <- as.numeric(input$model_gis_gdb_names_weight)
   
   model.name <- input$model_gis_gdb_name

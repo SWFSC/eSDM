@@ -55,7 +55,8 @@ ui.loadModels <- function() {
                                  column(6, 
                                         uiOutput("model_csv_names_lon_uiOut_select"),
                                         uiOutput("model_csv_names_pred_uiOut_select"),
-                                        uiOutput("model_csv_names_error_uiOut_select"),
+                                        # uiOutput("model_csv_names_error_uiOut_select"),
+                                        uiOutput("model_csv_names_weight_uiOut_select"),
                                         br(), 
                                         uiOutput("model_create_csv_uiOut_button"),
                                         br()
@@ -63,9 +64,9 @@ ui.loadModels <- function() {
                                  column(6, 
                                         uiOutput("model_csv_names_lat_uiOut_select"), 
                                         uiOutput("model_csv_pred_type_uiOut_select"), 
-                                        uiOutput("model_csv_names_weight_uiOut_select"),
-                                        uiOutput("model_csv_NA_idx_uiOut_message"), 
-                                        br()
+                                        br(),
+                                        br(), 
+                                        uiOutput("model_csv_NA_idx_uiOut_message")
                                  ), 
                                  column(12, textOutput("create_spdf_csv_text"))
                                )
@@ -119,17 +120,17 @@ ui.loadModels <- function() {
                                fluidRow(
                                  column(6, 
                                         uiOutput("model_gis_shp_names_pred_uiOut_select"),
-                                        uiOutput("model_gis_shp_names_error_uiOut_select"), 
+                                        # uiOutput("model_gis_shp_names_error_uiOut_select"), 
+                                        uiOutput("model_gis_shp_names_weight_uiOut_select"),
                                         br(), 
                                         uiOutput("model_create_gis_shp_uiOut_button"), 
                                         br()
                                  ),
                                  column(6,
                                         uiOutput("model_gis_shp_pred_type_uiOut_select"), 
-                                        uiOutput("model_gis_shp_names_weight_uiOut_select"),
                                         br(), 
-                                        uiOutput("model_gis_shp_NA_idx_uiOut_message"), 
-                                        br()
+                                        br(), 
+                                        uiOutput("model_gis_shp_NA_idx_uiOut_message")
                                  ), 
                                  column(12, 
                                         textOutput("create_spdf_gis_shp_text"), 
@@ -162,17 +163,17 @@ ui.loadModels <- function() {
                                fluidRow(
                                  column(6, 
                                         uiOutput("model_gis_gdb_names_pred_uiOut_select"),
-                                        uiOutput("model_gis_gdb_names_error_uiOut_select"), 
+                                        # uiOutput("model_gis_gdb_names_error_uiOut_select"), 
+                                        uiOutput("model_gis_gdb_names_weight_uiOut_select"),
                                         br(), 
                                         uiOutput("model_create_gis_gdb_uiOut_button"),
                                         br()
                                  ),
                                  column(6,
                                         uiOutput("model_gis_gdb_pred_type_uiOut_select"), 
-                                        uiOutput("model_gis_gdb_names_weight_uiOut_select"),
                                         br(), 
-                                        uiOutput("model_gis_gdb_NA_idx_uiOut_message"), 
-                                        br()
+                                        br(), 
+                                        uiOutput("model_gis_gdb_NA_idx_uiOut_message")
                                  ), 
                                  column(12, textOutput("create_spdf_gis_gdb_text"))
                                )

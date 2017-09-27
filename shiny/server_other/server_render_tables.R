@@ -5,6 +5,8 @@
 ### Table of original models
 table_orig <- reactive({ 
   if(is.null(vals$models.names)) return()
+  
+  # browser()
   table.out <- data.frame(x = vals$models.names, 
                           t(as.data.frame(vals$models.data.names)),
                           vals$models.pred.type, 
@@ -14,11 +16,11 @@ table_orig <- reactive({
     switch(as.character(i), "1" = "Absolute", "2" = "Relative")}
   )
   
-  names(table.out) <- c("Model filename", "Prediction", "Error", "Weight",
-                        "Prediction type")
+  names(table.out) <- c("Model filename", "Prediction", "Error", 
+                        "Weight", "Prediction type")
   row.names(table.out) <- paste("Original", 1:nrow(table.out))
   
-  table.out
+  table.out[, -3] #'[, -3]' is to remove Error column
 })
 
 
@@ -59,7 +61,7 @@ table_overlaid <- reactive({
   
   table.out[is.na(table.out)] <- ""
   
-  table.out
+  table.out[, -3] #'[, -3]' is to remove Error column
 })
 
 

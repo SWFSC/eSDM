@@ -45,17 +45,17 @@ output$model_csv_pred_type_uiOut_select <- renderUI({
               selected = 2)
 })
 
-### Error
-output$model_csv_names_error_uiOut_select <- renderUI({
-  req(read_model_csv())
-  
-  choice.input <- csv_names_choice_input()
-  choice.input <- c("N/A" = 1, choice.input + 1)
-  
-  selectInput("model_csv_names_error", 
-              h5("Column with error data (optional)"), 
-              choices = choice.input, selected = NULL)
-})
+# ### Error
+# output$model_csv_names_error_uiOut_select <- renderUI({
+#   req(read_model_csv())
+#   
+#   choice.input <- csv_names_choice_input()
+#   choice.input <- c("N/A" = 1, choice.input + 1)
+#   
+#   selectInput("model_csv_names_error", 
+#               h5("Column with error data (optional)"), 
+#               choices = choice.input, selected = NULL)
+# })
 
 ### Weight
 output$model_csv_names_weight_uiOut_select <- renderUI({
@@ -125,17 +125,17 @@ output$model_gis_shp_pred_type_uiOut_select <- renderUI({
               selected = 2)
 })
 
-### Error
-output$model_gis_shp_names_error_uiOut_select <- renderUI({
-  req(read_model_gis_shp())
-  
-  choice.input <- shp_names_choice_input()
-  choice.input <- c("N/A" = 1, choice.input + 1)
-  
-  selectInput("model_gis_shp_names_error", 
-              h5("Column with error data (optional)"),
-              choices = choice.input, selected = 1)
-})
+# ### Error
+# output$model_gis_shp_names_error_uiOut_select <- renderUI({
+#   req(read_model_gis_shp())
+#   
+#   choice.input <- shp_names_choice_input()
+#   choice.input <- c("N/A" = 1, choice.input + 1)
+#   
+#   selectInput("model_gis_shp_names_error", 
+#               h5("Column with error data (optional)"),
+#               choices = choice.input, selected = 1)
+# })
 
 ### Weight
 output$model_gis_shp_names_weight_uiOut_select <- renderUI({
@@ -181,17 +181,17 @@ output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
               selected = 2)
 })
 
-### Error
-output$model_gis_gdb_names_error_uiOut_select <- renderUI({
-  req(read_model_gis_gdb())
-  
-  choice.input <- gdb_names_choice_input()
-  choice.input <- c("N/A" = 1, choice.input + 1)
-  
-  selectInput("model_gis_gdb_names_error", 
-              h5("Column with error data (optional)"),
-              choices = choice.input, selected = 1)
-})
+# ### Error
+# output$model_gis_gdb_names_error_uiOut_select <- renderUI({
+#   req(read_model_gis_gdb())
+#   
+#   choice.input <- gdb_names_choice_input()
+#   choice.input <- c("N/A" = 1, choice.input + 1)
+#   
+#   selectInput("model_gis_gdb_names_error", 
+#               h5("Column with error data (optional)"),
+#               choices = choice.input, selected = 1)
+# })
 
 ### Weight
 output$model_gis_gdb_names_weight_uiOut_select <- renderUI({

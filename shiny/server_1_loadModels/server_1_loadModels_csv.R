@@ -28,9 +28,9 @@ model_csv_names_selected <- reactive({
   data.names <- names(read_model_csv()[[2]])
   data.selected <- c(data.names[as.numeric(input$model_csv_names_pred)], NA, NA)
   
-  error.idx <- as.numeric(input$model_csv_names_error) - 1
+  # error.idx <- as.numeric(input$model_csv_names_error) - 1
   weight.idx <- as.numeric(input$model_csv_names_weight) - 1
-  if (error.idx != 0) data.selected[2] <- data.names[error.idx]
+  # if (error.idx != 0) data.selected[2] <- data.names[error.idx]
   if (weight.idx != 0) data.selected[3] <- data.names[weight.idx]
   
   list(data.selected)
@@ -99,18 +99,19 @@ create_spdf_csv_grid <- reactive({
     if(pt.loc == 2) {
       adj.lon <-  cell.size.lon / 2
       adj.lat <- -cell.size.lat / 2
-    }
-    if(pt.loc == 3) {
+    } else if(pt.loc == 3) {
       adj.lon <- -cell.size.lon / 2
       adj.lat <- -cell.size.lat / 2
-    }
-    if(pt.loc == 4) {
+    } else if(pt.loc == 4) {
       adj.lon <- -cell.size.lon / 2
       adj.lat <-  cell.size.lat / 2
-    }
-    if(pt.loc == 5) {
+    } else if(pt.loc == 5) {
       adj.lon <- cell.size.lon / 2
       adj.lat <- cell.size.lat / 2
+    } else {
+      validate(
+        need(FALSE, "Error in create_spdf_csv_grid() point location code")
+      )
     }
     
     # Make new SpatialPixelsDF object
@@ -147,10 +148,10 @@ create_spdf_csv <- eventReactive(input$model_create_csv, {
     lon.idx <- as.numeric(input$model_csv_names_lon)
     lat.idx <- as.numeric(input$model_csv_names_lat)
     pred.idx <- as.numeric(input$model_csv_names_pred)
-    error.idx <- as.numeric(input$model_csv_names_error)
+    error.idx <- NA #as.numeric(input$model_csv_names_error)
     weight.idx <- as.numeric(input$model_csv_names_weight)
-    
-    error.idx <- ifelse(error.idx == 1, NA, error.idx - 1)
+
+    error.idx <- NA #ifelse(error.idx == 1, NA, error.idx - 1)
     weight.idx <- ifelse(weight.idx == 1, NA, weight.idx - 1)
     
     csv.idx <- c(lon.idx, lat.idx, pred.idx, error.idx, weight.idx)
@@ -162,7 +163,7 @@ create_spdf_csv <- eventReactive(input$model_create_csv, {
     
     # Change invalid densities to NA
     na.idx <- model_csv_NA_idx()
-    if(!anyNA(na.idx)) csv.data[na.idx,3:5] <- NA
+    if(!anyNA(na.idx)) csv.data[na.idx, 3:5] <- NA
     
     # Sort data by lat (primary) then long for bottom up sort
     csv.data <- data.sort(csv.data, 2, 1)
