@@ -13,16 +13,16 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
   
   #----------------------------------------------
   # Same code as in model_pix_download()
-  model.which <- sort(as.numeric(input$models_loaded_table_rows_selected))
+  models.idx <- sort(as.numeric(input$models_loaded_table_rows_selected))
   
   validate(
-    need(length(model.which) > 0, 
+    need(length(models.idx) > 0, 
          "Please select at least one model from table to preview")
   )
   
-  models.toplot <- vals$models.pix[model.which]
+  models.toplot <- vals$models.pix[models.idx]
   
-  plot.titles <- sapply(model.which, function(i) {
+  plot.titles <- sapply(models.idx, function(i) {
     paste0("Model file: ", vals$models.names[i], "\n", 
            "Data header: ", vals$models.data.names[[i]][1])
   })
@@ -31,7 +31,8 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
                          plot.titles = plot.titles, perc.num = perc.num)
   #----------------------------------------------
   
-  list(plot.multi.display(model.pix.list), model.which)
+  vals$models.plotted.idx <- models.idx
+  plot.multi.display(model.pix.list)
 })
 
 
@@ -43,17 +44,17 @@ model_pix_download <- reactive({
   perc.num <- as.numeric(input$model_download_preview_perc)
   
   #----------------------------------------------
-  # Same code as in model_pix_preview_event()
-  model.which <- sort(as.numeric(input$models_loaded_table_rows_selected))
+  # Same code as in model_pix_download()
+  models.idx <- sort(as.numeric(input$models_loaded_table_rows_selected))
   
   validate(
-    need(length(model.which) > 0, 
+    need(length(models.idx) > 0, 
          "Please select at least one model from table to preview")
   )
   
-  models.toplot <- vals$models.pix[model.which]
+  models.toplot <- vals$models.pix[models.idx]
   
-  plot.titles <- sapply(model.which, function(i) {
+  plot.titles <- sapply(models.idx, function(i) {
     paste0("Model file: ", vals$models.names[i], "\n", 
            "Data header: ", vals$models.data.names[[i]][1])
   })
@@ -118,16 +119,16 @@ plot_overlay_preview_base <- eventReactive(
 plot_overlay_preview_overlaid <- eventReactive(
   input$overlay_preview_overlaid_execute, 
   {
-    pix.list.toplot <- overlay_preview_overlaid_pix()
-    overlaid.which <- input$overlay_preview_overlaid_models
+    models.toplot <- overlay_preview_overlaid_pix()
+    overlaid.idx <- input$overlay_preview_overlaid_models
     
-    plot.titles <- paste("Overlaid", overlaid.which)
+    plot.titles <- paste("Overlaid", overlaid.idx)
     
-    list.toplot <- list(models.toplot = pix.list.toplot, 
-                        data.name = "Pred.overlaid", 
-                        plot.titles = plot.titles, perc.num = 1)
+    overlaid.pix.list <- list(models.toplot = models.toplot, 
+                              data.name = "Pred.overlaid", 
+                              plot.titles = plot.titles, perc.num = 1)
     
-    plot.multi.display(list.toplot)
+    plot.multi.display(overlaid.pix.list)
   }
 )
 
@@ -139,21 +140,19 @@ plot_overlay_preview_overlaid <- eventReactive(
 ### Get preview of ensemble predictions to plot in-app
 # 
 ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
-  req(length(vals$ensemble.models) > 0)
-  
   perc.num <- input$ens_preview_perc
   
   #----------------------------------------------
   # Same code as in ens_pix_download()
-  ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
+  ensemble.idx <- sort(input$ens_datatable_ensembles_rows_selected)
   validate(
-    need(length(ensemble.which) > 0,
+    need(length(ensemble.idx) > 0,
          "Please select at least one model from table to preview")
   )
   
   models.toplot <- create_ens_preview_model()
   
-  plot.titles <- sapply(ensemble.which, function(i) {
+  plot.titles <- sapply(ensemble.idx, function(i) {
     paste0("Ensembling method: ", vals$ensemble.method[i], "\n", 
            "Rescaling method: ", vals$ensemble.rescaling[i])
   })
@@ -162,28 +161,27 @@ ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
                        plot.titles = plot.titles, perc.num = perc.num)
   #----------------------------------------------
   
-  list(plot.multi.display(ens.pix.list), ensemble.which)
+  vals$ensemble.plotted.idx <- ensemble.idx
+  plot.multi.display(ens.pix.list)
 })
 
 
 #################################################
 ### Get preview of ensemble predictions to download
 ens_pix_download <- reactive({
-  req(length(vals$ensemble.models) > 0)
-  
   perc.num <- input$ens_download_preview_perc
   
   #----------------------------------------------
   # Same code as in ens_pix_preview_event()
-  ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
+  ensemble.idx <- sort(input$ens_datatable_ensembles_rows_selected)
   validate(
-    need(length(ensemble.which) > 0,
+    need(length(ensemble.idx) > 0,
          "Please select at least one model from table to preview")
   )
   
   models.toplot <- create_ens_preview_model()
   
-  plot.titles <- sapply(ensemble.which, function(i) {
+  plot.titles <- sapply(ensemble.idx, function(i) {
     paste0("Ensembling method: ", vals$ensemble.method[i], "\n", 
            "Rescaling method: ", vals$ensemble.rescaling[i])
   })

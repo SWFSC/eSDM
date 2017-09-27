@@ -13,6 +13,7 @@ vals <- reactiveValues(
   models.data.names = list(),     # List of vectors of model, error, and weights names
   models.pred.type = NULL,        # Vector of prediction type (absolute vs relative)
   models.specs = list(),          # List of vectors of res, num of cells/preds, abund, and extent
+  models.plotted.idx = NULL,      # Vector of the indicies of currently previewed original models
   
   # Objects that store data for and from overlay section
   overlay.bound = NULL,           # Boundary SpatialPolygons; crs is crs.ll
@@ -36,6 +37,7 @@ vals <- reactiveValues(
   ensemble.weights = NULL,        # Strings of weights used (if any)
   ensemble.rescaling = NULL,      # Vector of rescaling methods used
   ensemble.overlaid.idx = NULL,   # Strings of indices of overlaid model predictions used
+  ensemble.plotted.idx = NULL,    # Vector of the indicies of currently previewed ensemble models
   
   # Objects that store data for evaluation metrics section. 'valid' refers to validation
   eval.data.list = list(NA, NA),  # List with sptsdf of pres & abs
@@ -48,7 +50,8 @@ vals <- reactiveValues(
   eval.metrics.names = NULL,      # Names of metrics calculated
   
   # Objects that store data for high quality (pretty) plots
-  pretty.params.list = list()     # List of parameters to use in high quality plots
+  pretty.params.list = list(),    # List of parameters to use in high quality plots
+  pretty.plotted.idx = NULL       # List of vectors of the indicies of currently pretty-plotted models
 )
 
 ###############################################################################
@@ -69,13 +72,14 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     )
     incProgress(0.4)
     
-    vals$models.pix        <- vals.save[["models.pix"]]
-    vals$models.ll         <- vals.save[["models.ll"]]
-    vals$models.orig       <- vals.save[["models.orig"]]
-    vals$models.names      <- vals.save[["models.names"]]
-    vals$models.data.names <- vals.save[["models.data.names"]]
-    vals$models.pred.type  <- vals.save[["models.pred.type"]]
-    vals$models.specs      <- vals.save[["models.specs"]]
+    vals$models.pix         <- vals.save[["models.pix"]]
+    vals$models.ll          <- vals.save[["models.ll"]]
+    vals$models.orig        <- vals.save[["models.orig"]]
+    vals$models.names       <- vals.save[["models.names"]]
+    vals$models.data.names  <- vals.save[["models.data.names"]]
+    vals$models.pred.type   <- vals.save[["models.pred.type"]]
+    vals$models.specs       <- vals.save[["models.specs"]]
+    vals$models.plotted.idx <- vals.save[["models.plotted.idx"]]
     
     vals$overlay.bound         <- vals.save[["overlay.bound"]]
     vals$overlay.land          <- vals.save[["overlay.land"]]
@@ -96,6 +100,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$ensemble.weights      <- vals.save[["ensemble.weights"]]
     vals$ensemble.rescaling    <- vals.save[["ensemble.rescaling"]]
     vals$ensemble.overlaid.idx <- vals.save[["ensemble.overlaid.idx"]]
+    vals$ensemble.plotted.idx  <- vals.save[["ensemble.plotted.idx"]]
     
     vals$eval.data.list        <- vals.save[["eval.data.list"]]
     vals$eval.data.specs       <- vals.save[["eval.data.specs"]]
@@ -107,6 +112,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$eval.metrics.names    <- vals.save[["eval.metrics.names"]]
     
     vals$pretty.params.list <- vals.save[["pretty.params.list"]]
+    vals$pretty.plotted.idx <- vals.save[["pretty.plotted.idx"]]
     
     incProgress(0.1)
     

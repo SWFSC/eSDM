@@ -11,6 +11,7 @@ observe({
   vals$models.data.name
   vals$models.pred.type
   vals$models.specs
+  vals$models.plotted.idx
   vals$overlay.bound
   vals$overlay.land
   vals$overlay.crs
@@ -28,6 +29,7 @@ observe({
   vals$ensemble.weights
   vals$ensemble.rescaling
   vals$ensemble.overlaid.idx
+  vals$ensemble.plotted.idx
   vals$eval.models.idx
   vals$eval.data.list
   vals$eval.data.specs
@@ -37,9 +39,10 @@ observe({
   vals$eval.metrics
   vals$eval.metrics.names
   vals$pretty.params.list
+  vals$pretty.plotted.idx
   
   xxxyz <- reactiveValuesToList(vals)
-  if(length(xxxyz) != 33) {
+  if(length(xxxyz) != 36) {
     warning(paste("There are now", length(xxxyz), "reactiveValues"))
   }
 })

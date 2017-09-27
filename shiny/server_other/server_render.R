@@ -68,15 +68,9 @@ output$models_loaded_table_stats <- DT::renderDataTable({
 options = list(dom = 't'), selection = "none")
 
 ###########################################################
-### Message for when no models are loaded
-# output$models_text_none_loaded <- renderText({
-#   if (length(vals$models.ll) == 0) "No model predictions are loaded"
-# })
-
-###########################################################
 ### Plot/preview of individual model
 output$model_pix_preview_plot <- renderPlot({
-  grid.arrange(model_pix_preview_event()[[1]])
+  grid.arrange(model_pix_preview_event())
 })
 
 
@@ -235,7 +229,7 @@ output$ens_remove_text <- renderUI({
 ### Plot preview of ensemble predictions
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$ens_pix_preview_plot <- renderPlot({
-  grid.arrange(ens_pix_preview_event()[[1]])
+  grid.arrange(ens_pix_preview_event())
 })
 
 ### Table of abundances of created ensemble predictions

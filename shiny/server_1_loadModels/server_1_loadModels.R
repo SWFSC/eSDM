@@ -19,12 +19,7 @@ observeEvent(input$model_remove_execute, {
          "Please select one or more sets of model predictions to remove")
   )
   
-  ### Hide preview if these predictions were plotted
-  plotted.which <- model_pix_preview_event()[[2]]
-  if (any(idx %in% plotted.which)) {
-    shinyjs::hide("model_pix_preview_plot", time = 0)
-  }
-  
+  #########################################################
   ### Remove the reactiveValue info for selected set(s) of model predicitons
   vals$models.ll <- vals$models.ll[-idx]
   vals$models.orig <- vals$models.orig[-idx]
@@ -37,8 +32,29 @@ observeEvent(input$model_remove_execute, {
   if (length(vals$models.names) == 0) vals$models.names <- NULL
   if (length(vals$models.pred.type) == 0) vals$models.pred.type <- NULL
   
-  # Could make this so it only removes ensemble metrics
-  # TODO: make smarter
+  
+  #########################################################
+  # Handle other places this data was used
+  
+  ### If these predictions were previewed, hide preview
+  ### Else, adjust vals idx
+  if (!is.null(vals$models.plotted.idx)) {
+    if (any(idx %in% vals$models.plotted.idx)) {
+      shinyjs::hide("model_pix_preview_plot", time = 0)
+      vals$models.plotted.idx <- NULL
+    } else {
+      idx.adjust <- sapply(vals$models.plotted.idx, function(i) {
+        sum(idx < i)
+      })
+      vals$models.plotted.idx <- vals$models.plotted.idx - idx.adjust
+      validate(
+        need(all(vals$models.plotted.idx > 0), "Original delete error 1")
+      )
+    }
+  }
+  
+  ### Remove evaluation metrics if they're calculated for original model preds
+  # TODO: make this so it only removes the metrics of models being removed
   if (!is.null(vals$eval.models.idx)) {
     if (!is.null(vals$eval.models.idx[[1]])){
       vals$eval.models.idx <- NULL
@@ -47,11 +63,21 @@ observeEvent(input$model_remove_execute, {
     }
   }
   
-  # Reset pretty params only if an original model was plotted
-  # TODO: make smarter
-  if (length(vals$pretty.params.list) != 0) {
-    if (!is.null(vals$pretty.params.list$model.idx[[1]])) {
+  ### If these predictions were pretty-plotted, reset and hide pretty plot
+  ### Else, adjust vals idx
+  if (!is.null(vals$pretty.plotted.idx)) {
+    if (any(idx %in% vals$pretty.plotted.idx[[1]])) {
+      shinyjs::hide("pretty_plot_plot", time = 0)
       vals$pretty.params.list <- list()
+      vals$pretty.plotted.idx <- NULL
+    } else {
+      idx.adjust <- sapply(vals$pretty.plotted.idx[[1]], function(i) {
+        sum(idx < i)
+      })
+      vals$pretty.plotted.idx[[1]] <- vals$pretty.plotted.idx[[1]] - idx.adjust
+      validate(
+        need(all(vals$pretty.plotted.idx[[1]] > 0), "Original delete error 2")
+      )
     }
   }
 })

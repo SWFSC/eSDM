@@ -93,10 +93,10 @@ pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
                       axis.xlab = axis.xlab, axis.ylab = axis.ylab, 
                       title.cex = title.cex, axis.cex = axis.cex, 
                       list.colorscheme = list.colorscheme, 
-                      list.scales = list.scales, 
-                      model.idx = pretty_plot_xyz_list())
+                      list.scales = list.scales)
   
   vals$pretty.params.list <- params.list
+  vals$pretty.plotted.idx <- pretty_plot_xyz_list()
   
   return("")
 })

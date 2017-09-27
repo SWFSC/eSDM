@@ -46,56 +46,56 @@ server <- function(input, output, session) {
   
   
   ### Load all other server code: tab-specific scripts and general server code
-  source(file.path("server_other", "server_reactiveValues.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_other", "server_reactiveValues.R"), local = TRUE, chdir = TRUE)
   
-  source("temp.R", local = TRUE, echo = FALSE, chdir = TRUE)
+  source("temp.R", local = TRUE, chdir = TRUE)
   
   # Load/read models
-  source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_1_loadModels", "server_1_loadModels_csv.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_1_loadModels", "server_1_loadModels_raster.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_1_loadModels", "server_1_loadModels_shpgdb.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_1_loadModels", "server_1_loadModels_renderUI.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_1_loadModels", "server_1_loadModels_funcs.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_1_loadModels", "server_1_loadModels_csv.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_1_loadModels", "server_1_loadModels_raster.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_1_loadModels", "server_1_loadModels_shpgdb.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_1_loadModels", "server_1_loadModels_renderUI.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_1_loadModels", "server_1_loadModels_funcs.R"), local = TRUE, chdir = TRUE)
   
   
   # Overlay process
-  source(file.path("server_2_overlay", "server_2_overlay.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_loadPoly_csv.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_loadPoly_shpgdb.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_loadPoly_provided.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_overlayModels.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_overlayModels_base.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_renderUI.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_loadPoly_csv.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_loadPoly_shpgdb.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_loadPoly_provided.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_overlayModels.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_overlayModels_base.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_renderUI.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, chdir = TRUE)
   
   
   # Create simple ensemble
-  source(file.path("server_3_createEns", "server_3_createEns.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_3_createEns", "server_3_createEns_create.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_3_createEns", "server_3_createEns_create_weighted.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_3_createEns", "server_3_createEns_create_weighted_poly.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_3_createEns", "server_3_createEns_renderUI.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_3_createEns", "server_3_createEns.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_3_createEns", "server_3_createEns_create.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_3_createEns", "server_3_createEns_create_weighted.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_3_createEns", "server_3_createEns_create_weighted_poly.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_3_createEns", "server_3_createEns_renderUI.R"), local = TRUE, chdir = TRUE)
   
   
   # Calculate evaluation metrics
-  source(file.path("server_4_evalMetrics", "server_4_evalMetrics.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_4_evalMetrics", "server_4_evalMetrics_loadData.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_4_evalMetrics", "server_4_evalMetrics_renderUI.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_4_evalMetrics", "server_4_evalMetrics_funcs.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_4_evalMetrics", "server_4_evalMetrics.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_4_evalMetrics", "server_4_evalMetrics_loadData.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_4_evalMetrics", "server_4_evalMetrics_renderUI.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_4_evalMetrics", "server_4_evalMetrics_funcs.R"), local = TRUE, chdir = TRUE)
   
   
   # Make high quality (pretty) plots
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_download.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_renderUI.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_download.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_renderUI.R"), local = TRUE, chdir = TRUE)
   
   
   # Export model predictions
-  source(file.path("server_6_export", "server_6_export.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_6_export", "server_6_export_renderUI.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_6_export", "server_6_export.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_6_export", "server_6_export_renderUI.R"), local = TRUE, chdir = TRUE)
   
   
   # Manual
@@ -105,14 +105,14 @@ server <- function(input, output, session) {
   
   
   # General server code
-  source(file.path("server_other", "server_funcs+vars.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_other", "server_plots.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_other", "server_plots_download.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_other", "server_funcs+vars.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_plots.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_plots_download.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, chdir = TRUE)
   # server_reactiveValues.R is sourced at the top of the server code in order to initialize reactiveValues
-  source(file.path("server_other", "server_render.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_other", "server_render_tables.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-  source(file.path("server_other", "server_hide+show.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path("server_other", "server_render.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_render_tables.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_hide+show.R"), local = TRUE, chdir = TRUE)
   
   
   ### Hide plot outputs

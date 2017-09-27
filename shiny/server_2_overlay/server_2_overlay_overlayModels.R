@@ -43,6 +43,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   vals$ensemble.weights <- NULL
   vals$ensemble.rescaling <- NULL
   vals$ensemble.overlaid.idx <- NULL
+  vals$ensemble.plotted.idx <- NULL
   
   # Could make this so it only removes overlaid metrics
   # TODO: make smarter
@@ -54,10 +55,13 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     }
   }
   
-  # Reset pretty params only if an overlaid model was plotted
-  if (length(vals$pretty.params.list) != 0) {
-    if (!is.null(vals$pretty.params.list$model.idx[[2]])) {
+  # Reset pretty vals if an overlaid or ensemble model was plotted
+  if (!is.null(vals$pretty.plotted.idx)) {
+    if (any(idx %in% vals$pretty.plotted.idx[[2]]) | 
+        any(idx %in% vals$pretty.plotted.idx[[3]])) {
+      shinyjs::hide("pretty_plot_plot", time = 0)
       vals$pretty.params.list <- list()
+      vals$pretty.plotted.idx <- NULL
     }
   }
   
