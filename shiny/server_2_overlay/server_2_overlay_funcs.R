@@ -65,8 +65,6 @@ validate.poly <- function(poly.invalid, description = NULL) {
 
 overlay.func <- function(pol.base, pol.spdf, overlap.perc)
 {
-  # print("Beginning overlay of model")
-  
   pol.sp <- as(pol.spdf, "SpatialPolygons")
   
   over.base <- over(pol.base, pol.sp, returnList = TRUE)
@@ -85,8 +83,6 @@ overlay.func <- function(pol.base, pol.spdf, overlap.perc)
   
   #########################################################
   ### Remove poly info if pol.spdf did not overlap at least overlap.perc of it
-  # print("Overlaying data")
-  
   area.res <- sapply(res.df, function(j) { # JVR base 10s ## Efficiency???
     if(class(j) != "logical") area(j)
     else NA
@@ -129,9 +125,6 @@ overlay.func <- function(pol.base, pol.spdf, overlap.perc)
   
   spdf.overlaid <- SpatialPolygonsDataFrame(pol.base, overlaid.data.df, 
                                               match.ID = FALSE)
-  
-  
-  # return(list(spdf.overlaid, abund.sum)) # other things?
   
   return(spdf.overlaid)
 }

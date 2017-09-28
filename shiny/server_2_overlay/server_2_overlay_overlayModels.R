@@ -5,12 +5,12 @@
 
 ###############################################################################
 ### Get crs object with projection to be used in overlay process
+# Currently this only handles the loaded model preds as possible inputs
 overlay_crs <- reactive({
   if (input$overlay_proj_ll) {
     crs.ll
   } else {
     crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
-    # Currently this only handles the loaded model preds as possible inputs
   }
 })
 
@@ -164,7 +164,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
                   detail = paste("Making overlaid model", prog.num))
       
       overlay.func(base.sp, model, overlap.perc)
-    }, models.to.overlay, 2:(prog.total-1), SIMPLIFY = FALSE)
+    }, models.to.overlay, 2:(prog.total - 1), SIMPLIFY = FALSE)
     
     incProgress(0.9 / prog.total, detail = "Finishing overlay process")
     # print("Overlaying of models took:"); print(Sys.time() - t.2)

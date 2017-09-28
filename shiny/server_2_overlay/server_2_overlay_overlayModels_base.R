@@ -181,7 +181,7 @@ overlay_proj_land <- reactive({
 
 
 ###############################################################################
-# _llpre() funcs, so they use data in wgs 84 geog coordinates pre-projection
+# _llpre() funcs, so they use data in WGS 84 geog coordinates pre-projection
 
 ### Clip land poly to base extent (plus a bit) in crs.ll using gClipExtent...
 # ...so that projecting land poly doesn't take as long
