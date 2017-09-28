@@ -5,8 +5,8 @@
 ###############################################################################
 # For General Use
 
-### Adapted from http://robinlovelace.net/r/2014/07/29/clipping-with-r.html
-# Clip shp by extent of bb (plus buf)
+### Clip shp by extent of bb (plus buf)
+# Adapted from http://robinlovelace.net/r/2014/07/29/clipping-with-r.html
 gClipExtent <- function(shp, bb, buf = NULL) {
   validate(
     need(identicalCRS(shp, bb), "gClipExtent(): CRS arguments are not equal")
@@ -27,11 +27,19 @@ gClipExtent <- function(shp, bb, buf = NULL) {
 }
 
 
-### From Hadley 
+### Determine whether all values in x are equal, aka have a zero range
+# From Hadley Wickham
 zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
   if (length(x) == 1) return(TRUE)
   x <- range(x) / mean(x)
   isTRUE(all.equal(x[1], x[2], tolerance = tol))
+}
+
+
+### Get last n element from string x
+# From https://stackoverflow.com/questions/7963898
+substrRight <- function(x, n){
+  substr(x, nchar(x) - n + 1, nchar(x))
 }
 
 
@@ -44,24 +52,24 @@ na.which <- function(data.vec) {
                                which(is.nan(data.vec)),
                                which(data.vec %in% na.char),
                                which(data.vec < 0)))
-  na.idx <- unique(na.idx)
+  na.idx <- sort(unique(na.idx))
   if (length(na.idx) == 0) na.idx <- NA
   
   return(na.idx)
 }
 
 ### Generate message reporting length of na.which.out
-# It is assumed this message is describing prediction values
+# This message was built to refer to prediction values
 na.which.message <- function(na.which.out) {
   x <- na.which.out
   
   if (anyNA(x)) {
     na.len <- "No prediction values were classified as NA"
   } else {
-    if (length(x) == 1) 
-      na.len <- paste(length(x), "prediction value was classified as NA")
-    if (length(x) > 1) 
-      na.len <- paste(length(x), "prediction values were classified as NA")
+    len.x <- length(x)
+    na.len <- ifelse(len.x == 1, 
+                     paste(len.x, "prediction value was classified as NA"), 
+                     paste(len.x, "prediction values were classified as NA"))
   }
 }
 
@@ -89,8 +97,9 @@ breaks.calc <- function(sp.data) {
   data.min <- min(sp.data)
   
   sp.data.sort <- sort(sp.data, decreasing = TRUE)
-  data.breaks.mid <- sapply(breaks, 
-                            function(i) sp.data.sort[ceiling(i * data.len)])
+  data.breaks.mid <- sapply(breaks, function(i) {
+    sp.data.sort[ceiling(i * data.len)]
+  })
   data.breaks <- c(data.min, data.breaks.mid, data.max)
   
   return(data.breaks)
@@ -103,6 +112,7 @@ breaks.calc <- function(sp.data) {
 normalize <- function(x) {
   num <- (x - min(x, na.rm = TRUE))
   denom <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+  
   return (num / denom)
 }
 
@@ -112,8 +122,8 @@ normalize <- function(x) {
 #   column.2 is sorted first (if necessary), then column.1
 data.sort <- function(data.in, column.1 = 1, column.2 = NA) {
   data.sort <- data.in
-  if (!is.na(column.2)) data.sort <- data.sort[order(data.sort[,column.2]), ]
-  data.sort <- data.sort[order(data.sort[,column.1]), ]
+  if (!is.na(column.2)) data.sort <- data.sort[order(data.sort[, column.2]), ]
+  data.sort <- data.sort[order(data.sort[, column.1]), ]
   
   return(data.sort)
 }
@@ -143,8 +153,7 @@ model.abundance <- function(spdf, cols.data = "Pred") {
   
   # Calculate areas of polygons with no NAs
   spdf.area <- raster::area(spdf.nona) / 1e+06
-  
-  abunds <- sapply(cols.data, function(j) sum(spdf.nona@data[,j] * spdf.area))
+  abunds <- sapply(cols.data, function(j) sum(spdf.nona@data[, j] * spdf.area))
   
   return(abunds)
 }
@@ -157,8 +166,8 @@ model.abundance <- function(spdf, cols.data = "Pred") {
 read.csv.in <- function(file.in) {
   req(file.in)
   
-  list.out <- list(file.in$name, read.csv(file.in$datapath, 
-                                          stringsAsFactors = FALSE))
+  list.out <- list(file.in$name, 
+                   read.csv(file.in$datapath, stringsAsFactors = FALSE))
   
   return(list.out)
 }
@@ -191,7 +200,7 @@ gis.model.check <- function(gis.loaded) {
   
   # Sort spdf by lat and then long so polygons are ordered bottom up
   coords <- data.frame(idx = seq_along(gis.loaded), coordinates(gis.loaded))
-  idx.sorted <- data.sort(coords, 3, 2)[,1] # Lat is primary sort
+  idx.sorted <- data.sort(coords, 3, 2)[, 1] # Lat is primary sort
   gis.loaded <- gis.loaded[idx.sorted, ]
   
   # Check crs arguments and project to crs.ll if necessary
