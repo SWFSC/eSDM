@@ -20,16 +20,11 @@ ui.evalMetrics <- function() {
         box(
           title = "Load Validation Data", status = "warning", solidHeader = FALSE, width = 5, collapsible = TRUE, 
           fluidRow(
-            # column(6, radioButtons("eval_data_file_num", h5("Validation data are..."), 
-            #                        choices = list("in the same file" = 1, "in different files" = 2), 
-            #                        selected = 1)), 
             column(6, radioButtons("eval_load_type_1", h5("Validation data file type"), choices = file.type.list1, selected = 1)), 
             column(6, radioButtons("eval_data_type_1", h5("Validation data type"), 
                                    choices = list("Counts (numerical)" = 1, "Presence or absence" = 2), 
                                    selected = 1))
           ), 
-          # conditionalPanel( # P/A points are in same file
-          #   condition = "input.eval_data_file_num == 1", 
           #########################################################  Excel csv file
           conditionalPanel(
             condition = "input.eval_load_type_1 == 1", 
@@ -158,7 +153,8 @@ ui.evalMetrics <- function() {
               collapsible = TRUE, 
               fluidRow(
                 column(3, radioButtons("eval_metrics_description", NULL, 
-                                       choices = list("Area under the curve (AUC)" = 1, "True Skill Statistic (TSS)" = 2, 
+                                       choices = list("Area under the curve (AUC)" = 1, 
+                                                      "True Skill Statistic (TSS)" = 2, 
                                                       "Root mean squared error (RMSE)" = 3))), 
                 column(
                   width = 8, 
@@ -204,28 +200,30 @@ ui.evalMetrics <- function() {
         ############################################################################### Calculated metrics
         column(
           width = 5, 
-               fluidRow(
-                 box(
-                   title = "Metrics", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-                   fluidRow(
-                     column(6, tableOutput("table_eval_metrics_out")), 
-                     column(
-                       width = 5, 
-                       conditionalPanel(
-                         condition = "output.table_eval_metrics_out != null", 
-                         downloadButton("eval_metrics_table_save", "Download metrics"), 
-                         br(), 
-                         br(), 
-                         helpText(strong("Note:"), 
-                                  "The downloaded Excel csv file will have both metric values and model information", 
-                                  "for each set of predictions. Because ensemble predictions have different information", 
-                                  "than original and overlaid predictions, some column headers are formatted as", 
-                                  "'Original+Overlaid info/Ensemble info'.")
-                       )
-                     )
-                   )
-                 )
-               )
+          fluidRow(
+            box(
+              title = "Metrics", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
+              fluidRow(
+                column(6, tableOutput("table_eval_metrics_out")), 
+                column(
+                  width = 5, 
+                  conditionalPanel(
+                    condition = "output.table_eval_metrics_out != null", 
+                    downloadButton("eval_metrics_table_save", "Download metrics"), 
+                    br(), 
+                    br(), 
+                    helpText(strong("Note:"), 
+                             "The downloaded Excel csv file will have both metric values and model information", 
+                             "for each set of predictions.", 
+                             "Because ensemble predictions have different information than original and overlaid predictions,", 
+                             "then if evaluation metrics have been calculated for both ensemble predictions and at least", 
+                             " one of original and overlaid predictions, some column headers will be formatted as", 
+                             "'Original+Overlaid info/Ensemble info'.")
+                  )
+                )
+              )
+            )
+          )
         )
       )
     )

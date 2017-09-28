@@ -14,7 +14,7 @@
 
 
 ###############################################################################
-library(dplyr) # Loaded first so other packages mask dplyr functions
+library(dplyr) # Loaded first so dplyr functions those that are masked
 library(sp)
 library(rgdal)
 library(rgeos)
@@ -22,9 +22,9 @@ library(raster)
 library(cleangeo)
 library(lattice)
 library(gridExtra)
-library(colorRamps)
 library(ROCR)
 library(DT)
+library(colorRamps)
 library(RColorBrewer)
 library(viridis)
 library(dichromat)
