@@ -3,9 +3,9 @@
 
 ###############################################################################
 ### File type lists for use in radioButton()'s and selectInupt()'s
-file.type.list1 <- list("Excel csv file" = 1, "GIS shapefile" = 2, 
+file.type.list1 <- list("Excel .csv" = 1, "GIS shapefile" = 2, 
                         "GIS file geodatabase feature class" = 3)
-file.type.list2 <- list("Excel csv file" = 1, "GIS raster" = 2, 
+file.type.list2 <- list("Excel .csv" = 1, "GIS raster" = 2, 
                         "GIS shapefile" = 3, 
                         "GIS file geodatabase feature class" = 4)
 
@@ -14,10 +14,10 @@ file.type.list2 <- list("Excel csv file" = 1, "GIS raster" = 2,
 # Labels of widgets used in loading file geodatabase feature classes
 
 ### Excel csv
-label.csv.upload <- h5("Upload Excel csv file (.csv)")
+label.csv.upload <- h5("Upload Excel .csv file (.csv extension)")
 
 ### GIS raster
-label.raster.upload <- h5("Upload raster file (.tif)")
+label.raster.upload <- h5("Upload raster file (.tif extension)")
 
 ### GIS shp
 label.shp.upload <- h5("Upload GIS shapefile files")
@@ -32,46 +32,23 @@ label.gdb.upload <- "Upload file geodatabase feature class"
 # Instructions
 
 ###########################################################
-### Instructions for loading model predictions
-ui.load.data.instructions.raster <- function() {
-  helpText("Please ensure that missing",
-           "prediction values are one of the following: 'NA', 'NaN', 'N/A',", 
-           "'n/a', 'na', blank, or a negative number.", br(), 
-           em("Prediction value type:"), "select \"Relative density\" if", 
-           "the predictions are probabilities of occurrence.")
+### Instructions for uploading certain file and object types
+ui.instructions.upload.csv <- function() {
+  helpText("Browse to and open the desired file with the extension '.csv'.", 
+           "This file must have headers.")
 }
 
-ui.load.data.instructions <- function() {
-  helpText(em("Column with prediciton data:"), "please ensure that missing",
-           "prediction values are one of the following: 'NA', 'NaN', 'N/A',", 
-           "'n/a', 'na', blank, or a negative number.", br(), 
-           em("Prediction value type:"), "select \"Relative density\" if", 
-           "the predictions are probabilities of occurrence.", br(), 
-           em("Column with error/weight data:"), "select \"N/A\" if the", 
-           "data does not have error/weight data.")
-}
-
-
-###########################################################
-### Instructions for loading certain file and object types
-ui.csv.instructions <- function() {
-  helpText("Browse to and load the file with the .csv extension that contains", 
-           "the model prediction data. The longitude and latitude points", 
-           "must be geographic coordinates that are equally spaced", 
-           "in decimal degrees.")
-}
-
-ui.gis.raster.instructions <- function() {
-  helpText("Browse to and load the TIFF file that has the extension '.tif.", 
+ui.instructions.upload.raster <- function() {
+  helpText("Browse to and open the desired TIFF file that has the extension '.tif.", 
            "The raster can be in any projection, but the raster coordinates", 
            "must be between the equivalent of -180 and 180 decimal degrees.")
 }
 
-ui.gis.shp.intructions <- function() {
-  helpText("Browse to and select all files of the desired GIS shapefile.")
+ui.instructions.upload.shp <- function() {
+  helpText("Browse to and open all files of the desired GIS shapefile.")
 }
 
-ui.gis.gdb.intructions <- function() {
+ui.instructions.upload.gdb <- function() {
   helpText("Enter the full file path of the file geodatabase that contains", 
            "the desired file geodatabase feature class. The path and the", 
            "name of the feature class should be", 
@@ -80,10 +57,49 @@ ui.gis.gdb.intructions <- function() {
            "raster dataset or data from an ESRI personal geodatabase.")
 }
 
-ui.csv.poly.instructions <- function() {
-  helpText("Browse to and load the file with the .csv extension that", 
-           "contains the desired polygon(s). The file must have headers,", 
-           "the first column must contain the longitude values,", 
+
+###########################################################
+# Instructions for loading specific type of files
+
+#######################################
+### Loading model predictions
+ui.instructions.pred.csv <- function() {
+  helpText(em("Column with longitude data"), "and", 
+           em("Column with latitude data:"), "Longitude and latitude", 
+           "points must be geographic coordinates that are equally spaced", 
+           "in decimal degrees.", 
+           em("Column with prediciton data:"), "Please ensure that missing",
+           "prediction values are one of the following: 'NA', 'NaN', 'N/A',", 
+           "'n/a', 'na', blank, or a negative number.", br(), 
+           em("Prediction value type:"), "Select \"Relative density\" if", 
+           "the predictions are probabilities of occurrence.", br(), 
+           em("Column with error/weight data:"), "Select \"N/A\" if the", 
+           "data does not have error/weight data.")
+}
+
+ui.instructions.pred.raster <- function() {
+  helpText("Please ensure that missing",
+           "prediction values are one of the following: 'NA', 'NaN', 'N/A',", 
+           "'n/a', 'na', blank, or a negative number.", br(), 
+           em("Prediction value type:"), "select \"Relative density\" if", 
+           "the predictions are probabilities of occurrence.")
+}
+
+ui.instructions.pred.shp.gdb <- function() {
+  helpText(em("Column with prediciton data:"), "Please ensure that missing",
+           "prediction values are one of the following: 'NA', 'NaN', 'N/A',", 
+           "'n/a', 'na', blank, or a negative number.", br(), 
+           em("Prediction value type:"), "Select \"Relative density\" if", 
+           "the predictions are probabilities of occurrence.", br(), 
+           em("Column with error/weight data:"), "Select \"N/A\" if the", 
+           "data does not have error/weight data.")
+}
+
+
+#######################################
+### Loading csv polygons
+ui.instructions.poly.csv <- function() {
+  helpText("The first column must contain the longitude values,", 
            "and the second column must contain the latitude values.", 
            "The longitudes and latitudes must be in geographic coordinates", 
            "in the range [-180, 180].", 
@@ -94,6 +110,7 @@ ui.csv.poly.instructions <- function() {
            "Please be aware that this could create an invalid polygon.")
 }
 
+
 ###############################################################################
 # Error/notification messages
 
@@ -101,31 +118,33 @@ ui.csv.poly.instructions <- function() {
 # File upload error messages
 
 ### CSV
-ui.upload.error.csv <- strong("Please choose a file that has a .csv file extension")
+ui.error.upload.csv <- strong("Please choose a file that has a .csv file extension")
 
 ### Raster
-ui.upload.error.raster <- strong("Could not load GIS raster using the provided file and band number")
+ui.error.upload.raster <- strong("Could not load GIS raster using the provided file and band number")
 
 ### Shapefile
-ui.upload.error.shp <- strong("Could not load GIS shapefile using the provided files")
+ui.error.upload.shp <- strong("Could not load GIS shapefile using the provided files")
 
 ### File gdb
-ui.upload.error.gdb <- strong("Could not load GIS file using the provided path and filename")
+ui.error.upload.gdb <- strong("Could not load GIS file using the provided path and filename")
 
 
 ###########################################################
 # Message displayed if tab functionality can't be used yet
 
-### No model predicitons loaded
-ui.no.model.pred.loaded1 <- function() {
+### No original model predicitons have been loaded
+# ui.no.model.pred.loaded1
+ui.notice.no.pred.original <- function() {
   box(width = 4, 
       h4("No model predictions are loaded"), 
       h5("Please load model predictions to use this section of the app")
   )
 }
 
-### No overlaid model predictions created
-ui.no.model.pred.loaded2 <- function(box.width = 4) {
+### No overlaid model predictions have been created
+# ui.no.model.pred.loaded2
+ui.notice.no.pred.overlaid <- function(box.width = 4) {
   box(width = box.width, 
       h4("No overlaid model predictions have been created"), 
       h5("Please create overlaid model predictions", 

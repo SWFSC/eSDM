@@ -3,7 +3,7 @@
 ui.evalMetrics <- function() {
   tabItem(
     tabName = "evalMetrics", 
-    conditionalPanel(condition = "output.eval_display_flag == false", ui.no.model.pred.loaded1()), 
+    conditionalPanel(condition = "output.eval_display_flag == false", ui.notice.no.pred.original()), 
     conditionalPanel(
       condition = "output.eval_display_flag", 
       fluidRow(
@@ -33,10 +33,11 @@ ui.evalMetrics <- function() {
           #########################################################  Excel csv file
           conditionalPanel(
             condition = "input.eval_load_type_1 == 1", 
-            helpText("The Excel .csv file must have columns with longitude and latitude coordinates for points,", 
-                     "and a column with validation data"), 
+            ui.instructions.upload.csv(), 
+            helpText("The Excel .csv file must have columns with the longitude and latitude coordinates of the data, ", 
+                     "in addition to the column with validation data"), 
             fileInput("eval_csv_1", label.csv.upload, accept = ".csv"), 
-            conditionalPanel("output.eval_csv_1_flag == false", ui.upload.error.csv), 
+            conditionalPanel("output.eval_csv_1_flag == false", ui.error.upload.csv), 
             conditionalPanel(
               condition = "output.eval_csv_1_flag", 
               box(
@@ -76,21 +77,21 @@ ui.evalMetrics <- function() {
           ######################################################### GIS shp file
           conditionalPanel(
             condition = "input.eval_load_type_1 == 2", 
-            ui.gis.shp.intructions(), 
+            ui.instructions.upload.shp(), 
             fileInput("eval_gis_shp_1", label.shp.upload, multiple = TRUE), 
-            conditionalPanel("output.eval_gis_1_shp_flag == false", ui.upload.error.shp)
+            conditionalPanel("output.eval_gis_1_shp_flag == false", ui.error.upload.shp)
           ), 
           ######################################################### GIS gdb file
           conditionalPanel(
             condition = "input.eval_load_type_1 == 3", 
-            ui.gis.gdb.intructions(), 
+            ui.instructions.upload.gdb(), 
             textInput("eval_gis_gdb_path_1", label.gdb.path, value = ".../folder.gdb"), 
             fluidRow(
               column(6, textInput("eval_gis_gdb_name_1", label.gdb.name, value = "")), 
               column(6, br(), br(), actionButton("eval_gis_gdb_load_1", label.gdb.upload))
             ), 
             br(), 
-            conditionalPanel("output.eval_gis_1_gdb_flag == false", ui.upload.error.gdb)
+            conditionalPanel("output.eval_gis_1_gdb_flag == false", ui.error.upload.gdb)
           ), 
           
           ######################################################### GIS shp or gdb file
@@ -118,84 +119,6 @@ ui.evalMetrics <- function() {
               )
             )
           ), 
-          # )
-          # 
-          # ### Presence and absence points are in different files
-          # conditionalPanel(
-          #   condition = "input.eval_data_file_num == 2", 
-          #   helpText(h2("Not yet implemented")), 
-          #     radioButtons("eval_pa_file_p_or_a", label = NULL, 
-          #                  choices = list("Load presence points" = "p", "Load absence points" = "a"), 
-          #                  selected = 1), 
-          #     
-          #     # Load presence points
-          #     conditionalPanel(
-          #       condition = "input.eval_pa_file_p_or_a == 'p'", 
-          #       radioButtons("eval_load_type_2p", h5("Presence points file type"), 
-          #                    choices = list("CSV file" = 1, "GIS file" = 2), 
-          #                    selected = 1), 
-          #       
-          #       # Presence - csv
-          #       conditionalPanel(
-          #         condition = "input.eval_load_type_2p == 1", 
-          #         helpText("Select lat and long columns after uploading csv file"), 
-          #         fileInput("eval_csv_2p", label = h5("Upload presence .csv file")), 
-          #         uiOutput("eval_csv_names_2p_uiOut_select")
-          #       ), 
-          #       
-          #       # Presence - gis
-          #       conditionalPanel(
-          #         condition = "input.eval_load_type_2p == 2", 
-          #         radioButtons("eval_gis_file_type_2p", "GIS file type", 
-          #                      choices = list("Shapefile" = 1, "File geodatabase (.gdb) file" = 2)), 
-          #         conditionalPanel(
-          #           condition = "input.eval_gis_file_type_2p == 1", 
-          #           ui.gis.shp.intructions(), 
-          #           fileInput("eval_gis_shp_2p", h5("Upload GIS files"), multiple = TRUE)
-          #         ), 
-          #         conditionalPanel(
-          #           condition = "input.eval_gis_file_type_2p == 2", 
-          #           ui.gis.gdb.intructions(), 
-          #           textInput("eval_gis_gdb_path_2p", label.gdb.path, value = "C:/Ensemble Shiny/Ensemble_R_Shiny/"), 
-          #           textInput("eval_gis_gdb_name_2p", label.gdb.name, value = ""), 
-          #           actionButton("eval_gis_gdb_load_2p", label.gdb.upload)
-          #         )
-          #       )
-          #     ), 
-          #     
-          #     # Load absence points
-          #     conditionalPanel(
-          #       condition = "input.eval_pa_file_p_or_a == 'a'", 
-          #       radioButtons("eval_load_type_2a", "Absence points file type", 
-          #                    choices = list("CSV file" = 1, "GIS file" = 2), selected = 1), 
-          #       # Absence - csv
-          #       conditionalPanel(
-          #         condition = "input.eval_load_type_2a == 1", 
-          #         helpText("Select lat and long columns after uploading csv file"), 
-          #         fileInput("eval_csv_2a", h5("Upload absence .csv file")), 
-          #         uiOutput("eval_csv_names_2a_uiOut_select")
-          #         
-          #       ), 
-          #       # Absence - gis
-          #       conditionalPanel(
-          #         condition = "input.eval_load_type_2a == 2", 
-          #         radioButtons("eval_gis_file_type_2a", "GIS file type", 
-          #                      choices = list("Shapefile" = 1, "File geodatabase (.gdb) file" = 2)), 
-          #         conditionalPanel(
-          #           condition = "input.eval_gis_file_type_2a == 1", 
-          #           ui.gis.shp.intructions(), 
-          #           fileInput("eval_gis_shp_2a", h5("Upload GIS files"), multiple = TRUE)
-          #         ), 
-          #         conditionalPanel(
-          #           condition = "input.eval_gis_file_type_2a == 2", 
-          #           ui.gis.gdb.intructions(), 
-          #           textInput("eval_gis_gdb_path_2a", label.gdb.path, value = "C:/Ensemble Shiny/Ensemble_R_Shiny/"), 
-          #           textInput("eval_gis_gdb_name_2a", label.gdb.name, value = ""), 
-          #           actionButton("eval_gis_gdb_load_2a", label.gdb.upload)
-          #         )
-          #       )
-          #     )
-          #   ), 
           textOutput("eval_data_1_message")
         )
       ), 
@@ -213,11 +136,12 @@ ui.evalMetrics <- function() {
               conditionalPanel(
                 condition = "output.eval_display_calc_metrics_flag", 
                 fluidRow(
-                  column(5, 
-                         h5("Validation data info"), 
-                         tableOutput("table_pa_pts_out"), 
-                         tags$style(type="text/css", "#table_pa_pts_out td:first-child {font-weight:bold;}")
-                         #tr:first-child for first row
+                  column(
+                    width = 5, 
+                    h5("Validation data info"), 
+                    tableOutput("table_pa_pts_out"), 
+                    tags$style(type="text/css", "#table_pa_pts_out td:first-child {font-weight:bold;}")
+                    #tr:first-child for first row
                   ), 
                   column(3, offset = 1, uiOutput("eval_metrics_which_uiOut_check")), 
                   column(
@@ -234,8 +158,7 @@ ui.evalMetrics <- function() {
               collapsible = TRUE, 
               fluidRow(
                 column(3, radioButtons("eval_metrics_description", NULL, 
-                                       choices = list("Area under the curve (AUC)" = 1, 
-                                                      "True Skill Statistic (TSS)" = 2, 
+                                       choices = list("Area under the curve (AUC)" = 1, "True Skill Statistic (TSS)" = 2, 
                                                       "Root mean squared error (RMSE)" = 3))), 
                 column(
                   width = 8, 
@@ -279,7 +202,8 @@ ui.evalMetrics <- function() {
         ), 
         
         ############################################################################### Calculated metrics
-        column(5, 
+        column(
+          width = 5, 
                fluidRow(
                  box(
                    title = "Metrics", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
