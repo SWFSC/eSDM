@@ -332,6 +332,10 @@ output$pretty_plot_values_event_text <- renderText({
   pretty_plot_values_event()
 })
 
+output$pretty_plot_color_preview_plot <- renderPlot({
+  pretty_plot_color_preview()
+})
+
 ### Pretty plot
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$pretty_plot_plot <- renderPlot({

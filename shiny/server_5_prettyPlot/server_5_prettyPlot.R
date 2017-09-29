@@ -46,4 +46,12 @@ output$pretty_pred_selected_flag <- reactive({
 })
 outputOptions(output, "pretty_pred_selected_flag", suspendWhenHidden = FALSE)
 
+
 ###############################################################################
+### Preview of selected color palette and number of colors
+pretty_plot_color_preview <- reactive({
+  input$pretty_plot_color_palette
+  input$pretty_plot_color_num
+  
+  
+})

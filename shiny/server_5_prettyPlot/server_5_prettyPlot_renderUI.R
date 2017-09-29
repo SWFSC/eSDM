@@ -81,40 +81,49 @@ output$pretty_plot_title_uiOut_text <- renderUI({
 # Color scheme inputs
 
 ### Color palette
-output$pretty_plot_colorscheme_uiOut_select <- renderUI({
-  choices.list <- list("Current default blue to red" = 1, 
+# If 'plot predictions as percentages' is selected, then remove some options
+output$pretty_plot_color_palette_uiOut_select <- renderUI({
+  choices.list <- list("Default: blue to white to red" = 1, 
                        "RColorBrewer: Spectral (rainbow)" = 2, 
                        "RColorBrewer: YlGnBu" = 3, 
                        "viridis: viridis" = 4, 
                        "viridis: inferno" = 5, 
                        "dichromat: DarkRedtoBlue" = 6)
   
-  if (input$pretty_plot_perc) choices.list <- choices.list[-c(1, 3)]
+  if (input$pretty_plot_color_perc == 1) choices.list <- choices.list[-c(3, 6)]
   
-  selectInput("pretty_plot_colorscheme", h5("Color palette"), 
+  selectInput("pretty_plot_color_palette", h5("Color palette"), 
               choices = choices.list, selected = NULL)
 })
 
 ### Number of colors
-output$pretty_plot_colorscheme_num_uiOut_num <- renderUI({
-  if (input$pretty_plot_perc) {
-    helpText("The number of colors must be ten when", 
-             "using prediction percentage")
+# Selectively give user input control, depending on perc/palette
+# input$pretty_plot_color_palette doesn't change if helpText() is outputted, 
+# but colorschem.num value is hardcoded for those situations in 
+# pretty_plot_colorscheme_list()
+output$pretty_plot_color_num_uiOut_num <- renderUI({
+  if (input$pretty_plot_color_perc == 1) {
+    helpText("The number of colors must be ten when using", 
+             "relative percentages of predictions")
     
-  } else if (input$pretty_plot_colorscheme == 1) {
+  } else if (input$pretty_plot_color_palette == 1) {
     helpText("The number of colors must be 10 when", 
              "using this color palette")
     
-  } else if (input$pretty_plot_colorscheme == 2) {
-    numericInput("pretty_plot_colorscheme_num", h5("Number of colors"), 
-                 value = 9, step = 1, min = 1)
+  } else if (input$pretty_plot_color_palette == 2) {
+    numericInput("pretty_plot_color_num", h5("Number of colors"), 
+                 value = 11, step = 1, min = 1, max = 11)
     
-  } else if (input$pretty_plot_colorscheme == 6) {
+  } else if (input$pretty_plot_color_palette == 3) {
+    numericInput("pretty_plot_color_num", h5("Number of colors"), 
+                 value = 9, step = 1, min = 1, max = 9)
+    
+  } else if (input$pretty_plot_color_palette == 6) {
     helpText("The number of colors must be 12 when", 
              "using this color palette")
     
   } else {
-    numericInput("pretty_plot_colorscheme_num", h5("Number of colors"), 
+    numericInput("pretty_plot_color_num", h5("Number of colors"), 
                  value = 10, step = 1, min = 1)
   }
 })

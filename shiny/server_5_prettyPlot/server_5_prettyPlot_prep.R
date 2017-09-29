@@ -96,15 +96,18 @@ pretty_plot_colorscheme_list <- reactive({
   ### Get reactive elements
   list.selected <- pretty_plot_models_toplot()
   
-  perc <- input$pretty_plot_perc
-  color.scheme.which <- input$pretty_plot_colorscheme
-  color.scheme.num <- ifelse(perc, 10, input$pretty_plot_colorscheme_num)
+  perc <- input$pretty_plot_color_perc == 1
+  color.scheme.which <- input$pretty_plot_color_palette
+  temp.color.scheme.num <- ifelse(isTruthy(input$pretty_plot_color_num), 
+                                  input$pretty_plot_color_num, NA)
+  color.scheme.num <- ifelse(perc, 10, temp.color.scheme.num)
+  
   leg.include <- input$pretty_plot_legend
   leg.pos <- as.numeric(input$pretty_plot_legend_pos)
   
   spdf.ll <- list.selected[[3]]
   data.name <- switch(list.selected[[1]], "Pred", "Pred.overlaid", "Pred.ens")
-  spdf.data <- spdf.ll@data[,data.name]
+  spdf.data <- spdf.ll@data[, data.name]
   
   
   ##### Things that are (mostly) user-controlled
@@ -116,6 +119,10 @@ pretty_plot_colorscheme_list <- reactive({
                          "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026")
     
   } else if (color.scheme.which == 2) {
+    validate(
+      need(color.scheme.num <= 11, 
+           "RColorBrewer: Spectral palette has a max of 11 colors")
+    )
     col.ramp.pretty <- rev(RColorBrewer::brewer.pal(color.scheme.num, "Spectral"))
     
   } else if (color.scheme.which == 3) {
@@ -140,23 +147,27 @@ pretty_plot_colorscheme_list <- reactive({
   }
   
   
-  ### Plot percentages vs values
-  if (perc) { 
-    leg.breaks.pretty <- seq(1, 0, -0.1)
-    data.col.num <- 10
+  ### Calculate data and legend break points and legend labels
+  if (perc) { #percentages
+    leg.breaks.pretty <- seq(1, 0, length.out = 11)
     data.breaks <- breaks.calc(spdf.data)
     labels.lab.pretty <- rev(c("Lowest 60%", "35 - 40%", "30 - 35%", 
                                "25 - 30%", "20 - 25%", "15 - 20%", "10 - 15%", 
                                "5 - 10%", "2 - 5%", "Highest 2%"))
-    labels.at.pretty <- seq(0.95, 0.05, -0.1)
-  } else {
-    leg.breaks.pretty <- seq(1, 0, (-1 / color.scheme.num))
-    data.col.num <- color.scheme.num
+    labels.at.pretty <- seq(0.95, 0.05, length.out = 10)
+    
+  } else { #values
+    leg.breaks.pretty <- seq(1, 0, length.out = (color.scheme.num + 1))
     data.breaks <- seq(min(spdf.data, na.rm = TRUE), 
                        max(spdf.data, na.rm = TRUE), 
-                       length.out = (data.col.num + 1))
-    labels.lab.pretty <- as.character(data.breaks)
-    labels.at.pretty <- seq(0.95, 0.05, (-1 / color.scheme.num))
+                       length.out = (color.scheme.num))
+    labels.lab.pretty <- as.character(round(rev(data.breaks), 
+                                            input$pretty_plot_legend_round))
+    
+    labels.at.pretty.from <- mean(head(leg.breaks.pretty, 2))
+    labels.at.pretty.to   <- mean(tail(leg.breaks.pretty, 2))
+    labels.at.pretty      <- seq(labels.at.pretty.from, labels.at.pretty.to, 
+                                 length.out = color.scheme.num)
   }
   
   ### Argument for 'colorkey' in spplot

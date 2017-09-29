@@ -195,35 +195,50 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12, 
-                    checkboxInput("pretty_plot_perc", "Plot prediction percentage rather than numerical values", value = TRUE), 
                     fluidRow(
-                      column(7, uiOutput("pretty_plot_colorscheme_uiOut_select")), 
-                      
+                      column(
+                        width = 7, 
+                        radioButtons("pretty_plot_color_perc", h5("Prediction display option"), 
+                                     choices = list("Plot relative percentages of predictions" = 1, 
+                                                    "Plot numerical values of predictions" = 2)), 
+                        uiOutput("pretty_plot_color_palette_uiOut_select"), 
+                        uiOutput("pretty_plot_color_num_uiOut_num")
+                      ), 
                       column(
                         width = 5, 
-                        uiOutput("pretty_plot_colorscheme_num_uiOut_num")
-                        # conditionalPanel(
-                        #   condition = "input.pretty_plot_perc", 
-                        #   helpText("The number of colors must be ten when using prediction percentage")
-                        # )
-                        # conditionalPanel(
-                        #   condition = "input.pretty_plot_perc == false", 
-                        #   uiOutput("pretty_plot_colorscheme_num_uiOut_num")
-                        # )
-                      )
-                    ), 
-                    fluidRow(
-                      column(7, checkboxInput("pretty_plot_legend", "Include legend in plot", value = TRUE)), 
-                      column(
-                        width = 5, 
-                        conditionalPanel(
-                          condition = "input.pretty_plot_legend", 
-                          selectInput("pretty_plot_legend_pos", h5("Legend position"), 
-                                      choices = list("Right" = 1, "Bottom" = 2, "Left" = 3, "Top" = 4), 
-                                      selected = 1)
-                        )
+                        actionButton("pretty_plot_color_preview_execute", "Preview color palette"), 
+                        plotOutput("pretty_plot_color_preview_plot")
                       )
                     )
+                  )
+                )
+              ), 
+              ################################################## Legend
+              column(
+                width = 4, 
+                strong("Legend"), 
+                fluidRow(
+                  box(
+                    width = 12, 
+                    fluidRow(
+                      column(4, align = "center", checkboxInput("pretty_plot_legend", "Include legend in plot", value = TRUE))
+                    ),
+                    conditionalPanel(
+                      condition = "input.pretty_plot_legend", 
+                      fluidRow(
+                        column(6, selectInput("pretty_plot_legend_pos", h5("Legend position"), 
+                                              choices = list("Right" = 1, "Bottom" = 2, "Left" = 3, "Top" = 4), 
+                                              selected = 1)), 
+                        column(
+                          width = 6, 
+                          conditionalPanel(
+                            condition = "input.pretty_plot_color_perc == 2", 
+                            numericInput("pretty_plot_legend_round", h5("Number of decimals to display in legend"), 
+                                         value = 10, min = 1, step = 1)
+                          )
+                        )
+                      )
+                    ) 
                   )
                 )
               ), 
