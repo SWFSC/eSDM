@@ -47,7 +47,7 @@ ui <- dashboardPage(
   
   dashboardSidebar(
     sidebarMenu(id = "tabs", 
-                menuItem("Load Model Predictions", tabName = "loadModels", 
+                menuItem("Load/Save Model Predictions", tabName = "loadModels", 
                          icon = icon("cloud-upload")), 
                 menuItem("Overlay Model Predictions", tabName = "overlay", 
                          icon = icon("cogs")), 
@@ -69,9 +69,18 @@ ui <- dashboardPage(
   ),
   
   dashboardBody(
-    useShinyjs(),       # Required by shinyjs package
+    ### Required by shinyjs package
+    useShinyjs(), 
     
-    tabItems(           # Tab name:
+    ### Control validate text output
+    tags$head(
+      tags$style(HTML(".shiny-output-error-validation {
+                      color: red; font-weight: bold;
+                      }"))
+    ),
+    
+    ### UI code separated by tabs
+    tabItems(
       ui.loadModels(),   # Load Model Predictions
       ui.overlay(),      # Overlay Model Predictions
       ui.createEns(),    # Create Ensemble

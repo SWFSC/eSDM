@@ -31,7 +31,7 @@ library(dichromat)
 
 
 # Max file upload size is now 200MB for fine-scale land maps
-options(shiny.maxRequestSize = 200 * 1024^2) 
+options(shiny.maxRequestSize = 150 * 1024^2) 
 
 `%then%` <- shiny:::`%OR%` # For non-simultaneous validate checks
 
@@ -98,10 +98,7 @@ server <- function(input, output, session) {
   source(file.path("server_6_export", "server_6_export_renderUI.R"), local = TRUE, chdir = TRUE)
   
   
-  # Manual
-  output$manual_pdf <- renderUI({
-    tags$iframe(style = "height:800px; width:100%", src = "Ensemble_app_manual.pdf")
-  })
+  # Manual: call tags$iframe(...) in manual, and thus the manual renders immediately
   
   
   # General server code
