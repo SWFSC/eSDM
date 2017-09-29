@@ -111,12 +111,14 @@ output$pretty_plot_color_num_uiOut_num <- renderUI({
              "using this color palette")
     
   } else if (input$pretty_plot_color_palette == 2) {
-    numericInput("pretty_plot_color_num", h5("Number of colors"), 
-                 value = 11, step = 1, min = 1, max = 11)
+    numericInput("pretty_plot_color_num", 
+                 h5("Number of colors (Min: 3; Max: 11)"), 
+                 value = 11, step = 1, min = 3, max = 11)
     
   } else if (input$pretty_plot_color_palette == 3) {
-    numericInput("pretty_plot_color_num", h5("Number of colors"), 
-                 value = 9, step = 1, min = 1, max = 9)
+    numericInput("pretty_plot_color_num", 
+                 h5("Number of colors (Min: 3; Max: 9)"), 
+                 value = 9, step = 1, min = 3, max = 9)
     
   } else if (input$pretty_plot_color_palette == 6) {
     helpText("The number of colors must be 12 when", 

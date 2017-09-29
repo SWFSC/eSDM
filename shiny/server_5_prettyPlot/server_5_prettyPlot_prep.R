@@ -85,8 +85,58 @@ pretty_plot_range_poly <- reactive({
 
 
 ###############################################################################
+# Color scheme of predictions
+
+### Process inputs and return list with num of colors and color palette to use
+pretty_plot_colorscheme_palette_num <- reactive({
+  req(input$pretty_plot_color_palette)
+  
+  perc <- input$pretty_plot_color_perc == 1
+  color.palette.idx <- input$pretty_plot_color_palette
+  temp.color.num <- ifelse(isTruthy(input$pretty_plot_color_num), 
+                           input$pretty_plot_color_num, NA)
+  color.num <- ifelse(perc, 10, temp.color.num)
+  
+  ### Set number of colors and color palette
+  if (color.palette.idx == 1) {
+    color.num <- 10
+    color.palette <- c("#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0", 
+                       "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026")
+    
+  } else if (color.palette.idx == 2) {
+    validate(
+      need(color.num <= 11, 
+           "RColorBrewer: Spectral palette has a max of 11 colors")
+    )
+    color.palette <- rev(RColorBrewer::brewer.pal(color.num, "Spectral"))
+    
+  } else if (color.palette.idx == 3) {
+    validate(
+      need(color.num <= 9, 
+           "RColorBrewer: YlGnBu palette has a max of 9 colors")
+    )
+    color.palette <- rev(RColorBrewer::brewer.pal(color.num, "YlGnBu"))
+    
+  } else if (color.palette.idx == 4) {
+    color.palette <- viridis::viridis(color.num)
+    
+  } else if (color.palette.idx == 5) {
+    color.palette <- viridis::inferno(color.num)
+    
+  } else if (color.palette.idx == 6) {
+    color.num <- 12
+    color.palette <- dichromat::colorschemes$"DarkRedtoBlue.12"
+    
+  } else {
+    validate(need(FALSE, "Error with selecting color scheme"))
+  }
+  
+  list(color.num, color.palette)
+})
+
+
 ### Generate 'colorscheme' list, aka list of vars that control color scheme
-### Include list for 'colorkey' argument of spplot
+### Including list for 'colorkey' argument of spplot
 ### Argument in spplot: 
 # colorkey = list(space = "right", col = col.ramp, at = breaks,
 #                 labels = list(labels = labels.lab, at = labels.at),
@@ -94,57 +144,17 @@ pretty_plot_range_poly <- reactive({
 
 pretty_plot_colorscheme_list <- reactive({
   ### Get reactive elements
-  list.selected <- pretty_plot_models_toplot()
-  
   perc <- input$pretty_plot_color_perc == 1
-  color.scheme.which <- input$pretty_plot_color_palette
-  temp.color.scheme.num <- ifelse(isTruthy(input$pretty_plot_color_num), 
-                                  input$pretty_plot_color_num, NA)
-  color.scheme.num <- ifelse(perc, 10, temp.color.scheme.num)
+  color.num     <- pretty_plot_colorscheme_palette_num()[[1]]
+  color.palette <- pretty_plot_colorscheme_palette_num()[[2]]
   
   leg.include <- input$pretty_plot_legend
   leg.pos <- as.numeric(input$pretty_plot_legend_pos)
   
+  list.selected <- pretty_plot_models_toplot()
   spdf.ll <- list.selected[[3]]
   data.name <- switch(list.selected[[1]], "Pred", "Pred.overlaid", "Pred.ens")
   spdf.data <- spdf.ll@data[, data.name]
-  
-  
-  ##### Things that are (mostly) user-controlled
-  
-  ### Set colorkey inputs
-  if (color.scheme.which == 1) {
-    color.scheme.num <- 10
-    col.ramp.pretty <- c("#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0", 
-                         "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026")
-    
-  } else if (color.scheme.which == 2) {
-    validate(
-      need(color.scheme.num <= 11, 
-           "RColorBrewer: Spectral palette has a max of 11 colors")
-    )
-    col.ramp.pretty <- rev(RColorBrewer::brewer.pal(color.scheme.num, "Spectral"))
-    
-  } else if (color.scheme.which == 3) {
-    validate(
-      need(color.scheme.num <= 9, 
-           "RColorBrewer: YlGnBu palette has a max of 9 colors")
-    )
-    col.ramp.pretty <- rev(RColorBrewer::brewer.pal(color.scheme.num, "YlGnBu"))
-    
-  } else if (color.scheme.which == 4) {
-    col.ramp.pretty <- viridis::viridis(color.scheme.num)
-    
-  } else if (color.scheme.which == 5) {
-    col.ramp.pretty <- viridis::inferno(color.scheme.num)
-    
-  } else if (color.scheme.which == 6) {
-    color.scheme.num <- 12
-    col.ramp.pretty <- dichromat::colorschemes$"DarkRedtoBlue.12"
-    
-  } else {
-    validate(need(FALSE, "Error with selecting color scheme"))
-  }
   
   
   ### Calculate data and legend break points and legend labels
@@ -152,37 +162,37 @@ pretty_plot_colorscheme_list <- reactive({
     leg.breaks.pretty <- seq(1, 0, length.out = 11)
     data.breaks <- breaks.calc(spdf.data)
     labels.lab.pretty <- rev(c("Lowest 60%", "35 - 40%", "30 - 35%", 
-                               "25 - 30%", "20 - 25%", "15 - 20%", "10 - 15%", 
-                               "5 - 10%", "2 - 5%", "Highest 2%"))
+                               "25 - 30%", "20 - 25%", "15 - 20%", 
+                               "10 - 15%", "5 - 10%", "2 - 5%", "Highest 2%"))
     labels.at.pretty <- seq(0.95, 0.05, length.out = 10)
     
   } else { #values
-    leg.breaks.pretty <- seq(1, 0, length.out = (color.scheme.num + 1))
+    leg.breaks.pretty <- seq(1, 0, length.out = (color.num + 1))
     data.breaks <- seq(min(spdf.data, na.rm = TRUE), 
                        max(spdf.data, na.rm = TRUE), 
-                       length.out = (color.scheme.num))
+                       length.out = (color.num))
     labels.lab.pretty <- as.character(round(rev(data.breaks), 
                                             input$pretty_plot_legend_round))
     
     labels.at.pretty.from <- mean(head(leg.breaks.pretty, 2))
     labels.at.pretty.to   <- mean(tail(leg.breaks.pretty, 2))
     labels.at.pretty      <- seq(labels.at.pretty.from, labels.at.pretty.to, 
-                                 length.out = color.scheme.num)
+                                 length.out = color.num)
   }
   
   ### Argument for 'colorkey' in spplot
   if (leg.include) {
     leg.pos.pretty <- switch(leg.pos, "right", "bottom", "left", "top")
-    list.colorkey <- list(space = leg.pos.pretty, col = col.ramp.pretty, 
+    list.colorkey <- list(space = leg.pos.pretty, col = color.palette, 
                           at = leg.breaks.pretty,
                           labels = list(labels = labels.lab.pretty, 
                                         at = labels.at.pretty))
   } else {
-    list.colorkey <- NULL  
+    list.colorkey <- FALSE  
   }
   
   ### Return list
-  list(data.breaks = data.breaks, col.ramp.pretty = col.ramp.pretty, 
+  list(data.breaks = data.breaks, color.palette = color.palette, 
        list.colorkey = list.colorkey)
 })
 
@@ -279,6 +289,10 @@ pretty_plot_splayout_list <- reactive({
   polys.list.all <- list(vals$overlay.bound, vals$overlay.land)
   prettyplot.crs <- pretty_plot_models_crs()
   ## Allow labels from land poly???
+  
+  ### Set background color of the panel ###
+  # panel.layer <- list("panel.fill", "pink", first = TRUE)
+  #########################################
   
   lapply(polys.which, function(poly.idx) {
     poly.curr <- polys.list.all[[poly.idx]]

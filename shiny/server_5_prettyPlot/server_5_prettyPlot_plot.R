@@ -19,7 +19,7 @@ plot.pretty.ll <- function(spdf.ll, data.name, plot.lim, title.ll,
   #####################################
   ## Generate spplot
   spplot(spdf.ll, zcol = data.name, 
-         col = NA, at = l.cs$data.breaks, col.regions = l.cs$col.ramp.pretty, 
+         col = NA, at = l.cs$data.breaks, col.regions = l.cs$color.palette, 
          xlim = plot.lim[1:2], ylim = plot.lim[3:4], 
          main = list(label = title.ll, cex = title.cex), 
          xlab = list(label = axis.xlab, cex = axis.cex), 

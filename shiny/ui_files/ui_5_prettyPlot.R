@@ -197,18 +197,14 @@ ui.prettyPlot <- function() {
                     width = 12, 
                     fluidRow(
                       column(
-                        width = 7, 
+                        width = 6, 
                         radioButtons("pretty_plot_color_perc", h5("Prediction display option"), 
                                      choices = list("Plot relative percentages of predictions" = 1, 
                                                     "Plot numerical values of predictions" = 2)), 
                         uiOutput("pretty_plot_color_palette_uiOut_select"), 
                         uiOutput("pretty_plot_color_num_uiOut_num")
                       ), 
-                      column(
-                        width = 5, 
-                        actionButton("pretty_plot_color_preview_execute", "Preview color palette"), 
-                        plotOutput("pretty_plot_color_preview_plot")
-                      )
+                      column(6, plotOutput("pretty_plot_color_preview_plot", height = "250px"))
                     )
                   )
                 )

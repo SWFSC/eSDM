@@ -39,7 +39,7 @@ outputOptions(output, "pretty_display_flag", suspendWhenHidden = FALSE)
 ### Flag for number of model predictions are selected to pretty plot
 output$pretty_pred_selected_flag <- reactive({
   models.selected.num <- length(unlist(pretty_plot_models_idx_list()))
-
+  
   case_when(models.selected.num == 0 ~ 0,
             models.selected.num == 1 ~ 1,
             TRUE ~ 2)
@@ -50,8 +50,8 @@ outputOptions(output, "pretty_pred_selected_flag", suspendWhenHidden = FALSE)
 ###############################################################################
 ### Preview of selected color palette and number of colors
 pretty_plot_color_preview <- reactive({
-  input$pretty_plot_color_palette
-  input$pretty_plot_color_num
+  color.num     <- pretty_plot_colorscheme_palette_num()[[1]]
+  color.palette <- pretty_plot_colorscheme_palette_num()[[2]]
   
-  
+  pie(rep(1, color.num), col = rev(color.palette))
 })

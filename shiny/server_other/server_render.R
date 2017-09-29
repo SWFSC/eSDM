@@ -327,13 +327,16 @@ output$pretty_table_ens_out <- DT::renderDataTable({
 options = list(dom = 't'))
 
 ###########################################################
+# Outputs
+
+### Color wheel for preview of color palette
+output$pretty_plot_color_preview_plot <- renderPlot({
+  pretty_plot_color_preview()
+})
+
 ### Pretty plot error output
 output$pretty_plot_values_event_text <- renderText({
   pretty_plot_values_event()
-})
-
-output$pretty_plot_color_preview_plot <- renderPlot({
-  pretty_plot_color_preview()
 })
 
 ### Pretty plot
