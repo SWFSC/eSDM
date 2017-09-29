@@ -3,21 +3,24 @@
 
 
 ###############################################################################
-### Return various summaries of number of tables that have 1+ row(s) selected
-pretty_plot_xyz_list <- reactive({
-  x <- input$pretty_table_orig_out_rows_selected
-  y <- input$pretty_table_over_out_rows_selected
-  z <- input$pretty_table_ens_out_rows_selected
-  
-  list(x, y, z)
+# Idx of returned object (list or vector) corresponds to...
+# ...table idx (orig, over, ens)
+
+### Return list of selected rows (SDMS to plot)
+pretty_plot_models_idx_list <- reactive({
+  list(input$pretty_table_orig_out_rows_selected, 
+       input$pretty_table_over_out_rows_selected, 
+       input$pretty_table_ens_out_rows_selected)
 })
 
-pretty_plot_xyz_null <- reactive({
-  sapply(pretty_plot_xyz_list(), is.null)
+### Returns vector of logicals representing whether a table has a row selected
+pretty_plot_tables_null <- reactive({
+  sapply(pretty_plot_models_idx_list(), is.null)
 })
 
-pretty_plot_xyz_count <- reactive({
-  sum(!pretty_plot_xyz_null())
+### Returns number of selected rows (SDMs to plot)
+pretty_plot_models_idx_count <- reactive({
+  length(unlist(pretty_plot_models_idx_list()))
 })
 
 
@@ -35,7 +38,7 @@ outputOptions(output, "pretty_display_flag", suspendWhenHidden = FALSE)
 
 ### Flag for number of model predictions are selected to pretty plot
 output$pretty_pred_selected_flag <- reactive({
-  models.selected.num <- length(unlist(pretty_plot_xyz_list()))
+  models.selected.num <- length(unlist(pretty_plot_models_idx_list()))
 
   case_when(models.selected.num == 0 ~ 0,
             models.selected.num == 1 ~ 1,

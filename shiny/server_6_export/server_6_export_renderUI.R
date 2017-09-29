@@ -2,6 +2,21 @@
 
 
 ###############################################################################
+### Object with projection in which to export selected model predictions
+output$export_proj_uiOut_select <- renderUI({
+  req(vals$models.names)
+  
+  choices.list.names <- c("WGS 84 geographic coordinates", 
+                          vals$models.names)
+  choices.list <- seq_along(choices.list.names)
+  names(choices.list) <- choices.list.names
+  
+  selectInput("export_proj", 
+              h5("Coordinates or projection in which to export predictions"), 
+              choices = choices.list, selected = 1)
+})
+
+
 ### Default filename of exported object
 output$export_filename_uiOut_text <- renderUI({
   req(vals$models.ll)
@@ -60,20 +75,5 @@ output$export_filename_uiOut_text <- renderUI({
   ## Return textInput
   textInput("export_filename", h5("Filename"), value = filename.value)
 })
-
-
-### Object with projection in which to export selected model predictions
-output$export_proj_uiOut_select <- renderUI({
-  req(vals$models.ll)
-  
-  choices.list.names <- c("WGS 84 geographic coordinates", 
-                          vals$models.names)
-  choices.list <- seq_along(choices.list.names)
-  names(choices.list) <- choices.list.names
-  
-  selectInput("export_proj", h5("Coordinates or projection in which to export predictions"), 
-              choices = choices.list, selected = 1)
-})
-
 
 ###############################################################################

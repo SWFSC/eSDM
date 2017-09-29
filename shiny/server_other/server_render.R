@@ -208,12 +208,13 @@ output$create_ens_weights_poly_add_text <- renderText({
 })
 
 ###########################################################
-# Created ensemble things
-
 ### Create ensemble error/completion output
 output$ens_create_ensemble_text <- renderUI({ 
   HTML(create_ensemble()) 
 })
+
+###########################################################
+# Created ensemble things
 
 ### Table of created ensemble predictions
 output$ens_datatable_ensembles <- DT::renderDataTable({
@@ -325,11 +326,12 @@ output$pretty_table_ens_out <- DT::renderDataTable({
 }, 
 options = list(dom = 't'))
 
+###########################################################
+### Pretty plot error output
 output$pretty_plot_values_event_text <- renderText({
   pretty_plot_values_event()
 })
 
-###########################################################
 ### Pretty plot
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$pretty_plot_plot <- renderPlot({

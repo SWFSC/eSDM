@@ -2,15 +2,29 @@
 
 
 ###############################################################################
-### Plot inputs
+### Pretty plot inputs
 
 ###########################################################
-# XY range of plot
+# Range and projection of map
+
+### Select object with desired projection for map
+output$pretty_plot_proj_idx_uiOut_select <- renderUI({
+  req(vals$models.names)
+  
+  choices.list.names <- vals$models.names
+  choices.list <- seq_along(choices.list.names)
+  names(choices.list) <- choices.list.names
+  
+  selectInput("pretty_plot_proj_idx", 
+              h5("Filename of original model predictions", 
+                 "with desired projection for map"), 
+              choices = choices.list, selected = 1)
+})
 
 ### Get extent of selected predictions
 pretty_plot_range <- reactive({
-  req(pretty_plot_xyz_count() == 1)
-  model.preds <- pretty_plot_model_toplot()[[3]]
+  req(pretty_plot_models_idx_count() == 1)
+  model.preds <- pretty_plot_models_toplot()[[3]]
   round(extent(model.preds), 2)
 })
 
@@ -43,8 +57,8 @@ output$pretty_plot_range_ymax_uiOut_num <- renderUI({
 ###########################################################
 ### Title of plot
 output$pretty_plot_title_uiOut_text <- renderUI({
-  req(pretty_plot_xyz_count() == 1)
-  list.selected <- pretty_plot_model_toplot()
+  req(pretty_plot_models_idx_count() == 1)
+  list.selected <- pretty_plot_models_toplot()
   
   table.idx <- list.selected[[1]]
   model.idx <- list.selected[[2]]
@@ -63,17 +77,89 @@ output$pretty_plot_title_uiOut_text <- renderUI({
 })
 
 
+###########################################################
+# Color scheme inputs
+
+### Color palette
+output$pretty_plot_colorscheme_uiOut_select <- renderUI({
+  choices.list <- list("Current default blue to red" = 1, 
+                       "RColorBrewer: Spectral (rainbow)" = 2, 
+                       "RColorBrewer: YlGnBu" = 3, 
+                       "viridis: viridis" = 4, 
+                       "viridis: inferno" = 5, 
+                       "dichromat: DarkRedtoBlue" = 6)
+  
+  if (input$pretty_plot_perc) choices.list <- choices.list[-c(1, 3)]
+  
+  selectInput("pretty_plot_colorscheme", h5("Color palette"), 
+              choices = choices.list, selected = NULL)
+})
+
+### Number of colors
+output$pretty_plot_colorscheme_num_uiOut_num <- renderUI({
+  if (input$pretty_plot_perc) {
+    helpText("The number of colors must be ten when", 
+             "using prediction percentage")
+    
+  } else if (input$pretty_plot_colorscheme == 1) {
+    helpText("The number of colors must be 10 when", 
+             "using this color palette")
+    
+  } else if (input$pretty_plot_colorscheme == 2) {
+    numericInput("pretty_plot_colorscheme_num", h5("Number of colors"), 
+                 value = 9, step = 1, min = 1)
+    
+  } else if (input$pretty_plot_colorscheme == 6) {
+    helpText("The number of colors must be 12 when", 
+             "using this color palette")
+    
+  } else {
+    numericInput("pretty_plot_colorscheme_num", h5("Number of colors"), 
+                 value = 10, step = 1, min = 1)
+  }
+})
+
+
+###########################################################
+### Checkbox for including other polygons
+# For this beta version: hardcoded for only study area and land polys
+output$pretty_plot_other_obj_which_uiOut_selectize <- renderUI({
+  bound.poly <- vals$overlay.bound
+  land.poly <- vals$overlay.land
+  
+  validate(
+    need((!is.null(bound.poly)) | (!is.null(land.poly)), 
+         "Neither a study area polygon nor a land area polygon is loaded")
+  )
+  
+  choices.list <- list()
+  if (!is.null(bound.poly)) {
+    choices.list <- c(choices.list, "Study area polygon" = 1)
+  }
+  if (!is.null(land.poly)) {
+    choices.list <- c(choices.list, "Land polygon" = 2)
+  }
+  
+  selectizeInput("pretty_plot_other_obj_which", 
+                 h5("Include selected polygons in map"), 
+                 choices = choices.list, selected = NULL, multiple = TRUE)
+})
+
+
 ###############################################################################
 ### Generate defualt filename for downloaded map
 output$pretty_plot_download_name_uiOut_text <- renderUI({
-  validate(need(pretty_plot_xyz_count() == 1, "Please select a model"))
+  validate(
+    need(pretty_plot_models_idx_count() == 1, 
+         "Please select exactly one model")
+  )
   
-  model.idx.null <- !pretty_plot_xyz_null()
-  model.idx.list <- pretty_plot_xyz_list()
+  model.idx.null <- !pretty_plot_tables_null()
+  model.idx.list <- pretty_plot_models_idx_list()
   
   ## Objects that are the same for multi- and single-map
   res.txt <- ifelse(input$pretty_plot_download_res == 1, "300ppi", "72ppi")
-  file.ext <- switch(input$pretty_plot_download_format,
+  file.ext <- switch(input$pretty_plot_download_format, 
                      "1" = ".jpeg", "2" = ".pdf", "3" = ".png")
   
   ## Determine if map is a multi- or single-map
@@ -95,30 +181,26 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
                       res.txt, file.ext)
     } else {
       # Ensemble model predictions
-      ens.method.txt <- switch(vals$ensemble.method[idx.selected],
+      ens.method.txt <- switch(vals$ensemble.method[idx.selected], 
                                "Unweighted" = "UnW_", "Weighted" = "W_")
       ens.weights.txt <- vals$ensemble.weights[idx.selected]
-      ens.weights.txt <- ifelse(is.na(ens.weights.txt),
-                                "",
+      ens.weights.txt <- ifelse(is.na(ens.weights.txt), 
+                                "", 
                                 paste0(gsub(", ", "+", ens.weights.txt), "_"))
       ens.rescale.txt <- vals$ensemble.rescaling[idx.selected]
-      ens.rescale.txt <- ifelse(grepl("Abund", ens.rescale.txt),
-                                paste0("Abund",
-                                       strsplit(ens.rescale.txt, ": ")[[1]][2],
-                                       "_"),
-                                switch(ens.rescale.txt,
-                                       "None" = "None_",
-                                       "Normalization" = "Norm_",
-                                       "Standardization" = "Stand_",
-                                       "Sum to 1" = "Sumto1_"))
+      ens.rescale.txt <- ifelse(
+        grepl("Abund", ens.rescale.txt), 
+        paste0("Abund", strsplit(ens.rescale.txt, ": ")[[1]][2], "_"), 
+        switch(ens.rescale.txt, "None" = "None_", "Normalization" = "Norm_", 
+               "Standardization" = "Stand_", "Sum to 1" = "Sumto1_"))
       ens.idx.txt <- vals$ensemble.overlaid.idx[idx.selected]
       ens.idx.txt <- paste0(gsub(", ", "+", ens.idx.txt), "_")
       
-      f.val <- paste0(ens.method.txt, ens.weights.txt, ens.rescale.txt,
+      f.val <- paste0(ens.method.txt, ens.weights.txt, ens.rescale.txt, 
                       ens.idx.txt, res.txt, file.ext)
     }
   }
-
+  
   textInput("pretty_plot_download_name", h5("File name"), value = f.val)
 })
 
