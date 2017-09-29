@@ -63,9 +63,10 @@ pretty_plot_generate <- reactive({
 pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
   validate(
     need(pretty_plot_models_idx_count() > 0, 
-         "Please select at least one set of model predictions to plot") %then%
+         paste("Error: Please select at least one set of", 
+               "model predictions to plot")) %then%
       need(pretty_plot_models_idx_count() == 1, 
-           "Can only handle plotting one pretty plot for now")
+           "Error: App can only handle plotting one pretty plot for now")
   )
   
   # Set plotting variables

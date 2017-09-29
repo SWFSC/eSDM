@@ -17,7 +17,7 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
   
   validate(
     need(length(models.idx) > 0, 
-         "Please select at least one model from table to preview")
+         "Error: Please select at least one model from table to preview")
   )
   
   models.toplot <- vals$models.pix[models.idx]
@@ -49,7 +49,7 @@ model_pix_download <- reactive({
   
   validate(
     need(length(models.idx) > 0, 
-         "Please select at least one model from table to preview")
+         "Error: Please select at least one model from table to preview")
   )
   
   models.toplot <- vals$models.pix[models.idx]
@@ -81,11 +81,12 @@ plot_overlay_preview_base <- eventReactive(
     
     validate(
       if (input$overlay_bound) 
-        need(!is.null(vals$overlay.bound),
-             "Please either uncheck boundary box or load a boundary polygon"),
+        need(b.inc,
+             paste("Error: Please either uncheck boundary box or", 
+                   "load a boundary polygon")), 
       if (input$overlay_land) 
-        need(!is.null(vals$overlay.land),
-             "Please either uncheck land box or load a land polygon")
+        need(l.inc,
+             "Error: Please either uncheck land box or load a land polygon")
     )
     
     # overlay_preview_base_model() is in server_2_overlay.R
@@ -147,7 +148,7 @@ ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
   ensemble.idx <- sort(input$ens_datatable_ensembles_rows_selected)
   validate(
     need(length(ensemble.idx) > 0,
-         "Please select at least one model from table to preview")
+         "Error: Please select at least one model from table to preview")
   )
   
   models.toplot <- create_ens_preview_model()
@@ -176,7 +177,7 @@ ens_pix_download <- reactive({
   ensemble.idx <- sort(input$ens_datatable_ensembles_rows_selected)
   validate(
     need(length(ensemble.idx) > 0,
-         "Please select at least one model from table to preview")
+         "Error: Please select at least one model from table to preview")
   )
   
   models.toplot <- create_ens_preview_model()

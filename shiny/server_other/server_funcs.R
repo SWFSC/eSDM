@@ -9,7 +9,8 @@
 # Adapted from http://robinlovelace.net/r/2014/07/29/clipping-with-r.html
 gClipExtent <- function(shp, bb, buf = NULL) {
   validate(
-    need(identicalCRS(shp, bb), "gClipExtent(): CRS arguments are not equal")
+    need(identicalCRS(shp, bb), 
+         "Error: gClipExtent(): CRS arguments are not equal")
   )
   if (class(bb) == "matrix") {
     b_poly <- as(extent(as.vector(t(bb))), "SpatialPolygons")
@@ -195,7 +196,7 @@ gis.model.check <- function(gis.loaded) {
   validate(
     need(class(gis.loaded)[1] %in% c("SpatialPolygonsDataFrame", 
                                      "SpatialPointsDataFrame"), 
-         "Object passed to gis.model.check() is not a SPolyDF")
+         "Error: Object passed to gis.model.check() is not a SPolyDF")
   )
   
   # Sort spdf by lat and then long so polygons are ordered bottom up

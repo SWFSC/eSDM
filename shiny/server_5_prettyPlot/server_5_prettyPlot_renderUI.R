@@ -140,7 +140,8 @@ output$pretty_plot_other_obj_which_uiOut_selectize <- renderUI({
   
   validate(
     need((!is.null(bound.poly)) | (!is.null(land.poly)), 
-         "Neither a study area polygon nor a land area polygon is loaded")
+         paste("Error: Neither a study area polygon nor a", 
+               "land area polygon is loaded"))
   )
   
   choices.list <- list()
@@ -162,7 +163,7 @@ output$pretty_plot_other_obj_which_uiOut_selectize <- renderUI({
 output$pretty_plot_download_name_uiOut_text <- renderUI({
   validate(
     need(pretty_plot_models_idx_count() == 1, 
-         "Please select exactly one model")
+         "Error: Please select exactly one set of model predictions")
   )
   
   model.idx.null <- !pretty_plot_tables_null()

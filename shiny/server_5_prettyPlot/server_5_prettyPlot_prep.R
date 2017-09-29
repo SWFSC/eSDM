@@ -26,7 +26,8 @@ pretty_plot_models_toplot_list <- reactive({
   req(models.idx.count == 1)
   
   validate(
-    need(models.idx.count == 1, "Pretty plots not ready for multiplots")
+    need(models.idx.count == 1, 
+         "Error: Pretty plots not ready for multiplots")
   )
   
   table.idx <- which(!tables.null)
@@ -106,14 +107,14 @@ pretty_plot_colorscheme_palette_num <- reactive({
   } else if (color.palette.idx == 2) {
     validate(
       need(color.num <= 11, 
-           "RColorBrewer: Spectral palette has a max of 11 colors")
+           "Error:RColorBrewer: Spectral palette has a max of 11 colors")
     )
     color.palette <- rev(RColorBrewer::brewer.pal(color.num, "Spectral"))
     
   } else if (color.palette.idx == 3) {
     validate(
       need(color.num <= 9, 
-           "RColorBrewer: YlGnBu palette has a max of 9 colors")
+           "Error: RColorBrewer: YlGnBu palette has a max of 9 colors")
     )
     color.palette <- rev(RColorBrewer::brewer.pal(color.num, "YlGnBu"))
     
@@ -128,7 +129,7 @@ pretty_plot_colorscheme_palette_num <- reactive({
     color.palette <- dichromat::colorschemes$"DarkRedtoBlue.12"
     
   } else {
-    validate(need(FALSE, "Error with selecting color scheme"))
+    validate(need(FALSE, "Error: selecting color palette and number failed"))
   }
   
   list(color.num, color.palette)
@@ -227,11 +228,11 @@ pretty_plot_scales_list <- reactive({
       y.at <- suppressWarnings(as.numeric(y.at))
       validate(
         need(!anyNA(x.at), 
-             paste("Please ensure that the 'Longitude tick locations'", 
-                   "entry is valid")), 
+             paste("Error: Please ensure that the 'Longitude tick", 
+                   "locations' entry is valid")), 
         need(!anyNA(y.at), 
-             paste("Please ensure that the 'Latitude tick locations'", 
-                   "entry is valid"))
+             paste("Error: Please ensure that the 'Latitude tick", 
+                   "locations' entry is valid"))
       )
       
       # Sort tick locations and check that tick locations ∈ [map limits]
@@ -244,11 +245,11 @@ pretty_plot_scales_list <- reactive({
       
       validate(
         need(all(x.intervals == 1), 
-             paste("Not all Longitude tick locations are within", 
-                   "the provided map limits")), 
+             paste("Error: Not all 'Longitude tick location' entries", 
+                   "are within the provided map range")), 
         need(all(y.intervals == 1), 
-             paste("Not all Latitude tick locations are within", 
-                   "the provided map limits"))
+             paste("Error: Not all 'Latitude tick location' entries", 
+                   "are within the provided map range"))
       )
       
       list.scales <- c(list.scales, list(x = list(at = x.at), 
@@ -324,7 +325,7 @@ pretty_plot_splayout_list <- reactive({
            lwd = l.lwd, first = l.first)
       
     } else { #Uh-oh
-      validate(need(FALSE, "Pretty plot sp.layout error"))
+      validate(need(FALSE, "Error: Pretty plot sp.layout failed"))
     }
   })
 })

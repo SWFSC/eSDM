@@ -65,14 +65,14 @@ load_envir <- eventReactive(input$load_app_envir_file, {
   validate(
     need((substrRight(input$load_app_envir_file$name, 6) == ".RDATA" & 
             input$load_app_envir_file$type == ""), 
-         "Please load a file with the extension '.RDATA'")
+         "Error: Please load a file with the extension '.RDATA'")
   )
 
   withProgress(message = "Loading saved environment", value = 0.4, {
     load(file.load$datapath)
     validate(
       need(exists("vals.save"),
-           paste0("Loaded .RDATA file does not contain an envirnment", 
+           paste0("Error: Loaded .RDATA file does not contain an envirnment", 
                   "saved using this app"))
     )
     incProgress(0.4)
