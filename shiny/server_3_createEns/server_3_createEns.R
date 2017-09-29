@@ -44,7 +44,8 @@ create_ens_preview_model <- reactive({
   
   validate(
     need(length(ensemble.which) > 0,
-         "Please select at least one set of ensemble predictions from the table")
+         paste("Error: Please select at least one set of", 
+               "ensemble predictions from the table"))
   )
   ensemble.spdf <- vals$ensemble.models[ensemble.which]
   
@@ -72,7 +73,8 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   
   validate(
     need(length(idx) > 0, 
-         "Please select one or more sets of ensemble predictions to remove")
+         paste("Error: Please select one or more sets of", 
+               "ensemble predictions to remove"))
   )
   
   ####################################
@@ -104,7 +106,8 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
       })
       vals$ensemble.plotted.idx <- vals$ensemble.plotted.idx - idx.adjust
       validate(
-        need(all(vals$ensemble.plotted.idx > 0), "Ensemble delete error 1")
+        need(all(vals$ensemble.plotted.idx > 0), 
+             "Error: While deleting ensemble model(s), error 1")
       )
     }
   }
@@ -132,7 +135,8 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
       })
       vals$pretty.plotted.idx[[3]] <- vals$pretty.plotted.idx[[3]] - idx.adjust
       validate(
-        need(all(vals$pretty.plotted.idx[[3]] > 0), "Ensemble delete error 2")
+        need(all(vals$pretty.plotted.idx[[3]] > 0), 
+             "Error: While deleting ensemble model(s), error 2")
       )
     }
   }
@@ -146,8 +150,8 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
 ens_abund_values <- reactive({
   validate(
     need(length(input$ens_datatable_ensembles_rows_selected) > 0, 
-         paste("Please select at least one set of ensemble predictions", 
-               "from the table"))
+         paste("Error: Please select at least one set of", 
+               "ensemble predictions from the table"))
   )
   
   ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)

@@ -154,8 +154,10 @@ create_ens_data_rescale_abund <- reactive({
   abund <- input$create_ens_rescale_abund
   spdfs.to.rescale <- vals$overlaid.models
   
-  validate(need(abund > 0,  paste("Error: abundance must be greater", 
-                                  "than 0 to rescale predictions"))
+  validate(
+    need(abund > 0,  
+         paste("Error: Abundance must be greater", 
+               "than 0 to rescale predictions"))
   )
   
   if (input$create_ens_table_subset) {
@@ -227,7 +229,8 @@ create_ens_overlaid_idx <- reactive({
   
   validate(
     need(length(ens.models.which) >= 2, 
-         "Please choose more than one model for the ensemble")
+         paste("Error: Please choose at least two sets of", 
+               "model predictions for the ensemble"))
   )
   
   ens.models.which

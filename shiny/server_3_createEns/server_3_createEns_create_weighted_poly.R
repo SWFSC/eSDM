@@ -6,13 +6,13 @@
 create_ens_weighted_poly <- reactive({
   validate(
     need(sum(!sapply(vals$ens.over.wpoly.filename, is.null)) > 0, 
-         paste("Please load at least one weight polygon in order to", 
+         paste("Error: Please load at least one weight polygon to", 
                "use this weighted ensembling method"))
   )
   
   overlaid.data <- create_ens_weights_poly_preds() # Already weighted
   base.sp <- vals$overlay.base.sp
-
+  
   data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, mean, na.rm = TRUE))
   
   SpatialPolygonsDataFrame(base.sp, data.ens, match.ID = FALSE)
@@ -39,7 +39,10 @@ create_ens_weights_poly_preds <- reactive({
         if (length(unique(wpoly.spdf$Weight)) == 1) {
           poly.weight(pred.spdf, wpoly.spdf, wpoly.coverage)
         } else {
-          validate(need(FALSE, "Can't handle multiple weights within one wpoly (yet)"))
+          validate(
+            need(FALSE, 
+                 "Error: Can't handle multiple weights within one wpoly (yet)")
+          )
           
           # wpoly.vals <- unique(wpoly.spdf$Weight)
           # wpoly.sp.all <- gUnaryUnion(wpoly.spdf)
@@ -58,7 +61,7 @@ create_ens_weights_poly_preds <- reactive({
           # validate(
           #   need(identical(pred.wpoly.int$Pred.overlaid, 
           #                  pred.spdf$Pred.overlaid[over.which]), 
-          #        "Weighting method 4: Indices don't match ")
+          #        "Error: Weighting method 4: Indices don't match ")
           # )
           # 
           # a.ratio <- area(pred.wpoly.int) / area(pred.spdf)[over.which]
@@ -110,24 +113,24 @@ poly.weight <- function(poly.pred, poly.w, coverage) {
   poly.w.df <- data.frame(Weight = poly.w$Weight[1])
   poly.w <- SpatialPolygonsDataFrame(poly.w.sp, poly.w.df,
                                      match.ID = FALSE)
-
+  
   overlaid.wpoly.over <- over(poly.pred, poly.w,
                               returnList = TRUE)
   over.which <- which(sapply(overlaid.wpoly.over, nrow) > 0)
   overlaid.wpoly.int <- intersect(poly.pred, poly.w)
-
+  
   validate(
     need(identical(overlaid.wpoly.int$Pred.overlaid,
                    poly.pred$Pred.overlaid[over.which]),
-         "Weighting method 4: Indices don't match ")
+         "Error: Weighting method 4: Indices don't match ")
   )
-
+  
   a.ratio <- area(overlaid.wpoly.int) / area(poly.pred)[over.which]
   idx.toweight <- over.which[a.ratio >= (coverage / 100)]
-
+  
   pred.out <- poly.pred$Pred.overlaid
   pred.out[idx.toweight] <- pred.out[idx.toweight] * poly.w$Weight
-
+  
   list(pred.out, idx.toweight)
 }
 ######################################################################
@@ -145,7 +148,7 @@ poly.weight <- function(poly.pred, poly.w, coverage) {
 # validate(
 #   need(identical(pred.wpoly.int$Pred.overlaid, 
 #                  pred.spdf$Pred.overlaid[over.which]), 
-#        "Weighting method 4: Indices don't match ")
+#        "Error: Weighting method 4: Indices don't match ")
 # )
 # 
 # a.ratio <- area(pred.wpoly.int) / area(pred.spdf)[over.which]
@@ -183,7 +186,7 @@ create_ens_weights_poly_remove <- eventReactive(
   {
     validate(
       need(!is.null(input$create_ens_weights_poly_remove_choices), 
-           "Please select at least onoe weighted polygon to remove")
+           "Error: Please select at least one weighted polygon to remove")
     )
     
     # Get indices of wpoly objects to remove
@@ -252,18 +255,18 @@ create_ens_weights_poly_table <- reactive({
   } else {
     overlaid.filenames <- sapply(vals$ens.over.wpoly.filename, 
                                  paste, collapse = ", ")[models.which]
-
+    
     overlaid.weights <- sapply(vals$ens.over.wpoly.spdf, function(l.spdf) {
       paste(lapply(l.spdf, function(spdf) {
         ifelse(length(unique(spdf$Weight)) > 1, "Multiple", spdf$Weight[1])
       }), 
       collapse = ", ")
     })[models.which]
-
+    
     overlaid.coverage <- sapply(vals$ens.over.wpoly.coverage, 
                                 paste, collapse = ", ")[models.which]
   }
-
+  
   table.out <- data.frame(overlaid.names, overlaid.filenames, 
                           overlaid.weights, overlaid.coverage, 
                           stringsAsFactors = FALSE)
@@ -281,7 +284,7 @@ create_ens_weights_poly_add <- eventReactive(
   {
     validate(
       need(!is.null(input$create_ens_weights_poly_model), 
-           "Please select at least one overlaid model")
+           "Error: Please select at least one overlaid model")
     )
     
     overlaid.list <- strsplit(input$create_ens_weights_poly_model, " ")
@@ -297,7 +300,10 @@ create_ens_weights_poly_add <- eventReactive(
       poly.sp <- create_ens_weights_poly_csv_process()[[1]]
       weight.df <- data.frame(Weight = input$create_ens_weights_poly_csv_weight)
       
-      validate(need(length(poly.sp) == 1, "CSV poly length != 1"))
+      validate(
+        need(length(poly.sp) == 1, 
+             "Error: .csv poly length does not equal 1")
+      )
       
       poly.filename <- create_ens_weights_poly_csv_process()[[2]]
       poly.spdf <- SpatialPolygonsDataFrame(poly.sp, weight.df, 
@@ -340,7 +346,10 @@ create_ens_weights_poly_add <- eventReactive(
       }
     } 
     else {
-      validate(need(FALSE, "create_ens_weights_poly_add() filetype error"))
+      validate(
+        need(FALSE, 
+             "Error: create_ens_weights_poly_add() filetype error")
+      )
     }
     
     
@@ -356,7 +365,7 @@ create_ens_weights_poly_add <- eventReactive(
         mapply(function(poly.loaded, poly.idx) {
           validate(
             need(is.null(gIntersection(poly.spdf, poly.loaded, byid = TRUE)), 
-                 paste("Cannot load weight polygon:", 
+                 paste("Error: Cannot load weight polygon because", 
                        "polygon overlaps with weight polygon number", 
                        poly.idx, "of overlaid model", overlaid.idx))
           )
@@ -472,7 +481,7 @@ create_ens_weights_poly_raster_read <- reactive({
                               input$create_ens_weights_poly_raster_band)
     gis.file.raster <- try(raster(file.in$datapath, band = raster.band.num), 
                            silent = TRUE)
-    gis.file.success <- !(class(gis.file.raster) == "try-error")
+    gis.file.success <- isTruthy(gis.file.raster)
     incProgress(0.4)
     
     # If specified file could be loaded as a raster, process raster
@@ -493,7 +502,7 @@ create_ens_weights_poly_raster_read <- reactive({
       ext <- extent(poly.spdf)
       validate(
         need(all(ext@xmax <= 180 & ext@xmin >= -180),
-             "Raster extent is not -180 to 180 degrees")
+             "Error: Raster extent is not -180 to 180 degrees")
       )
       incProgress(0.1)
     }
@@ -526,7 +535,7 @@ create_ens_weights_poly_shp_read <- reactive({
     gis.file.shp <- read.shp.in(files.in)
     incProgress(0.5)
     
-    gis.file.success <- !(class(gis.file.shp) == "try-error")
+    gis.file.success <- isTruthy(gis.file.shp)
     if (gis.file.success) {
       # if (!identical(crs(gis.file.shp), crs.ll)) {
       #   gis.file.shp <- spTransform(gis.file.shp, crs.ll)
@@ -536,7 +545,7 @@ create_ens_weights_poly_shp_read <- reactive({
       ext <- extent(gis.file.shp)
       validate(
         need(all(ext@xmax <= 180 & ext@xmin >= -180),
-             "Raster extent is not -180 to 180 degrees")
+             "Error: Raster extent is not -180 to 180 degrees")
       )
       incProgress(0.1)
       
@@ -581,7 +590,7 @@ create_ens_weights_poly_gdb_read <- eventReactive(
                           silent = TRUE)
       incProgress(0.5)
       
-      gis.file.success <- ifelse(class(gis.file.gdb) == "try-error", FALSE, TRUE)
+      gis.file.success <- isTruthy(gis.file.gdb)
       if (gis.file.success) {
         # if (!identical(crs(gis.file.gdb), crs.ll)) {
         #   gis.file.gdb <- spTransform(gis.file.gdb, crs.ll)
@@ -591,7 +600,7 @@ create_ens_weights_poly_gdb_read <- eventReactive(
         ext <- extent(gis.file.gdb)
         validate(
           need(all(ext@xmax <= 180 & ext@xmin >= -180),
-               "Raster extent is not -180 to 180 degrees")
+               "Error: Raster extent is not -180 to 180 degrees")
         )
         incProgress(0.1)
         

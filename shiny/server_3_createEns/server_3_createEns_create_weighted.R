@@ -28,7 +28,7 @@ create_ens_weights_num <- reactive({
   # Validate weights input
   validate(
     need(length(models.weights) == models.num, 
-         paste("The number of provided weights does not", 
+         paste("Error: The number of provided weights does not", 
                "match the number of overlaid models"))
   )
   
@@ -127,7 +127,8 @@ create_ens_weights_pix_weights <- reactive({
       validate(
         need(identical(is.na(overlaid.curr$Pred.overlaid), 
                        is.na(overlaid.curr$Weight.overlaid)), 
-             paste("is.na() of Pred is different from Weight for overlaid #", 
+             paste("Error: number of in for Pred is different from", 
+                   "number in Weight for overlaid #", 
                    idx))
       )
       overlaid.curr$Weight.overlaid
