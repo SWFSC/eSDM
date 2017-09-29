@@ -76,16 +76,19 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   
   validate(
     need(length(base.idx) == 1, 
-         "Please select exactly one model from table to use as overlay base"), 
+         paste("Error: Please select exactly one model from the table", 
+               "to use as the base grid")), 
     need(models.num > 1, 
-         "Please add more than one model to the app before overlaying"), 
+         paste("Error: Please add more than one model to the app", 
+               "before overlaying")), 
     if (input$overlay_bound) {
       need(!is.null(vals$overlay.bound), 
-           "Please either uncheck boundary box or load a boundary polygon")
+           paste("Error: Please either uncheck boundary box", 
+                 "or load a boundary polygon"))
     }, 
     if (input$overlay_land) {
       need(!is.null(vals$overlay.land),
-           "Please either uncheck land box or load a land polygon")
+           "Error: Please either uncheck land box or load a land polygon")
     }
   )
   
@@ -118,7 +121,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
         
         # Make spdf valid if it is not
         if (!suppressWarnings(gIsValid(spdf))) {
-          spdf <- validate.poly(spdf, "Overlaid model predictions")
+          spdf <- valid.poly(spdf, "Overlaid model predictions")
         }
         
         spdf

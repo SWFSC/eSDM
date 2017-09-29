@@ -54,7 +54,7 @@ overlay_preview_base_model <- reactive({
 
   validate(
     need(length(base.which) == 1, 
-         paste("Please select exactly one model from the", 
+         paste("Error: Please select exactly one model from the", 
                "table to use as grid for preview"))
   )
   
@@ -105,7 +105,7 @@ overlay_preview_overlaid_pix <- reactive({
 
   validate(
     need(length(overlaid.which) > 0,
-         paste("Please select at least one set of overlaid", 
+         paste("Error: Please select at least one set of overlaid", 
                "model predictions to preview"))
   )
 

@@ -9,16 +9,17 @@ overlay_bound_read_csv <- reactive({
   file.in <- input$overlay_bound_csv_file
   req(file.in)
   
-  # Ensure file extension is .csv; use validate since no renderUI's
+  # Ensure file ext is .csv; use validate since there are no renderUI's
   validate(
     need(file.in$type %in% c("text/csv", "application/vnd.ms-excel"), 
-         "Selected file is not a csv file")
+         "Error: Selected file is not a csv file")
   )
   
-  csv.df <- read.csv(file.in$datapath)[,1:2]
+  csv.df <- read.csv(file.in$datapath)[, 1:2]
   validate(
     need(!anyNA(csv.df), 
-         "Please load a csv file without NAs in the long and lat columns")
+         paste("Error: Please load a csv file without invalid entries", 
+               "in the longitude and latitude columns"))
   )
   
   return(csv.df)
@@ -53,18 +54,18 @@ overlay_land_read_csv <- reactive({
   file.in <- input$overlay_land_csv_file
   req(file.in)
   
-  # Ensure file extension is .csv; use validate since no renderUI's
+  # Ensure file ext is .csv; use validate since there are no renderUI's
   validate(
     need(file.in$type %in% c("text/csv", "application/vnd.ms-excel"), 
-         "Selected file is not a csv file")
+         "Error: Selected file is not a csv file")
   )
   
-  csv.df <- read.csv(file.in$datapath)[,1:2]
+  csv.df <- read.csv(file.in$datapath)[, 1:2]
   csv.df[,1] <- ifelse(csv.df[,1] > 180, csv.df[,1] - 360, csv.df[,1])
-  # validate(
-  #   need(all(csv.df[,1] <= 180), 
-  #        "Shapefile has longitudes > 180")
-  # )
+  validate(
+    need(all(csv.df[, 1] <= 180 & csv.df[, 1] >= -180),
+         "Error: .csv file has longitudes > 180")
+  )
   
   return(csv.df)
 })

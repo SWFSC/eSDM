@@ -9,7 +9,7 @@
 overlay.gis.crs <- function(gis.loaded) {
   validate(
     need(class(gis.loaded)[1] == "SpatialPolygons", 
-         "Object passed to overlay.gis.crs() is not a SPoly")
+         "Error: Object passed to overlay.gis.crs() is not a SPoly")
   )
   
   crs.curr <- crs(gis.loaded)
@@ -28,9 +28,9 @@ overlay.gis.crs <- function(gis.loaded) {
 
 
 ###############################################################################
-### Validate an invalid polygon (poly.invalid)
+### Attempt to make an invalid polygon (poly.invalid) valid
 
-validate.poly <- function(poly.invalid, description = NULL) {
+valid.poly <- function(poly.invalid, description = NULL) {
   # print(paste("Validating", description))
   poly.maybe <- suppressWarnings(gBuffer(poly.invalid, byid = TRUE, width = 0))
   # Warnings suppressed for if poly.invalid has crs.ll
@@ -45,10 +45,10 @@ validate.poly <- function(poly.invalid, description = NULL) {
   # Is gBuffer method didn't work, then try clgeo_Clean()
   validate(
     need(suppressWarnings(gIsValid(poly.maybe)), 
-         paste("Could not make polygon", description, "valid")),
+         paste("Error: Could not make polygon", description, "valid")),
     need((sum(area(poly.maybe)) - sum(area(poly.invalid))) < 1e+06, 
-         paste("While being made valid, the area of the polygon", description, 
-               "changed by more than 1 square kilometer")
+         paste("Error: While being made valid, the area of the polygon", 
+               description, "changed by more than 1 square kilometer")
     )
   )
   

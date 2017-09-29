@@ -31,7 +31,7 @@ overlay_create_base_spdf <- reactive({
   
   # Make sure final version of base polygon is valid
   if (!suppressWarnings(gIsValid(base.spdf))) {
-    base.spdf <- validate.poly(base.spdf, "Base final")
+    base.spdf <- valid.poly(base.spdf, "Base final")
   }
   
   base.spdf
@@ -50,11 +50,11 @@ overlay_clip_land_base <- reactive({
   land.base.try <- try(gClipExtent(overlay.land, base.spdf), 
                        silent = TRUE)
   
-  if (class(land.base.try) == "try-error") {
+  if (isTruthy(land.base.try)) {
     gClipExtent(overlay_valid_land(), base.spdf)
   } else {
     if (!suppressWarnings(gIsValid(land.base.try))) {
-      land.base.try <- validate.poly(land.base.try, "land.base.try")
+      land.base.try <- valid.poly(land.base.try, "land.base.try")
     }
     land.base.try
   }
@@ -70,11 +70,11 @@ overlay_clip_land_bound <- reactive({
   land.bound.try <- try(gClipExtent(overlay.land, overlay.bound, 0), 
                         silent = TRUE)
   
-  if (class(land.bound.try) == "try-error") {
+  if (isTruthy(land.bound.try)) {
     gClipExtent(overlay_valid_land(), overlay_valid_bound(), 0)
   } else {
     if (!suppressWarnings(gIsValid(land.bound.try))) {
-      land.bound.try <- validate.poly(land.bound.try, "land.base.try")
+      land.bound.try <- valid.poly(land.bound.try, "land.base.try")
     }
     land.bound.try
   }
@@ -87,7 +87,7 @@ overlay_clip_base_bound <- reactive({
   
   base.bound.try <- try(intersect(base.spdf, overlay.bound), silent = TRUE)
   
-  if (class(base.bound.try) == "try-error") {
+  if (isTruthy(base.bound.try)) {
     intersect(base.spdf, overlay_valid_bound())
   } else {
     base.bound.try
@@ -96,37 +96,37 @@ overlay_clip_base_bound <- reactive({
 
 
 ###############################################################################
-# Validate base, bound, and land polys using gBuffer (if necessary)
+# Ensure base, bound, and land polys are valid
 # Called if various intersects throw an error
 
-### Validate base spdf
+### Ensure base spdf is valid
 overlay_valid_base <- reactive({
   base.spdf <- overlay_proj_base()
   
   if (!suppressWarnings(gIsValid(base.spdf))) {
-    validate.poly(base.spdf, "Base")
+    valid.poly(base.spdf, "Base")
   } else {
     base.spdf
   }
 })
 
-### Validate boundary polygon
+### Ensure boundary polygon is valid
 overlay_valid_bound <- reactive({
   overlay.bound <- overlay_proj_bound()
   
   if (!suppressWarnings(gIsValid(overlay.bound))) { 
-    validate.poly(overlay.bound, "Boundary")
+    valid.poly(overlay.bound, "Boundary")
   } else {
     overlay.bound
   }
 })
 
-### Validate land polygons
+### Ensure land polygon is valid
 overlay_valid_land <- reactive({
   overlay.land <- overlay_proj_land()
   
   if (!suppressWarnings(gIsValid(overlay.land))) {
-    validate.poly(overlay.land, "Land")
+    valid.poly(overlay.land, "Land")
   } else {
     overlay.land
   }
@@ -141,7 +141,7 @@ overlay_proj_base <- reactive({
   base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
   validate(
     need(length(base.idx) == 1, 
-         "Please select exactly one model from table to preview")
+         "Error: Please select exactly one model from table to preview")
   )
   base.orig <- vals$models.orig[[base.idx]]
   
@@ -191,7 +191,7 @@ overlay_clip_land_base_llpre <- reactive({
   
   overlay.land.clipll <- try(gClipExtent(overlay.land, base.pre, 2), 
                              silent = TRUE)
-  if (class(overlay.land.clipll) != "try-error") {
+  if (isTruthy(overlay.land.clipll)) {
     overlay.land.clipll      
   } else {
     warning("Could not clip land_ll by base_ll, projecting could take a while")
@@ -204,7 +204,7 @@ overlay_base_llpre <- reactive({
   base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
   validate(
     need(length(base.idx) == 1, 
-         "Please select exactly one model from table to preview")
+         "Error: Please select exactly one model from table")
   )
   vals$models.ll[[base.idx]]
 })

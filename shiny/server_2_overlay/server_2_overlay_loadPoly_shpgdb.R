@@ -10,11 +10,13 @@ overlay_bound_gis_shp <- reactive({
   
   withProgress(message = 'Loading boundary polygon', value = 0.3, {
     bound.gis.shp <- read.shp.in(input$overlay_bound_gis_shp_files)
+    
     validate(
-      need(!(class(bound.gis.shp) == "try-error"),
-           "Could not load shapefile using selected files") %then%
-        need(extent(bound.gis.shp)@xmax <= 180, 
-             "Shapefile has longitudes > 180")
+      need(isTruthy(bound.gis.shp),
+           "Error: Could not load shapefile using selected files") %then%
+        need(extent(bound.gis.shp)@xmax <= 180 & 
+               extent(bound.gis.shp)@xmin >= -180, 
+             "Error: Shapefile has longitudes > 180 or < -180")
     )
     incProgress(0.5)
     
@@ -37,10 +39,14 @@ overlay_bound_gis_gdb <- eventReactive(input$overlay_bound_gis_gdb_load, {
     bound.gis.gdb <- try(readOGR(bound.gdb.path, bound.gdb.name, 
                                  verbose = FALSE), 
                          silent = TRUE)
+    
     validate(
-      need(!(class(bound.gis.gdb) == "try-error"), 
-           "Could not load polygon using provided file path and name") %then%
-        need(extent(bound.gis.gdb)@xmax <= 180, "File has longitudes > 180")
+      need(isTruthy(bound.gis.gdb), 
+           paste("Error: Could not load polygon using", 
+                 "provided file path and name")) %then%
+        need(extent(bound.gis.gdb)@xmax <= 180 & 
+               extent(bound.gis.gdb)@xmin >= -180, 
+             "Error: File has longitudes > 180 or < -180")
     )
     incProgress(0.5)
     
@@ -64,12 +70,12 @@ overlay_land_gis_shp <- reactive({
   
   withProgress(message = 'Loading land polygon', value = 0.3, {
     land.gis.shp <- read.shp.in(input$overlay_land_gis_shp_files)
-    validate(
-      need(!(class(land.gis.shp) == "try-error"),
-           "Could not load shapefile using selected files") %then%
-        need(extent(land.gis.shp)@xmax <= 180, 
-             "Shapefile has longitudes > 180")
-    )
+    
+    need(isTruthy(land.gis.shp),
+         "Error: Could not load shapefile using selected files") %then%
+      need(extent(land.gis.shp)@xmax <= 180 & 
+             extent(land.gis.shp)@xmin >= -180, 
+           "Error: Shapefile has longitudes > 180 or < -180")
     incProgress(0.5)
     
     land.gis.shp <- as(land.gis.shp, "SpatialPolygons")
@@ -92,9 +98,12 @@ overlay_land_gis_gdb <- eventReactive(input$overlay_land_gis_gdb_load, {
                                 verbose = FALSE), 
                         silent = TRUE)
     validate(
-      need(!(class(land.gis.gdb) == "try-error"), 
-           "Could not load polygon using provided file path and name") %then%
-        need(extent(land.gis.gdb)@xmax <= 180, "File has longitudes > 180")
+      need(isTruthy(land.gis.gdb), 
+           paste("Error: Could not load polygon using", 
+                 "provided file path and name")) %then%
+        need(extent(land.gis.gdb)@xmax <= 180 & 
+               extent(land.gis.gdb)@xmin >= -180, 
+             "Error: File has longitudes > 180 or < -180")
     )
     incProgress(0.5)
     

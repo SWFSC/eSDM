@@ -20,8 +20,7 @@ output$overlay_proj_which_uiOut_select <- renderUI({
 ### Widget for user to select overlaid model(s) to plot
 output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
   req(length(vals$overlaid.models) != 0)
-  # browser()
-  
+
   choices.list <- seq_along(vals$overlaid.models)
   names(choices.list) <- paste("Overlaid", choices.list)
   
