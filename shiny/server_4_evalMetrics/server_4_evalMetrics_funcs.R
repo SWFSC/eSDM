@@ -32,10 +32,11 @@ helper.over <- function(pres.pts, abs.pts, model.data, model.dens.idx) {
   # Check the point and model have same crs
   validate(
     need(identicalCRS(pres.pts, abs.pts), 
-         "Presence and absence points don't have identical projections"), 
+         paste("Error: Presence and absence points do not", 
+               "have identical projections")), 
     need(identicalCRS(pres.pts, model.data), 
-         paste("Presense and absence points and model predictions",
-               "don't have identical projections"))
+         paste("Error: Presence points and model predictions do not", 
+               "have identical projections"))
   )
   
   # Overlap of validation data and model
@@ -65,9 +66,11 @@ helper.pred <- function(pres.pts, abs.pts, model.data, model.dens.idx,
   # Check the point and model have same crs
   validate(
     need(identicalCRS(pres.pts, abs.pts), 
-         "Presence and absence points don't have identical projections"), 
+         paste("Error: Presence and absence points do not", 
+               "have identical projections")), 
     need(identicalCRS(pres.pts, model.data), 
-         "Pres/abs points and model predictions don't have identical projections")
+         paste("Error: Presence points and model predictions do not", 
+               "have identical projections"))
   )
   
   # Overlap of presence/absence data and model

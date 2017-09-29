@@ -135,7 +135,7 @@ eval_data_1_csv <- eventReactive(input$eval_csv_execute_1, {
   if (data.type == 1) { ## Count data
     validate(
       need(is.numeric(csv.selected[,3]) | is.integer(csv.selected[,3]), 
-           paste("Selected validation data column is not numeric.", 
+           paste("Error: Selected validation data column is not numeric.", 
                  "Consider loading data as 'Presence or absence' data"))
     )
     
@@ -149,11 +149,13 @@ eval_data_1_csv <- eventReactive(input$eval_csv_execute_1, {
     
     validate(
       need(!(is.null(p.codes) | is.null(a.codes)), 
-           "Please select one or more presence code and absence code"), 
+           paste("Error: Please select one or more", 
+                 "presence codes and absence codes")), 
       need(all(!(p.codes %in% a.codes)), 
-           "Please ensure that no presence and absence codes are the same"), 
+           paste("Error: Please ensure that no presence and", 
+                 "absence codes are the same")), 
       need(length(unique(csv.selected[,3])) <= num.codes, 
-           paste("Please ensure that all codes are classified", 
+           paste("Error: Please ensure that all codes are classified", 
                  "as either presence or absence codes"))
     )
     
@@ -184,10 +186,12 @@ eval_data_1_shp_load <- reactive({
   
   withProgress(message = "Loading GIS file", value = 0.3, {
     gis.file.shp <- read.shp.in(shp.files)
-    gis.file.success <- (class(gis.file.shp) != "try-error")
+    gis.file.success <- isTruthy(gis.file.shp)
     incProgress(0.4)
     
-    if (gis.file.success) gis.file.shp.ll <- gis.model.check(gis.file.shp)[[1]] #keep crs.ll version
+    if (gis.file.success) { #keep crs.ll spdf
+      gis.file.shp.ll <- gis.model.check(gis.file.shp)[[1]]
+    }
     incProgress(0.3)
   })
   
@@ -210,12 +214,10 @@ eval_data_1_gdb_load <- eventReactive(input$eval_gis_gdb_load_1, {
   gdb.path <- input$eval_gis_gdb_path_1
   gdb.name <- input$eval_gis_gdb_name_1
   
-  if (gdb.path == "" | gdb.name == "") return()
-  
   withProgress(message = "Loading GIS file", value = 0.3, {
     gis.file.gdb <- try(readOGR(gdb.path, gdb.name, verbose = FALSE), 
                         silent = TRUE)
-    gis.file.success <- (class(gis.file.gdb) != "try-error")
+    gis.file.success <- isTruthy(gis.file.gdb)
     incProgress(0.4)
     
     if (gis.file.success) gis.file.gdb.ll <- gis.model.check(gis.file.gdb)[[1]] #keep crs.ll version
@@ -257,9 +259,6 @@ eval_data_1_gis_pacodes <- reactive({
 #######################################
 ### GIS process and then save validation data to reactiveVar
 eval_data_1_gis <- eventReactive(input$eval_gis_execute_1, {
-  validate(
-    need(TRUE, "")
-  )
   column.data <- as.numeric(input$eval_gis_names_1)
   
   pa.spdf <- vals$eval.data.gis.file.1[[1]]
@@ -276,7 +275,7 @@ eval_data_1_gis <- eventReactive(input$eval_gis_execute_1, {
     ## Count data
     validate(
       need(is.numeric(pa.spdf$pa.data) | is.integer(pa.spdf$pa.num), 
-           paste("Selected data column is not numeric.", 
+           paste("Error: Selected data column is not numeric.", 
                  "Consider loading data as 'presence/absence' data"))
     )
     
@@ -293,11 +292,13 @@ eval_data_1_gis <- eventReactive(input$eval_gis_execute_1, {
     
     validate(
       need(!(is.null(p.codes) | is.null(a.codes)), 
-           "Please select one or more presence code and absence code") %then%
+           paste("Error: Please select one or more", 
+                 "presence code and absence code")) %then%
       need(all(!(p.codes %in% a.codes)), 
-           "Please ensure that no absence and presence codes are the same"), 
+           paste("Error: Please ensure that no presence and", 
+                 "absence codes are the same")), 
       need(length(unique(pa.spdf$pa.data)) <= num.codes, 
-           paste("Please ensure that all codes are classified", 
+           paste("Error: Please ensure that all codes are classified", 
                  "as either presence or absence codes"))
     )
 

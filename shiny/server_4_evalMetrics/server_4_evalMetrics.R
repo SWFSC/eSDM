@@ -34,7 +34,7 @@ table_data_pts <- reactive({
   
   pres.num <- length(pres.data)
   abs.num <- length(data.list[[2]])
-
+  
   if (data.type == 1) {
     count.range <- paste(range(round(pres.data$pa.num, 2)), collapse = " to ")
     table.out.col1<- c("Number of points with non-zero counts", 
@@ -54,7 +54,7 @@ table_data_pts <- reactive({
   
   validate(
     need(!is.null(table.out), 
-         "Error in validation data: vals$eval.data.specs is not 1 or 2")
+         "Error: vals$eval.data.specs is not 1 or 2")
   )
   
   table.out
@@ -119,13 +119,13 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   # All validating done here so all messages are displayed at same time
   validate(
     need(pa.sptsdf.both, 
-         paste("Please load presence and absence points in order", 
+         paste("Error: Please load presence and absence points in order", 
                "to calculate model evaluation metrics")),
     need(models.idx.any, 
-         paste("Please select at least one model for which ", 
+         paste("Error: Please select at least one model for which ", 
                "to calculate model evaluation metrics")),
     need(!is.null(which.metrics), 
-         "Please select at least one evaluation metric to calculate")
+         "Error: Please select at least one evaluation metric to calculate")
   ) 
   
   # Calculate metrics
@@ -174,7 +174,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 ### Generate table of calculated metrics
 table_eval_metrics <- reactive({
   req(length(vals$eval.metrics) > 0, vals$eval.metrics.names)
-
+  
   metrics.table <- as.data.frame(t(as.data.frame(vals$eval.metrics)))
   names(metrics.table) <- vals$eval.metrics.names
   
@@ -228,7 +228,7 @@ output$eval_metrics_table_save <- downloadHandler(
         all.models.names <- c(paste(names(over.table), names(ens.table), 
                                     sep = "/")[1:4], 
                               names(over.table)[5:9])
-      
+        
         names(over.table) <- all.models.names
       }
       
@@ -238,19 +238,21 @@ output$eval_metrics_table_save <- downloadHandler(
     # Else: Either some combo of orig.table and over.table or it's only
     #        the ens.table. Thus, names are already correct.
     
-
+    
     ### Combine info tables
     models.list.all <- list(orig.table, over.table, ens.table)
     models.list.all <- models.list.all[!sapply(models.list.all, is.null)]
+    
+    need.check.table <- all(sapply(models.list.all, function(j, names.1) {
+      names(j) == names(models.list.all[[1]])
+    }, names.1 = models.list.all[[1]]))
     validate(
       need(zero_range(sapply(models.list.all, ncol)), 
-           paste("Error in downloading metrics: data tables", 
+           paste("Error: while downloading metrics, data tables", 
                  "info tables have different numbers of columns")), 
-      need(all(sapply(models.list.all, function(j, names.1) {
-        names(j) == names(models.list.all[[1]])
-      }, names.1 = models.list.all[[1]])), 
-      paste("Error in downloading metrics: data tables", 
-            "info tables have different names"))
+      need(need.check.table, 
+           paste("Error: while downloading metrics, data tables", 
+                 "info tables have different names"))
     )
     all.models.info <- do.call(rbind, models.list.all)
     
@@ -258,8 +260,8 @@ output$eval_metrics_table_save <- downloadHandler(
     ### Combine metric table and info table
     validate(
       need(nrow(all.models.info) == nrow(eval.metrics), 
-           paste("Error in downloading table: metrics and model info tables", 
-                 "have different number of rows"))
+           paste("Error: while downloading table, metrics and model", 
+                 "info tables have different numbers of rows"))
     )
     eval.metrics.models.info <- cbind(eval.metrics, all.models.info)
     
