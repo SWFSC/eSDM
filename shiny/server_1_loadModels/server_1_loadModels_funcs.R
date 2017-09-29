@@ -88,11 +88,11 @@ gis.rasterize.poly <- function(spdf.poly.ll) {
 ### Determine the resolution of provided gis model
 #     Thus, also determine whether model was made lat/long or ea regular
 gis.res.calc <- function(spdf.ll, spdf.orig) {
-  validate(
+  validate( #Is validate() within non-reactive func acceptable?
     need(length(spdf.ll) == length(spdf.orig), 
-         "gis.res.calc(): model lengths are different"),
+         "Error: gis.res.calc(): model lengths are different"),
     need(crs(spdf.ll)@projargs == crs.ll@projargs,
-         "gis.res.calc(): first input must have crs = crs.ll")
+         "Error: gis.res.calc(): first input must have crs = crs.ll")
   )
   
   ### Get areas of individual polygons in original projection and units

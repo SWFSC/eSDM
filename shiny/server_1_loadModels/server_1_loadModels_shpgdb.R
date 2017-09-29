@@ -56,7 +56,7 @@ read_model_gis_shp <- reactive({
     gis.file.shp <- read.shp.in(input$model_gis_shp_files)
     incProgress(0.5)
     
-    gis.file.success <- ifelse(class(gis.file.shp) == "try-error", FALSE, TRUE)
+    gis.file.success <- isTruthy(gis.file.shp)
     if(gis.file.success) gis.files.shp <- gis.model.check(gis.file.shp)
     incProgress(0.2)
   })
@@ -109,7 +109,7 @@ read_model_gis_gdb <- eventReactive(input$model_gis_gdb_load, {
                         silent = TRUE)
     incProgress(0.5)
     
-    gis.file.success <- ifelse(class(gis.file.gdb) == "try-error", FALSE, TRUE)
+    gis.file.success <- isTruthy(gis.file.gdb)
     if(gis.file.success) gis.files.gdb <- gis.model.check(gis.file.gdb)
     incProgress(0.2)
   })

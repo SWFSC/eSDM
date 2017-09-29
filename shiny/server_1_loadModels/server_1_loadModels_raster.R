@@ -25,15 +25,14 @@ read_model_gis_raster <- reactive({
     gis.file.raster <- try(raster(input$model_gis_raster_file$datapath, 
                                   band = input$model_gis_raster_band), 
                            silent = TRUE)
-    gis.file.success <- ifelse(class(gis.file.raster) == "try-error", 
-                               FALSE, TRUE)
+    gis.file.success <- ifelse(isTruthy(gis.file.raster), FALSE, TRUE)
     
     # If specified file could be loaded as a raster, process raster
     if(gis.file.success) {
       model.pix <- as(gis.file.raster, "SpatialPixelsDataFrame")
       names(model.pix) <- "Pred"
       # Leave orig data name here
-      gis.file.spdf <- as(gis.file.raster, "SpatialPolygonsDataFrame") # EAB 1.7 sec
+      gis.file.spdf <- as(gis.file.raster, "SpatialPolygonsDataFrame")
       names(gis.file.spdf) <- "Pred"
       incProgress(0.2)
       
@@ -46,7 +45,7 @@ read_model_gis_raster <- reactive({
       # Run dateline correction function here..?
       validate(
         need(all(ext@xmax <= 180 & ext@xmin >= -180), 
-             "Raster extent is not -180 to 180 degrees")
+             "Error: Raster longitude extent is not -180 to 180 degrees")
       )
       incProgress(0.1)
     }

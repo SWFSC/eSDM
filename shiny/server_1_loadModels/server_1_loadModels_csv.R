@@ -88,7 +88,8 @@ create_spdf_csv_grid <- reactive({
   proj4string(spdf.pts) <- crs.ll
   spdf.pix <- try(as(spdf.pts, "SpatialPixelsDataFrame"))
   validate(
-    need(class(spdf.pix) != "try-error", "Provided csv points are not lat-long regular")
+    need(isTruthy(spdf.pix), 
+         "Error: Provided .csv points are not lat-long regular")
   )
   
   # Adjust provided points to center of grid cells
@@ -110,7 +111,7 @@ create_spdf_csv_grid <- reactive({
       adj.lat <- cell.size.lat / 2
     } else {
       validate(
-        need(FALSE, "Error in create_spdf_csv_grid() point location code")
+        need(FALSE, "Error: create_spdf_csv_grid() point location code")
       )
     }
     
@@ -123,7 +124,9 @@ create_spdf_csv_grid <- reactive({
     proj4string(spdf.pts) <- crs.ll
     spdf.pix <- try(as(spdf.pts, "SpatialPixelsDataFrame"))
     validate(
-      need(class(spdf.pix) != "try-error", "Error in adjusting points")
+      need(isTruthy(spdf.pix), 
+           paste("Error: Provided .csv points are not lat-long regular", 
+                 "post-adjusting points"))
       # Non-lat/long regular points error should have been caught above
     )
   }
@@ -191,7 +194,8 @@ create_spdf_csv <- eventReactive(input$model_create_csv, {
     pix.res <- round(unname(spdf.pix@grid@cellsize), 3)
     validate(
       need(pix.res[1] == pix.res[2], 
-           "loadModels_csv: Long and Lat pixel width is not the same")
+           paste("Error: Long and Lat pixel width is not the same", 
+                 "(create_spdf_csv())"))
     )
     model.res <- paste(pix.res[1], "degrees")
     

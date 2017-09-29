@@ -16,7 +16,8 @@ observeEvent(input$model_remove_execute, {
   
   validate(
     need(length(idx) > 0, 
-         "Please select one or more sets of model predictions to remove")
+         paste("Error: Please select one or more sets", 
+               "of model predictions to remove"))
   )
   
   #########################################################
@@ -48,7 +49,8 @@ observeEvent(input$model_remove_execute, {
       })
       vals$models.plotted.idx <- vals$models.plotted.idx - idx.adjust
       validate(
-        need(all(vals$models.plotted.idx > 0), "Original delete error 1")
+        need(all(vals$models.plotted.idx > 0), 
+             "Error: While deleting original model(s), error 1")
       )
     }
   }
@@ -76,7 +78,8 @@ observeEvent(input$model_remove_execute, {
       })
       vals$pretty.plotted.idx[[1]] <- vals$pretty.plotted.idx[[1]] - idx.adjust
       validate(
-        need(all(vals$pretty.plotted.idx[[1]] > 0), "Original delete error 2")
+        need(all(vals$pretty.plotted.idx[[1]] > 0), 
+             "Error: While deleting 1+ original model(s), error 2")
       )
     }
   }

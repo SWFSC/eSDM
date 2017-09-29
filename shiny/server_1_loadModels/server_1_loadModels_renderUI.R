@@ -230,7 +230,7 @@ output$model_create_csv_uiOut_button <- renderUI ({
     validate(
       need((max(data.weight, na.rm = TRUE) <= 1) & 
              (min(data.weight, na.rm = TRUE) >= 0), 
-           "Values in 'Weight' column must be between 0 and 1")
+           "Error: Values in 'Weight' column must be between 0 and 1")
     )
   }
   
@@ -256,7 +256,7 @@ output$model_create_gis_shp_uiOut_button <- renderUI ({
     validate(
       need((max(data.weight, na.rm = TRUE) <= 1) & 
              (min(data.weight, na.rm = TRUE) >= 0),
-           "Values in 'Weight' column must be between 0 and 1")
+           "Error: Values in 'Weight' column must be between 0 and 1")
     )
   }
   
@@ -275,7 +275,7 @@ output$model_create_gis_gdb_uiOut_button <- renderUI ({
     validate(
       need((max(data.weight, na.rm = TRUE) <= 1) & 
              (min(data.weight, na.rm = TRUE) >= 0),
-           "Values in 'Weight' column must be between 0 and 1")
+           "Error: Values in 'Weight' column must be between 0 and 1")
     )
   }
   
