@@ -83,7 +83,8 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12, 
-                    checkboxInput("pretty_plot_proj_ll", "Generate map in WGS 84 geographic coordinates", value = TRUE), 
+                    checkboxInput("pretty_plot_proj_ll", "Generate map in WGS 84 geographic coordinates (lat/long coordinates)", 
+                                  value = TRUE), 
                     conditionalPanel(
                       condition = "input.pretty_plot_proj_ll == false", 
                       uiOutput("pretty_plot_proj_idx_uiOut_select")

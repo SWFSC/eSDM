@@ -30,10 +30,11 @@ library(viridis)
 library(dichromat)
 
 
-# Max file upload size is now 200MB for fine-scale land maps
+# Max file upload size is now 150MB
 options(shiny.maxRequestSize = 150 * 1024^2) 
 
-`%then%` <- shiny:::`%OR%` # For non-simultaneous validate checks
+# Use to perform sequential rather than concurrent validate checks
+`%then%` <- shiny:::`%OR%` 
 
 
 ###############################################################################
