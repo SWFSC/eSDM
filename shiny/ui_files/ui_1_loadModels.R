@@ -17,7 +17,7 @@ ui.loadModels <- function() {
               ), 
               column(
                 width = 6, 
-                textInput("save_app_envir_name", h5("Filename with which to save environment"), value = "Ens_App_Save_Envir.RDATA"), 
+                textInput("save_app_envir_name", h5("Filename with which to save environment"), value = "etSDM_Envir.RDATA"), 
                 downloadButton("save_app_envir", "Save current app environment")
               )
             )

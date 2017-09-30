@@ -13,7 +13,7 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
   
   #----------------------------------------------
   # Same code as in model_pix_download()
-  models.idx <- sort(as.numeric(input$models_loaded_table_rows_selected))
+  models.idx <- as.numeric(input$models_loaded_table_rows_selected)
   
   validate(
     need(length(models.idx) > 0, 
@@ -23,8 +23,7 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
   models.toplot <- vals$models.pix[models.idx]
   
   plot.titles <- sapply(models.idx, function(i) {
-    paste0("Model file: ", vals$models.names[i], "\n", 
-           "Data header: ", vals$models.data.names[[i]][1])
+    paste0(vals$models.data.names[[i]][1], "\n", vals$models.names[i])
   })
   
   model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
@@ -45,7 +44,7 @@ model_pix_download <- reactive({
   
   #----------------------------------------------
   # Same code as in model_pix_download()
-  models.idx <- sort(as.numeric(input$models_loaded_table_rows_selected))
+  models.idx <- as.numeric(input$models_loaded_table_rows_selected)
   
   validate(
     need(length(models.idx) > 0, 
@@ -55,8 +54,7 @@ model_pix_download <- reactive({
   models.toplot <- vals$models.pix[models.idx]
   
   plot.titles <- sapply(models.idx, function(i) {
-    paste0("Model file: ", vals$models.names[i], "\n", 
-           "Data header: ", vals$models.data.names[[i]][1])
+    paste0(vals$models.data.names[[i]][1], "\n", vals$models.names[i])
   })
   
   model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
@@ -145,7 +143,7 @@ ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
   
   #----------------------------------------------
   # Same code as in ens_pix_download()
-  ensemble.idx <- sort(input$ens_datatable_ensembles_rows_selected)
+  ensemble.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
   validate(
     need(length(ensemble.idx) > 0,
          "Error: Please select at least one model from table to preview")
@@ -154,8 +152,8 @@ ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
   models.toplot <- create_ens_preview_model()
   
   plot.titles <- sapply(ensemble.idx, function(i) {
-    paste0("Ensembling method: ", vals$ensemble.method[i], "\n", 
-           "Rescaling method: ", vals$ensemble.rescaling[i])
+    paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i], 
+          "|", vals$ensemble.overlaid.idx[i])
   })
   
   ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens", 
@@ -174,7 +172,7 @@ ens_pix_download <- reactive({
   
   #----------------------------------------------
   # Same code as in ens_pix_preview_event()
-  ensemble.idx <- sort(input$ens_datatable_ensembles_rows_selected)
+  ensemble.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
   validate(
     need(length(ensemble.idx) > 0,
          "Error: Please select at least one model from table to preview")
@@ -183,8 +181,10 @@ ens_pix_download <- reactive({
   models.toplot <- create_ens_preview_model()
   
   plot.titles <- sapply(ensemble.idx, function(i) {
-    paste0("Ensembling method: ", vals$ensemble.method[i], "\n", 
-           "Rescaling method: ", vals$ensemble.rescaling[i])
+    # paste0("Ensembling method: ", vals$ensemble.method[i], "\n", 
+    #        "Rescaling method: ", vals$ensemble.rescaling[i])
+    paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i], 
+          "|", vals$ensemble.overlaid.idx[i])
   })
   
   ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens", 

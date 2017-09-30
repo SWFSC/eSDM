@@ -40,7 +40,7 @@ outputOptions(output, "ens_display_ens_flag", suspendWhenHidden = FALSE)
 ###########################################################
 ### Generate preview of selected ensemble predictions
 create_ens_preview_model <- reactive({
-  ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
+  ensemble.which <- as.numeric(input$ens_datatable_ensembles_rows_selected)
   
   validate(
     need(length(ensemble.which) > 0,
