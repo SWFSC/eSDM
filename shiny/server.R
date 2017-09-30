@@ -34,7 +34,7 @@ library(dichromat)
 options(shiny.maxRequestSize = 150 * 1024^2) 
 
 # Use to perform sequential rather than concurrent validate checks
-`%then%` <- shiny:::`%OR%` 
+`%then%` <- shiny:::`%OR%`
 
 
 ###############################################################################
