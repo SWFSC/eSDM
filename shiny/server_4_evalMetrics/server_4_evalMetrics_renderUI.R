@@ -15,8 +15,8 @@ output$eval_csv_names_1_uiOut_select <- renderUI({
   names(choice.input) <- choice.input.names
   
   selectizeInput("eval_csv_names_1", 
-                 h5("Select, in this order, the longitude, latitude, and", 
-                    "validation data column for the uploaded .csv file"), 
+                 tags$h5("Select, in this order, the longitude, latitude, and", 
+                         "validation data column for the uploaded .csv file"), 
                  choices = choice.input, selected = NULL, multiple = TRUE)
 })
 
@@ -25,7 +25,7 @@ output$eval_csv_codes_1_p_uiOut_select <- renderUI({
   choice.input.names <- eval_data_1_csv_pacodes()
   req(!any(c("error1", "error2") %in% eval_data_1_csv_pacodes()))
   
-  selectizeInput("eval_csv_codes_1_p", h5("Select presence code(s)"), 
+  selectizeInput("eval_csv_codes_1_p", tags$h5("Select presence code(s)"), 
                  choices = choice.input.names, selected = NULL, 
                  multiple = TRUE)
 })
@@ -35,7 +35,7 @@ output$eval_csv_codes_1_a_uiOut_select <- renderUI({
   choice.input.names <- eval_data_1_csv_pacodes()
   req(!any(c("error1", "error2") %in% eval_data_1_csv_pacodes()))
   
-  selectizeInput("eval_csv_codes_1_a", h5("Select absence code(s)"), 
+  selectizeInput("eval_csv_codes_1_a", tags$h5("Select absence code(s)"), 
                  choices = choice.input.names, selected = NULL, 
                  multiple = TRUE)
 })
@@ -67,8 +67,8 @@ output$eval_gis_names_1_uiOut_select <- renderUI({
   names(choice.input) <- choice.input.names
   
   selectInput("eval_gis_names_1", 
-              h5("Select the validation data column for the", 
-                 "uploaded GIS file"), 
+              tags$h5("Select the validation data column for the", 
+                      "uploaded GIS file"), 
               choices = choice.input, selected = NULL)
 })
 
@@ -77,7 +77,7 @@ output$eval_gis_codes_1_p_uiOut_select <- renderUI({
   choice.input.names <- eval_data_1_gis_pacodes()
   req(!("error2" %in% choice.input.names))
   
-  selectizeInput("eval_gis_codes_1_p", h5("Select presence code(s)"), 
+  selectizeInput("eval_gis_codes_1_p", tags$h5("Select presence code(s)"), 
                  choices = choice.input.names, selected = NULL, 
                  multiple = TRUE)
 })
@@ -87,7 +87,7 @@ output$eval_gis_codes_1_a_uiOut_select <- renderUI({
   choice.input.names <- eval_data_1_gis_pacodes()
   req(!("error2" %in% choice.input.names))
   
-  selectizeInput("eval_gis_codes_1_a", h5("Select absence code(s)"), 
+  selectizeInput("eval_gis_codes_1_a", tags$h5("Select absence code(s)"), 
                  choices = choice.input.names, selected = NULL, 
                  multiple = TRUE)
 })
@@ -115,6 +115,6 @@ output$eval_metrics_which_uiOut_check <- renderUI({
   choices.list <- list("AUC", "TSS", "RMSE")
   if (vals$eval.data.specs == 2) choices.list <- choices.list[1:2]  
   
-  checkboxGroupInput("eval_metrics_which", h5("Metric(s) to calculate"), 
+  checkboxGroupInput("eval_metrics_which", tags$h5("Metric(s) to calculate"), 
                      choices = choices.list)
 })

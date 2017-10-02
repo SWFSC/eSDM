@@ -12,7 +12,7 @@ output$model_csv_names_lon_uiOut_select <- renderUI({
   
   choice.input <- csv_names_choice_input()
   
-  selectInput("model_csv_names_lon", h5("Column with longitude data"),
+  selectInput("model_csv_names_lon", tags$h5("Column with longitude data"),
               choices = choice.input, selected = 1)
 })
 
@@ -22,7 +22,7 @@ output$model_csv_names_lat_uiOut_select <- renderUI({
   
   choice.input <- csv_names_choice_input()
   
-  selectInput("model_csv_names_lat", h5("Column with latitude data"),
+  selectInput("model_csv_names_lat", tags$h5("Column with latitude data"),
               choices = choice.input, selected = 2)
 })
 
@@ -32,7 +32,7 @@ output$model_csv_names_pred_uiOut_select <- renderUI({
   
   choice.input <- csv_names_choice_input()
   
-  selectInput("model_csv_names_pred", h5("Column with prediction data"),
+  selectInput("model_csv_names_pred", tags$h5("Column with prediction data"),
               choices = choice.input, selected = 3)
 })
 
@@ -40,7 +40,7 @@ output$model_csv_names_pred_uiOut_select <- renderUI({
 output$model_csv_pred_type_uiOut_select <- renderUI({
   req(read_model_csv())
   
-  selectInput("model_csv_pred_type", h5("Prediction value type"), 
+  selectInput("model_csv_pred_type", tags$h5("Prediction value type"), 
               choices = list("Absolute density" = 1, "Relative density" = 2), 
               selected = 2)
 })
@@ -53,7 +53,7 @@ output$model_csv_pred_type_uiOut_select <- renderUI({
 #   choice.input <- c("N/A" = 1, choice.input + 1)
 #   
 #   selectInput("model_csv_names_error", 
-#               h5("Column with error data (optional)"), 
+#               tags$h5("Column with error data (optional)"), 
 #               choices = choice.input, selected = NULL)
 # })
 
@@ -65,7 +65,7 @@ output$model_csv_names_weight_uiOut_select <- renderUI({
   choice.input <- c("N/A" = 1, choice.input + 1)
   
   selectInput("model_csv_names_weight", 
-              h5("Column with weight data (optional)"),
+              tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = NULL)
 })
 
@@ -88,7 +88,7 @@ output$model_csv_NA_idx_uiOut_message <- renderUI({
 output$model_gis_raster_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_raster())
   
-  selectInput("model_gis_raster_pred_type", h5("Prediction value type"), 
+  selectInput("model_gis_raster_pred_type", tags$h5("Prediction value type"), 
               choices = list("Absolute density" = 1, "Relative density" = 2), 
               selected = 2)
 })
@@ -112,7 +112,7 @@ output$model_gis_shp_names_pred_uiOut_select <- renderUI({
   
   choice.input <- shp_names_choice_input()
   
-  selectInput("model_gis_shp_names_pred", h5("Column with prediction data"),
+  selectInput("model_gis_shp_names_pred", tags$h5("Column with prediction data"),
               choices = choice.input, selected = 1)
 })
 
@@ -120,7 +120,7 @@ output$model_gis_shp_names_pred_uiOut_select <- renderUI({
 output$model_gis_shp_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_shp())
   
-  selectInput("model_gis_shp_pred_type", h5("Prediction value type"), 
+  selectInput("model_gis_shp_pred_type", tags$h5("Prediction value type"), 
               choices = list("Absolute density" = 1, "Relative density" = 2),
               selected = 2)
 })
@@ -133,7 +133,7 @@ output$model_gis_shp_pred_type_uiOut_select <- renderUI({
 #   choice.input <- c("N/A" = 1, choice.input + 1)
 #   
 #   selectInput("model_gis_shp_names_error", 
-#               h5("Column with error data (optional)"),
+#               tags$h5("Column with error data (optional)"),
 #               choices = choice.input, selected = 1)
 # })
 
@@ -145,7 +145,7 @@ output$model_gis_shp_names_weight_uiOut_select <- renderUI({
   choice.input <- c("N/A" = 1, choice.input + 1)
   
   selectInput("model_gis_shp_names_weight", 
-              h5("Column with weight data (optional)"),
+              tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
 })
 
@@ -168,7 +168,7 @@ output$model_gis_gdb_names_pred_uiOut_select <- renderUI({
   
   choice.input <- gdb_names_choice_input()
   
-  selectInput("model_gis_gdb_names_pred", h5("Column with prediction data"),
+  selectInput("model_gis_gdb_names_pred", tags$h5("Column with prediction data"),
               choices = choice.input, selected = 1)
 })
 
@@ -176,7 +176,7 @@ output$model_gis_gdb_names_pred_uiOut_select <- renderUI({
 output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
   
-  selectInput("model_gis_gdb_pred_type", h5("Prediction value type"), 
+  selectInput("model_gis_gdb_pred_type", tags$h5("Prediction value type"), 
               choices = list("Absolute density" = 1, "Relative density" = 2), 
               selected = 2)
 })
@@ -189,7 +189,7 @@ output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
 #   choice.input <- c("N/A" = 1, choice.input + 1)
 #   
 #   selectInput("model_gis_gdb_names_error", 
-#               h5("Column with error data (optional)"),
+#               tags$h5("Column with error data (optional)"),
 #               choices = choice.input, selected = 1)
 # })
 
@@ -201,7 +201,7 @@ output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
   choice.input <- c("N/A" = 1, choice.input + 1)
   
   selectInput("model_gis_gdb_names_weight", 
-              h5("Column with weight data (optional)"),
+              tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
 })
 
@@ -295,7 +295,6 @@ output$model_download_preview_name_uiOut_text <- renderUI({
                      "perc_", "values_")
   res.txt <- ifelse(input$model_download_preview_res == "1", 
                     "300ppi", "72ppi")
-  # res.txt <- ifelse(input$download_plot_format == 2, "", res.txt)
   file.ext <- switch(input$model_download_preview_format, 
                      "1" = ".jpeg", "2" = ".pdf", "3" = ".png")
   
@@ -312,7 +311,7 @@ output$model_download_preview_name_uiOut_text <- renderUI({
                     perc.txt, res.txt, file.ext)
   }
   
-  textInput("model_download_preview_name", h5("Filename"), value = f.val)
+  textInput("model_download_preview_name", tags$h5("Filename"), value = f.val)
 })
 
 

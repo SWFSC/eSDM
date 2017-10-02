@@ -12,7 +12,7 @@ output$export_proj_uiOut_select <- renderUI({
   names(choices.list) <- choices.list.names
   
   selectInput("export_proj", 
-              h5("Coordinates or projection in which to export predictions"), 
+              tags$h5("Coordinates or projection in which to export predictions"), 
               choices = choices.list, selected = 1)
 })
 
@@ -73,7 +73,7 @@ output$export_filename_uiOut_text <- renderUI({
   
   
   ## Return textInput
-  textInput("export_filename", h5("Filename"), value = filename.value)
+  textInput("export_filename", tags$h5("Filename"), value = filename.value)
 })
 
 ###############################################################################

@@ -16,7 +16,7 @@ output$create_ens_weight_manual_uiOut_text <- renderUI ({
   }
   
   text.val <- paste(rep("1.0", models.num), collapse = ", ")
-  textInput("create_ens_weight_manual", h5("Ensemble weights"), 
+  textInput("create_ens_weight_manual", tags$h5("Ensemble weights"), 
             value = text.val, width = "40%")
 })
 
@@ -29,7 +29,7 @@ output$create_ens_weights_metric_uiOut_radio <- renderUI({
   choice.input <- vals$eval.metrics.names
   
   radioButtons("create_ens_weights_metric", 
-               h5("Metric to use for weights"),
+               tags$h5("Metric to use for weights"),
                choices = choice.input, selected = NULL)
 })
 
@@ -51,10 +51,10 @@ output$create_ens_weights_poly_model_uiOut_selectize <- renderUI({
     ens.selected <- input$create_ens_datatable_rows_selected
     models.which <- models.which[models.which %in% ens.selected]
   }
-
+  
   input.val <- as.list(paste("Overlaid", models.which))
   selectizeInput("create_ens_weights_poly_model", 
-                 h5("Overlaid predictions to which to apply polygon weights"),
+                 tags$h5("Overlaid predictions to which to apply polygon weights"),
                  choices = input.val, selected = NULL, multiple = TRUE)
 })
 
@@ -74,7 +74,7 @@ output$create_ens_weights_poly_preview_model_uiOut_select <- renderUI({
   names(choices.list) <- input.val
   
   selectInput("create_ens_weights_poly_preview_model", 
-              h5("Overlaid predictions to preview"),
+              tags$h5("Overlaid predictions to preview"),
               choices = choices.list, selected = NULL)
 })
 
@@ -85,7 +85,7 @@ output$create_ens_weights_poly_preview_model_uiOut_select <- renderUI({
 ### shp
 output$create_ens_weights_poly_shp_field_uiOut_select <- renderUI({
   selectInput("create_ens_weights_poly_shp_field", 
-              h5("Name of column with weight(s)"), 
+              tags$h5("Name of column with weight(s)"), 
               choices = names(create_ens_weights_poly_shp_read()[[1]]), 
               selected = NULL)
 })
@@ -93,7 +93,7 @@ output$create_ens_weights_poly_shp_field_uiOut_select <- renderUI({
 ### gdb
 output$create_ens_weights_poly_gdb_field_uiOut_select <- renderUI({
   selectInput("create_ens_weights_poly_gdb_field", 
-              h5("Name of column with weight(s)"), 
+              tags$h5("Name of column with weight(s)"), 
               choices = names(create_ens_weights_poly_gdb_read()[[1]]), 
               selected = NULL)
 })
@@ -120,7 +120,7 @@ output$create_ens_weights_poly_remove_choices_uiOut_select <- renderUI({
   
   model.which <- which(!sapply(choices.list.names, is.null))
   poly.num <- lapply(choices.list.names[model.which], seq_along)
-
+  
   choices.list <- unlist(mapply(function(i, j) {
     paste(i, j, sep = ", ")
   }, 
@@ -128,7 +128,7 @@ output$create_ens_weights_poly_remove_choices_uiOut_select <- renderUI({
   names(choices.list) <- unlist(choices.list.names)
   
   selectizeInput("create_ens_weights_poly_remove_choices", 
-                 h5("Select loaded weight polygon(s) to remove"), 
+                 tags$h5("Select loaded weight polygon(s) to remove"), 
                  choices = choices.list, selected = NULL, multiple = TRUE)
 })
 
@@ -156,7 +156,7 @@ output$create_ens_rescale_type_uiOut_radio <- renderUI({
 output$ens_calc_abund_execute_uiOut_button <- renderUI({
   ens.rows <- input$ens_datatable_ensembles_rows_selected
   req(ens.rows)
-
+  
   ens.rescalings <- vals$ensemble.rescaling[ens.rows]
   rescaling.abund.bad <- c("Normalization", "Standardization", "Sum to 1")
   
@@ -213,7 +213,7 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
   
   #"C:/Ensemble Shiny/Ensemble_R_Shiny/Plots_downloaded/",
   
-  textInput("ens_download_preview_name", h5("File name"), value = f.val)
+  textInput("ens_download_preview_name", tags$h5("File name"), value = f.val)
 })
 
 ###############################################################################

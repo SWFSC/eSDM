@@ -16,8 +16,8 @@ output$pretty_plot_proj_idx_uiOut_select <- renderUI({
   names(choices.list) <- choices.list.names
   
   selectInput("pretty_plot_proj_idx", 
-              h5("Filename of original model predictions", 
-                 "with desired projection for map"), 
+              tags$h5("Filename of original model predictions", 
+                      "with desired projection for map"), 
               choices = choices.list, selected = 1)
 })
 
@@ -31,25 +31,25 @@ pretty_plot_range <- reactive({
 ### Render longitude, latitude min and max
 output$pretty_plot_range_xmin_uiOut_num <- renderUI({
   val.default <- pretty_plot_range()@xmin
-  numericInput("pretty_plot_range_xmin", h5("Longitude minimum"), 
+  numericInput("pretty_plot_range_xmin", tags$h5("Longitude minimum"), 
                value = val.default, min = -180, max = 180)
 })
 
 output$pretty_plot_range_xmax_uiOut_num <- renderUI({
   val.default <- pretty_plot_range()@xmax
-  numericInput("pretty_plot_range_xmax", h5("Longitude maximum"), 
+  numericInput("pretty_plot_range_xmax", tags$h5("Longitude maximum"), 
                value = val.default, min = -180, max = 180)
 })
 
 output$pretty_plot_range_ymin_uiOut_num <- renderUI({
   val.default <- pretty_plot_range()@ymin
-  numericInput("pretty_plot_range_ymin", h5("Latitude minimum"), 
+  numericInput("pretty_plot_range_ymin", tags$h5("Latitude minimum"), 
                value = val.default, min = -90, max = 90)
 })
 
 output$pretty_plot_range_ymax_uiOut_num <- renderUI({
   val.default <- pretty_plot_range()@ymax
-  numericInput("pretty_plot_range_ymax", h5("Latitude maximum"), 
+  numericInput("pretty_plot_range_ymax", tags$h5("Latitude maximum"), 
                value = val.default, min = -90, max = 90)
 })
 
@@ -73,7 +73,7 @@ output$pretty_plot_title_uiOut_text <- renderUI({
                               "Data header:", 
                               vals$models.data.names[[model.idx]][1]))
   
-  textInput("pretty_plot_title", h5("Plot title"), value = val.default)
+  textInput("pretty_plot_title", tags$h5("Plot title"), value = val.default)
 })
 
 
@@ -92,7 +92,7 @@ output$pretty_plot_color_palette_uiOut_select <- renderUI({
   
   if (input$pretty_plot_color_perc == 1) choices.list <- choices.list[-c(3, 6)]
   
-  selectInput("pretty_plot_color_palette", h5("Color palette"), 
+  selectInput("pretty_plot_color_palette", tags$h5("Color palette"), 
               choices = choices.list, selected = NULL)
 })
 
@@ -112,12 +112,12 @@ output$pretty_plot_color_num_uiOut_num <- renderUI({
     
   } else if (input$pretty_plot_color_palette == 2) {
     numericInput("pretty_plot_color_num", 
-                 h5("Number of colors (Min: 3; Max: 11)"), 
+                 tags$h5("Number of colors (Min: 3; Max: 11)"), 
                  value = 11, step = 1, min = 3, max = 11)
     
   } else if (input$pretty_plot_color_palette == 3) {
     numericInput("pretty_plot_color_num", 
-                 h5("Number of colors (Min: 3; Max: 9)"), 
+                 tags$h5("Number of colors (Min: 3; Max: 9)"), 
                  value = 9, step = 1, min = 3, max = 9)
     
   } else if (input$pretty_plot_color_palette == 6) {
@@ -125,7 +125,7 @@ output$pretty_plot_color_num_uiOut_num <- renderUI({
              "using this color palette")
     
   } else {
-    numericInput("pretty_plot_color_num", h5("Number of colors"), 
+    numericInput("pretty_plot_color_num", tags$h5("Number of colors"), 
                  value = 10, step = 1, min = 1)
   }
 })
@@ -153,7 +153,7 @@ output$pretty_plot_other_obj_which_uiOut_selectize <- renderUI({
   }
   
   selectizeInput("pretty_plot_other_obj_which", 
-                 h5("Include selected polygons in map"), 
+                 tags$h5("Include selected polygons in map"), 
                  choices = choices.list, selected = NULL, multiple = TRUE)
 })
 
@@ -213,7 +213,7 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
     }
   }
   
-  textInput("pretty_plot_download_name", h5("File name"), value = f.val)
+  textInput("pretty_plot_download_name", tags$h5("File name"), value = f.val)
 })
 
 ###############################################################################
