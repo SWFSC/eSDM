@@ -219,7 +219,7 @@ ui.loadModels <- function() {
                        ), 
                        conditionalPanel(
                          condition = "output.loaded_models_selected_flag == false", 
-                         tags$h5("Select at least one set of model predictions to perform an actions")
+                         tags$span(tags$h5("Select at least one set of model predictions to perform an action"), style = "color: red")
                        ), 
                        conditionalPanel(
                          condition = "output.loaded_models_selected_flag", 
