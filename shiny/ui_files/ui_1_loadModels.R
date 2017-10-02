@@ -8,35 +8,20 @@ ui.loadModels <- function() {
         width = 5, 
         fluidRow(
           box(
-            title = "Load and Save App Environment", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-            fluidRow(
-              column(
-                width = 6, 
-                fileInput("load_app_envir_file", h5("Load saved app environment"), accept = ".RDATA"), 
-                tags$span(textOutput("load_envir_text"), style = "color: blue")
-              ), 
-              column(
-                width = 6, 
-                textInput("save_app_envir_name", h5("Filename with which to save environment"), value = "etSDM_Envir.RDATA"), 
-                downloadButton("save_app_envir", "Save current app environment")
-              )
-            )
-          ), 
-          box(
             title = "Load Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
             fluidRow(
-              column(6, selectInput("model_load_type", h5("Data file type"),  choices = file.type.list2, selected = 1)), 
+              column(6, selectInput("model_load_type", tags$h5("Data file type"),  choices = file.type.list2, selected = 1)), 
               column(
                 width = 5, offset = 1, 
                 conditionalPanel(
                   condition = "input.model_load_type == 1", 
-                  selectInput("model_csv_pt_loc", h5("Location of point in grid cell"), 
+                  selectInput("model_csv_pt_loc", tags$h5("Location of point in grid cell"), 
                               choices = list("Center" = 1, "Top left" = 2, "Top right" = 3, "Bottom right" = 4, "Bottom left" = 5), 
                               selected = 1)
                 ), 
                 conditionalPanel(
                   condition = "input.model_load_type == 2", 
-                  numericInput("model_gis_raster_band", h5("Band number of prediction data"), value = 1, min = 1, step = 1)
+                  numericInput("model_gis_raster_band", tags$h5("Band number of prediction data"), value = 1, min = 1, step = 1)
                 )
               )
             ), 
@@ -205,6 +190,8 @@ ui.loadModels <- function() {
                fluidRow(
                  box(
                    title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
+                   tags$tags$h5("Select loaded model predictions. Click on row(s) in the table below to select model predictions", 
+                           "with which to perform an action."), 
                    conditionalPanel("input.models_loaded_table_stats != true", DT::dataTableOutput("models_loaded_table")), 
                    conditionalPanel("input.models_loaded_table_stats", DT::dataTableOutput("models_loaded_table_stats")), 
                    column(
@@ -215,9 +202,8 @@ ui.loadModels <- function() {
                          width = 8, 
                          conditionalPanel(
                            condition = "input.models_loaded_table_stats != true", 
-                           helpText("Click on row(s) to select model predictions to perform an action", tags$br(), 
-                                    "If multiple rows are selected and the 'Preview' button is clicked, " , 
-                                    "then the app will generate a multiplot of all selected predictions")
+                           helpText("If multiple rows are selected, then the app will" , 
+                                    "perform the specfied action on all selected predictions")
                          ), 
                          conditionalPanel(
                            condition = "input.models_loaded_table_stats", 
@@ -226,51 +212,56 @@ ui.loadModels <- function() {
                          )
                        )
                      ), 
-                     tags$br(), 
                      fluidRow(
-                       column(3, radioButtons("model_select_action", h5("Action to perform with selected model predictions"), 
+                       column(3, radioButtons("model_select_action", tags$h5("Action to perform with selected model predictions"), 
                                               choices = list("Plot preview" = 1, "Download preview" = 2, "Remove from app" = 3), 
                                               selected = 1)
                        ), 
-                       
-                       column(
-                         width = 8, offset = 1, 
-                         h5("Action option(s)"), 
-                         fluidRow(
-                           box(
-                             width = 12, 
-                             conditionalPanel(
-                               condition = "input.model_select_action == 1", 
-                               column(3, radioButtons("model_preview_perc", h5("Preview model predictions using"), 
-                                                      choices = list("Percentages" = 1, "Values" = 2), 
-                                                      selected = 1)), 
-                               column(
-                                 width = 3, 
-                                 ui.new.line(), 
-                                 actionButton("model_pix_preview_execute", "Preview selected model predictions")
-                               )
-                             ), 
-                             conditionalPanel(
-                               condition = "input.model_select_action == 2", 
-                               fluidRow(
-                                 column(3, radioButtons("model_download_preview_perc", h5("Units"), 
+                       conditionalPanel(
+                         condition = "output.loaded_models_selected_flag == false", 
+                         tags$h5("Select at least one set of model predictions to perform an actions")
+                       ), 
+                       conditionalPanel(
+                         condition = "output.loaded_models_selected_flag", 
+                         column(
+                           width = 8, offset = 1, 
+                           tags$h5("Action option(s)"), 
+                           fluidRow(
+                             box(
+                               width = 12, 
+                               conditionalPanel(
+                                 condition = "input.model_select_action == 1", 
+                                 column(3, radioButtons("model_preview_perc", tags$h5("Preview model predictions using"), 
                                                         choices = list("Percentages" = 1, "Values" = 2), 
                                                         selected = 1)), 
-                                 column(3, radioButtons("model_download_preview_res", h5("Resolution"), 
-                                                        choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2), 
-                                                        selected = 2)), 
-                                 column(3, radioButtons("model_download_preview_format", h5("Image file format"), 
-                                                        choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3), 
-                                                        selected = 3))
+                                 column(
+                                   width = 3, 
+                                   ui.new.line(), 
+                                   actionButton("model_pix_preview_execute", "Preview selected model predictions")
+                                 )
                                ), 
-                               fluidRow(
-                                 column(9, uiOutput("model_download_preview_name_uiOut_text")), 
-                                 column(3, ui.new.line(), downloadButton("model_download_preview_execute", "Download"))
+                               conditionalPanel(
+                                 condition = "input.model_select_action == 2", 
+                                 fluidRow(
+                                   column(3, radioButtons("model_download_preview_perc", tags$h5("Units"), 
+                                                          choices = list("Percentages" = 1, "Values" = 2), 
+                                                          selected = 1)), 
+                                   column(3, radioButtons("model_download_preview_res", tags$h5("Resolution"), 
+                                                          choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2), 
+                                                          selected = 2)), 
+                                   column(3, radioButtons("model_download_preview_format", tags$h5("Image file format"), 
+                                                          choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3), 
+                                                          selected = 3))
+                                 ), 
+                                 fluidRow(
+                                   column(9, uiOutput("model_download_preview_name_uiOut_text")), 
+                                   column(3, tags$br(), tags$br(), downloadButton("model_download_preview_execute", "Download"))
+                                 )
+                               ), 
+                               conditionalPanel(
+                                 condition = "input.model_select_action == 3", 
+                                 column(3, actionButton("model_remove_execute", "Remove selected model predictions"))
                                )
-                             ), 
-                             conditionalPanel(
-                               condition = "input.model_select_action == 3", 
-                               column(3, actionButton("model_remove_execute", "Remove selected model predictions"))
                              )
                            )
                          )

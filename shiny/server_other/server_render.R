@@ -4,26 +4,15 @@
 ###############################################################################
 ### Reactive functions that return tables are in server_render_tables.R
 
-###############################################################################
-##### Sidebar #####
-
-# Load saved environment output
-output$load_envir_text <- renderText({
-  load_envir()
-})
-
-# # Save environment output
-# output$save_envir_text <- renderText({
-#   input$save_app_envir
-#   
-#   if (file.exists(paste0("Saved_app_envir/", input$save_app_envir_name))) { 
-#     "File with provided name currently exists and thus would be overwritten"
-#   }
-# })
-
 
 ###############################################################################
 ##### Load Models tab #####
+
+###########################################################
+### Load saved environment output
+output$load_envir_text <- renderText({
+  load_envir()
+})
 
 ###########################################################
 # Created spdf messages

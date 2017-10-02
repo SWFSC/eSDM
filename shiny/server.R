@@ -1,4 +1,4 @@
-### server.R for Ensemble Shiny App
+### server.R for ***TODO***
 # Designed by Sam Woodman
 
 
@@ -22,6 +22,7 @@ library(raster)
 library(cleangeo)
 library(lattice)
 library(gridExtra)
+library(RCurl)
 library(ROCR)
 library(DT)
 library(colorRamps)
@@ -29,11 +30,19 @@ library(RColorBrewer)
 library(viridis)
 library(dichromat)
 
+### Install packages if necessary
+# install.packages(c("dplyr", "sp", "rgdal", "rgeos", "raster", "cleangeo", 
+#                    "lattice", "gridExtra", "RCurl", "ROCR", "DT", 
+#                    "colorRamps",  "RColorBrewer", "viridis", "dichromat"))
 
-# Max file upload size is now 150MB
+
+###############################################################################
+# Pre-server work
+
+### Max file upload size is now 150MB
 options(shiny.maxRequestSize = 150 * 1024^2) 
 
-# Use to perform sequential rather than concurrent validate checks
+### Use to perform sequential rather than concurrent validate checks
 `%then%` <- shiny:::`%OR%`
 
 

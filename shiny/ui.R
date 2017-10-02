@@ -29,6 +29,7 @@ library(shinycssloaders)
 source(file.path("ui_files", "ui_common.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 
 ### ui code parsed by tabName
+source(file.path("ui_files", "ui_0_roadmap.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_1_loadModels.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_2_overlay.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_3_createEns.R"), local = TRUE, echo = FALSE, chdir = TRUE)
@@ -43,25 +44,38 @@ source(file.path("ui_files", "ui_8_feedbackForm.R"), local = TRUE, echo = FALSE,
 ### UI object for Shiny app
 ui <- dashboardPage(
   skin = "blue", 
-  dashboardHeader(title = "Ensemble App"),
+  title = "etSDM", 
+  dashboardHeader(title = "Ensemble Tool for Species Distribution Modeling (etSDM)", 
+                  titleWidth = "540px"),
   
   dashboardSidebar(
     sidebarMenu(id = "tabs", 
-                menuItem("Load/Save Model Predictions", tabName = "loadModels", 
+                menuItem(HTML(paste0("etSDM Roadmap and", "<br/>", "Load or Save Session")), 
+                         tabName = "roadmap", 
+                         icon = icon("road")), #icon("sitemap")
+                menuItem("Load Model Predictions", 
+                         tabName = "loadModels", 
                          icon = icon("cloud-upload")), 
-                menuItem("Overlay Model Predictions", tabName = "overlay", 
+                menuItem("Overlay Model Predictions", 
+                         tabName = "overlay", 
                          icon = icon("cogs")), 
-                menuItem("Create Ensemble Predictions", tabName = "createEns", 
+                menuItem("Create Ensemble Predictions", 
+                         tabName = "createEns", 
                          icon = icon("cog")), 
-                menuItem("Evaluation Metrics", tabName = "evalMetrics", 
+                menuItem("Evaluation Metrics", 
+                         tabName = "evalMetrics", 
                          icon = icon("check")),
-                menuItem("High Quality Maps", tabName = "prettyPlot", 
+                menuItem("High Quality Maps", 
+                         tabName = "prettyPlot", 
                          icon = icon("file-image-o")),
-                menuItem("Export Predictions", tabName = "export", 
+                menuItem("Export Predictions", 
+                         tabName = "export", 
                          icon = icon("cloud-download")), 
-                menuItem("Manual", tabName = "manual", 
+                menuItem("Manual", 
+                         tabName = "manual", 
                          icon = icon("book")), 
-                menuItem("Submit feedback", tabName = "feedbackForm", 
+                menuItem("Submit feedback", 
+                         tabName = "feedbackForm", 
                          icon = icon("commenting"))
     ),
     br(), 
@@ -81,6 +95,7 @@ ui <- dashboardPage(
     
     ### UI code separated by tabs
     tabItems(
+      ui.roadmap(), 
       ui.loadModels(),   # Load Model Predictions
       ui.overlay(),      # Overlay Model Predictions
       ui.createEns(),    # Create Ensemble

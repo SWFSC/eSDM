@@ -8,6 +8,12 @@ output$loadModels_display_flag <- reactive({
 })
 outputOptions(output, "loadModels_display_flag", suspendWhenHidden = FALSE)
 
+### Flag for if any model predictions are selected in the table
+output$loaded_models_selected_flag <- reactive({
+  isTruthy(input$models_loaded_table_rows_selected)
+})
+outputOptions(output, "loaded_models_selected_flag", suspendWhenHidden = FALSE)
+
 
 ###############################################################################
 ### Delete selected model
