@@ -265,7 +265,7 @@ ui.loadModels <- function() {
                                ), 
                                fluidRow(
                                  column(9, uiOutput("model_download_preview_name_uiOut_text")), 
-                                 column(3, downloadButton("model_download_preview_execute", "Download"))
+                                 column(3, ui.new.line(), downloadButton("model_download_preview_execute", "Download"))
                                )
                              ), 
                              conditionalPanel(

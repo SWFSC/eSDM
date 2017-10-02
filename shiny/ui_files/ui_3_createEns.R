@@ -79,7 +79,7 @@ ui.createEns <- function() {
                           helpText(strong("Manual entry method:"), 
                                    "Entered weights correspond to the order of the models in the", 
                                    "overlaid model predictions table.", 
-                                   "Weights must be entered in the following format: \"weight, weight, ..., weight\"."), 
+                                   "Weights must be entered in the following format: 'weight, weight, ..., weight'."), 
                           uiOutput("create_ens_weight_manual_uiOut_text")
                         )
                       ), 
@@ -382,7 +382,7 @@ ui.createEns <- function() {
                 condition = "input.create_ens_type == 2 && input.create_ens_weight_type == 4", 
                 box(
                   width = 12, 
-                  helpText(strong("Polygon(s) with weights (cont)")), 
+                  helpText(strong("Polygon(s) with weights method (cont)")), 
                   helpText("Preview weighted polygons for selected overlaid predictions"), 
                   fluidRow(
                     column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")), 

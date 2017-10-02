@@ -68,44 +68,44 @@ ui.instructions.pred.csv <- function() {
            em("Column with latitude data:"), "Longitude and latitude", 
            "points must be geographic coordinates that are equally spaced", 
            "in decimal degrees.", 
-           em("Column with prediciton data:"), "Please ensure that missing",
-           "prediction values are one of the following: 'NA', 'NaN', 'N/A',", 
+           em("Column with prediciton data:"), "Please ensure that missing", 
+           "prediction values are one of the following: 'NA', 'NaN', 'N/A', ", 
            "'n/a', 'na', blank, or a negative number.", br(), 
            em("Prediction value type:"), "Select \"Relative density\" if", 
            "the predictions are probabilities of occurrence.", br(), 
-           em("Column with error/weight data:"), "Select \"N/A\" if the", 
-           "data does not have error/weight data.")
+           em("Column with weight data:"), "Select \"N/A\" if the", 
+           "data does not have weight data.")
 }
 
 ui.instructions.pred.raster <- function() {
-  helpText("Please ensure that missing",
-           "prediction values are one of the following: 'NA', 'NaN', 'N/A',", 
+  helpText("Please ensure that missing", 
+           "prediction values are one of the following: 'NA', 'NaN', 'N/A', ", 
            "'n/a', 'na', blank, or a negative number.", br(), 
            em("Prediction value type:"), "select \"Relative density\" if", 
            "the predictions are probabilities of occurrence.")
 }
 
 ui.instructions.pred.shp.gdb <- function() {
-  helpText(em("Column with prediciton data:"), "Please ensure that missing",
-           "prediction values are one of the following: 'NA', 'NaN', 'N/A',", 
+  helpText(em("Column with prediciton data:"), "Please ensure that missing", 
+           "prediction values are one of the following: 'NA', 'NaN', 'N/A', ", 
            "'n/a', 'na', blank, or a negative number.", br(), 
            em("Prediction value type:"), "Select \"Relative density\" if", 
            "the predictions are probabilities of occurrence.", br(), 
-           em("Column with error/weight data:"), "Select \"N/A\" if the", 
-           "data does not have error/weight data.")
+           em("Column with weight data:"), "Select \"N/A\" if the", 
+           "data does not have weight data.")
 }
 
 
 #######################################
 ### Loading csv polygons
 ui.instructions.poly.csv <- function() {
-  helpText("The first column must contain the longitude values,", 
+  helpText("The first column must contain the longitude values, ", 
            "and the second column must contain the latitude values.", 
            "The longitudes and latitudes must be in geographic coordinates", 
            "in the range [-180, 180].", 
            "Multiple polygons may be demarcated", 
            "using blank cells or cells with 'NA' entries.", 
-           "If the provided points do not form a closed polygon,", 
+           "If the provided points do not form a closed polygon, ", 
            "then the last point is connected to the first point.", 
            "Please be aware that this could create an invalid polygon.")
 }
@@ -118,16 +118,21 @@ ui.instructions.poly.csv <- function() {
 # File upload error messages
 
 ### CSV
-ui.error.upload.csv <- strong("Please choose a file that has a .csv file extension")
+ui.error.upload.csv <- strong("Error: Please choose a file that has a .csv file extension", 
+                              style = "color: red")
 
 ### Raster
-ui.error.upload.raster <- strong("Could not load GIS raster using the provided file and band number")
+ui.error.upload.raster <- strong("Error: Could not load GIS raster using the provided file and band number", 
+                                 style = "color: red")
 
 ### Shapefile
-ui.error.upload.shp <- strong("Could not load GIS shapefile using the provided files")
+ui.error.upload.shp <- strong("Error: Could not load GIS shapefile using the provided files", 
+                              style = "color: red")
 
 ### File gdb
-ui.error.upload.gdb <- strong("Could not load GIS file using the provided path and filename")
+ui.error.upload.gdb <- strong("Error: Could not load GIS file geodatabase feature class using", 
+                              "the provided path and filename", 
+                              style = "color: red")
 
 
 ###########################################################

@@ -38,17 +38,17 @@ ui.export <- function() {
                     width = 12, 
                     helpText("For predictions to be exported as an Excel .csv file, the centroid is determined for each polygon", 
                              "that contains a prediction. The .csv file that is exported consists of", 
-                             "columns with the longitude and latitudes of these centroids, ", 
-                             "as well as the prediction, error, and weight values for each of those points.")
+                             "columns with the longitude and latitudes of these centroids,", 
+                             "as well as the prediction, and weight values for each of those points.")
                   )
                 ), 
                 conditionalPanel(
                   condition = "input.export_format == 2", 
                   box(
                     width = 12, 
-                    helpText("Predictions will be exported as polygons with the prediction, error, ", 
+                    helpText("Predictions will be exported as polygons with the prediction,", 
                              "and weight value for each polygon.", br(), 
-                             "Predictions cannot be exported as GIS file or personal geodatabase files.")
+                             "Predictions cannot be exported to a GIS file or personal geodatabase.")
                   )
                 ), 
                 conditionalPanel(
