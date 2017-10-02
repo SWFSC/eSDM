@@ -13,7 +13,7 @@ ui.loadModels <- function() {
               column(
                 width = 6, 
                 fileInput("load_app_envir_file", h5("Load saved app environment"), accept = ".RDATA"), 
-                textOutput("load_envir_text")
+                tags$span(textOutput("load_envir_text"), style = "color: blue")
               ), 
               column(
                 width = 6, 
@@ -60,19 +60,19 @@ ui.loadModels <- function() {
                       uiOutput("model_csv_names_pred_uiOut_select"), 
                       # uiOutput("model_csv_names_error_uiOut_select"), 
                       uiOutput("model_csv_names_weight_uiOut_select"), 
-                      br(), 
+                      tags$br(), 
                       uiOutput("model_create_csv_uiOut_button"), 
-                      br()
+                      tags$br()
                     ), 
                     column(
                       width = 6, 
                       uiOutput("model_csv_names_lat_uiOut_select"), 
                       uiOutput("model_csv_pred_type_uiOut_select"), 
-                      br(), 
-                      br(), 
+                      tags$br(), 
+                      tags$br(), 
                       uiOutput("model_csv_NA_idx_uiOut_message")
                     ), 
-                    column(12, textOutput("create_spdf_csv_text"))
+                    column(12, tags$span(textOutput("create_spdf_csv_text"), style = "color: blue"))
                   )
                 )
               )
@@ -97,17 +97,17 @@ ui.loadModels <- function() {
                     column(
                       width = 6, 
                       uiOutput("model_gis_raster_pred_type_uiOut_select"), 
-                      br(), 
+                      tags$br(), 
                       uiOutput("model_create_gis_raster_uiOut_button"), 
-                      br()
+                      tags$br()
                     ), 
                     column(
                       width = 6, 
                       ui.new.line(), 
                       uiOutput("model_gis_raster_NA_idx_uiOut_message"), 
-                      br()
+                      tags$br()
                     ), 
-                    column(12, textOutput("create_spdf_gis_raster_text"))
+                    column(12, tags$span(textOutput("create_spdf_gis_raster_text"), style = "color: blue"))
                   )
                 )
               )
@@ -131,20 +131,20 @@ ui.loadModels <- function() {
                       uiOutput("model_gis_shp_names_pred_uiOut_select"), 
                       # uiOutput("model_gis_shp_names_error_uiOut_select"), 
                       uiOutput("model_gis_shp_names_weight_uiOut_select"), 
-                      br(), 
+                      tags$br(), 
                       uiOutput("model_create_gis_shp_uiOut_button"), 
-                      br()
+                      tags$br()
                     ), 
                     column(
                       width = 6, 
                       uiOutput("model_gis_shp_pred_type_uiOut_select"), 
-                      br(), 
-                      br(), 
+                      tags$br(), 
+                      tags$br(), 
                       uiOutput("model_gis_shp_NA_idx_uiOut_message")
                     ), 
                     column(
                       width = 12, 
-                      textOutput("create_spdf_gis_shp_text"), 
+                      tags$span(textOutput("create_spdf_gis_shp_text"), style = "color: blue"), 
                       textOutput("create_spdf_gis_shp_res_text")
                     )
                   )
@@ -161,10 +161,10 @@ ui.loadModels <- function() {
                   textInput("model_gis_gdb_path", label.gdb.path, value = ".../folder.gdb")
                 ), 
                 column(6, textInput("model_gis_gdb_name", label.gdb.name, value = "")), 
-                column(6, br(), br(), actionButton("model_gis_gdb_load", label.gdb.upload)
+                column(6, tags$br(), tags$br(), actionButton("model_gis_gdb_load", label.gdb.upload)
                 )
               ), 
-              br(), 
+              tags$br(), 
               conditionalPanel(
                 condition = "output.read_model_gis_gdb_flag == false", 
                 box(width = 12, ui.error.upload.gdb)
@@ -179,18 +179,18 @@ ui.loadModels <- function() {
                       uiOutput("model_gis_gdb_names_pred_uiOut_select"), 
                       # uiOutput("model_gis_gdb_names_error_uiOut_select"), 
                       uiOutput("model_gis_gdb_names_weight_uiOut_select"), 
-                      br(), 
+                      tags$br(), 
                       uiOutput("model_create_gis_gdb_uiOut_button"), 
-                      br()
+                      tags$br()
                     ), 
                     column(
                       width = 6, 
                       uiOutput("model_gis_gdb_pred_type_uiOut_select"), 
-                      br(), 
-                      br(), 
+                      tags$br(), 
+                      tags$br(), 
                       uiOutput("model_gis_gdb_NA_idx_uiOut_message")
                     ), 
-                    column(12, textOutput("create_spdf_gis_gdb_text"))
+                    column(12, tags$span(textOutput("create_spdf_gis_gdb_text"), style = "color: blue"))
                   )
                 )
               )
@@ -215,18 +215,18 @@ ui.loadModels <- function() {
                          width = 8, 
                          conditionalPanel(
                            condition = "input.models_loaded_table_stats != true", 
-                           helpText("Click on row(s) to select model predictions to perform an action", br(), 
+                           helpText("Click on row(s) to select model predictions to perform an action", tags$br(), 
                                     "If multiple rows are selected and the 'Preview' button is clicked, " , 
                                     "then the app will generate a multiplot of all selected predictions")
                          ), 
                          conditionalPanel(
                            condition = "input.models_loaded_table_stats", 
-                           helpText("Rows can only be selected if 'Display additional information' is unchecked", br(), 
+                           helpText("Rows can only be selected if 'Display additional information' is unchecked", tags$br(), 
                                     "'Resolution' information is approximate; please note any errors in the feedback form")
                          )
                        )
                      ), 
-                     br(), 
+                     tags$br(), 
                      fluidRow(
                        column(3, radioButtons("model_select_action", h5("Action to perform with selected model predictions"), 
                                               choices = list("Plot preview" = 1, "Download preview" = 2, "Remove from app" = 3), 

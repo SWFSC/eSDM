@@ -11,11 +11,11 @@ ui.export <- function() {
           title = "Select Predictions to Export", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE, 
           textOutput("export_text_none_loaded"), 
           DT::dataTableOutput("export_table_orig_out"), 
-          br(), 
+          tags$br(), 
           DT::dataTableOutput("export_table_over_out"), 
-          br(), 
+          tags$br(), 
           DT::dataTableOutput("export_table_ens_out"),  
-          br(), 
+          tags$br(), 
           helpText("Click on a row to select or deselect it")
         ), 
         box(
@@ -29,7 +29,7 @@ ui.export <- function() {
             fluidRow(
               column(
                 width = 6, 
-                selectInput("export_format", h5("Format in which to export predictions"), 
+                selectInput("export_format", tags$h5("Format in which to export predictions"), 
                             choices = list("Excel .csv file" = 1, "GIS shapefile" = 2, "KML file" = 3), 
                             selected = 1), 
                 conditionalPanel(
@@ -47,7 +47,7 @@ ui.export <- function() {
                   box(
                     width = 12, 
                     helpText("Predictions will be exported as polygons with the prediction,", 
-                             "and weight value for each polygon.", br(), 
+                             "and weight value for each polygon.", tags$br(), 
                              "Predictions cannot be exported to a GIS file or personal geodatabase.")
                   )
                 ), 
@@ -71,8 +71,8 @@ ui.export <- function() {
               column(6, uiOutput("export_filename_uiOut_text")), 
               column(
                 width = 6, offset = 0, 
-                br(), 
-                br(), 
+                tags$br(), 
+                tags$br(), 
                 actionButton("export_out_execute", "Export predictions"), 
                 textOutput("export_out_text")
               )

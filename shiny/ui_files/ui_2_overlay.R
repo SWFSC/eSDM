@@ -16,8 +16,8 @@ ui.overlay <- function() {
               conditionalPanel(
                 condition = "input.overlay_bound == true", 
                 fluidRow(
-                  column(6, radioButtons("overlay_bound_file_type", h5("File type"), choices = file.type.list1, selected = 1)), 
-                  column(5, br(), helpText("Uncheck box to remove loaded study area polygon"))
+                  column(6, radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)), 
+                  column(5, tags$br(), helpText("Uncheck box to remove loaded study area polygon"))
                 ), 
                 box(
                   width = 12, 
@@ -29,9 +29,9 @@ ui.overlay <- function() {
                       column(6, fileInput("overlay_bound_csv_file", label.csv.upload, accept = ".csv")), 
                       column(
                         width = 6, 
-                        br(), 
-                        br(), 
-                        textOutput("overlay_bound_csv_message"), 
+                        tags$br(), 
+                        tags$br(), 
+                        tags$span(textOutput("overlay_bound_csv_message"), style = "color:blue"), 
                         textOutput("overlay_bound_csv_text")
                       )
                     )
@@ -43,9 +43,9 @@ ui.overlay <- function() {
                       column(6, fileInput("overlay_bound_gis_shp_files", label.shp.upload, multiple = TRUE)), 
                       column(
                         width = 6, 
-                        br(), 
-                        br(), 
-                        textOutput("overlay_bound_gis_shp_message"), 
+                        tags$br(), 
+                        tags$br(), 
+                        tags$span(textOutput("overlay_bound_gis_shp_message"), style = "color:blue"), 
                         textOutput("overlay_bound_gis_shp_text")
                       )
                     )
@@ -59,7 +59,7 @@ ui.overlay <- function() {
                       column(7, actionButton("overlay_bound_gis_gdb_load", label.gdb.upload)), 
                       column(
                         width = 5, 
-                        textOutput("overlay_bound_gis_gdb_message"), 
+                        tags$span(textOutput("overlay_bound_gis_gdb_message"), style = "color:blue"), 
                         textOutput("overlay_bound_gis_gdb_text")
                       )
                     )
@@ -74,16 +74,16 @@ ui.overlay <- function() {
               conditionalPanel(
                 condition = "input.overlay_land == true", 
                 helpText("Uncheck box to remove loaded land polygon"), 
-                br(), 
+                tags$br(), 
                 fluidRow(
-                  column(6, radioButtons("overlay_land_load_type", h5("Land polygon source"), 
+                  column(6, radioButtons("overlay_land_load_type", tags$h5("Land polygon source"), 
                                          choices = list("Use provided" = 1, "Upload personal" = 2), 
                                          selected = 1)), 
                   column(
                     width = 6, 
                     conditionalPanel(
                       condition = "input.overlay_land_load_type == 2 ", 
-                      radioButtons("overlay_land_file_type", h5("File type"), choices = file.type.list1, selected = 2)
+                      radioButtons("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 2)
                     )
                   )
                 ), 
@@ -92,15 +92,16 @@ ui.overlay <- function() {
                   box(
                     width = 12, 
                     helpText("The provided land polygon is from the Global Self-consistent, Hierarchical, ", 
-                             "High-resolution Geography (GSHHG) Database.", br(), 
-                             "See the", a("GSHHG website", href="http://www.soest.hawaii.edu/pwessel/gshhg/"), 
+                             "High-resolution Geography (GSHHG) Database.", tags$br(), 
+                             "See the", tags$a("GSHHG website", href="http://www.soest.hawaii.edu/pwessel/gshhg/"), 
                              "for more information about the provided land polygons."), 
                     fluidRow(
-                      column(4, selectInput("overlay_land_provided_res", h5("Resolution of land polygon"), 
+                      column(4, selectInput("overlay_land_provided_res", tags$h5("Resolution of land polygon"), 
                                             choices = list("Full" = 1, "High" = 2, "Intermediate" = 3, "Low" = 4, "Crude" = 5), 
                                             selected = 1)), 
-                      column(5, ui.new.line(), br(), actionButton("overlay_land_provided", "Load provided land polygon")), 
-                      column(3, ui.new.line(), br(), textOutput("overlay_land_provided_message")))
+                      column(5, ui.new.line(), tags$br(), actionButton("overlay_land_provided", "Load provided land polygon")), 
+                      column(3, ui.new.line(), tags$br(), tags$span(textOutput("overlay_land_provided_message"), style = "color: blue"))
+                    )
                   )
                 ), 
                 conditionalPanel(
@@ -113,9 +114,9 @@ ui.overlay <- function() {
                       column(6, fileInput("overlay_land_csv_file", label.csv.upload, accept = ".csv")), 
                       column(
                         width = 6, 
-                        br(), 
-                        br(), 
-                        textOutput("overlay_land_csv_message"), 
+                        tags$br(), 
+                        tags$br(), 
+                        tags$span(textOutput("overlay_land_csv_message"), style = "color: blue"), 
                         textOutput("overlay_land_csv_text"))
                     )
                   )
@@ -129,9 +130,9 @@ ui.overlay <- function() {
                       column(6, fileInput("overlay_land_gis_shp_files", label.shp.upload, multiple = TRUE)), 
                       column(
                         width = 6, 
-                        br(), 
-                        br(), 
-                        textOutput("overlay_land_gis_shp_message"), 
+                        tags$br(), 
+                        tags$br(), 
+                        tags$span(textOutput("overlay_land_gis_shp_message"), style = "color: blue"), 
                         textOutput("overlay_land_gis_shp_text")
                       )
                     )
@@ -148,7 +149,7 @@ ui.overlay <- function() {
                       column(7, actionButton("overlay_land_gis_gdb_load", label.gdb.upload)), 
                       column(
                         width = 5, 
-                        textOutput("overlay_land_gis_gdb_message"), 
+                        tags$span(textOutput("overlay_land_gis_gdb_message"), style = "color: blue"), 
                         textOutput("overlay_land_gis_gdb_text")
                       )
                     )
@@ -186,14 +187,14 @@ ui.overlay <- function() {
                    fluidRow(
                      box(
                        width = 6, 
-                       h5("Overlay options: projection"), 
+                       tags$h5("Overlay options: projection"), 
                        helpText("A major element of the overlay process is calculating the area of polygons and their overlap.", 
                                 "Thus, the projection of the model predictions during the overlay process", 
                                 "can have an effect on the overlay results."), 
                        helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:", 
                                 "1) 'Equatorial axis of ellipsoid' = 6378137 and", 
-                                "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", br(), 
-                                "See", a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"), 
+                                "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(), 
+                                "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"), 
                                 "for more details about assumptions that must be made when calculating the area", 
                                 "using WGS 84 geographic coordinates."), 
                        checkboxInput("overlay_proj_ll", "Perform overlay in WGS 84 geographic coordinates", value = TRUE), 
@@ -211,7 +212,7 @@ ui.overlay <- function() {
                        fluidRow(
                          box(
                            width = 12, 
-                           h5("Overlay options: percent overlap"), 
+                           tags$h5("Overlay options: percent overlap"), 
                            helpText("The slider bar specifies the percent that the original model prediction(s) must overlap", 
                                     "a base grid cell for that cell to have a non-NA overlaid prediction value.", 
                                     "A slider bar value of \"0\" means that cell will have a non-NA overlaid prediction value", 
@@ -220,10 +221,11 @@ ui.overlay <- function() {
                          ), 
                          box(
                            width = 12, 
-                           helpText(strong("Reminder: loaded study area and land polygons will be used during the overlay process"), br(), 
+                           helpText(tags$strong("Reminder: loaded study area and land polygons will be used during the overlay process"), tags$br(), 
                                     "This process may take several minutes"), 
                            actionButton("overlay_create_overlaid_models", "Overlay all predictions onto specified base grid"), 
-                           textOutput("overlay_text_overlaid_models")
+                           textOutput("overlay_overlay_all_text"), 
+                           tags$span(textOutput("overlay_overlaid_models_message"), style = "color: blue")
                          )
                        )
                      )
@@ -237,7 +239,7 @@ ui.overlay <- function() {
                        fluidRow(
                          column(9, helpText("Note: If model predictions were made at a high resolution, ", 
                                             "then preview may appear to be completely black")), 
-                         column(3, br(), actionButton("overlay_preview_base_execute", "Preview"))
+                         column(3, tags$br(), actionButton("overlay_preview_base_execute", "Preview"))
                        )
                      )
                    ), 
@@ -256,7 +258,7 @@ ui.overlay <- function() {
                          width = 12, 
                          fluidRow(
                            column(9, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")), 
-                           column(3, br(), actionButton("overlay_preview_overlaid_execute", "Preview"))
+                           column(3, tags$br(), actionButton("overlay_preview_overlaid_execute", "Preview"))
                          )
                        )
                      ), 

@@ -131,9 +131,13 @@ output$overlay_land_gis_gdb_message <- renderText({
 })
 
 ###########################################################
-### Overlaying process error outputs
-output$overlay_text_overlaid_models <- renderText({
+### Overlaying process outputs
+output$overlay_overlay_all_text <- renderText({
   if (all(overlay_all())) "All model predictions overlaid successfully"
+})
+
+output$overlay_overlaid_models_message <- renderText({
+  if (length(vals$overlaid.model) > 0) "Overlaid models are created"
 })
 
 ###########################################################

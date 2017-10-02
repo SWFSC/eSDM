@@ -14,17 +14,17 @@ file.type.list2 <- list("Excel .csv" = 1, "GIS raster" = 2,
 # Labels of widgets used in loading file geodatabase feature classes
 
 ### Excel csv
-label.csv.upload <- h5("Upload Excel .csv file (.csv extension)")
+label.csv.upload <- tags$h5("Upload Excel .csv file (.csv extension)")
 
 ### GIS raster
-label.raster.upload <- h5("Upload raster file (.tif extension)")
+label.raster.upload <- tags$h5("Upload raster file (.tif extension)")
 
 ### GIS shp
-label.shp.upload <- h5("Upload GIS shapefile files")
+label.shp.upload <- tags$h5("Upload GIS shapefile files")
 
 ### GIS gdb
-label.gdb.path <- h5("Full path to file geodatabase")
-label.gdb.name <- h5("Name of file geodatabase feature class")
+label.gdb.path <- tags$h5("Full path to file geodatabase")
+label.gdb.name <- tags$h5("Name of file geodatabase feature class")
 label.gdb.upload <- "Upload file geodatabase feature class"
 
 
@@ -64,34 +64,34 @@ ui.instructions.upload.gdb <- function() {
 #######################################
 ### Loading model predictions
 ui.instructions.pred.csv <- function() {
-  helpText(em("Column with longitude data"), "and", 
-           em("Column with latitude data:"), "Longitude and latitude", 
+  helpText(tags$em("Column with longitude data"), "and", 
+           tags$em("Column with latitude data:"), "Longitude and latitude", 
            "points must be geographic coordinates that are equally spaced", 
            "in decimal degrees.", 
-           em("Column with prediciton data:"), "Please ensure that missing", 
-           "prediction values are one of the following: 'NA', 'NaN', 'N/A', ", 
-           "'n/a', 'na', blank, or a negative number.", br(), 
-           em("Prediction value type:"), "Select \"Relative density\" if", 
-           "the predictions are probabilities of occurrence.", br(), 
-           em("Column with weight data:"), "Select \"N/A\" if the", 
+           tags$em("Column with prediciton data:"), "Please ensure that", 
+           "missing prediction values are one of the following: 'NA', 'NaN',", 
+           " 'N/A', 'n/a', 'na', blank, or a negative number.", tags$br(), 
+           tags$em("Prediction value type:"), "Select \"Relative density\"", 
+           "if the predictions are probabilities of occurrence.", tags$br(), 
+           tags$em("Column with weight data:"), "Select \"N/A\" if the", 
            "data does not have weight data.")
 }
 
 ui.instructions.pred.raster <- function() {
-  helpText("Please ensure that missing", 
-           "prediction values are one of the following: 'NA', 'NaN', 'N/A', ", 
-           "'n/a', 'na', blank, or a negative number.", br(), 
-           em("Prediction value type:"), "select \"Relative density\" if", 
-           "the predictions are probabilities of occurrence.")
+  helpText("Please ensure that missing prediction values", 
+           "are one of the following: 'NA', 'NaN', 'N/A', ", 
+           "'n/a', 'na', blank, or a negative number.", tags$br(), 
+           tags$em("Prediction value type:"), "select \"Relative density\"", 
+           "if the predictions are probabilities of occurrence.")
 }
 
 ui.instructions.pred.shp.gdb <- function() {
-  helpText(em("Column with prediciton data:"), "Please ensure that missing", 
-           "prediction values are one of the following: 'NA', 'NaN', 'N/A', ", 
-           "'n/a', 'na', blank, or a negative number.", br(), 
-           em("Prediction value type:"), "Select \"Relative density\" if", 
-           "the predictions are probabilities of occurrence.", br(), 
-           em("Column with weight data:"), "Select \"N/A\" if the", 
+  helpText(tags$em("Column with prediciton data:"), "Please ensure that", 
+           "missing prediction values are one of the following: 'NA', 'NaN',", 
+           " 'N/A', 'n/a', 'na', blank, or a negative number.", tags$br(), 
+           tags$em("Prediction value type:"), "Select \"Relative density\"", 
+           "if the predictions are probabilities of occurrence.", tags$br(), 
+           tags$em("Column with weight data:"), "Select \"N/A\" if the", 
            "data does not have weight data.")
 }
 
@@ -118,19 +118,19 @@ ui.instructions.poly.csv <- function() {
 # File upload error messages
 
 ### CSV
-ui.error.upload.csv <- strong("Error: Please choose a file that has a .csv file extension", 
+ui.error.upload.csv <- tags$strong("Error: Please choose a file that has a .csv file extension", 
                               style = "color: red")
 
 ### Raster
-ui.error.upload.raster <- strong("Error: Could not load GIS raster using the provided file and band number", 
+ui.error.upload.raster <- tags$strong("Error: Could not load GIS raster using the provided file and band number", 
                                  style = "color: red")
 
 ### Shapefile
-ui.error.upload.shp <- strong("Error: Could not load GIS shapefile using the provided files", 
+ui.error.upload.shp <- tags$strong("Error: Could not load GIS shapefile using the provided files", 
                               style = "color: red")
 
 ### File gdb
-ui.error.upload.gdb <- strong("Error: Could not load GIS file geodatabase feature class using", 
+ui.error.upload.gdb <- tags$strong("Error: Could not load GIS file geodatabase feature class using", 
                               "the provided path and filename", 
                               style = "color: red")
 
@@ -142,8 +142,8 @@ ui.error.upload.gdb <- strong("Error: Could not load GIS file geodatabase featur
 # ui.no.model.pred.loaded1
 ui.notice.no.pred.original <- function() {
   box(width = 4, 
-      h4("No model predictions are loaded"), 
-      h5("Please load model predictions to use this section of the app")
+      tags$h4("No model predictions are loaded"), 
+      tags$h5("Please load model predictions to use this section of the app")
   )
 }
 
@@ -151,15 +151,16 @@ ui.notice.no.pred.original <- function() {
 # ui.no.model.pred.loaded2
 ui.notice.no.pred.overlaid <- function(box.width = 4) {
   box(width = box.width, 
-      h4("No overlaid model predictions have been created"), 
-      h5("Please create overlaid model predictions", 
+      tags$h4("No overlaid model predictions have been created"), 
+      tags$h5("Please create overlaid model predictions", 
          "to use this section of the app")
   )
 }
 
 
 ###############################################################################
-### Other
-ui.new.line <- function() helpText(HTML("<br/>")) # Just under 2x br() height
+# Other
+### New line, just under 2x tags$br() height
+ui.new.line <- function() helpText(HTML("<br/>"))
 
 ###############################################################################

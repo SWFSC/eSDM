@@ -13,7 +13,7 @@ ui.manual <- function() {
               column(
                 width = 10, offset = 1, 
                 tags$strong("Click the 'Fit to page' in the pdf viewer (above the '+' and '-' buttons)", 
-                            "once or twice to resize the display of the manual.", br(), 
+                            "once or twice to resize the display of the manual.", tags$br(), 
                             "You may also click the 'Download' button to download the manual in as a PDF."), 
                 tags$br(), 
                 tags$br(), 

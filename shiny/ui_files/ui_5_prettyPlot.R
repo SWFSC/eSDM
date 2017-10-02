@@ -14,9 +14,9 @@ ui.prettyPlot <- function() {
         box(
           title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE, 
           DT::dataTableOutput("pretty_table_orig_out"), 
-          br(), 
+          tags$br(), 
           DT::dataTableOutput("pretty_table_over_out"), 
-          br(), 
+          tags$br(), 
           DT::dataTableOutput("pretty_table_ens_out")
         )
       ), 
@@ -26,7 +26,7 @@ ui.prettyPlot <- function() {
         fluidRow(
           box(
             width = 12, 
-            helpText(strong("Please select exactly one set of model predictions to plot.", 
+            helpText(tags$strong("Please select exactly one set of model predictions to plot.", 
                             "The app can only generate one high quality map at a time for now."))
           )
         )
@@ -42,28 +42,28 @@ ui.prettyPlot <- function() {
               ################################################ Generate map
               box(
                 width = 6, 
-                br(), 
+                tags$br(), 
                 fluidRow(
                   column(2, actionButton("pretty_plot_execute", "Generate map")), 
                   column(10, textOutput("pretty_plot_values_event_text"))  
                 ), 
-                br(), 
-                h5("Plotting or downloading a large set of predictions may take several minutes")
+                tags$br(), 
+                tags$h5("Plotting or downloading a large set of predictions may take several minutes")
               ), 
               
               ################################################ Download map
               box(
                 width = 6, 
                 fluidRow(
-                  column(3, radioButtons("pretty_plot_download_res", h5("Resolution"), 
+                  column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"), 
                                          choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2), 
                                          selected = 2)), 
-                  column(2, radioButtons("pretty_plot_download_format", h5("Image file format"), 
+                  column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"), 
                                          choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3), 
                                          selected = 3)), 
                   column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
                 ), 
-                br(), 
+                tags$br(), 
                 downloadButton("pretty_plot_download_execute", "Download map")
               )
             )
@@ -79,7 +79,7 @@ ui.prettyPlot <- function() {
               ################################################## Map projection and range
               column(
                 width = 4, 
-                strong("Map projection and range"), 
+                tags$strong("Map projection and range"), 
                 fluidRow(
                   box(
                     width = 12, 
@@ -103,18 +103,18 @@ ui.prettyPlot <- function() {
               ################################################## Title and axis labels
               column(
                 width = 4, 
-                strong("Title and axis labels"), 
+                tags$strong("Title and axis labels"), 
                 fluidRow(
                   box(
                     width = 12, 
                     uiOutput("pretty_plot_title_uiOut_text"), 
                     fluidRow(
-                      column(6, textInput("pretty_plot_xlab", h5("X-axis label"), value = "Longitude")), 
-                      column(6, textInput("pretty_plot_ylab", h5("Y-axis label"), value = "Latitude"))
+                      column(6, textInput("pretty_plot_xlab", tags$h5("X-axis label"), value = "Longitude")), 
+                      column(6, textInput("pretty_plot_ylab", tags$h5("Y-axis label"), value = "Latitude"))
                     ), 
                     fluidRow(
-                      column(6, numericInput("pretty_plot_title_cex", h5("Title size"), value = 1.4, step = 0.1)), 
-                      column(6, numericInput("pretty_plot_lab_cex", h5("Axis label size"), value = 1, step = 0.1))
+                      column(6, numericInput("pretty_plot_title_cex", tags$h5("Title size"), value = 1.4, step = 0.1)), 
+                      column(6, numericInput("pretty_plot_lab_cex", tags$h5("Axis label size"), value = 1, step = 0.1))
                     )
                   )
                 )
@@ -122,7 +122,7 @@ ui.prettyPlot <- function() {
               ################################################## Tick marks and tick labels
               column(
                 width = 4, 
-                strong("Tick marks and tick labels"), 
+                tags$strong("Tick marks and tick labels"), 
                 fluidRow(
                   box(
                     width = 12, 
@@ -132,7 +132,7 @@ ui.prettyPlot <- function() {
                         width = 6, 
                         conditionalPanel(
                           condition = "input.pretty_plot_tick", 
-                          radioButtons("pretty_plot_tick_manual", h5("Tick location options"), 
+                          radioButtons("pretty_plot_tick_manual", tags$h5("Tick location options"), 
                                        choices = list("Use default tick locations" = 1, "Enter tick locations manually" = 2), 
                                        selected = 1)
                         )
@@ -141,15 +141,15 @@ ui.prettyPlot <- function() {
                         width = 6, 
                         conditionalPanel(
                           condition = "input.pretty_plot_tick", 
-                          numericInput("pretty_plot_tick_length", h5("Tick length"), value = 1.0, min = 0, step = 0.1)
+                          numericInput("pretty_plot_tick_length", tags$h5("Tick length"), value = 1.0, min = 0, step = 0.1)
                         )
                       )
                     ), 
                     fluidRow(
                       conditionalPanel(
                         condition = "input.pretty_plot_tick && input.pretty_plot_tick_manual == 2", 
-                        column(6, textInput("pretty_plot_tick_manual_lon", h5("Longitude tick locations"), value = "")), 
-                        column(6, textInput("pretty_plot_tick_manual_lat", h5("Latitude tick locations"), value = ""))
+                        column(6, textInput("pretty_plot_tick_manual_lon", tags$h5("Longitude tick locations"), value = "")), 
+                        column(6, textInput("pretty_plot_tick_manual_lat", tags$h5("Latitude tick locations"), value = ""))
                       )
                     ), 
                     fluidRow(
@@ -171,7 +171,7 @@ ui.prettyPlot <- function() {
                           width = 6, 
                           conditionalPanel(
                             condition = "input.pretty_plot_tick_label", 
-                            numericInput("pretty_plot_tick_label_size", h5("Tick label size"), 
+                            numericInput("pretty_plot_tick_label_size", tags$h5("Tick label size"), 
                                          value = 1.0, min = 0.1, max = 3, step = 0.1)
                           )
                         )
@@ -192,14 +192,14 @@ ui.prettyPlot <- function() {
               ################################################## Color scheme of predictions
               column(
                 width = 4, 
-                strong("Color scheme of predictions"), 
+                tags$strong("Color scheme of predictions"), 
                 fluidRow(
                   box(
                     width = 12, 
                     fluidRow(
                       column(
                         width = 6, 
-                        radioButtons("pretty_plot_color_perc", h5("Prediction display option"), 
+                        radioButtons("pretty_plot_color_perc", tags$h5("Prediction display option"), 
                                      choices = list("Plot relative percentages of predictions" = 1, 
                                                     "Plot numerical values of predictions" = 2)), 
                         uiOutput("pretty_plot_color_palette_uiOut_select"), 
@@ -213,7 +213,7 @@ ui.prettyPlot <- function() {
               ################################################## Legend
               column(
                 width = 4, 
-                strong("Legend"), 
+                tags$strong("Legend"), 
                 fluidRow(
                   box(
                     width = 12, 
@@ -223,14 +223,14 @@ ui.prettyPlot <- function() {
                     conditionalPanel(
                       condition = "input.pretty_plot_legend", 
                       fluidRow(
-                        column(6, selectInput("pretty_plot_legend_pos", h5("Legend position"), 
+                        column(6, selectInput("pretty_plot_legend_pos", tags$h5("Legend position"), 
                                               choices = list("Right" = 1, "Bottom" = 2, "Left" = 3, "Top" = 4), 
                                               selected = 1)), 
                         column(
                           width = 6, 
                           conditionalPanel(
                             condition = "input.pretty_plot_color_perc == 2", 
-                            numericInput("pretty_plot_legend_round", h5("Number of decimals to display in legend"), 
+                            numericInput("pretty_plot_legend_round", tags$h5("Number of decimals to display in legend"), 
                                          value = 10, min = 1, step = 1)
                           )
                         )
@@ -242,7 +242,7 @@ ui.prettyPlot <- function() {
               ################################################## Additional polygons
               column(
                 width = 4, 
-                strong("Additional polygons"), 
+                tags$strong("Additional polygons"), 
                 fluidRow(
                   box(
                     width = 12, 
@@ -267,7 +267,7 @@ ui.prettyPlot <- function() {
                           width = 6, 
                           conditionalPanel(
                             condition = "input.pretty_plot_other_obj_which != null && input.pretty_plot_other_obj_which.includes('1')", 
-                            radioButtons("pretty_plot_bound_poly_col", h5("Color of study area border"),
+                            radioButtons("pretty_plot_bound_poly_col", tags$h5("Color of study area border"),
                                          choices = list("Black" = "black", "Grey" = "grey", "Red" = "red"),
                                          selected = "black")
                           )
@@ -276,7 +276,7 @@ ui.prettyPlot <- function() {
                           width = 6, 
                           conditionalPanel(
                             condition = "input.pretty_plot_other_obj_which != null && input.pretty_plot_other_obj_which.includes('2')", 
-                            radioButtons("pretty_plot_land_poly_fill", h5("Color of land"),
+                            radioButtons("pretty_plot_land_poly_fill", tags$h5("Color of land"),
                                          choices = list("Tan" = "tan", "Grey" = "grey"),
                                          selected = "tan")
                           )
@@ -287,7 +287,7 @@ ui.prettyPlot <- function() {
                           width = 6, 
                           conditionalPanel(
                             condition = "input.pretty_plot_other_obj_which != null && input.pretty_plot_other_obj_which.includes('1')", 
-                            numericInput("pretty_plot_bound_poly_lwd", h5("Line width of study area border"),
+                            numericInput("pretty_plot_bound_poly_lwd", tags$h5("Line width of study area border"),
                                          value = 1.5, min = 0, step = 0.1), 
                             checkboxInput("pretty_plot_bound_poly_first", "Draw study area polygon before model predictions", value = FALSE)
                           )
@@ -296,7 +296,7 @@ ui.prettyPlot <- function() {
                           width = 6, 
                           conditionalPanel(
                             condition = "input.pretty_plot_other_obj_which != null && input.pretty_plot_other_obj_which.includes('2')", 
-                            numericInput("pretty_plot_land_poly_lwd", h5("Line width of land outline"),
+                            numericInput("pretty_plot_land_poly_lwd", tags$h5("Line width of land outline"),
                                          value = 0.3, min = 0, step = 0.1),
                             checkboxInput("pretty_plot_bound_poly_first", "Draw land polygon before model predictions", value = TRUE)
                           )
