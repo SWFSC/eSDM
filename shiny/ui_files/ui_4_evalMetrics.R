@@ -114,7 +114,7 @@ ui.evalMetrics <- function() {
               )
             )
           ), 
-          textOutput("eval_data_1_message")
+          tags$span(textOutput("eval_data_1_message"), style = "color: blue")
         )
       ), 
       fluidRow(

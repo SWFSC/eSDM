@@ -4,18 +4,6 @@
 ###############################################################################
 # Weighted ensembling method 1: 'Weight all model predictions by manual entry'
 
-### Create weighted ensemble from manually entered weights
-create_ens_weighted_manual <- reactive({
-  overlaid.data <- create_ens_data()
-  base.sp <- vals$overlay.base.sp
-  weights <- create_ens_weights_num()
-  
-  data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, function(p) 
-    weighted.mean(p, weights, na.rm = TRUE)))
-  
-  SpatialPolygonsDataFrame(base.sp, data.ens, match.ID = FALSE)
-})
-
 ### Process text inputs for model weights
 create_ens_weights_num <- reactive({
   models.weights.text <- input$create_ens_weight_manual
@@ -35,6 +23,24 @@ create_ens_weights_num <- reactive({
   models.weights
 })
 
+### Create weighted ensemble from manually entered weights
+create_ens_weighted_manual <- reactive({
+  overlaid.data <- create_ens_data()
+  base.sp <- vals$overlay.base.sp
+  weights <- create_ens_weights_num()
+  
+  # Check that length of weights == length of overlaid models to ensemble
+  validate(
+    need(length(weights) == ncol(overlaid.data), 
+         "Weighted ens 1: number of weights != number of overlaid models")
+  )
+  
+  data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, function(p) 
+    weighted.mean(p, weights, na.rm = TRUE)))
+  
+  SpatialPolygonsDataFrame(base.sp, data.ens, match.ID = FALSE)
+})
+
 
 ###############################################################################
 # Weighted ensembling method 2: 'Weight all model predictions by metric'
@@ -52,15 +58,18 @@ outputOptions(output, "create_ens_weights_metric_flag",
 ### Table of selected metrics
 create_ens_weights_metric_table <- reactive({
   req(input$create_ens_weights_metric)
-  
-  # Get desired metric for overlaid models from eval metrics table
+
+  # Get desired metric for desired overlaid models from eval metrics table
   eval.metrics <- table_eval_metrics()
+  
   idx.col <- which(names(eval.metrics) == input$create_ens_weights_metric)
   idx.row <- grep("Overlaid", eval.metrics$Model)
-  weights.table <- eval.metrics[idx.row ,c(1, idx.col)]
+  idx.row <- idx.row[vals$eval.models.idx[[2]] %in% create_ens_overlaid_idx()]
+  
+  weights.table <- eval.metrics[idx.row, c(1, idx.col)]
   
   # Prep for display
-  weights.table$R.weights <- weights.table[,2] / max(weights.table[,2])
+  weights.table$R.weights <- weights.table[, 2] / max(weights.table[, 2])
   names(weights.table)[3] <- "Relative weights"
   row.names(weights.table) <- 1:nrow(weights.table)
   
@@ -71,7 +80,13 @@ create_ens_weights_metric_table <- reactive({
 create_ens_weighted_metric <- reactive({
   overlaid.data <- create_ens_data()
   base.sp <- vals$overlay.base.sp
-  weights <- create_ens_weights_metric_table()[,2]
+  weights <- create_ens_weights_metric_table()[, 2]
+
+  # Check that length of weights == length of overlaid models to ensemble
+  validate(
+    need(length(weights) == ncol(overlaid.data), 
+         "Weighted ens by metrics: number of weights != number of o model")
+  )
   
   data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, function(p) 
     weighted.mean(p, weights, na.rm = TRUE)))
@@ -146,6 +161,12 @@ create_ens_weighted_pix <- reactive({
   overlaid.data <- create_ens_data()
   base.sp <- vals$overlay.base.sp
   weights <- create_ens_weights_pix_weights()
+  
+  # Check that length of weights == length of overlaid models to ensemble
+  validate(
+    need(length(weights) == ncol(overlaid.data), 
+         "Weighted ens 3: number of weights != number of overlaid models")
+  )
   
   overlaid.data.w <- overlaid.data * weights
   data.ens <- data.frame(apply(overlaid.data.w, 1, mean, na.rm = TRUE))

@@ -10,8 +10,17 @@ ui.createEns <- function() {
         ##################################################################### Choose overlaid models to be udes in ensemble
         box(
           title = "Overlaid Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-          conditionalPanel("input.create_ens_table_subset == false", tableOutput("create_ens_table")), 
-          conditionalPanel("input.create_ens_table_subset == true", DT::dataTableOutput("create_ens_datatable")), 
+          conditionalPanel(
+            condition = "input.create_ens_table_subset == false", 
+            tags$h5("All overlaid model predictions will be used when creating ensemble predictions"), 
+            tableOutput("create_ens_table")
+          ), 
+          conditionalPanel(
+            condition = "input.create_ens_table_subset == true", 
+            tags$h5("Select overlaid model predictions to be used when creating ensemble predictions:"), 
+            tags$h5("Click on row(s) in the table below to select the predictions"), 
+            DT::dataTableOutput("create_ens_datatable")
+          ), 
           column(4, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid models")), 
           column(
             width = 8, 
@@ -95,9 +104,11 @@ ui.createEns <- function() {
                                    "The relative weights are the metric values rescalued so that the maximum value is one."), 
                           conditionalPanel(
                             condition = "output.create_ens_weights_metric_flag == false", 
-                            helpText(tags$strong("No metrics have been calculated for the selected overlaid model predictions"), tags$br(), 
+                            helpText(tags$strong("Metrics have not been calculated for all of", 
+                                                 "the selected overlaid model predictions"), 
+                                     tags$br(), 
                                      "To use this weighting method, please go to the 'Evaluation Metrics' tab and, ", 
-                                     "for all of the overlaid models you plan to use in the ensemble, calculate", 
+                                     "for all of the overlaid predictions specified in the table above, calculate", 
                                      "the metric you wish to use as a weight.")
                           ), 
                           conditionalPanel(
@@ -126,7 +137,7 @@ ui.createEns <- function() {
                           conditionalPanel(
                             condition = "output.create_ens_weights_pix_flag == false", 
                             helpText(tags$strong("At least one of the selected overlaid predictions", 
-                                            "must have pixel-level spatial weights"))
+                                                 "must have pixel-level spatial weights"))
                           ), 
                           conditionalPanel(
                             condition = "output.create_ens_weights_pix_flag", 
@@ -300,8 +311,8 @@ ui.createEns <- function() {
                           ), 
                           sliderInput("create_ens_weights_poly_coverage", 
                                       tags$h5("Percentage of prediction polygon that must be covered by the weight polygon(s)", 
-                                         "for the prediction polygon to be weighted.", 
-                                         "If '0' is selected then the prediction polygon will be weighted if there is any overlap."), 
+                                              "for the prediction polygon to be weighted.", 
+                                              "If '0' is selected then the prediction polygon will be weighted if there is any overlap."), 
                                       min = 0, max = 100, value = 100), 
                           fluidRow(
                             column(6, actionButton("create_ens_weights_poly_add_execute", 
@@ -341,7 +352,7 @@ ui.createEns <- function() {
                 conditionalPanel(
                   condition = "output.ens_rescale_none_flag == false", 
                   helpText(tags$strong("Note: All prediction types are not \"Absolute density\", ", 
-                                  "and thus the model predictions must be rescaled"))
+                                       "and thus the model predictions must be rescaled"))
                 ), 
                 uiOutput("create_ens_rescale_type_uiOut_radio"), 
                 column(
@@ -355,12 +366,12 @@ ui.createEns <- function() {
                     numericInput("create_ens_rescale_abund", tags$h5("Abundance to which to rescale predictions"), 
                                  value = 0, min = 0, step = 1), 
                     helpText(tags$strong("Description: For each model, rescale predictions so that the predicted", 
-                                    "abundance is the value entered above"))
+                                         "abundance is the value entered above"))
                   ), 
                   conditionalPanel(
                     condition = "input.create_ens_rescale_type == 3", 
                     helpText(tags$strong("Description: For each model, rescale predictions (X) into a range of [0, 1]", 
-                                    "using the following formula:")), 
+                                         "using the following formula:")), 
                     column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -", 
                                              paste0("X", tags$sub("min"), ")"), "/", 
                                              paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")"))))
@@ -368,8 +379,8 @@ ui.createEns <- function() {
                   conditionalPanel(
                     condition = "input.create_ens_rescale_type == 4", 
                     helpText(tags$strong("Description: For each model, rescale predictions (X) to have a mean", HTML("(&mu;)"), 
-                                    "of 0 and", "standard deviation", HTML("(&sigma;)"), 
-                                    "of 1 (unit variance) using the following formula:")), 
+                                         "of 0 and", "standard deviation", HTML("(&sigma;)"), 
+                                         "of 1 (unit variance) using the following formula:")), 
                     column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
                   ), 
                   conditionalPanel(
