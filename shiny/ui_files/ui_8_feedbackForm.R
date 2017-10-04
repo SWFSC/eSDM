@@ -6,19 +6,28 @@ ui.feedbackForm <- function() {
     fluidRow(
       box(
         title = "Feedback Form", status = "warning", solidHeader = FALSE, width = 6, 
-        helpText(strong("All fields are required")), 
+        helpText(tags$strong("All fields are required.")), 
+        helpText("Feedback is sent via email, and thus you can only use this form if you are connected to the internet."), 
         fluidRow(
-          column(6, textInput("feedback_name", tags$h5("Your name"), value = "")), 
-          column(6, textInput("feedback_email", tags$h5("Your email"), value = "")) 
+          column(6, textInput("feedback_name", tags$h5("Name"), value = "")), 
+          column(6, textInput("feedback_email", tags$h5("Email"), value = "")) 
         ), 
-        selectInput("feedback_tab", tags$h5("Tab relating to comment"), width = "50%", 
-                    choices = list("General" = 1, "Load Model Predictions" = 2, "Overlay Model Predictions" = 3, 
-                                   "Create Ensemble Predictions" = 4, "Evaluation Metrics" = 5, "High Quality Maps" = 6, 
-                                   "Export Predictions" = 7, "Manual" = 8), 
-                    selected = 1), 
+        selectizeInput("feedback_tab", tags$h5("Tab(s) relating to comment"), width = "50%", 
+                       choices = list("General comment", "eSDM Roadmap and Load or Save Session", 
+                                      "Load Model Predictions", "Overlay Model Predictions", 
+                                      "Create Ensemble Predictions", "Evaluation Metrics", "High Quality Maps", 
+                                      "Export Predictions", "Manual"), 
+                       selected = NULL, multiple = TRUE), 
+        # selectizeInput("feedback_tab", tags$h5("Tab(s) relating to comment"), width = "50%", 
+        #                choices = list("General comment" = 1, "eSDM Roadmap and Load or Save Session" = 2, 
+        #                               "Load Model Predictions" = 3, "Overlay Model Predictions" = 4, 
+        #                               "Create Ensemble Predictions" = 5, "Evaluation Metrics" = 6, "High Quality Maps" = 7, 
+        #                               "Export Predictions" = 8, "Manual" = 9), 
+        #                selected = NULL, multiple = TRUE), 
         textAreaInput("feedback_comment", tags$h5("Comments. Please be as specific as possible."), value = "", 
                       rows = 5, resize = "vertical"),
-        actionButton("feedback_submit", "Submit feedback")
+        actionButton("feedback_submit_event", "Submit feedback"), 
+        textOutput("feedback_submit_text")
       )
     )
   )

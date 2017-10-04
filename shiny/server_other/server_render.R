@@ -371,3 +371,7 @@ output$export_out_text <- renderText({
 
 
 ###############################################################################
+##### Submit Feedback #####
+output$feedback_submit_text <- renderText({
+  feedback_submit()
+})

@@ -74,7 +74,7 @@ ui <- dashboardPage(
                 menuItem("Manual", 
                          tabName = "manual", 
                          icon = icon("book")), 
-                menuItem("Submit feedback", 
+                menuItem("Submit Feedback", 
                          tabName = "feedbackForm", 
                          icon = icon("commenting"))
     ),

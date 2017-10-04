@@ -29,6 +29,7 @@ library(colorRamps)
 library(RColorBrewer)
 library(viridis)
 library(dichromat)
+library(sendmailR)
 
 ### Install packages if necessary
 # install.packages(c("dplyr", "sp", "rgdal", "rgeos", "raster", "cleangeo", 
@@ -60,7 +61,7 @@ server <- function(input, output, session) {
   
   source("temp.R", local = TRUE, chdir = TRUE)
   
-  # Load/read models
+  # Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_csv.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_raster.R"), local = TRUE, chdir = TRUE)
@@ -69,7 +70,7 @@ server <- function(input, output, session) {
   source(file.path("server_1_loadModels", "server_1_loadModels_funcs.R"), local = TRUE, chdir = TRUE)
   
   
-  # Overlay process
+  # Overlay model predictions
   source(file.path("server_2_overlay", "server_2_overlay.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_csv.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_shpgdb.R"), local = TRUE, chdir = TRUE)
@@ -80,7 +81,7 @@ server <- function(input, output, session) {
   source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, chdir = TRUE)
   
   
-  # Create simple ensemble
+  # Create ensemble predictions
   source(file.path("server_3_createEns", "server_3_createEns.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_3_createEns", "server_3_createEns_create.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_3_createEns", "server_3_createEns_create_weighted.R"), local = TRUE, chdir = TRUE)
@@ -95,7 +96,7 @@ server <- function(input, output, session) {
   source(file.path("server_4_evalMetrics", "server_4_evalMetrics_funcs.R"), local = TRUE, chdir = TRUE)
   
   
-  # Make high quality (pretty) plots
+  # Make high quality maps (pretty plots)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot.R"), local = TRUE, chdir = TRUE)
@@ -108,7 +109,12 @@ server <- function(input, output, session) {
   source(file.path("server_6_export", "server_6_export_renderUI.R"), local = TRUE, chdir = TRUE)
   
   
-  # Manual: call tags$iframe(...) in manual, and thus the manual renders immediately
+  # Manual
+  # The function tags$iframe(...) is in ui.R so that the manual renders immediately
+  
+  
+  # Submit feedback
+  source(file.path("server_8_feedbackForm", "server_8_feedbackForm.R"), local = TRUE, chdir = TRUE)
   
   
   # General server code
@@ -123,7 +129,7 @@ server <- function(input, output, session) {
   source(file.path("server_other", "server_hide+show.R"), local = TRUE, chdir = TRUE)
   
   
-  ### Hide plot outputs
+  ### Hide plot outputs when app is first started
   shinyjs::hide("model_pix_preview_plot", time = 0)
   shinyjs::hide("overlay_preview_base", time = 0)
   shinyjs::hide("overlay_preview_overlaid", time = 0)
