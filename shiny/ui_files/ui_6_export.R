@@ -14,9 +14,7 @@ ui.export <- function() {
           tags$br(), 
           DT::dataTableOutput("export_table_over_out"), 
           tags$br(), 
-          DT::dataTableOutput("export_table_ens_out"),  
-          tags$br(), 
-          helpText("Click on a row to select or deselect it")
+          DT::dataTableOutput("export_table_ens_out")
         ), 
         box(
           title = "Export Predictions", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE, 

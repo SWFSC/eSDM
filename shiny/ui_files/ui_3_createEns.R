@@ -416,63 +416,70 @@ ui.createEns <- function() {
         fluidRow(
           box(
             title = "Created Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE, 
+            ui.instructions.table.select(text.pre = "ensemble", text.in = "with which to perform an action:", sel.num = 2), 
             DT::dataTableOutput("ens_datatable_ensembles"), 
-            column(12, helpText("Click on row(s) to select model(s) to perform an action")), 
-            column(3, radioButtons("ens_select_action", tags$h5("Select action to perform with selected ensemble predictions"), 
+            tags$br(), 
+            column(4, radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"), 
                                    choices = list("Plot preview" = 1, "Download preview" = 2, "Remove from app" = 3, 
                                                   "Calculate predicted abundance" = 4), 
                                    selected = 1)), 
             column(
-              width = 8, offset = 1, 
-              tags$br(), 
-              tags$h5("Action option(s)"), 
-              fluidRow(
-                box(
-                  width = 12, 
-                  ####################################### Preview ensemble(s)
-                  conditionalPanel(
-                    condition = "input.ens_select_action == 1", 
-                    column(3, radioButtons("ens_preview_perc", tags$h5("Units"), choices = list("Percentages" = 1, "Values" = 2), 
-                                           selected = 1)), 
-                    column(3, ui.new.line(), actionButton("ens_preview_execute", "Preview selected ensemble predictions"))
-                  ), 
-                  ####################################### Download preview of ensemble(s)
-                  conditionalPanel(
-                    condition = "input.ens_select_action == 2", 
-                    fluidRow(
-                      column(3, radioButtons("ens_download_preview_perc", tags$h5("Units"), 
-                                             choices = list("Percentages" = 1, "Values" = 2), 
+              width = 8, #offset = 1, 
+              conditionalPanel(
+                condition = "output.ens_models_selected_flag == false", 
+                tags$span(tags$h5("Select at least one set of ensemble model predictions to perform an action"), style = "color: red")
+              ), 
+              conditionalPanel(
+                condition = "output.ens_models_selected_flag", 
+                tags$h5("Action option(s)"), 
+                fluidRow(
+                  box(
+                    width = 12, 
+                    ####################################### Preview ensemble(s)
+                    conditionalPanel(
+                      condition = "input.ens_select_action == 1", 
+                      column(3, radioButtons("ens_preview_perc", tags$h5("Units"), choices = list("Percentages" = 1, "Values" = 2), 
                                              selected = 1)), 
-                      column(3, radioButtons("ens_download_preview_res", tags$h5("Resolution"), 
-                                             choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2), 
-                                             selected = 2)), 
-                      column(3, radioButtons("ens_download_preview_format", tags$h5("Image file format"), 
-                                             choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3), 
-                                             selected = 3)), 
-                      column(3, tags$br(), tags$br(), tags$br(), downloadButton("ens_download_preview_execute", "Download"))
+                      column(3, ui.new.line(), actionButton("ens_preview_execute", "Preview selected ensemble predictions"))
                     ), 
-                    fluidRow(
-                      column(9, uiOutput("ens_download_preview_name_uiOut_text"))
+                    ####################################### Download preview of ensemble(s)
+                    conditionalPanel(
+                      condition = "input.ens_select_action == 2", 
+                      fluidRow(
+                        column(4, radioButtons("ens_download_preview_perc", tags$h5("Units"), 
+                                               choices = list("Percentages" = 1, "Values" = 2), 
+                                               selected = 1)), 
+                        column(4, radioButtons("ens_download_preview_res", tags$h5("Resolution"), 
+                                               choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2), 
+                                               selected = 2)), 
+                        column(4, radioButtons("ens_download_preview_format", tags$h5("Image file format"), 
+                                               choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3), 
+                                               selected = 3))
+                      ), 
+                      fluidRow(
+                        column(9, uiOutput("ens_download_preview_name_uiOut_text")), 
+                        column(3, tags$br(), tags$br(), downloadButton("ens_download_preview_execute", "Download"))
+                      )
+                    ), 
+                    ####################################### Remove ensemble(s)
+                    conditionalPanel(
+                      condition = "input.ens_select_action == 3", 
+                      column(
+                        width = 3, 
+                        actionButton("ens_remove_execute", "Remove selected ensemble predictions"), 
+                        uiOutput("ens_remove_text")
+                      )
+                    ), 
+                    ####################################### Calculate abundance of ensemble(s)
+                    conditionalPanel(
+                      condition = "input.ens_select_action == 4", 
+                      uiOutput("ens_calc_abund_execute_uiOut_button"), 
+                      tags$br(), 
+                      tags$br(), 
+                      tableOutput("ens_abund_table_out"), 
+                      tags$style(type="text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
+                      #tr:first-child for first row
                     )
-                  ), 
-                  ####################################### Remove ensemble(s)
-                  conditionalPanel(
-                    condition = "input.ens_select_action == 3", 
-                    column(
-                      width = 3, 
-                      actionButton("ens_remove_execute", "Remove selected ensemble predictions"), 
-                      uiOutput("ens_remove_text")
-                    )
-                  ), 
-                  ####################################### Calculate abundance of ensemble(s)
-                  conditionalPanel(
-                    condition = "input.ens_select_action == 4", 
-                    uiOutput("ens_calc_abund_execute_uiOut_button"), 
-                    tags$br(), 
-                    tags$br(), 
-                    tableOutput("ens_abund_table_out"), 
-                    tags$style(type="text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
-                    #tr:first-child for first row
                   )
                 )
               )

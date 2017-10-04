@@ -33,6 +33,12 @@ output$ens_display_ens_flag <- reactive({
 })
 outputOptions(output, "ens_display_ens_flag", suspendWhenHidden = FALSE)
 
+### Flag for if 1+ created ensemble models are selected to be used in action
+output$ens_models_selected_flag <- reactive({
+  length(input$ens_datatable_ensembles_rows_selected) > 0
+})
+outputOptions(output, "ens_models_selected_flag", suspendWhenHidden = FALSE)
+
 
 ###############################################################################
 # Process/plot created ensembles
