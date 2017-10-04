@@ -1,6 +1,18 @@
 ### Sending user feedback to esdm.feedback@gmail.com
 
 ###############################################################################
+### Generate warning message if no internet connection is detected
+feedback_internet_connection <- reactive({
+  input$tabs
+  input$feedback_name
+  input$feedback_email
+  
+  ifelse(isTruthy(try(getURL("www.google.com"), silent = TRUE)), 
+         "",
+         paste("Warning: no internet connection is detected.", 
+               "You must be connected to the internet to submit feedback."))
+})
+
 ### Send feedback and give user confirmation message
 feedback_submit <- eventReactive(input$feedback_submit_event, {
   ### Process user inputs to prepare for email

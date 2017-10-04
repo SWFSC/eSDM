@@ -264,8 +264,8 @@ options = list(dom = 't'))
 output$eval_data_1_message <- renderText({
   eval.data.list <- vals$eval.data.list
   ifelse(!(is.na(eval.data.list)[1] & is.na(eval.data.list)[2]), 
-                  "Validation data loaded",
-                  "")
+         "Validation data loaded",
+         "")
 })
 
 # Text outputs
@@ -372,6 +372,13 @@ output$export_out_text <- renderText({
 
 ###############################################################################
 ##### Submit Feedback #####
+### Feedback function text
 output$feedback_submit_text <- renderText({
   feedback_submit()
 })
+
+### Warning message if no internet connection is detected
+output$feedback_internet_connection_text <- renderText({
+  feedback_internet_connection()
+})
+###############################################################################

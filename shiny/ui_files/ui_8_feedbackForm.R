@@ -7,7 +7,7 @@ ui.feedbackForm <- function() {
       box(
         title = "Feedback Form", status = "warning", solidHeader = FALSE, width = 6, 
         helpText(tags$strong("All fields are required.")), 
-        helpText("Feedback is sent via email, and thus you can only use this form if you are connected to the internet."), 
+        tags$span(textOutput("feedback_internet_connection_text"), style = "color: red"), 
         fluidRow(
           column(6, textInput("feedback_name", tags$h5("Name"), value = "")), 
           column(6, textInput("feedback_email", tags$h5("Email"), value = "")) 
