@@ -36,7 +36,7 @@ feedback_submit <- eventReactive(input$feedback_submit_event, {
   # Check that all field have filled
   validate(
     need(all(sapply(body, isTruthy)), 
-         "Please enter a value for all fields")
+         "Please provide an entry for all fields")
   )
   
   ### Send email
