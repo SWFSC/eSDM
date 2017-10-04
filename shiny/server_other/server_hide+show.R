@@ -8,8 +8,8 @@
 
 
 # The following must be done so that these plots render to NULL and thus 
-# shinycssloaders spinner isn't shown. Not sure why "model_pix_preview_plot"
-# doesn't need it though.
+# shinycssloaders spinner isn't shown. 
+outputOptions(output, "model_pix_preview_plot", suspendWhenHidden = FALSE)
 outputOptions(output, "overlay_preview_base", suspendWhenHidden = FALSE)
 outputOptions(output, "overlay_preview_overlaid", suspendWhenHidden = FALSE)
 outputOptions(output, "create_ens_weights_poly_preview_plot", 
