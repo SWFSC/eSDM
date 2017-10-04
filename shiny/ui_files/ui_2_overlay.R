@@ -14,12 +14,10 @@ ui.overlay <- function() {
               title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
               checkboxInput("overlay_bound", "Use a study area polygon as the boundary for the base grid in the overlay process", 
                             value = FALSE), 
+              helpText("Uncheck the above box to not use the study area polygon in the overlay process"), 
               conditionalPanel(
                 condition = "input.overlay_bound == true", 
-                fluidRow(
-                  column(6, radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)), 
-                  column(5, tags$br(), helpText("Uncheck the above box to not use the study area polygon in the overlay process"))
-                ), 
+                radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1), 
                 box(
                   width = 12, 
                   conditionalPanel(
@@ -76,7 +74,6 @@ ui.overlay <- function() {
               conditionalPanel(
                 condition = "input.overlay_land == true", 
                 helpText("Uncheck the above box to not use a land polygon in the overlay process"), 
-                tags$br(), 
                 fluidRow(
                   column(6, radioButtons("overlay_land_load_type", tags$h5("Land polygon source"), 
                                          choices = list("Use provided" = 1, "Upload personal" = 2), 
@@ -85,7 +82,7 @@ ui.overlay <- function() {
                     width = 6, 
                     conditionalPanel(
                       condition = "input.overlay_land_load_type == 2 ", 
-                      radioButtons("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 2)
+                      radioButtons("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)
                     )
                   )
                 ), 
@@ -166,7 +163,9 @@ ui.overlay <- function() {
                fluidRow(
                  box(
                    title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-                   tags$h5("Select loaded model predictions. Click on a row to select the model predictions to use as the base grid"), 
+                   tags$h5("Select loaded model predictions:"), 
+                   tags$h5("Click on a row to select the model predictions to use as the base grid.", 
+                           "A row can only be selected if", tags$em("Display additional information"), "is unchecked."), 
                    conditionalPanel("input.overlay_loaded_table_stats != true", DT::dataTableOutput("overlay_loaded_table")), 
                    conditionalPanel("input.overlay_loaded_table_stats", DT::dataTableOutput("overlay_loaded_stats_table")), 
                    fluidRow(
@@ -187,48 +186,69 @@ ui.overlay <- function() {
                  box(
                    title = "Overlay Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
                    fluidRow(
-                     box(
-                       width = 6, 
-                       tags$h5("Overlay options: coordinate system"), 
-                       helpText("A major element of the overlay process is calculating the area of polygons and their overlap.", 
-                                "Thus, the coordinate system of the model predictions during the overlay process", 
-                                "can have an effect on the overlay results."), 
-                       helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:", 
-                                "1) 'Equatorial axis of ellipsoid' = 6378137 and", 
-                                "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(), 
-                                "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"), 
-                                "for more details about assumptions that must be made when calculating the area", 
-                                "using WGS 84 geographic coordinates."), 
-                       checkboxInput("overlay_proj_ll", "Perform overlay in WGS 84 geographic coordinates", value = TRUE), 
-                       conditionalPanel(
-                         condition = "input.overlay_proj_ll", 
-                         helpText("Area calculations will be performed in WGS 84 geographic coordinates")
-                       ), 
-                       conditionalPanel(
-                         condition = "input.overlay_proj_ll == false", 
-                         column(12, uiOutput("overlay_proj_which_uiOut_select"))
-                       )
-                     ), 
                      column(
                        width = 6, 
-                       fluidRow(
+                       box(
+                         width = 12, 
+                         checkboxInput("overlay_samegrid_indicator", 
+                                       "Check if all loaded model predictions were made on the same grid", 
+                                       value = FALSE), 
+                         conditionalPanel(
+                           condition = "input.overlay_samegrid_indicator", 
+                           helpText("perform checks, put stuff here. Action button will be behind a flag"), 
+                           actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay")
+                         )
+                       ), 
+                       conditionalPanel(
+                         condition = "input.overlay_samegrid_indicator == false", 
                          box(
                            width = 12, 
-                           tags$h5("Overlay options: percent overlap"), 
-                           helpText("The slider bar specifies the percent that the original model prediction(s) must overlap", 
-                                    "a base grid cell for that cell to have a non-NA overlaid prediction value.", 
-                                    "A slider bar value of \"0\" means that cell will have a non-NA overlaid prediction value", 
-                                    "if there is any overlap with any original model prediction."), 
-                           sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 50)
-                         ), 
-                         box(
-                           width = 12, 
-                           helpText(tags$strong("Reminder: loaded study area and land polygons", 
-                                                "will be used during the overlay process"), tags$br(), 
-                                    "This process may take several minutes"), 
-                           actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"), 
-                           textOutput("overlay_overlay_all_text"), 
-                           tags$span(textOutput("overlay_overlaid_models_message"), style = "color: blue")
+                           tags$h5("Overlay options: coordinate system"), 
+                           helpText("A major element of the overlay process is calculating the area of polygons and their overlap.", 
+                                    "Thus, the coordinate system of the model predictions during the overlay process", 
+                                    "can have an effect on the overlay results."), 
+                           helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:", 
+                                    "1) 'Equatorial axis of ellipsoid' = 6378137 and", 
+                                    "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(), 
+                                    "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"), 
+                                    "for more details about assumptions that must be made when calculating the area", 
+                                    "using WGS 84 geographic coordinates."), 
+                           checkboxInput("overlay_proj_ll", "Perform overlay in WGS 84 geographic coordinates", value = TRUE), 
+                           conditionalPanel(
+                             condition = "input.overlay_proj_ll", 
+                             helpText("Area calculations will be performed in WGS 84 geographic coordinates")
+                           ), 
+                           conditionalPanel(
+                             condition = "input.overlay_proj_ll == false", 
+                             column(12, uiOutput("overlay_proj_which_uiOut_select"))
+                           )
+                         )
+                       )
+                     ), 
+                     conditionalPanel(
+                       condition = "input.overlay_samegrid_indicator == false", 
+                       column(
+                         width = 6, 
+                         fluidRow(
+                           box(
+                             width = 12, 
+                             tags$h5("Overlay options: percent overlap"), 
+                             helpText("The slider bar specifies the percent that the original model prediction(s) must overlap", 
+                                      "a base grid cell for that cell to have a non-NA overlaid prediction value.", 
+                                      "A slider bar value of \"0\" means that cell will have a non-NA overlaid prediction value", 
+                                      "if there is any overlap with any original model prediction."), 
+                             sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 50)
+                           ), 
+                           box(
+                             width = 12, 
+                             helpText(tags$strong("It is strongly recommended to save the app environment before overlaying", 
+                                                  "in case you are disconnected from the server during the process.")), 
+                             helpText(tags$strong("Reminder: loaded study area and land polygons will be used during", 
+                                                  "the overlay process. This process may take several minutes.")), 
+                             actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"), 
+                             textOutput("overlay_overlay_all_text"), 
+                             tags$span(textOutput("overlay_overlaid_models_message"), style = "color: blue")
+                           )
                          )
                        )
                      )

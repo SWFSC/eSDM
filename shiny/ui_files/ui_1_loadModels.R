@@ -127,11 +127,7 @@ ui.loadModels <- function() {
                       tags$br(), 
                       uiOutput("model_gis_shp_NA_idx_uiOut_message")
                     ), 
-                    column(
-                      width = 12, 
-                      tags$span(textOutput("create_spdf_gis_shp_text"), style = "color: blue"), 
-                      textOutput("create_spdf_gis_shp_res_text")
-                    )
+                    column(12, tags$span(textOutput("create_spdf_gis_shp_text"), style = "color: blue"))
                   )
                 )
               )
@@ -190,8 +186,9 @@ ui.loadModels <- function() {
                fluidRow(
                  box(
                    title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-                   tags$h5("Select loaded model predictions. Click on row(s) in the table below to select", 
-                           "the model predictions with which to perform an action."), 
+                   tags$h5("Select loaded model predictions:"), 
+                   tags$h5("Click on row(s) in the table below to select the model predictions with which to perform an action.", 
+                           "Row(s) can only be selected if", tags$em("Display additional information"), "is unchecked."), 
                    conditionalPanel("input.models_loaded_table_stats != true", DT::dataTableOutput("models_loaded_table")), 
                    conditionalPanel("input.models_loaded_table_stats", DT::dataTableOutput("models_loaded_table_stats")), 
                    column(
@@ -207,8 +204,8 @@ ui.loadModels <- function() {
                          ), 
                          conditionalPanel(
                            condition = "input.models_loaded_table_stats", 
-                           helpText("Rows can only be selected if 'Display additional information' is unchecked", tags$br(), 
-                                    "'Resolution' information is approximate; please note any errors in the feedback form")
+                           helpText("If 'Resolution' data begins with a '~', it means the SDM is irregular in its loaded", 
+                                    "coordinate system and the provided value is an approximation")
                          )
                        )
                      ), 

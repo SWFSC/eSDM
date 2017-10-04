@@ -35,7 +35,8 @@ label.gdb.upload <- "Upload file geodatabase feature class"
 ### Instructions for uploading certain file and object types
 ui.instructions.upload.csv <- function() {
   helpText("Browse to and open the desired file with the extension '.csv'.", 
-           "This file must have headers.")
+           "This file must have headers. Note that if this file is large", 
+           "(greater than ~50 Mb), then it could take several minutes to load.")
 }
 
 ui.instructions.upload.raster <- function() {
@@ -48,7 +49,8 @@ ui.instructions.upload.raster <- function() {
 
 ui.instructions.upload.shp <- function() {
   helpText("Browse to and open all files (.shp, .dbf, …) associated with", 
-           "the GIS shapefile")
+           "the GIS shapefile. Note that if this file is large", 
+           "(greater than ~50 Mb), then it could take several minutes to load.")
 }
 
 ui.instructions.upload.gdb <- function() {
@@ -57,7 +59,9 @@ ui.instructions.upload.gdb <- function() {
            "name of the feature class should be", 
            "exactly as they appear in ArcCatalog.", 
            "This app does not currently support loading a file geodatabse", 
-           "raster dataset or data from an ESRI personal geodatabase.")
+           "raster dataset or data from an ESRI personal geodatabase.", 
+           "Note that if this file geodatabase feature class is large", 
+           "(greater than ~50 Mb), then it could take several minutes to load.")
 }
 
 

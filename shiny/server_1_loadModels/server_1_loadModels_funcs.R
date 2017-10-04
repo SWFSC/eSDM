@@ -96,6 +96,7 @@ gis.res.calc <- function(spdf.ll, spdf.orig) {
   )
   
   ### Get areas of individual polygons in original projection and units
+  #Basic code structure from raster::area()
   spdf.orig.polys <- spdf.orig@polygons
   spdf.orig.origarea <- vector(length = length(spdf.orig.polys))
   for (i in 1:length(spdf.orig.polys)) {
@@ -112,15 +113,15 @@ gis.res.calc <- function(spdf.ll, spdf.orig) {
     }
     spdf.orig.origarea[i] <- sumarea
   }
-  
+  browser()
   
   ### Do checks
-  # Check 1: Are at least 70% of the polygons the same area?
+  # Check 1: Are at least 50% of the polygons the same area?
   spdf.orig.table.max <- tail(table(spdf.orig.origarea), 1)
-  spdf.check.1 <- (spdf.orig.table.max / length(spdf.orig.origarea)) > 0.7
+  spdf.check.1 <- (spdf.orig.table.max / length(spdf.orig.origarea)) > 0.5
   
   # Check 2: Is (area rescaled to 0-1) ~ (lat/long latitude) less than 0.01
-  spdf.lat.coords <- coordinates(spdf.ll)[,2]
+  spdf.lat.coords <- coordinates(spdf.ll)[, 2]
   spdf.orig.origarea.ratio <- spdf.orig.origarea / max(spdf.orig.origarea)
   spdf.orig.lm <- lm(spdf.orig.origarea.ratio ~ spdf.lat.coords)
   
@@ -142,7 +143,7 @@ gis.res.calc <- function(spdf.ll, spdf.orig) {
       spdf.res <- "Unk"
     }
   } else {
-    # Loaded polygons are irregular: return approx resolution
+    # Loaded polygons are irregular: return approx resolution if possible
     if (grepl("+proj=longlat", proj.orig)) {
       origarea.table <- table(spdf.orig.origarea)
       approx.max <- origarea.table[which.max(origarea.table)]

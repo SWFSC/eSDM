@@ -44,13 +44,13 @@ source(file.path("ui_files", "ui_8_feedbackForm.R"), local = TRUE, echo = FALSE,
 ### UI object for Shiny app
 ui <- dashboardPage(
   skin = "blue", 
-  title = "etSDM", 
-  dashboardHeader(title = "Ensemble Tool for Species Distribution Modeling (etSDM)", 
+  title = "eSDM", 
+  dashboardHeader(title = "Ensemble Tool for Species Distribution Modeling (eSDM)", 
                   titleWidth = "540px"),
   
   dashboardSidebar(
     sidebarMenu(id = "tabs", 
-                menuItem(HTML(paste0("etSDM Roadmap and", "<br/>", "Load or Save Session")), 
+                menuItem(HTML(paste0("eSDM Roadmap and", "<br/>", "Load or Save Session")), 
                          tabName = "roadmap", 
                          icon = icon("road")), #icon("sitemap")
                 menuItem("Load Model Predictions", 
