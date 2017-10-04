@@ -307,7 +307,7 @@ output$model_download_preview_name_uiOut_text <- renderUI({
     model.name <- vals$models.names[[idx.selected]]
     pred.name <- vals$models.data.names[[idx.selected]][1]
     
-    f.val <- paste0(model.name, "__", pred.name, "__", 
+    f.val <- paste0("eSDM_", model.name, "__", pred.name, "__", 
                     perc.txt, res.txt, file.ext)
   }
   

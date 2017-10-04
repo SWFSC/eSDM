@@ -174,7 +174,7 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
   file.ext <- switch(input$pretty_plot_download_format, 
                      "1" = ".jpeg", "2" = ".pdf", "3" = ".png")
   
-  ## Determine if map is a multi- or single-map
+  ## Determine if map is a multi- or single-map and name as appropriate
   if (length(unlist(model.idx.list)) > 1) {
     # Multi
     f.val <- paste0("Multi_", res.txt, file.ext)
@@ -208,7 +208,7 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
       ens.idx.txt <- vals$ensemble.overlaid.idx[idx.selected]
       ens.idx.txt <- paste0(gsub(", ", "+", ens.idx.txt), "_")
       
-      f.val <- paste0(ens.method.txt, ens.weights.txt, ens.rescale.txt, 
+      f.val <- paste0("eSDM_", ens.method.txt, ens.weights.txt, ens.rescale.txt, 
                       ens.idx.txt, res.txt, file.ext)
     }
   }

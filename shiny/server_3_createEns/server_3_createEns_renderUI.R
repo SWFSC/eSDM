@@ -207,7 +207,7 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
     ens.idx.txt <- vals$ensemble.overlaid.idx[idx.selected]
     ens.idx.txt <- paste0(gsub(", ", "+", ens.idx.txt), "_")
     
-    f.val <- paste0(ens.method.txt, ens.weights.txt, ens.rescale.txt, 
+    f.val <- paste0("eSDM_", ens.method.txt, ens.weights.txt, ens.rescale.txt, 
                     ens.idx.txt, perc.txt, res.txt, file.ext)
   }
   

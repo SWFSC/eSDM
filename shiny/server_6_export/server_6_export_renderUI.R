@@ -70,7 +70,7 @@ output$export_filename_uiOut_text <- renderUI({
   filename.ext <- switch(input$export_format, 
                          "1" = ".csv", "2" = "", "3" = ".kml")
   filename.value <- gsub("\\.", "_", filename.value)
-  filename.value <- paste0(filename.value, filename.ext)
+  filename.value <- paste0("eSDM_", filename.value, filename.ext)
   
   
   ## Return textInput

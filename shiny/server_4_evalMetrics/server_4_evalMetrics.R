@@ -199,7 +199,7 @@ table_eval_metrics <- reactive({
 ### Download table
 # Currently set for no Error column: #'[, -3]' is to remove Error column
 output$eval_metrics_table_save <- downloadHandler(
-  filename = paste0("Eval_metrics.csv"),
+  filename = paste0("eSDM_eval_metrics.csv"),
   
   content = function(file) {
     eval.metrics <- table_eval_metrics()

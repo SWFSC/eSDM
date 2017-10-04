@@ -7,7 +7,9 @@
 
 ### Load Models tab preview
 output$model_download_preview_execute <- downloadHandler(
-  filename = function() input$model_download_preview_name,
+  filename = function() {
+    input$model_download_preview_name
+  },
   
   content = function(file) {
     withProgress(message = "Downloading preview", value = 0.6, { 
@@ -41,8 +43,10 @@ output$model_download_preview_execute <- downloadHandler(
 ###########################################################
 ### Create Ensemble Predictions tab preview
 output$ens_download_preview_execute <- downloadHandler(
-  filename = function() {input$ens_download_preview_name},
-
+  filename = function() {
+    input$ens_download_preview_name
+  },
+  
   content = function(file) {
     withProgress(message = "Downloading preview", value = 0.6, { 
       Sys.sleep(0.5)
