@@ -12,12 +12,13 @@ ui.overlay <- function() {
           fluidRow(
             box(
               title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-              checkboxInput("overlay_bound", "Use a study area polygon in the overlay process", value = FALSE), 
+              checkboxInput("overlay_bound", "Use a study area polygon as the boundary for the base grid in the overlay process", 
+                            value = FALSE), 
               conditionalPanel(
                 condition = "input.overlay_bound == true", 
                 fluidRow(
                   column(6, radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)), 
-                  column(5, tags$br(), helpText("Uncheck box to remove loaded study area polygon"))
+                  column(5, tags$br(), helpText("Uncheck the above box to not use the study area polygon in the overlay process"))
                 ), 
                 box(
                   width = 12, 
@@ -70,10 +71,11 @@ ui.overlay <- function() {
             
             box(
               title = "Load Land Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-              checkboxInput("overlay_land", "Use a land polygon in the overlay process", value = FALSE), 
+              checkboxInput("overlay_land", "Use a land polygon to remove land from the base grid in the overlay process", 
+                            value = FALSE), 
               conditionalPanel(
                 condition = "input.overlay_land == true", 
-                helpText("Uncheck box to remove loaded land polygon"), 
+                helpText("Uncheck the above box to not use a land polygon in the overlay process"), 
                 tags$br(), 
                 fluidRow(
                   column(6, radioButtons("overlay_land_load_type", tags$h5("Land polygon source"), 
@@ -163,8 +165,8 @@ ui.overlay <- function() {
         column(8, 
                fluidRow(
                  box(
-                   title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, 
-                   collapsible = TRUE, 
+                   title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
+                   tags$h5("Select loaded model predictions. Click on a row to select the model predictions to use as the base grid"), 
                    conditionalPanel("input.overlay_loaded_table_stats != true", DT::dataTableOutput("overlay_loaded_table")), 
                    conditionalPanel("input.overlay_loaded_table_stats", DT::dataTableOutput("overlay_loaded_stats_table")), 
                    fluidRow(
@@ -173,7 +175,7 @@ ui.overlay <- function() {
                        width = 8, 
                        conditionalPanel(
                          condition = "input.overlay_loaded_table_stats != true", 
-                         helpText("Click on a row to select model predictions to use as base grid")
+                         helpText("")
                        ), 
                        conditionalPanel(
                          condition = "input.overlay_loaded_table_stats", 
@@ -187,9 +189,9 @@ ui.overlay <- function() {
                    fluidRow(
                      box(
                        width = 6, 
-                       tags$h5("Overlay options: projection"), 
+                       tags$h5("Overlay options: coordinate system"), 
                        helpText("A major element of the overlay process is calculating the area of polygons and their overlap.", 
-                                "Thus, the projection of the model predictions during the overlay process", 
+                                "Thus, the coordinate system of the model predictions during the overlay process", 
                                 "can have an effect on the overlay results."), 
                        helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:", 
                                 "1) 'Equatorial axis of ellipsoid' = 6378137 and", 
@@ -221,9 +223,10 @@ ui.overlay <- function() {
                          ), 
                          box(
                            width = 12, 
-                           helpText(tags$strong("Reminder: loaded study area and land polygons will be used during the overlay process"), tags$br(), 
+                           helpText(tags$strong("Reminder: loaded study area and land polygons", 
+                                                "will be used during the overlay process"), tags$br(), 
                                     "This process may take several minutes"), 
-                           actionButton("overlay_create_overlaid_models", "Overlay all predictions onto specified base grid"), 
+                           actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"), 
                            textOutput("overlay_overlay_all_text"), 
                            tags$span(textOutput("overlay_overlaid_models_message"), style = "color: blue")
                          )

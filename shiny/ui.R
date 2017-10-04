@@ -95,7 +95,7 @@ ui <- dashboardPage(
     
     ### UI code separated by tabs
     tabItems(
-      ui.roadmap(), 
+      ui.roadmap(),      # etSDM Roadmap and Load or Save Session
       ui.loadModels(),   # Load Model Predictions
       ui.overlay(),      # Overlay Model Predictions
       ui.createEns(),    # Create Ensemble

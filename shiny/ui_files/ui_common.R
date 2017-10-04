@@ -5,7 +5,7 @@
 ### File type lists for use in radioButton()'s and selectInupt()'s
 file.type.list1 <- list("Excel .csv" = 1, "GIS shapefile" = 2, 
                         "GIS file geodatabase feature class" = 3)
-file.type.list2 <- list("Excel .csv" = 1, "GIS raster" = 2, 
+file.type.list2 <- list("Excel .csv" = 1, "GIS raster (GeoTIFF)" = 2, 
                         "GIS shapefile" = 3, 
                         "GIS file geodatabase feature class" = 4)
 
@@ -17,7 +17,7 @@ file.type.list2 <- list("Excel .csv" = 1, "GIS raster" = 2,
 label.csv.upload <- tags$h5("Upload Excel .csv file (.csv extension)")
 
 ### GIS raster
-label.raster.upload <- tags$h5("Upload raster file (.tif extension)")
+label.raster.upload <- tags$h5("Upload raster GeoTIFF file (.tif extension)")
 
 ### GIS shp
 label.shp.upload <- tags$h5("Upload GIS shapefile files")
@@ -39,13 +39,16 @@ ui.instructions.upload.csv <- function() {
 }
 
 ui.instructions.upload.raster <- function() {
-  helpText("Browse to and open the desired TIFF file that has the extension '.tif.", 
-           "The raster can be in any projection, but the raster coordinates", 
-           "must be between the equivalent of -180 and 180 decimal degrees.")
+  helpText("Browse to and open the desired GeoTIFF file, which has the", 
+           "extension '.tif.", 
+           "The raster can be in any coordinate system,", 
+           "but the raster coordinates must be", 
+           "between the equivalent of -180 and 180 decimal degrees.")
 }
 
 ui.instructions.upload.shp <- function() {
-  helpText("Browse to and open all files of the desired GIS shapefile.")
+  helpText("Browse to and open all files (.shp, .dbf, …) associated with", 
+           "the GIS shapefile")
 }
 
 ui.instructions.upload.gdb <- function() {
@@ -66,11 +69,12 @@ ui.instructions.upload.gdb <- function() {
 ui.instructions.pred.csv <- function() {
   helpText(tags$em("Column with longitude data"), "and", 
            tags$em("Column with latitude data:"), "Longitude and latitude", 
-           "points must be geographic coordinates that are equally spaced", 
-           "in decimal degrees.", 
+           "points must be in WGS 84 geographic coordinates and", 
+           "equally spaced in decimal degrees.", 
            tags$em("Column with prediciton data:"), "Please ensure that", 
            "missing prediction values are one of the following: 'NA', 'NaN',", 
-           " 'N/A', 'n/a', 'na', blank, or a negative number.", tags$br(), 
+           " 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.", 
+           tags$br(), 
            tags$em("Prediction value type:"), "Select \"Relative density\"", 
            "if the predictions are probabilities of occurrence.", tags$br(), 
            tags$em("Column with weight data:"), "Select \"N/A\" if the", 
@@ -80,7 +84,8 @@ ui.instructions.pred.csv <- function() {
 ui.instructions.pred.raster <- function() {
   helpText("Please ensure that missing prediction values", 
            "are one of the following: 'NA', 'NaN', 'N/A', ", 
-           "'n/a', 'na', blank, or a negative number.", tags$br(), 
+           "'n/a', 'na', 'NULL', blank, or a negative number.", 
+           tags$br(), 
            tags$em("Prediction value type:"), "select \"Relative density\"", 
            "if the predictions are probabilities of occurrence.")
 }
@@ -88,7 +93,8 @@ ui.instructions.pred.raster <- function() {
 ui.instructions.pred.shp.gdb <- function() {
   helpText(tags$em("Column with prediciton data:"), "Please ensure that", 
            "missing prediction values are one of the following: 'NA', 'NaN',", 
-           " 'N/A', 'n/a', 'na', blank, or a negative number.", tags$br(), 
+           " 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.", 
+           tags$br(), 
            tags$em("Prediction value type:"), "Select \"Relative density\"", 
            "if the predictions are probabilities of occurrence.", tags$br(), 
            tags$em("Column with weight data:"), "Select \"N/A\" if the", 
@@ -101,8 +107,8 @@ ui.instructions.pred.shp.gdb <- function() {
 ui.instructions.poly.csv <- function() {
   helpText("The first column must contain the longitude values, ", 
            "and the second column must contain the latitude values.", 
-           "The longitudes and latitudes must be in geographic coordinates", 
-           "in the range [-180, 180].", 
+           "The longitudes and latitudes must be in WGS 84", 
+           "geographic coordinates and in the range [-180, 180].", 
            "Multiple polygons may be demarcated", 
            "using blank cells or cells with 'NA' entries.", 
            "If the provided points do not form a closed polygon, ", 
@@ -122,11 +128,11 @@ ui.error.upload.csv <- tags$strong("Error: Please choose a file that has a .csv 
                               style = "color: red")
 
 ### Raster
-ui.error.upload.raster <- tags$strong("Error: Could not load GIS raster using the provided file and band number", 
+ui.error.upload.raster <- tags$strong("Error: Could not load GIS raster using the uploaded file and band number", 
                                  style = "color: red")
 
 ### Shapefile
-ui.error.upload.shp <- tags$strong("Error: Could not load GIS shapefile using the provided files", 
+ui.error.upload.shp <- tags$strong("Error: Could not load GIS shapefile using the uploaded files", 
                               style = "color: red")
 
 ### File gdb

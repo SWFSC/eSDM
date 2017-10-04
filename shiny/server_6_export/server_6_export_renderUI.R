@@ -12,7 +12,8 @@ output$export_proj_uiOut_select <- renderUI({
   names(choices.list) <- choices.list.names
   
   selectInput("export_proj", 
-              tags$h5("Coordinates or projection in which to export predictions"), 
+              tags$h5("Export predictions in the coordinate system of the", 
+                      "selected model predictions"), 
               choices = choices.list, selected = 1)
 })
 

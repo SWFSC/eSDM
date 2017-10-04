@@ -75,7 +75,7 @@ ui.loadModels <- function() {
               conditionalPanel(
                 condition = "output.read_model_gis_raster_flag", 
                 helpText("Since loaded rasters can only have one data layer, that data is loaded as the prediction data", 
-                         "and there are no error or weight columns to select"), 
+                         "and there is no weight column to select"), 
                 box(
                   width = 12, 
                   fluidRow(
@@ -190,8 +190,8 @@ ui.loadModels <- function() {
                fluidRow(
                  box(
                    title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-                   tags$tags$h5("Select loaded model predictions. Click on row(s) in the table below to select model predictions", 
-                           "with which to perform an action."), 
+                   tags$h5("Select loaded model predictions. Click on row(s) in the table below to select", 
+                           "the model predictions with which to perform an action."), 
                    conditionalPanel("input.models_loaded_table_stats != true", DT::dataTableOutput("models_loaded_table")), 
                    conditionalPanel("input.models_loaded_table_stats", DT::dataTableOutput("models_loaded_table_stats")), 
                    column(
