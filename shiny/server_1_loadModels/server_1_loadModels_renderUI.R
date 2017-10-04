@@ -301,7 +301,7 @@ output$model_download_preview_name_uiOut_text <- renderUI({
   models.num <- length(input$models_loaded_table_rows_selected)
   if(models.num > 1) {
     # Multi
-    f.val <- paste0("Multi_", models.num, "_", perc.txt, res.txt, file.ext)
+    f.val <- paste0("eSDM_multi_", models.num, "_", perc.txt, res.txt, file.ext)
   } else {
     # Single
     model.name <- vals$models.names[[idx.selected]]

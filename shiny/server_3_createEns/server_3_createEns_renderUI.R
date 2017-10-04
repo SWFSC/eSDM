@@ -183,7 +183,7 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
   
   # Multi
   if (length(input$ens_datatable_ensembles_rows_selected) > 1) {
-    f.val <- paste0("Multi_", perc.txt, res.txt, file.ext)
+    f.val <- paste0("eSDM_multi_", perc.txt, res.txt, file.ext)
   }
   # Single
   else {

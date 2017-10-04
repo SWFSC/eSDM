@@ -177,7 +177,7 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
   ## Determine if map is a multi- or single-map and name as appropriate
   if (length(unlist(model.idx.list)) > 1) {
     # Multi
-    f.val <- paste0("Multi_", res.txt, file.ext)
+    f.val <- paste0("eSDM_multi_", res.txt, file.ext)
   } else {
     # Single
     table.selected <- which(model.idx.null)
@@ -189,7 +189,7 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
       model.name <- vals$models.names[[idx.selected]]
       pred.name <- vals$models.data.names[[idx.selected]][1]
       
-      f.val <- paste0(prefix, "_", model.name, "__", pred.name, "__", 
+      f.val <- paste0("eSDM_", prefix, "_", model.name, "__", pred.name, "__", 
                       res.txt, file.ext)
     } else {
       # Ensemble model predictions
