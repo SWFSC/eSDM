@@ -10,6 +10,7 @@ ui.evalMetrics <- function() {
         ############################################################################### Available model predictions
         box(
           title = "Select Predictions to Evaluate", status = "warning", solidHeader = FALSE, width = 7, collapsible = TRUE, 
+          ui.instructions.multipletables.select(text.in = "evaluate:"), 
           DT::dataTableOutput("eval_models_table_orig_out"), 
           tags$br(), 
           DT::dataTableOutput("eval_models_table_over_out"), 

@@ -9,7 +9,7 @@ ui.export <- function() {
       fluidRow(
         box(
           title = "Select Predictions to Export", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE, 
-          textOutput("export_text_none_loaded"), 
+          ui.instructions.multipletables.select(text.in = "export:", sel.num = 1), 
           DT::dataTableOutput("export_table_orig_out"), 
           tags$br(), 
           DT::dataTableOutput("export_table_over_out"), 

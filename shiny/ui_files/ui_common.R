@@ -121,6 +121,37 @@ ui.instructions.poly.csv <- function() {
 }
 
 
+###########################################################
+ui.click.row.a1 <- paste("Click on a row in the table(s) below to select or",
+                        "deselect the model predictions.")
+ui.click.row.a2 <- paste("Click on row(s) in the table(s) below to select or", 
+                         "deselect the model predictions.")
+ui.click.row.b1 <- paste("You can only select or deselect a row when", 
+                         tags$em("Display additional information"), 
+                         "is unchecked.")
+ui.click.row.b2 <- paste("You can only select or deselect row(s) when", 
+                         tags$em("Display additional information"), 
+                         "is unchecked.")
+
+### Instructions for selecting model(s) from one table
+ui.instructions.table.select <- function(text.pre, text.in, sel.num = 2, 
+                                         text.other = FALSE) {
+  tags$h5(tags$strong("Select", text.pre, "model predictions", text.in), 
+          switch(sel.num, ui.click.row.a1, ui.click.row.a2), 
+          HTML(ifelse(text.other, 
+                      switch(sel.num, ui.click.row.b1, ui.click.row.b2), 
+                      HTML(NULL))))
+}
+
+### Instructions for selecting model(s )from the o-o-e trio of tables
+ui.instructions.multipletables.select <- function(text.in, sel.num = 2, 
+                                                  text.other = NULL) {
+  tags$h5(tags$strong("Select model predictions to", text.in), 
+          switch(sel.num, ui.click.row.a1, ui.click.row.a2), 
+          HTML(text.other))
+}
+
+
 ###############################################################################
 # Error/notification messages
 
@@ -129,20 +160,20 @@ ui.instructions.poly.csv <- function() {
 
 ### CSV
 ui.error.upload.csv <- tags$strong("Error: Please choose a file that has a .csv file extension", 
-                              style = "color: red")
+                                   style = "color: red")
 
 ### Raster
 ui.error.upload.raster <- tags$strong("Error: Could not load GIS raster using the uploaded file and band number", 
-                                 style = "color: red")
+                                      style = "color: red")
 
 ### Shapefile
 ui.error.upload.shp <- tags$strong("Error: Could not load GIS shapefile using the uploaded files", 
-                              style = "color: red")
+                                   style = "color: red")
 
 ### File gdb
 ui.error.upload.gdb <- tags$strong("Error: Could not load GIS file geodatabase feature class using", 
-                              "the provided path and filename", 
-                              style = "color: red")
+                                   "the provided path and filename", 
+                                   style = "color: red")
 
 
 ###########################################################
@@ -163,7 +194,7 @@ ui.notice.no.pred.overlaid <- function(box.width = 4) {
   box(width = box.width, 
       tags$h4("No overlaid model predictions have been created"), 
       tags$h5("Please create overlaid model predictions", 
-         "to use this section of the app")
+              "to use this section of the app")
   )
 }
 

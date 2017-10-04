@@ -12,23 +12,19 @@ ui.createEns <- function() {
           title = "Overlaid Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
           conditionalPanel(
             condition = "input.create_ens_table_subset == false", 
-            tags$h5("All overlaid model predictions will be used when creating ensemble predictions"), 
+            tags$h5(tags$strong("Select overlaid model predictions to ensemble:"), 
+                    "All overlaid model predictions will be used when creating ensemble predictions.", 
+                    "You can select specific sets of overlaid model predictions to ensemble when", 
+                    tags$em("Create ensemble using a subset of the overlaid models"), 
+                    "is checked."), 
             tableOutput("create_ens_table")
           ), 
           conditionalPanel(
             condition = "input.create_ens_table_subset == true", 
-            tags$h5("Select overlaid model predictions to be used when creating ensemble predictions:"), 
-            tags$h5("Click on row(s) in the table below to select the predictions"), 
+            ui.instructions.table.select(text.pre = "overlaid", text.in = "to ensemble:", sel.num = 2), 
             DT::dataTableOutput("create_ens_datatable")
           ), 
-          column(4, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid models")), 
-          column(
-            width = 8, 
-            conditionalPanel(
-              condition = "input.create_ens_table_subset", 
-              helpText("Click on a row to select models to use in ensemble")
-            )
-          )
+          column(12, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid models"))
         )
       ), 
       

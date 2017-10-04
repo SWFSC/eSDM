@@ -163,25 +163,11 @@ ui.overlay <- function() {
                fluidRow(
                  box(
                    title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-                   tags$h5("Select loaded model predictions:"), 
-                   tags$h5("Click on a row to select the model predictions to use as the base grid.", 
-                           "A row can only be selected if", tags$em("Display additional information"), "is unchecked."), 
+                   ui.instructions.table.select(text.pre = "loaded", text.in = "to use as the base grid:", sel.num = 1, 
+                                                text.other = TRUE), 
                    conditionalPanel("input.overlay_loaded_table_stats != true", DT::dataTableOutput("overlay_loaded_table")), 
                    conditionalPanel("input.overlay_loaded_table_stats", DT::dataTableOutput("overlay_loaded_stats_table")), 
-                   fluidRow(
-                     column(4, checkboxInput("overlay_loaded_table_stats", "Display additional information")), 
-                     column(
-                       width = 8, 
-                       conditionalPanel(
-                         condition = "input.overlay_loaded_table_stats != true", 
-                         helpText("")
-                       ), 
-                       conditionalPanel(
-                         condition = "input.overlay_loaded_table_stats", 
-                         helpText("A row can only be selected if 'Display additional information' is unchecked")
-                       )
-                     )
-                   )
+                   column(12, checkboxInput("overlay_loaded_table_stats", "Display additional information"))
                  ), 
                  box(
                    title = "Overlay Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 

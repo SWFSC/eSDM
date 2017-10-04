@@ -1,4 +1,4 @@
-### server.R for ***TODO***
+### server.R for the Ensemble Tool for Species Distribution Modeling (eSDM)
 # Designed by Sam Woodman
 
 

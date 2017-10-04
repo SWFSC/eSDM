@@ -1,13 +1,5 @@
-### ui.R for Ensemble Shiny App
+### ui.R for the Ensemble Tool for Species Distribution Modeling (eSDM)
 # Designed by Sam Woodman
-
-
-###############################################################################
-library(shiny)
-library(shinyjs)
-library(shinydashboard)
-library(DT) # Load here too because we need DT::dataTableOutput
-library(shinycssloaders)
 
 
 ###############################################################################
@@ -22,6 +14,14 @@ library(shinycssloaders)
 #    This includes reactiveValues
 # Separator for non-reactive functions: '.'
 # renderUI output names for widgets: 'output$inputId_uiOut_(widget type)'
+
+
+###############################################################################
+library(shiny)
+library(shinyjs)
+library(shinydashboard)
+library(DT) # Load here too because we need DT::dataTableOutput
+library(shinycssloaders)
 
 
 ###########################################################
