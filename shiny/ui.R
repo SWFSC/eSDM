@@ -17,6 +17,7 @@
 
 
 ###############################################################################
+### Load packages; packages installed in server.R (if necessary)
 library(shiny)
 library(shinyjs)
 library(shinydashboard)
@@ -50,7 +51,7 @@ ui <- dashboardPage(
   
   dashboardSidebar(
     sidebarMenu(id = "tabs", 
-                menuItem(HTML(paste0("eSDM Roadmap and", "<br/>", "Load or Save Session")), 
+                menuItem(HTML(paste0("eSDM Roadmap and", "<br/>", "Load or Save Environment")), 
                          tabName = "roadmap", 
                          icon = icon("road")), #icon("sitemap")
                 menuItem("Load Model Predictions", 

@@ -1,4 +1,4 @@
-### Lists and descriptions used multiple times in ui functions
+### Lists, descriptions, and other text used multiple times in ui functions
 
 
 ###############################################################################

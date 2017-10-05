@@ -14,6 +14,22 @@
 
 
 ###############################################################################
+### Install packages (if necessary), including packages loaded in ui.R
+# Credits: https://gist.github.com/benmarwick/5054846 via
+#          https://stackoverflow.com/questions/4090169
+list.of.packages <- c("dplyr", "sp", "rgdal", "rgeos", "raster", "cleangeo", 
+                      "lattice", "gridExtra", "RCurl", "ROCR", "DT", 
+                      "colorRamps",  "RColorBrewer", "viridis", "dichromat", 
+                      "sendmailR", "shiny", "shinyjs", "shinydashboard", 
+                      "shinycssloaders")
+
+list.of.packages.tf <- list.of.packages %in% installed.packages()[, "Package"]
+new.packages <- list.of.packages[!list.of.packages.tf]
+if (length(new.packages)) install.packages(new.packages) 
+
+
+###############################################################################
+### Load packages
 library(dplyr) # Loaded first so dplyr functions those that are masked
 library(sp)
 library(rgdal)
@@ -30,11 +46,6 @@ library(RColorBrewer)
 library(viridis)
 library(dichromat)
 library(sendmailR)
-
-### Install packages if necessary
-# install.packages(c("dplyr", "sp", "rgdal", "rgeos", "raster", "cleangeo", 
-#                    "lattice", "gridExtra", "RCurl", "ROCR", "DT", 
-#                    "colorRamps",  "RColorBrewer", "viridis", "dichromat"))
 
 
 ###############################################################################
