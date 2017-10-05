@@ -30,7 +30,7 @@ if (length(new.packages)) install.packages(new.packages)
 
 ###############################################################################
 ### Load packages
-library(dplyr) # Loaded first so dplyr functions those that are masked
+library(dplyr) # Loaded first so dplyr functions are those that are masked
 library(sp)
 library(rgdal)
 library(rgeos)

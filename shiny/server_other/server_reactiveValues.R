@@ -206,13 +206,13 @@ observe({
   
   vals.list <- reactiveValuesToList(vals)
   if(length(vals.list) != 36) {
-    shinyjs::info(
-      paste0("There was an error in eSDM data storage and processing.", 
-            "\n", 
-            "Please restart the app and report this error via ", 
-            "the 'Submit Feedback' tab. ", 
-            "Do not save the current working environment. ", 
-            "If this problem persists, please contact Karin Forney.")
-    )
+    text.message <- paste0(
+      "There was an error in eSDM data storage and processing.", 
+      "\n", 
+      "Please restart the app and report this error via ", 
+      "the 'Submit Feedback' tab. ", 
+      "Do not save the current working environment. ", 
+      "If this problem persists, please contact Karin Forney.")
+    shinyjs::info(text.message)
   }
 })
