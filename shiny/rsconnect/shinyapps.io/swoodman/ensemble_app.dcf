@@ -5,8 +5,8 @@ account: swoodman
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 212376
-bundleId: 1010824
+bundleId: 1011593
 url: https://swoodman.shinyapps.io/ensemble_app/
-when: 1507136514.92329
+when: 1507165187.56829
 asMultiple: FALSE
 asStatic: FALSE
