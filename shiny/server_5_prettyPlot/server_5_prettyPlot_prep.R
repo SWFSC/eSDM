@@ -222,6 +222,14 @@ pretty_plot_scales_list <- reactive({
       # Read in tick locations
       x.at <- unlist(strsplit(input$pretty_plot_tick_manual_lon, ", "))
       y.at <- unlist(strsplit(input$pretty_plot_tick_manual_lat, ", "))
+      validate(
+        need(isTruthy(x.at), 
+             paste("Error: Please either enter 'Longitude tick locations'" , 
+                   "values or select \"Use default tick locations\"")), 
+        need(isTruthy(y.at), 
+             paste("Error: Please either enter 'Latitude tick locations'" , 
+                   "values or select \"Use default tick locations\""))
+      )
       
       # Convert tick locations to numbers
       x.at <- suppressWarnings(as.numeric(x.at))

@@ -53,5 +53,19 @@ pretty_plot_color_preview <- reactive({
   color.num     <- pretty_plot_colorscheme_palette_num()[[1]]
   color.palette <- pretty_plot_colorscheme_palette_num()[[2]]
   
-  pie(rep(1, color.num), col = rev(color.palette))
+  # pie(rep(1, color.num), col = rev(color.palette))
+  
+  # plot(NA, xlim = c(0, 1), ylim = c(0, color.num), 
+  #      axes = FALSE, xlab = "", ylab = "")
+  # for (i in 1:color.num) {
+  #   color <- color.palette[i]
+  #   polygon(x = c(0, 0, 1, 1), y = c(i - 1, i, i, i - 1), col = color, border = NA)
+  # }
+  par(mai=c(0.1, 0.82, 0.1, 0))
+  image(1, 1:color.num, t(as.matrix(1:color.num)), col = color.palette,
+        axes = FALSE, xlab = "", ylab = "")#, mai = c(0, 0.82, 0, 0))
+  
+  graphics::box(col = "black")
+  axis(2, at = 1:color.num, tick = FALSE, las = 1)
+  par(mai=c(1.02, 0.82, 0.82, 0.42))
 })

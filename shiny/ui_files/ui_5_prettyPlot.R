@@ -49,7 +49,7 @@ ui.prettyPlot <- function() {
                   column(10, textOutput("pretty_plot_values_event_text"))  
                 ), 
                 tags$br(), 
-                tags$h5("Plotting or downloading a large set of predictions may take several minutes")
+                tags$h5("Plotting or downloading a large set of model predictions may take several minutes")
               ), 
               
               ################################################ Download map
@@ -84,12 +84,14 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12, 
-                    checkboxInput("pretty_plot_proj_ll", "Generate map in WGS 84 geographic coordinates (lat/long coordinates)", 
+                    checkboxInput("pretty_plot_proj_ll", "Generate map in WGS 84 geographic coordinates (decimal degrees)", 
                                   value = TRUE), 
                     conditionalPanel(
                       condition = "input.pretty_plot_proj_ll == false", 
                       uiOutput("pretty_plot_proj_idx_uiOut_select")
-                    ), 
+                    ),
+                    helpText("Map range values must be in WGS 84 geographic coordinates,", 
+                             "with a range of [-180, 180] for longitudes and [-90, 90] for latitudes"), 
                     fluidRow(
                       column(6, uiOutput("pretty_plot_range_xmin_uiOut_num")), 
                       column(6, uiOutput("pretty_plot_range_xmax_uiOut_num"))
@@ -113,9 +115,12 @@ ui.prettyPlot <- function() {
                       column(6, textInput("pretty_plot_xlab", tags$h5("X-axis label"), value = "Longitude")), 
                       column(6, textInput("pretty_plot_ylab", tags$h5("Y-axis label"), value = "Latitude"))
                     ), 
+                    helpText("Size values are relative to 1, which is the default size"), 
                     fluidRow(
-                      column(6, numericInput("pretty_plot_title_cex", tags$h5("Title size"), value = 1.4, step = 0.1)), 
-                      column(6, numericInput("pretty_plot_lab_cex", tags$h5("Axis label size"), value = 1, step = 0.1))
+                      column(6, numericInput("pretty_plot_title_cex", tags$h5("Title size (value is relative to 1)"), 
+                                             value = 1.4, step = 0.1)), 
+                      column(6, numericInput("pretty_plot_lab_cex", tags$h5("Axis label size (value is relative to 1)"), 
+                                             value = 1, step = 0.1))
                     )
                   )
                 )
@@ -127,7 +132,10 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12, 
-                    checkboxInput("pretty_plot_tick", "Include tick marks in map", value = TRUE), 
+                    fluidRow(
+                      column(6, checkboxInput("pretty_plot_tick", "Include tick marks in map", value = TRUE)),
+                      column(6, tags$br(), helpText("Length and size values are relative to 1"))
+                    ), 
                     fluidRow(
                       column(
                         width = 6, 
@@ -142,13 +150,17 @@ ui.prettyPlot <- function() {
                         width = 6, 
                         conditionalPanel(
                           condition = "input.pretty_plot_tick", 
-                          numericInput("pretty_plot_tick_length", tags$h5("Tick length"), value = 1.0, min = 0, step = 0.1)
+                          numericInput("pretty_plot_tick_length", tags$h5("Tick length"), 
+                                       value = 1.0, min = 0, step = 0.1)
                         )
                       )
                     ), 
                     fluidRow(
                       conditionalPanel(
                         condition = "input.pretty_plot_tick && input.pretty_plot_tick_manual == 2", 
+                        column(12, helpText("Tick location values must be in WGS 84 geographic coordinates (decimal degrees),", 
+                                            "with a range of [-180, 180] for longitudes and [-90, 90] for latitudes.", 
+                                            "Enter locations as '#, #, ..., #'")), 
                         column(6, textInput("pretty_plot_tick_manual_lon", tags$h5("Longitude tick locations"), value = "")), 
                         column(6, textInput("pretty_plot_tick_manual_lat", tags$h5("Latitude tick locations"), value = ""))
                       )
@@ -199,14 +211,14 @@ ui.prettyPlot <- function() {
                     width = 12, 
                     fluidRow(
                       column(
-                        width = 6, 
+                        width = 7, 
                         radioButtons("pretty_plot_color_perc", tags$h5("Prediction display option"), 
                                      choices = list("Plot relative percentages of predictions" = 1, 
                                                     "Plot numerical values of predictions" = 2)), 
                         uiOutput("pretty_plot_color_palette_uiOut_select"), 
                         uiOutput("pretty_plot_color_num_uiOut_num")
                       ), 
-                      column(6, plotOutput("pretty_plot_color_preview_plot", height = "250px"))
+                      column(3, offset = 1, plotOutput("pretty_plot_color_preview_plot", height =  "250px"))
                     )
                   )
                 )
@@ -214,7 +226,7 @@ ui.prettyPlot <- function() {
               ################################################## Legend
               column(
                 width = 4, 
-                tags$strong("Legend"), 
+                tags$strong("Legend and background color"), 
                 fluidRow(
                   box(
                     width = 12, 
@@ -236,7 +248,8 @@ ui.prettyPlot <- function() {
                           )
                         )
                       )
-                    ) 
+                    ), 
+                    tags$h5("background color")
                   )
                 )
               ), 
