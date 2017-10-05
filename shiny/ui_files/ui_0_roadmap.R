@@ -32,16 +32,20 @@ ui.roadmap <- function() {
               column(3, tags$img(src = "noaa_logo.png",  style = "height: 170px")), 
               column(
                 width = 8, offset = 1, 
-                tags$h5(tags$strong("Credits:"), 
-                        "Credit to Mridula, etc."), 
-                tags$h5(tags$strong("Disclaimer:"), 
-                        "This application is developed and maintained by scientists at the", 
-                        "NOAA Fisheries Southwest Fisheries Science Center and should not be", 
-                        "construed as official communication of NMFS, NOAA, or the U.S. Dept. of Commerce.", 
-                        "This is the beta version of this application, and should not be cited nor should the information", 
-                        "be used for official decisions with out consultation.", 
-                        "While the best efforts have been made to insure the highest quality,", 
-                        "tools such as this are under constant development and are subject to change.")
+                tags$h5(
+                  tags$strong("Credits"), 
+                  tags$p("Credit to Mridula, etc.")
+                ), 
+                tags$h5(
+                  tags$strong("Disclaimer"), 
+                  tags$p("This application is developed and maintained by scientists at the", 
+                         "NOAA Fisheries Southwest Fisheries Science Center and should not be", 
+                         "construed as official communication of NMFS, NOAA, or the U.S. Dept. of Commerce.", 
+                         "This is the beta version of this application, and should not be cited nor should the information", 
+                         "be used for official decisions with out consultation.", 
+                         "While the best efforts have been made to insure the highest quality,", 
+                         "tools such as this are under constant development and are subject to change.")
+                )
               )
             )
           )
