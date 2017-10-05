@@ -27,7 +27,7 @@ ui.roadmap <- function() {
           ), 
           box(
             width = 12, #background = "light-blue", #title = "Disclaimer and credits"
-            # Valid colors are: red, yellow, aqua, blue, light-blue, green, navy, teal, olive, lime, orange, fuchsia, purple, maroon, black
+            # Valid colors are: shinydashboard::validColors()
             fluidRow(
               column(3, tags$img(src = "noaa_logo.png",  style = "height: 170px")), 
               column(

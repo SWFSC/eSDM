@@ -70,8 +70,6 @@ server <- function(input, output, session) {
   ### Load all other server code: tab-specific scripts and general server code
   source(file.path("server_other", "server_reactiveValues.R"), local = TRUE, chdir = TRUE)
   
-  source("temp.R", local = TRUE, chdir = TRUE)
-  
   # Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_csv.R"), local = TRUE, chdir = TRUE)

@@ -3,7 +3,9 @@
 
 
 ###############################################################################
-### 'Initialize' all 33 reactive values
+### 'Initialize' all 36 reactive values
+# Note: If any reactiveValues elements are added, be sure to update length num 
+#       in observe() statement below
 vals <- reactiveValues(
   # Objects that store loaded models and related info
   models.pix = list(),            # List of models as SpatialPixelsDFs or rasters
@@ -54,6 +56,7 @@ vals <- reactiveValues(
   pretty.plotted.idx = NULL       # List of vectors of the indicies of currently pretty-plotted models
 )
 
+
 ###############################################################################
 # Load and save current data
 
@@ -67,7 +70,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
             input$load_app_envir_file$type == ""), 
          "Error: Please load a file with the extension '.RDATA'")
   )
-
+  
   withProgress(message = "Loading saved environment", value = 0.4, {
     load(file.load$datapath)
     validate(
@@ -162,3 +165,54 @@ output$save_app_envir <- downloadHandler(
 )
 
 ###############################################################################
+### Make sure no extra reactive values get added and length(vals) == 6
+observe({
+  vals$models.pix
+  vals$models.ll
+  vals$models.orig
+  vals$models.names
+  vals$models.data.name
+  vals$models.pred.type
+  vals$models.specs
+  vals$models.plotted.idx
+  vals$overlay.bound
+  vals$overlay.land
+  vals$overlay.crs
+  vals$overlay.base.idx
+  vals$overlay.base.sp
+  vals$overlay.base.specs
+  vals$overlaid.models
+  vals$overlaid.models.specs
+  vals$ens.over.pix
+  vals$ens.over.wpoly.filename
+  vals$ens.over.wpoly.spdf
+  vals$ens.over.wpoly.coverage
+  vals$ensemble.models
+  vals$ensemble.method
+  vals$ensemble.weights
+  vals$ensemble.rescaling
+  vals$ensemble.overlaid.idx
+  vals$ensemble.plotted.idx
+  vals$eval.models.idx
+  vals$eval.data.list
+  vals$eval.data.specs
+  vals$eval.data.gis.file.1
+  vals$eval.data.gis.file.2p
+  vals$eval.data.gis.file.2a
+  vals$eval.metrics
+  vals$eval.metrics.names
+  vals$pretty.params.list
+  vals$pretty.plotted.idx
+  
+  vals.list <- reactiveValuesToList(vals)
+  if(length(vals.list) != 36) {
+    shinyjs::info(
+      paste0("There was an error in eSDM data storage and processing.", 
+            "\n", 
+            "Please restart the app and report this error via ", 
+            "the 'Submit Feedback' tab. ", 
+            "Do not save the current working environment. ", 
+            "If this problem persists, please contact Karin Forney.")
+    )
+  }
+})
