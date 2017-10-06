@@ -182,10 +182,12 @@ ui.overlay <- function() {
                          conditionalPanel(
                            condition = "input.overlay_samegrid_indicator", 
                            tags$span(uiOutput("overlay_samegrid_warning_text"), style = "color: red"), 
-                           helpText("Coordinate system of the overlaid models will be the current", 
+                           helpText("The coordinate system of the overlaid models will be the current", 
                                     "coordinate system of the model predictions"), 
+                           helpText("Percent overlap is not applicable for the same-grid overlay because", 
+                                    "all of the predictions are on the same grid and thus overlay on each other exactly"), 
                            actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay"), 
-                           textOutput("overlay_samegrid_all_text")
+                           tags$span(textOutput("overlay_samegrid_all_text"), style = "color: blue")
                          )
                        ), 
                        conditionalPanel(
