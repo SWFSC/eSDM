@@ -17,7 +17,7 @@ table_orig <- reactive({
     switch(as.character(i), "1" = "Absolute", "2" = "Relative")}
   )
   
-  names(table.out) <- c("Model filename", "Prediction", "Error", 
+  names(table.out) <- c("SDM filename", "Prediction", "Error", 
                         "Weight", "Prediction type")
   row.names(table.out) <- paste("Original", 1:nrow(table.out))
   
@@ -33,7 +33,7 @@ table_orig_stats <- reactive({
                           t(as.data.frame(vals$models.specs)), 
                           stringsAsFactors = FALSE)
   
-  names(table.out) <- c("Model filename", "Resolution", "Cell count", 
+  names(table.out) <- c("SDM filename", "Resolution", "Cell count", 
                         "Prediction count", "Abundance", "Long, lat range")
   row.names(table.out) <- paste("Original", 1:nrow(table.out))
   
@@ -55,7 +55,7 @@ table_overlaid <- reactive({
   table.out <- data.frame(table.out1, overlaid.models.specs, 
                           stringsAsFactors = FALSE)
   
-  names(table.out) <- c("Model filename", "Prediction", "Error", "Weight", 
+  names(table.out) <- c("SDM filename", "Prediction", "Error", "Weight", 
                         "Prediction type", "Resolution", "Cell count", 
                         "Prediction count", "Abundance", "Long, lat range")
   row.names(table.out) <- paste("Overlaid", 1:nrow(table.out))
