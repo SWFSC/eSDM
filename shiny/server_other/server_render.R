@@ -120,13 +120,22 @@ output$overlay_land_gis_gdb_message <- renderText({
 })
 
 ###########################################################
-### Overlaying process outputs
-output$overlay_overlay_all_text <- renderText({
-  if (all(overlay_all())) "All model predictions overlaid successfully"
-})
+# Overlaying process outputs
 
 output$overlay_overlaid_models_message <- renderText({
   if (length(vals$overlaid.model) > 0) "Overlaid models are created"
+})
+
+#######################################
+### Samegrid overlay
+output$overlay_samegrid_all_text <- renderText({
+  overlay_samegrid_all()
+})
+
+#######################################
+### Standard overlay
+output$overlay_overlay_all_text <- renderText({
+  overlay_all()
 })
 
 ###########################################################

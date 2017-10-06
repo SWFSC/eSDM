@@ -16,12 +16,16 @@ overlay_crs <- reactive({
 
 
 ###############################################################################
-### Top-level function of OverlayModels
+### Do overlay of predictions that are already on the same grid
+# This functionality is in 'server_2_overlay_overlayModels_samegrid.R'
+
+###############################################################################
+### Where the overlay magic aka science happens
 
 overlay_all <- eventReactive(input$overlay_create_overlaid_models, { 
   # t.1 <- Sys.time() # For testing purposes
   #########################################################
-  # Reset/hide things
+  # Reset/hide reactive values, preview plots, and eval metrics
   
   ### Reset vals$overlaid..., vals.ens.over..., vals$ensemble...,  
   # and vals$eval... (if any overlaid metrics are calc'd) 
@@ -238,8 +242,12 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   #########################################################
   # print("The entire overlay process took"); print(Sys.time() - t.1)
   
-  return(c(gIsValid(base.spdf), gIsValid(base.sp), 
-           all(sapply(models.overlaid, gIsValid))))
+  if (all(c(gIsValid(base.spdf), gIsValid(base.sp), 
+           sapply(models.overlaid, gIsValid)))) {
+    "All model predictions overlaid successfully"
+  } else {
+    "Model predictions overlaid, but outputs invalid. Please restart eSDM."
+  }
 })
 
 ###############################################################################

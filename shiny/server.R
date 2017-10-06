@@ -15,17 +15,17 @@
 
 ###############################################################################
 ### Install packages (if necessary), including packages loaded in ui.R
-# Credits: https://gist.github.com/benmarwick/5054846 via
-#          https://stackoverflow.com/questions/4090169
+# Code structure credits: https://gist.github.com/benmarwick/5054846 via
+#                         https://stackoverflow.com/questions/4090169
 list.of.packages <- c("dplyr", "sp", "rgdal", "rgeos", "raster", "cleangeo", 
                       "lattice", "gridExtra", "RCurl", "ROCR", "DT", 
                       "colorRamps",  "RColorBrewer", "viridis", "dichromat", 
-                      "sendmailR", "shiny", "shinyjs", "shinydashboard", 
-                      "shinycssloaders")
+                      "colourpicker",  "sendmailR", 
+                      "shiny", "shinyjs", "shinydashboard", "shinycssloaders")
 
 list.of.packages.tf <- list.of.packages %in% installed.packages()[, "Package"]
 new.packages <- list.of.packages[!list.of.packages.tf]
-if (length(new.packages)) install.packages(new.packages) 
+if (length(new.packages)) install.packages(new.packages)
 
 
 ###############################################################################
@@ -45,6 +45,7 @@ library(colorRamps)
 library(RColorBrewer)
 library(viridis)
 library(dichromat)
+library(colourpicker)
 library(sendmailR)
 
 
@@ -86,6 +87,7 @@ server <- function(input, output, session) {
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_provided.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels_base.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_overlayModels_samegrid.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_renderUI.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, chdir = TRUE)
   

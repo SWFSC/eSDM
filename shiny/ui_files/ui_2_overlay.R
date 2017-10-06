@@ -177,12 +177,14 @@ ui.overlay <- function() {
                        box(
                          width = 12, 
                          checkboxInput("overlay_samegrid_indicator", 
-                                       "Check if all loaded model predictions were made on the same grid", 
+                                       "Check box if all loaded model predictions were made on the same grid", 
                                        value = FALSE), 
                          conditionalPanel(
                            condition = "input.overlay_samegrid_indicator", 
-                           helpText("perform checks, put stuff here. Action button will be behind a flag"), 
-                           actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay")
+                           helpText("Perform checks, put stuff here. Action button will be behind a flag based on checks"), 
+                           helpText("Coordinate system will remain the current coordinate system of the model predictions"), 
+                           actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay"), 
+                           textOutput("overlay_samegrid_all_text")
                          )
                        ), 
                        conditionalPanel(

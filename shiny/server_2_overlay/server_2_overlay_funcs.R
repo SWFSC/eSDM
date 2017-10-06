@@ -17,7 +17,7 @@ overlay.gis.crs <- function(gis.loaded) {
     need(!is.na(crs.curr), "Error: GIS file does not have defined projection")
   )
   
-  if(identical(crs.curr, crs.ll)) { 
+  if (identical(crs.curr, crs.ll)) { 
     gis.loaded
   } else {
     spTransform(gis.loaded, crs.ll)
@@ -63,38 +63,42 @@ valid.poly <- function(poly.invalid, description = NULL) {
 # overlap.perc is the percentage of each base polygon that must be...
 # ...overlapped by pol.spdf poly(s) for the new density to not be NA
 
-overlay.func <- function(pol.base, pol.spdf, overlap.perc)
-{
+overlay.func <- function(pol.base, pol.spdf, overlap.perc) {
+  #########################################################
+  ### Prep and get intersecting overlap
   pol.sp <- as(pol.spdf, "SpatialPolygons")
-  
+
   over.base <- over(pol.base, pol.sp, returnList = TRUE)
   over.base.idx <- sapply(over.base, unname)
   
-  res.df <- lapply(seq_along(over.base.idx), function(i) { #EAB onto JVR 85s
+  res.df <- lapply(seq_along(over.base.idx), function(i) {
     curr.idx <- over.base.idx[[i]]
-    if(length(curr.idx) != 0) {
+    if (length(curr.idx) != 0) {
       temp <- intersect(pol.base[i,], pol.spdf[curr.idx,])
-      if(!is.null(temp)) temp
+      if (!is.null(temp)) temp
       else NA
     } 
     else NA
   })
-
+  
   
   #########################################################
   ### Remove poly info if pol.spdf did not overlap at least overlap.perc of it
-  area.res <- sapply(res.df, function(j) { # JVR base 10s ## Efficiency???
-    if(class(j) != "logical") area(j)
-    else NA
+  area.res <- sapply(res.df, function(j) {
+    if (class(j) != "logical") {
+      area(j)
+    } else {
+      NA
+    }
   })
   area.res.sum <- sapply(area.res, sum)
-
+  
   area.base <- area(pol.base)
   area.res.base.ratio <- round(area.res.sum / area.base, 5) 
   # 5 makes area.which.na == area.which.diff for overlap.perc = 1
   
   area.which.na <- which(area.res.base.ratio < overlap.perc)
-  if(length(area.which.na) > 0) res.df[area.which.na] <- NA
+  if (length(area.which.na) > 0) res.df[area.which.na] <- NA
   
   
   #########################################################
@@ -102,19 +106,20 @@ overlay.func <- function(pol.base, pol.spdf, overlap.perc)
   area.res.km <- sapply(area.res, function(i) {i / 1e+06})
   
   overlaid.data <- mapply(function(r, a.rea) {
-    if(class(r) != "logical") {
+    if (class(r) != "logical") {
       c(sum(a.rea * r$Pred),                # Abundance
         sum(a.rea * r$Error) / sum(a.rea),  # Error
         sum(a.rea * r$Weight) / sum(a.rea)) # Weights for pixels
+    } else {
+      c(NA, NA, NA)
     }
-    else c(NA, NA, NA)
   }, res.df, area.res.km)
   
   overlaid.data.df <- as.data.frame(t(overlaid.data))
   names(overlaid.data.df) <- c("Abund", "Error.overlaid", "Weight.overlaid")
   
   abund.sum <- sum(overlaid.data.df$Abund, na.rm = TRUE)
-
+  
   
   #########################################################
   ### Create and return new spdf
@@ -124,7 +129,7 @@ overlay.func <- function(pol.base, pol.spdf, overlap.perc)
   names(overlaid.data.df)[1] <- "Pred.overlaid"
   
   spdf.overlaid <- SpatialPolygonsDataFrame(pol.base, overlaid.data.df, 
-                                              match.ID = FALSE)
+                                            match.ID = FALSE)
   
   return(spdf.overlaid)
 }
