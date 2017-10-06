@@ -71,6 +71,19 @@ server <- function(input, output, session) {
   ### Load all other server code: tab-specific scripts and general server code
   source(file.path("server_other", "server_reactiveValues.R"), local = TRUE, chdir = TRUE)
   
+  # Roadmap: download sample data
+  output$download_sample_data <- downloadHandler(
+    filename = function() {
+      "eSDM_sample_data.zip"
+    },
+    content = function(file) {
+      browser()
+      # Might have to get each file individually
+      download.file(url("https://github.com/smwoodman/eSDM/raw/master/data_provided"), 
+                    destfile = file)
+    }
+  )
+
   # Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_csv.R"), local = TRUE, chdir = TRUE)

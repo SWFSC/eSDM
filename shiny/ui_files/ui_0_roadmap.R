@@ -9,8 +9,8 @@ ui.roadmap <- function() {
         fluidRow(
           box(
             width = 12, 
-            h4("TODO: eSDM Roadmap"), 
-            actionButton("download_sample_data", "TODO: Download sample data")
+            h4("TODO: eSDM Roadmap")
+            # downloadButton("download_sample_data", "Download sample data")
           )
         )
       ), 
