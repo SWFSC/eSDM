@@ -102,7 +102,7 @@ output$pretty_plot_color_palette_uiOut_select <- renderUI({
 
 ### Number of colors
 # Selectively give user input control, depending on perc/palette
-# input$pretty_plot_color_palette doesn't change if helpText() is outputted, 
+# input$pretty_plot_color_palette is NULL if helpText() is outputted, 
 # but colorschem.num value is hardcoded for those situations in 
 # pretty_plot_colorscheme_list()
 output$pretty_plot_color_num_uiOut_num <- renderUI({
