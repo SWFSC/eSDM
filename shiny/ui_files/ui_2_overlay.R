@@ -181,8 +181,9 @@ ui.overlay <- function() {
                                        value = FALSE), 
                          conditionalPanel(
                            condition = "input.overlay_samegrid_indicator", 
-                           helpText("Perform checks, put stuff here. Action button will be behind a flag based on checks"), 
-                           helpText("Coordinate system will remain the current coordinate system of the model predictions"), 
+                           tags$span(uiOutput("overlay_samegrid_warning_text"), style = "color: red"), 
+                           helpText("Coordinate system of the overlaid models will be the current", 
+                                    "coordinate system of the model predictions"), 
                            actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay"), 
                            textOutput("overlay_samegrid_all_text")
                          )

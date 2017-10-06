@@ -1,35 +1,34 @@
 ### Get crs in which to do overlay
-### Overlay all models onto selected base grid
-### Create vals$ens.over... objects
+### Reset/hide reactive values, preview plots, and eval metrics
+### Overlay models onto base grid and create vals$ens.over... objects
+
+### Overlay predictions that are already on the same grid...
+### ...functionality is in 'server_2_overlay_overlayModels_samegrid.R'
 
 
 ###############################################################################
 ### Get crs object with projection to be used in overlay process
 # Currently this only handles the loaded model preds as possible inputs
 overlay_crs <- reactive({
-  if (input$overlay_proj_ll) {
-    crs.ll
-  } else {
+  if (input$overlay_samegrid_indicator) {
     crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
+    
+  } else {
+    if (input$overlay_proj_ll) {
+      crs.ll
+    } else {
+      crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
+    }
   }
 })
 
 
 ###############################################################################
-### Do overlay of predictions that are already on the same grid
-# This functionality is in 'server_2_overlay_overlayModels_samegrid.R'
-
-###############################################################################
-### Where the overlay magic aka science happens
-
-overlay_all <- eventReactive(input$overlay_create_overlaid_models, { 
-  # t.1 <- Sys.time() # For testing purposes
-  #########################################################
-  # Reset/hide reactive values, preview plots, and eval metrics
-  
-  ### Reset vals$overlaid..., vals.ens.over..., vals$ensemble...,  
-  # and vals$eval... (if any overlaid metrics are calc'd) 
-  # before creating new overlaid
+### Reset vals$overlaid..., vals.ens.over..., vals$ensemble...,  
+# and vals$eval... (if any overlaid metrics are calc'd) 
+# before creating new overlaid
+### Called in overlay_all() and overlay_samegrid_all()
+overlay_reset <- reactive({
   vals$overlay.crs <- NULL
   vals$overlay.base.idx <- NULL
   vals$overlay.base.sp <- NULL
@@ -71,6 +70,18 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   
   ### Hide elements: this is done in server_hide_show.R
   
+  TRUE
+})
+
+
+###############################################################################
+### Where the overlay magic aka science happens
+
+overlay_all <- eventReactive(input$overlay_create_overlaid_models, { 
+  # t.1 <- Sys.time() # For testing purposes
+  #########################################################
+  ### Reset/hide reactive values, preview plots, and eval metrics
+  overlay_reset()
   
   #########################################################
   ### Model overlay prep
@@ -243,7 +254,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   # print("The entire overlay process took"); print(Sys.time() - t.1)
   
   if (all(c(gIsValid(base.spdf), gIsValid(base.sp), 
-           sapply(models.overlaid, gIsValid)))) {
+            sapply(models.overlaid, gIsValid)))) {
     "All model predictions overlaid successfully"
   } else {
     "Model predictions overlaid, but outputs invalid. Please restart eSDM."

@@ -52,7 +52,7 @@ options = list(dom = 't'), selection = "multiple")
 
 ### Table of stats of loaded original model preds
 output$models_loaded_table_stats <- DT::renderDataTable({
-  table_orig_stats()[, -3] #'[, -3]' is to remove Error column
+  table_orig_stats()
 }, 
 options = list(dom = 't'), selection = "none")
 
@@ -77,7 +77,7 @@ options = list(dom = 't'), selection = "single")
 
 ### Table of stats of loaded model predictions
 output$overlay_loaded_stats_table <- DT::renderDataTable({
-  table_orig_stats()[, -3] #'[, -3]' is to remove Error column
+  table_orig_stats()
 }, 
 options = list(dom = 't'), selection = "none")
 
@@ -128,6 +128,9 @@ output$overlay_overlaid_models_message <- renderText({
 
 #######################################
 ### Samegrid overlay
+output$overlay_samegrid_warning_text <- renderUI({
+  HTML(overlay_samegrid_warning())
+})
 output$overlay_samegrid_all_text <- renderText({
   overlay_samegrid_all()
 })

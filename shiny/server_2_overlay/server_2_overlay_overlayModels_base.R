@@ -4,8 +4,11 @@
 ### ...if they're called all their inputs exist
 
 
+##############################################################################
+### Process 
+
 ###############################################################################
-### Top-level: Create base.spdf
+### Create base.spdf
 overlay_create_base_spdf <- reactive({
   base.spdf <- overlay_valid_base()
   # The following are the vals$ versions to handle NULL cases
