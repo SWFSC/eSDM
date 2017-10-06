@@ -94,9 +94,15 @@ pretty_plot_colorscheme_palette_num <- reactive({
   
   perc <- input$pretty_plot_color_perc == 1
   color.palette.idx <- input$pretty_plot_color_palette
-  temp.color.num <- ifelse(isTruthy(input$pretty_plot_color_num), 
-                           input$pretty_plot_color_num, NA)
-  color.num <- ifelse(perc, 10, temp.color.num)
+  color.num <- 10
+  if (!perc) {
+    color.num <- val.pretty.color.num()
+    
+    # color.num is supposed to be NULL for color.palette.idx %in% c(1, 6)
+    # This forces func to wait until renderUI for color.num has caught up
+    if (color.palette.idx %in% 2:5) req(color.num)
+  }
+  # browser()
   
   ### Set number of colors and color palette
   if (color.palette.idx == 1) {
@@ -107,14 +113,14 @@ pretty_plot_colorscheme_palette_num <- reactive({
   } else if (color.palette.idx == 2) {
     validate(
       need(color.num <= 11, 
-           "Error:RColorBrewer: Spectral palette has a max of 11 colors")
+           "Error: 'RColorBrewer: Spectral' palette has a max of 11 colors")
     )
     color.palette <- rev(RColorBrewer::brewer.pal(color.num, "Spectral"))
     
   } else if (color.palette.idx == 3) {
     validate(
       need(color.num <= 9, 
-           "Error: RColorBrewer: YlGnBu palette has a max of 9 colors")
+           "Error: 'RColorBrewer: YlGnBu' palette has a max of 9 colors")
     )
     color.palette <- rev(RColorBrewer::brewer.pal(color.num, "YlGnBu"))
     
@@ -291,19 +297,20 @@ pretty_plot_scales_list <- reactive({
 # sp.layout = list(world.layer, states.layer, states.lab.layer)
 
 pretty_plot_splayout_list <- reactive({
-  # browser()
+  ### Set background color of the panel ###
+  panel.layer <- list("panel.fill", input$pretty_plot_background_color, 
+                      first = TRUE)
+  
   polys.which <- as.numeric(input$pretty_plot_other_obj_which)
-  if (length(polys.which) == 0) return()
+  if (length(polys.which) == 0) return(list(panel.layer))
   
   polys.list.all <- list(vals$overlay.bound, vals$overlay.land)
   prettyplot.crs <- pretty_plot_models_crs()
   ## Allow labels from land poly???
   
-  ### Set background color of the panel ###
-  # panel.layer <- list("panel.fill", "pink", first = TRUE)
-  #########################################
   
-  lapply(polys.which, function(poly.idx) {
+  #########################################
+  sp.layout2 <- lapply(polys.which, function(poly.idx) {
     poly.curr <- polys.list.all[[poly.idx]]
     
     # Project if necessary
@@ -336,6 +343,8 @@ pretty_plot_splayout_list <- reactive({
       validate(need(FALSE, "Error: Pretty plot sp.layout failed"))
     }
   })
+  
+  c(list(panel.layer), sp.layout2)
 })
 
 ###############################################################################

@@ -226,13 +226,21 @@ ui.prettyPlot <- function() {
               ################################################## Legend
               column(
                 width = 4, 
-                tags$strong("Legend and background color"), 
+                tags$strong("Background color and legend"), 
                 fluidRow(
                   box(
                     width = 12, 
                     fluidRow(
-                      column(4, align = "center", checkboxInput("pretty_plot_legend", "Include legend in plot", value = TRUE))
-                    ),
+                      column(6, colourInput("pretty_plot_background_color", tags$h5("Click to select background color"), 
+                                            showColour = "background")), 
+                      column(
+                        width = 5, offset = 1, 
+                        tags$br(), tags$br(), 
+                        actionButton("pretty_plot_background_reset_execute", "Reset background color")
+                      )
+                    ), 
+                    tags$br(), 
+                    checkboxInput("pretty_plot_legend", "Include legend with map", value = TRUE), 
                     conditionalPanel(
                       condition = "input.pretty_plot_legend", 
                       fluidRow(
@@ -243,13 +251,12 @@ ui.prettyPlot <- function() {
                           width = 6, 
                           conditionalPanel(
                             condition = "input.pretty_plot_color_perc == 2", 
-                            numericInput("pretty_plot_legend_round", tags$h5("Number of decimals to display in legend"), 
+                            numericInput("pretty_plot_legend_round", tags$h5("Legend labels: number of decimals"), 
                                          value = 10, min = 1, step = 1)
                           )
                         )
                       )
-                    ), 
-                    tags$h5("background color")
+                    )
                   )
                 )
               ), 

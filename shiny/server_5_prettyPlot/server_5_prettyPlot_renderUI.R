@@ -92,8 +92,12 @@ output$pretty_plot_color_palette_uiOut_select <- renderUI({
   
   if (input$pretty_plot_color_perc == 1) choices.list <- choices.list[-c(3, 6)]
   
+  col.sel <- input$pretty_plot_color_palette
+  if (!(col.sel %in% choices.list)) col.sel <- 1
+  
   selectInput("pretty_plot_color_palette", tags$h5("Color palette"), 
-              choices = choices.list, selected = NULL)
+              choices = choices.list, 
+              selected = col.sel)
 })
 
 ### Number of colors
@@ -103,31 +107,47 @@ output$pretty_plot_color_palette_uiOut_select <- renderUI({
 # pretty_plot_colorscheme_list()
 output$pretty_plot_color_num_uiOut_num <- renderUI({
   if (input$pretty_plot_color_perc == 1) {
-    helpText("The number of colors must be ten when using", 
+    helpText("The number of colors must be ten when plotting", 
              "relative percentages of predictions")
     
-  } else if (input$pretty_plot_color_palette == 1) {
-    helpText("The number of colors must be 10 when", 
-             "using this color palette")
-    
-  } else if (input$pretty_plot_color_palette == 2) {
-    numericInput("pretty_plot_color_num", 
-                 tags$h5("Number of colors (Min: 3; Max: 11)"), 
-                 value = 11, step = 1, min = 3, max = 11)
-    
-  } else if (input$pretty_plot_color_palette == 3) {
-    numericInput("pretty_plot_color_num", 
-                 tags$h5("Number of colors (Min: 3; Max: 9)"), 
-                 value = 9, step = 1, min = 3, max = 9)
-    
-  } else if (input$pretty_plot_color_palette == 6) {
-    helpText("The number of colors must be 12 when", 
-             "using this color palette")
-    
   } else {
-    numericInput("pretty_plot_color_num", tags$h5("Number of colors"), 
-                 value = 10, step = 1, min = 1)
+    if (input$pretty_plot_color_palette == 1) {
+      helpText("The number of colors must be 10 when", 
+               "using this color palette")
+      
+    } else if (input$pretty_plot_color_palette == 2) {
+      numericInput("pretty_plot_color_num", 
+                   tags$h5("Number of colors (Min: 3; Max: 11)"), 
+                   value = 11, step = 1, min = 3, max = 11)
+      
+    } else if (input$pretty_plot_color_palette == 3) {
+      numericInput("pretty_plot_color_num", 
+                   tags$h5("Number of colors (Min: 3; Max: 9)"), 
+                   value = 9, step = 1, min = 3, max = 9)
+      
+    } else if (input$pretty_plot_color_palette == 6) {
+      helpText("The number of colors must be 12 when", 
+               "using this color palette")
+      
+    } else {
+      numericInput("pretty_plot_color_num", tags$h5("Number of colors"), 
+                   value = 10, step = 1, min = 1)
+    }
   }
+})
+
+observe({
+  val.pretty.color.num(input$pretty_plot_color_num)
+})
+
+observeEvent(input$pretty_plot_color_palette, {
+  req(input$pretty_plot_color_palette == 2)
+  val.pretty.color.num(11)
+})
+
+observeEvent(input$pretty_plot_color_palette, {
+  req(input$pretty_plot_color_palette == 3)
+  val.pretty.color.num(9)
 })
 
 
@@ -161,10 +181,11 @@ output$pretty_plot_other_obj_which_uiOut_selectize <- renderUI({
 ###############################################################################
 ### Generate defualt filename for downloaded map
 output$pretty_plot_download_name_uiOut_text <- renderUI({
-  validate(
-    need(pretty_plot_models_idx_count() == 1, 
-         "Error: Please select exactly one set of model predictions")
-  )
+  # req(pretty_plot_models_idx_count() == 0)
+  # Uncomment ^ when multiplot is implemented
+  
+  req(pretty_plot_models_idx_count() == 1)
+  # Get rid of ^ when multiplot is implemented
   
   model.idx.null <- !pretty_plot_tables_null()
   model.idx.list <- pretty_plot_models_idx_list()

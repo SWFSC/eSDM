@@ -7,16 +7,11 @@
 ### Non-reactive plotting function for prettyPlot
 plot.pretty.ll <- function(spdf.ll, data.name, plot.lim, title.ll, 
                            axis.xlab, axis.ylab, title.cex, axis.cex, 
-                           list.colorscheme, list.scales, list.sp.layout)
-{
-  # Variables from server_funcs+vars.R used: col.ramp, breaks, labels.lab, labels.at
+                           list.colorscheme, list.scales, list.sp.layout) {
+  # Variables from server_variables.R used: col.ramp, 
+  #    breaks, labels.lab, labels.at
   l.cs <- list.colorscheme
   
-  #####################################
-  ## Do needed calculations - hopefully none
-  
-  
-  #####################################
   ## Generate spplot
   spplot(spdf.ll, zcol = data.name, 
          col = NA, at = l.cs$data.breaks, col.regions = l.cs$color.palette, 
@@ -28,16 +23,7 @@ plot.pretty.ll <- function(spdf.ll, data.name, plot.lim, title.ll,
          scales = list.scales, 
          sp.layout = list.sp.layout
   )
-  
-  # sp.layout = list(world.layer, states.layer, states.lab.layer)
 }
-
-
-
-# spplot(x, zcol = "Pred.overlaid", 
-#        scales = list(draw = TRUE, alternating = c(1, 2), tck = c(1, 1),  
-#                      x = list(at = -122:-118, cex = c(1,2,3,4,5))))
-# 
 
 
 ###############################################################################
@@ -47,7 +33,7 @@ plot.pretty.ll <- function(spdf.ll, data.name, plot.lim, title.ll,
 ### Reactive function to generate plot from reactiveValues
 pretty_plot_generate <- reactive({
   req(length(vals$pretty.params.list) > 0)
-
+  
   p.list <- vals$pretty.params.list
   
   plot.pretty.ll(p.list$spdf.ll, p.list$data.name, p.list$plot.lim, 
@@ -70,7 +56,7 @@ pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
   )
   
   # Set plotting variables
-  withProgress(message = "Processing specified map parameters", value = 0.6, {
+  withProgress(message = "Processing specified map parameters", value = 0.5, {
     list.selected <- pretty_plot_models_toplot()
     
     spdf.ll <- intersect(list.selected[[3]], pretty_plot_range_poly()[[2]])
@@ -88,7 +74,7 @@ pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
     list.scales <- pretty_plot_scales_list()
     incProgress(0.2)
     list.sp.layout <- pretty_plot_splayout_list()
-    incProgress(0.2)
+    incProgress(0.3)
   })
   
   # Save plot parameters to reactive values

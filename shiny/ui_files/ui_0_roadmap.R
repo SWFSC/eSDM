@@ -34,7 +34,7 @@ ui.roadmap <- function() {
                 width = 8, offset = 1, 
                 tags$h5(
                   tags$strong("Credits"), 
-                  tags$p("Credit to Mridula, etc.")
+                  tags$p("Development of eSDM was made possible by...")
                 ), 
                 tags$h5(
                   tags$strong("Disclaimer"), 

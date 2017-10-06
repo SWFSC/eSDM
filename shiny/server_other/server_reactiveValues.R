@@ -3,6 +3,12 @@
 
 
 ###############################################################################
+# reactiveVal's used in various tabs
+
+### Pretty plot tabs
+val.pretty.color.num <- reactiveVal(value = NULL)
+
+###############################################################################
 ### 'Initialize' all 36 reactive values
 # Note: If any reactiveValues elements are added, be sure to update length num 
 #       in observe() statement below
