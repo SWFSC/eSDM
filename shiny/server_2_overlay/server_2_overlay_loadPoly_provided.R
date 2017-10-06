@@ -6,7 +6,7 @@ observeEvent(input$overlay_land_provided, {
   withProgress(message = "Loading specified land polygon", value = 0.5, {
     provided.res <- as.numeric(input$overlay_land_provided_res)
     
-    githubURL.start <- "https://github.com/smwoodman/Ensemble-app/raw/master/data_land_gshhg/"
+    githubURL.start <- "https://github.com/smwoodman/eSDM/raw/master/data_land_gshhg/"
     githubURL <- paste0(githubURL.start, 
                         switch(provided.res, 
                                "gshhg_f_L1.RDATA", 
