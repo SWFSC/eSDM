@@ -113,9 +113,8 @@ gis.res.calc <- function(spdf.ll, spdf.orig) {
     }
     spdf.orig.origarea[i] <- sumarea
   }
-  browser()
-  
-  ### Do checks
+
+  ### Do checks to see if resolution is regular
   # Check 1: Are at least 50% of the polygons the same area?
   spdf.orig.table.max <- tail(table(spdf.orig.origarea), 1)
   spdf.check.1 <- (spdf.orig.table.max / length(spdf.orig.origarea)) > 0.5
@@ -127,7 +126,7 @@ gis.res.calc <- function(spdf.ll, spdf.orig) {
   
   spdf.check.2 <- abs(spdf.orig.lm$coefficients[2]) < 0.001
 
-  ### If applicable, calculate and return resultion
+  ### If possible, calculate and return res for regular or irregular preds
   proj.orig <- proj4string(spdf.orig)
   if (spdf.check.1 & spdf.check.2) {
     # Loaded polygons are regular: return resolution
@@ -144,17 +143,19 @@ gis.res.calc <- function(spdf.ll, spdf.orig) {
     }
   } else {
     # Loaded polygons are irregular: return approx resolution if possible
+    origarea.table <- table(spdf.orig.origarea)
+    approx.max <- origarea.table[which.max(origarea.table)]
+    
     if (grepl("+proj=longlat", proj.orig)) {
-      origarea.table <- table(spdf.orig.origarea)
-      approx.max <- origarea.table[which.max(origarea.table)]
-      
       # Lat long coordinates/projection
       spdf.val <- round(sqrt(as.numeric(names(approx.max))), 4)
       spdf.res <- paste0("~", spdf.val, " degrees")
+      
     } else if (grepl("+units=m", proj.orig)) {
       # Equal area projection
       spdf.val <- round(sqrt(as.numeric(names(approx.max)) / 1e+06), 3)
       spdf.res <- paste0("~", spdf.val, " km")
+      
     } else {
       spdf.res <- "~Unk"
     }
@@ -162,10 +163,6 @@ gis.res.calc <- function(spdf.ll, spdf.orig) {
   
   return(spdf.res)
 }
-
-# warning(paste("Loaded GIS polygon does not appear to be regular in its",
-#               "provided geographic coordinates or projection. This will ", 
-#               "NOT have any effect on the functionality of the app"))
 
 
 ###############################################################################

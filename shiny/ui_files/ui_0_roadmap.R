@@ -8,6 +8,16 @@ ui.roadmap <- function() {
         width = 6, 
         fluidRow(
           box(
+            width = 12, 
+            h4("TODO: eSDM Roadmap"), 
+            actionButton("download_sample_data", "TODO: Download sample data")
+          )
+        )
+      ), 
+      column(
+        width = 6, 
+        fluidRow(
+          box(
             title = "Load and Save eSDM Working Environment", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
             fluidRow(
               box(
@@ -21,7 +31,7 @@ ui.roadmap <- function() {
                 tags$strong("Save eSDM working environment"), 
                 textInput("save_app_envir_name", tags$h5("Filename for saved eSDM working environment"), 
                           value = paste0("eSDM_", gsub("-", "", Sys.Date()), ".RDATA")), 
-                downloadButton("save_app_envir", "Save current eSDM working environment")
+                downloadButton("save_app_envir", "Download current eSDM working environment")
               )
             )
           ), 
@@ -48,15 +58,6 @@ ui.roadmap <- function() {
                 )
               )
             )
-          )
-        )
-      ), 
-      column(
-        width = 6, 
-        fluidRow(
-          box(
-            width = 12, 
-            h4("TODO: Roadmap")
           )
         )
       )

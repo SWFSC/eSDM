@@ -90,10 +90,14 @@ output$pretty_plot_color_palette_uiOut_select <- renderUI({
                        "viridis: inferno" = 5, 
                        "dichromat: DarkRedtoBlue" = 6)
   
+  # Remove palettes that don't work with 10 colors
   if (input$pretty_plot_color_perc == 1) choices.list <- choices.list[-c(3, 6)]
   
+  # If possible, keep same selected palette when going from perc to values
   col.sel <- input$pretty_plot_color_palette
-  if (!(col.sel %in% choices.list)) col.sel <- 1
+  if (isTruthy(col.sel)) {
+    if (!(col.sel %in% choices.list)) col.sel <- 1
+  }
   
   selectInput("pretty_plot_color_palette", tags$h5("Color palette"), 
               choices = choices.list, 

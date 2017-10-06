@@ -231,12 +231,12 @@ ui.prettyPlot <- function() {
                   box(
                     width = 12, 
                     fluidRow(
-                      column(6, colourInput("pretty_plot_background_color", tags$h5("Click to select background color"), 
-                                            showColour = "background")), 
+                      column(6, colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"), 
+                                                          showColour = "background")), 
                       column(
-                        width = 5, offset = 1, 
+                        width = 6, #offset = 1, 
                         tags$br(), tags$br(), 
-                        actionButton("pretty_plot_background_reset_execute", "Reset background color")
+                        actionButton("pretty_plot_background_reset_execute", "Reset background color to white")
                       )
                     ), 
                     tags$br(), 

@@ -19,16 +19,16 @@ read_model_gis_raster <- reactive({
   req(input$model_gis_raster_file)
   
   # Ensure file extension is .tif
-  if(input$model_gis_raster_file$type != "image/tiff") return()
+  if (input$model_gis_raster_file$type != "image/tiff") return()
   
   withProgress(message = "Loading GIS raster", value = 0.3, {
     gis.file.raster <- try(raster(input$model_gis_raster_file$datapath, 
                                   band = input$model_gis_raster_band), 
                            silent = TRUE)
-    gis.file.success <- ifelse(isTruthy(gis.file.raster), FALSE, TRUE)
+    gis.file.success <- isTruthy(gis.file.raster)
     
     # If specified file could be loaded as a raster, process raster
-    if(gis.file.success) {
+    if (gis.file.success) {
       model.pix <- as(gis.file.raster, "SpatialPixelsDataFrame")
       names(model.pix) <- "Pred"
       # Leave orig data name here
@@ -50,8 +50,8 @@ read_model_gis_raster <- reactive({
       incProgress(0.1)
     }
   })
-
-  if(!gis.file.success) {
+  
+  if (!gis.file.success) {
     NULL
   } else {
     c(gis.spdfs, model.pix)
@@ -60,7 +60,7 @@ read_model_gis_raster <- reactive({
 
 ### Flag for if the raster was fully loaded and processed
 output$read_model_gis_raster_flag <- reactive({
-  if(is.null(read_model_gis_raster())) FALSE
+  if (is.null(read_model_gis_raster())) FALSE
   else TRUE
 })
 outputOptions(output, "read_model_gis_raster_flag", suspendWhenHidden = FALSE)
@@ -84,9 +84,9 @@ create_spdf_gis_raster <- eventReactive(input$model_create_gis_raster, {
     
     # Calculate resolution of the model predictions
     pix.res <- round(unname(spdf.pix@grid@cellsize), 3)
-    if(pix.res[1] != pix.res[2]) warning("X and Y pixel width is not the same")
+    if (pix.res[1] != pix.res[2]) warning("X and Y pixel width is not the same")
     
-    if(grepl("longlat", crs(spdf.pix))) {
+    if (grepl("longlat", crs(spdf.pix))) {
       model.res <- paste(pix.res[1], "degrees")
     } else {
       model.res <- paste(round(pix.res[1]/1000, 3), "km")
@@ -94,7 +94,7 @@ create_spdf_gis_raster <- eventReactive(input$model_create_gis_raster, {
     incProgress(0.2)
     
     # If raster is not crs.ll, generate crs.ll raster
-    if(!identical(crs.ll, crs(spdf.pix))) {
+    if (!identical(crs.ll, crs(spdf.pix))) {
       spdf.pix <- gis.rasterize.poly(spdf.poly.ll)
     }
     
