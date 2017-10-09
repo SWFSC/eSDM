@@ -10,26 +10,34 @@ ui.loadModels <- function() {
           box(
             title = "Load Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
             fluidRow(
-              column(6, selectInput("model_load_type", tags$h5("Data file type"),  choices = file.type.list2, selected = 1)), 
-              column(
-                width = 5, offset = 1, 
-                conditionalPanel(
-                  condition = "input.model_load_type == 1", 
-                  selectInput("model_csv_pt_loc", tags$h5("Location of point in grid cell"), 
-                              choices = list("Center" = 1, "Top left" = 2, "Top right" = 3, "Bottom right" = 4, "Bottom left" = 5), 
-                              selected = 1)
-                ), 
-                conditionalPanel(
-                  condition = "input.model_load_type == 2", 
-                  numericInput("model_gis_raster_band", tags$h5("Band number of prediction data"), value = 1, min = 1, step = 1)
-                )
-              )
+              column(6, selectInput("model_load_type", tags$h5("Data file type"),  choices = file.type.list2, selected = 1))
+              # column(
+              #   width = 5, offset = 1, 
+              #   conditionalPanel(
+              #     condition = "input.model_load_type == 1", 
+              #     selectInput("model_csv_pt_loc", tags$h5("Location of point in grid cell"), 
+              #                 choices = list("Center" = 1, "Top left" = 2, "Top right" = 3, "Bottom right" = 4, "Bottom left" = 5), 
+              #                 selected = 1)
+              #   ), 
+              #   conditionalPanel(
+              #     condition = "input.model_load_type == 2", 
+              #     numericInput("model_gis_raster_band", tags$h5("Band number of prediction data"), value = 1, min = 1, step = 1)
+              #   )
+              # )
             ), 
             conditionalPanel(
               condition = "input.model_load_type == 1", 
               ui.instructions.upload.csv(), 
               ui.instructions.pred.csv(), 
-              fileInput("model_csv_file", label.csv.upload, accept = ".csv"), 
+              fluidRow(
+                column(6, fileInput("model_csv_file", label.csv.upload, accept = ".csv")), 
+                column(
+                  width = 5, offset = 1, 
+                  selectInput("model_csv_pt_loc", tags$h5("Location of point in grid cell"), 
+                              choices = list("Center" = 1, "Top left" = 2, "Top right" = 3, "Bottom right" = 4, "Bottom left" = 5), 
+                              selected = 1)
+                )
+              ),
               conditionalPanel(
                 condition = "output.read_model_csv_flag == false", 
                 box(width = 12, ui.error.upload.csv)
@@ -67,7 +75,13 @@ ui.loadModels <- function() {
               condition = "input.model_load_type == 2", 
               ui.instructions.upload.raster(), 
               ui.instructions.pred.raster(), 
-              fileInput("model_gis_raster_file", label.raster.upload, accept = ".tif"), 
+              fluidRow(
+                column(6, fileInput("model_gis_raster_file", label.raster.upload, accept = ".tif")), 
+                column(
+                  width = 5, offset = 1, 
+                  numericInput("model_gis_raster_band", tags$h5("Band number of prediction data"), value = 1, min = 1, step = 1)
+                )
+              ), 
               conditionalPanel(
                 condition = "output.read_model_gis_raster_flag == false", 
                 box(width = 12, ui.error.upload.raster)
