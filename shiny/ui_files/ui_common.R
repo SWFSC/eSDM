@@ -48,7 +48,7 @@ ui.instructions.upload.raster <- function() {
 }
 
 ui.instructions.upload.shp <- function() {
-  helpText("Browse to and open all files (.shp, .dbf, …) associated with", 
+  helpText("Browse to and open all files (.shp, .dbf, etc.) associated with", 
            "the GIS shapefile. Note that if this file is large", 
            "(greater than ~50 Mb), then it could take several minutes to load.")
 }

@@ -312,7 +312,7 @@ ui.createEns <- function() {
                                       min = 0, max = 100, value = 100), 
                           fluidRow(
                             column(6, actionButton("create_ens_weights_poly_add_execute", 
-                                                   "Assign loaded weight polygon to selected prediction(s)")), 
+                                                   "Assign loaded weight polygon to selected predictions")), 
                             column(4, offset = 1, textOutput("create_ens_weights_poly_add_text"))
                           )
                         )

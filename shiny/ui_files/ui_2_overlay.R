@@ -176,22 +176,16 @@ ui.overlay <- function() {
                        width = 6, 
                        box(
                          width = 12, 
-                         checkboxInput("overlay_samegrid_indicator", 
-                                       "Check box if all loaded model predictions were made on the same grid", 
-                                       value = FALSE), 
-                         conditionalPanel(
-                           condition = "input.overlay_samegrid_indicator", 
-                           tags$span(uiOutput("overlay_samegrid_warning_text"), style = "color: red"), 
-                           helpText("The coordinate system of the overlaid models will be the current", 
-                                    "coordinate system of the model predictions"), 
-                           helpText("Percent overlap is not applicable for the same-grid overlay because", 
-                                    "all of the predictions are on the same grid and thus overlay on each other exactly"), 
-                           actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay"), 
-                           tags$span(textOutput("overlay_samegrid_all_text"), style = "color: blue")
+                         fluidRow(
+                           column(6, radioButtons("overlay_samegrid_indicator", tags$h5("Overlay version to perform"), 
+                                                  choices = list("Perform standard overlay" = 1, "Perform same-grid overlay" = 2), 
+                                                  selected = 1)), 
+                           column(6, helpText("Perform the same-grid overlay, which is much faster than the standard overlay,", 
+                                              "if all of the loaded model predictions were made on the same grid."))
                          )
                        ), 
                        conditionalPanel(
-                         condition = "input.overlay_samegrid_indicator == false", 
+                         condition = "input.overlay_samegrid_indicator == 1", 
                          box(
                            width = 12, 
                            tags$h5("Overlay options: coordinate system"), 
@@ -216,10 +210,24 @@ ui.overlay <- function() {
                          )
                        )
                      ), 
-                     conditionalPanel(
-                       condition = "input.overlay_samegrid_indicator == false", 
-                       column(
-                         width = 6, 
+                     column(
+                       width = 6, 
+                       conditionalPanel(
+                         condition = "input.overlay_samegrid_indicator == 2", 
+                         box(
+                           width = 12, 
+                           tags$span(uiOutput("overlay_samegrid_warning_text"), style = "color: red"), 
+                           helpText("The coordinate system of the overlaid models will be the current", 
+                                    "coordinate system of the model predictions"), 
+                           helpText("Percent overlap is not applicable for the same-grid overlay because", 
+                                    "all of the predictions are on the same grid and thus overlay on each other exactly"), 
+                           actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay"), 
+                           tags$span(textOutput("overlay_samegrid_all_text"), style = "color: blue")
+                         )
+                       ), 
+                       conditionalPanel(
+                         condition = "input.overlay_samegrid_indicator == 1", 
+                         
                          fluidRow(
                            box(
                              width = 12, 
