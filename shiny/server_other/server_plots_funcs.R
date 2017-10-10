@@ -3,15 +3,33 @@
 
 ###############################################################################
 ### General function for lat/long spplot
-plot.ll <- function(spdf.ll, data.name, title.ll, perc, axis.cex, main.cex, 
-                    x.tick, y.tick) {
-  # Get extent of plot and where axis labels should go
-  # x.extent <- c(extent(spdf.ll)@xmin, extent(spdf.ll)@xmax)
-  # y.extent <- c(extent(spdf.ll)@ymin, extent(spdf.ll)@ymax)
-  # x.at <- mround(seq(x.extent[1], x.extent[2], by = x.tick), x.tick)
-  # y.at <- mround(seq(y.extent[1], y.extent[2], by = y.tick), y.tick)
+preview.ll <- function(spdf.ll, data.name, title.ll, perc, 
+                       axis.cex, main.cex) {
+  ### Get extent of plot and where axis labels should go and create scales list
+  scales.list <- list(draw = TRUE, alternating = 1, tck = c(1, 0), 
+                      cex = axis.cex)
   
-  # Generate plot with densities color-coded by percentages
+  x.extent <- c(extent(spdf.ll)@xmin, extent(spdf.ll)@xmax)
+  y.extent <- c(extent(spdf.ll)@ymin, extent(spdf.ll)@ymax)
+  
+  # browser()
+  if (diff(x.extent) > 10) {
+    x.list <- list(at = seq(mround(x.extent[1], 5, floor.use = TRUE), 
+                            mround(x.extent[2], 5, ceiling.use = TRUE), 
+                            by = 5))
+    
+    scales.list <- c(scales.list, x = list(x.list))
+  }
+  
+  if (diff(y.extent) > 10) {
+    y.list <- list(at = seq(mround(y.extent[1], 5, floor.use = TRUE), 
+                            mround(y.extent[2], 5, ceiling.use = TRUE), 
+                            by = 5))
+    
+    scales.list <- c(scales.list, y = list(y.list))
+  }
+  
+  ### Generate plot with densities color-coded by percentages or values
   if(perc == 1) {
     b.model <- suppressWarnings(breaks.calc(spdf.ll@data[,data.name]))
     
@@ -22,13 +40,9 @@ plot.ll <- function(spdf.ll, data.name, title.ll, perc, axis.cex, main.cex,
                            labels = list(labels = labels.lab,
                                          at = labels.at),
                            width = 1, axis.text = list(cex = axis.cex)),
-           scales = list(draw = TRUE, alternating = 1, tck = c(1, 0), 
-                         # x = list(at = x.at), y = list(at = y.at), 
-                         cex = axis.cex)
-    )
-  }
-  # Generate plot with densities color-coded by values
-  else {
+           scales = scales.list)
+    
+  } else {
     data.vec <- spdf.ll@data[data.name]
     b.model <- seq(from = min(data.vec, na.rm = TRUE), 
                    to = max(data.vec, na.rm = TRUE), 
@@ -41,10 +55,7 @@ plot.ll <- function(spdf.ll, data.name, title.ll, perc, axis.cex, main.cex,
                            labels = list(labels = rev(round(b.model, 5)),
                                          at = labels.at), 
                            width = 1, axis.text = list(cex = axis.cex)), 
-           scales = list(draw = TRUE, alternating = 1, tck = c(1, 0), 
-                         # x = list(at = x.at), y = list(at = y.at), 
-                         cex = axis.cex)
-    )
+           scales = scales.list)
   }
 }
 
@@ -88,10 +99,9 @@ plot.multi.display <- function(list.data.display) {
   
   # Generate gtable object of plot(s)
   list.spplots <- mapply(function(model.toplot.curr, plot.title.curr) {
-    plot.ll(model.toplot.curr, list.data.display$data.name, 
-            plot.title.curr, list.data.display$perc.num, 
-            axis.cex.curr, main.cex.curr, 
-            x.tick.num, x.tick.num)
+    preview.ll(model.toplot.curr, list.data.display$data.name, 
+               plot.title.curr, list.data.display$perc.num, 
+               axis.cex.curr, main.cex.curr)
   }, list.data.display$models.toplot, list.data.display$plot.titles, 
   SIMPLIFY = FALSE)
   
@@ -134,10 +144,9 @@ plot.multi.download <- function(list.data.download) {
   
   # Generate gtable object of plot(s)
   list.spplots <- mapply(function(model.toplot.curr, plot.title.curr) {
-    plot.ll(model.toplot.curr, list.data.download$data.name, 
-            plot.title.curr, list.data.download$perc.num, 
-            axis.cex.curr, main.cex.curr, 
-            x.tick.num, y.tick.num)
+    preview.ll(model.toplot.curr, list.data.download$data.name, 
+               plot.title.curr, list.data.download$perc.num, 
+               axis.cex.curr, main.cex.curr)
   }, list.data.download$models.toplot, list.data.download$plot.titles, 
   SIMPLIFY = FALSE)
   

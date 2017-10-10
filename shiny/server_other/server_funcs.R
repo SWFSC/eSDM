@@ -78,8 +78,14 @@ na.which.message <- function(na.which.out) {
 # For plotting
 
 ### Round 'x' to nearest 'base' value
-mround <- function(x, base){ 
-  base * round(x / base) 
+mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) { 
+  if (floor.use) {
+    base * floor(x / base)
+  } else if (ceiling.use) { 
+    base * ceiling(x / base)
+  } else {
+    base * round(x / base)
+  }
 } 
 
 
