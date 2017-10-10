@@ -66,7 +66,7 @@ ui.prettyPlot <- function() {
                     width = 12, 
                     conditionalPanel(
                       condition = "output.pretty_display_download == false", 
-                      tags$h5("Unlike with the previews in previous tabs, the image that will be downloaded is the image", 
+                      tags$h5("Unlike downloading the previews in previous tabs, the image that will be downloaded is the image", 
                               "displayed in the box above.", 
                               "Thus, you must click 'Generate map' to generate a map before you can download that map.")
                     ), 
