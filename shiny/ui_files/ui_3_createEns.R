@@ -325,17 +325,33 @@ ui.createEns <- function() {
               ################################## Weighting by polygon spatial weights pt 2
               conditionalPanel(
                 condition = "input.create_ens_type == 2 && output.ens_overlaid_selected_flag && input.create_ens_weight_type == 4", 
-                tags$h5("Summary table of loaded polygon file(s) and weight(s) for models to be used in ensemble"), 
                 fluidRow(
-                  column(7, tableOutput("create_ens_weights_poly_table_out")), 
-                  column(
-                    width = 5, 
-                    uiOutput("create_ens_weights_poly_remove_choices_uiOut_select"), 
-                    actionButton("create_ens_weights_poly_remove_execute", "Remove selected weight polygons"), 
-                    textOutput("create_ens_weights_poly_remove_text")
+                  box(
+                    width = 12, 
+                    helpText(tags$strong("Loaded weight polygons")), 
+                    # tags$h5("Summary table of loaded polygon file(s) and weight(s) for models to be used in ensemble"), 
+                    conditionalPanel(
+                      condition = "output.create_ens_weighted_poly_flag == false",
+                      helpText("No weight polygons have been loaded")
+                    ), 
+                    conditionalPanel(
+                      condition = "output.create_ens_weighted_poly_flag", 
+                      fluidRow(
+                        column(
+                          width = 7, 
+                          tableOutput("create_ens_weights_poly_table_out")
+                          # tags$style(type="text/css", "#create_ens_weights_poly_table_out td:first-child {font-weight:bold;}")
+                        ), 
+                        column(
+                          width = 5, 
+                          uiOutput("create_ens_weights_poly_remove_choices_uiOut_select"), 
+                          actionButton("create_ens_weights_poly_remove_execute", "Remove selected weight polygons"), 
+                          textOutput("create_ens_weights_poly_remove_text")
+                        )
+                      )
+                    )
                   )
                 )
-                # tags$style(type="text/css", "#create_ens_weights_poly_table_out td:first-child {font-weight:bold;}")
               )
             ), 
             
@@ -385,17 +401,25 @@ ui.createEns <- function() {
                   )
                 )
               ), 
+              ################################################### Weight polygon preview
               conditionalPanel(
                 condition = "input.create_ens_type == 2 && input.create_ens_weight_type == 4", 
                 box(
                   width = 12, 
                   helpText(tags$strong("Polygon(s) with weights method (cont)")), 
-                  helpText("Preview weighted polygons for selected overlaid predictions"), 
-                  fluidRow(
-                    column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")), 
-                    column(4, tags$br(), tags$br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))
+                  conditionalPanel(
+                    condition = "output.create_ens_weighted_poly_flag == false",
+                    helpText("No weight polygons have been loaded")
                   ), 
-                  shinycssloaders::withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
+                  conditionalPanel(
+                    condition = "output.create_ens_weighted_poly_flag", 
+                    helpText("Preview weighted polygons for selected overlaid predictions"), 
+                    fluidRow(
+                      column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")), 
+                      column(4, tags$br(), tags$br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))
+                    ), 
+                    shinycssloaders::withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
+                  )
                 )
               )
             ), 

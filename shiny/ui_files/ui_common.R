@@ -122,9 +122,13 @@ ui.instructions.poly.csv <- function() {
 
 
 ###########################################################
-ui.click.row.a1 <- paste("Click on a row in the table(s) below to select or",
-                        "deselect the model predictions.")
-ui.click.row.a2 <- paste("Click on row(s) in the table(s) below to select or", 
+ui.click.row.a1a <- paste("Click on a row in the table below to select or",
+                         "deselect the model predictions.")
+ui.click.row.a2a <- paste("Click on row(s) in the table below to select or", 
+                         "deselect the model predictions.")
+ui.click.row.a1b <- paste("Click on a row in the table(s) below to select or",
+                         "deselect the model predictions.")
+ui.click.row.a2b <- paste("Click on row(s) in the table(s) below to select or", 
                          "deselect the model predictions.")
 ui.click.row.b1 <- paste("You can only select or deselect a row when", 
                          tags$em("Display additional information"), 
@@ -137,7 +141,7 @@ ui.click.row.b2 <- paste("You can only select or deselect row(s) when",
 ui.instructions.table.select <- function(text.pre, text.in, sel.num = 2, 
                                          text.other = FALSE) {
   tags$h5(tags$strong("Select", text.pre, "model predictions", text.in), 
-          switch(sel.num, ui.click.row.a1, ui.click.row.a2), 
+          switch(sel.num, ui.click.row.a1a, ui.click.row.a2a), 
           HTML(ifelse(text.other, 
                       switch(sel.num, ui.click.row.b1, ui.click.row.b2), 
                       HTML(NULL))))
@@ -147,7 +151,7 @@ ui.instructions.table.select <- function(text.pre, text.in, sel.num = 2,
 ui.instructions.multipletables.select <- function(text.in, sel.num = 2, 
                                                   text.other = NULL) {
   tags$h5(tags$strong("Select model predictions to", text.in), 
-          switch(sel.num, ui.click.row.a1, ui.click.row.a2), 
+          switch(sel.num, ui.click.row.a1b, ui.click.row.a2b), 
           HTML(text.other))
 }
 

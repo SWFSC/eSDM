@@ -196,11 +196,6 @@ ui.loadModels <- function() {
                        column(
                          width = 8, 
                          conditionalPanel(
-                           condition = "input.models_loaded_table_stats != true", 
-                           helpText("If multiple rows are selected, then the app will" , 
-                                    "perform the specfied action on all selected predictions")
-                         ), 
-                         conditionalPanel(
                            condition = "input.models_loaded_table_stats", 
                            helpText("If 'Resolution' data begins with a '~', then the predictions are irregularly spaced in", 
                                     "their provided coordinate system and the provided value is an approximation")

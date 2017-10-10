@@ -2,6 +2,14 @@
 
 
 ###############################################################################
+### Flag for is any weight polygons are loaded
+output$create_ens_weighted_poly_flag <- reactive({
+  any(sapply(vals$ens.over.wpoly.filename, isTruthy))
+})
+outputOptions(output, "create_ens_weighted_poly_flag", suspendWhenHidden = FALSE)
+
+
+###############################################################################
 ### Create weighted ensemble using polygon weights
 create_ens_weighted_poly <- reactive({
   validate(
@@ -133,47 +141,26 @@ poly.weight <- function(poly.pred, poly.w, coverage) {
   
   list(pred.out, idx.toweight)
 }
-######################################################################
-### Code for ^ not in function form
-# wpoly.sp <- gUnaryUnion(wpoly.spdf)
-# wpoly.df <- data.frame(Weight = wpoly.spdf$Weight)
-# wpoly.spdf <- SpatialPolygonsDataFrame(wpoly.sp, wpoly.df, 
-#                                    match.ID = FALSE)
-# 
-# pred.wpoly.over <- over(pred.spdf, wpoly.spdf, 
-#                             returnList = TRUE)
-# over.which <- which(sapply(pred.wpoly.over, nrow) > 0)
-# pred.wpoly.int <- intersect(pred.spdf, wpoly.spdf)
-# 
-# validate(
-#   need(identical(pred.wpoly.int$Pred.overlaid, 
-#                  pred.spdf$Pred.overlaid[over.which]), 
-#        "Error: Weighting method 4: Indices don't match ")
-# )
-# 
-# a.ratio <- area(pred.wpoly.int) / area(pred.spdf)[over.which]
-# idx.toweight <- over.which[a.ratio >= (wpoly.coverage / 100)]
-# 
-# pred.out <- pred.spdf$Pred.overlaid
-# pred.out[idx.toweight] <- pred.out[idx.toweight] * wpoly.spdf$Weight
-# 
-# list(pred.out, idx.toweight)
-######################################################################
 
 
 ###############################################################################
 ### Plot preview of weight polygons
 create_ens_weights_poly_preview <- eventReactive(
-  input$create_ens_weights_poly_preview_execute, 
-  {
+  input$create_ens_weights_poly_preview_execute, {
+    req(vals$ens.over.wpoly.filename)
     overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
-    plot(vals$overlaid.models[[overlaid.which]], axes = T, 
+    
+    validate(
+      need(isTruthy(vals$ens.over.wpoly.spdf[[overlaid.which]]), 
+           paste("Error: this overlaid models does not have any", 
+                 "assigned weight polygons"))
+    )
+    
+    plot(vals$overlaid.models[[overlaid.which]], axes = TRUE, 
          col = "black", border = NA)
     
-    if (!is.null(vals$ens.over.wpoly.spdf[[overlaid.which]])) {
-      for(spdf.toplot in vals$ens.over.wpoly.spdf[[overlaid.which]]) {
-        plot(spdf.toplot, add = T, col = NA, border = "red")
-      }
+    for(spdf.toplot in vals$ens.over.wpoly.spdf[[overlaid.which]]) {
+      plot(spdf.toplot, add = TRUE, col = NA, border = "red")
     }
   }
 )
@@ -182,8 +169,7 @@ create_ens_weights_poly_preview <- eventReactive(
 ###############################################################################
 ### Remove loaded weight polygons
 create_ens_weights_poly_remove <- eventReactive(
-  input$create_ens_weights_poly_remove_execute, 
-  {
+  input$create_ens_weights_poly_remove_execute, {
     validate(
       need(!is.null(input$create_ens_weights_poly_remove_choices), 
            "Error: Please select at least one weighted polygon to remove")
@@ -246,7 +232,6 @@ create_ens_weights_poly_table <- reactive({
   
   req(length(models.which) >= 2)
   
-  # browser()
   overlaid.names <- paste("Overlaid", models.which)
   if (all(sapply(vals$ens.over.wpoly.filename[models.which], is.null))) {
     overlaid.filenames <- ""
