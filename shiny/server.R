@@ -77,13 +77,14 @@ server <- function(input, output, session) {
       "eSDM_sample_data.zip"
     },
     content = function(file) {
-      browser()
-      # Might have to get each file individually
-      download.file(url("https://github.com/smwoodman/eSDM/raw/master/data_provided"), 
-                    destfile = file)
+      withProgress(message = "Downloading sample data", value = 0.6, {
+        download.file("https://github.com/smwoodman/eSDM/raw/master/data_provided.zip", 
+                      destfile = file, quiet = TRUE)
+        incProgress(0.4)
+      })
     }
   )
-
+  
   # Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_csv.R"), local = TRUE, chdir = TRUE)
