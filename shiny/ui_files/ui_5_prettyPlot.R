@@ -102,8 +102,9 @@ ui.prettyPlot <- function() {
                       condition = "input.pretty_plot_proj_ll == false", 
                       uiOutput("pretty_plot_proj_idx_uiOut_select")
                     ),
-                    helpText("Map range values must be in WGS 84 geographic coordinates,", 
-                             "with a range of [-180, 180] for longitudes and [-90, 90] for latitudes"), 
+                    helpText("Map range values must have the same units as the specified coordinate system.", 
+                             "If the specified coordinate system is WGS 84 geographic coordinates, then the values must be", 
+                             "decimal degrees with a range of [-180, 180] for longitudes and [-90, 90] for latitudes"), 
                     fluidRow(
                       column(6, uiOutput("pretty_plot_range_xmin_uiOut_num")), 
                       column(6, uiOutput("pretty_plot_range_xmax_uiOut_num"))
@@ -165,9 +166,10 @@ ui.prettyPlot <- function() {
                     fluidRow(
                       conditionalPanel(
                         condition = "input.pretty_plot_tick && input.pretty_plot_tick_manual == 2", 
-                        column(12, helpText("Tick location values must be in WGS 84 geographic coordinates (decimal degrees),", 
-                                            "with a range of [-180, 180] for longitudes and [-90, 90] for latitudes.", 
-                                            "Enter locations as '#, #, ..., #'")), 
+                        column(12, helpText("Enter locations as '#, #, ..., #'.", 
+                                            "Tick location values must have the same units as the specified coordinate system.", 
+                                            "If the specified coordinate system is WGS 84 geographic coordinates, then the values must be", 
+                                            "decimal degrees with a range of [-180, 180] for longitudes and [-90, 90] for latitudes")), 
                         column(6, textInput("pretty_plot_tick_manual_lon", tags$h5("Longitude tick locations"), value = "")), 
                         column(6, textInput("pretty_plot_tick_manual_lat", tags$h5("Latitude tick locations"), value = ""))
                       )
