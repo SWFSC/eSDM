@@ -52,6 +52,14 @@ table_overlaid <- reactive({
   table.out1 <- table_orig()
   overlaid.models.specs <- t(as.data.frame(vals$overlaid.models.specs))
   
+  validate(
+    need(nrow(table.out1) == nrow(overlaid.models.specs), 
+         paste("You have loaded or removed original", 
+               "model predictions from the app.", 
+               "Please overaly the models again to use this section"))
+  )
+  
+  
   table.out <- data.frame(table.out1, overlaid.models.specs, 
                           stringsAsFactors = FALSE)
   

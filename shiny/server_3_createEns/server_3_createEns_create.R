@@ -4,6 +4,9 @@
 ###############################################################################
 ### Top-level function for creating ensemble
 create_ensemble <- eventReactive(input$create_ens_create_action, {
+  # For the validation message if num of orig models != num of overlaid models
+  table_overlaid()
+  
   withProgress(message = "Creating ensemble", value = 0.6, {
     ### Create ensemble
     ens.type <- input$create_ens_type

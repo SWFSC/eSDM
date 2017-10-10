@@ -10,7 +10,7 @@
 ### Get crs object with projection to be used in overlay process
 # Currently this only handles the loaded model preds as possible inputs
 overlay_crs <- reactive({
-  if (input$overlay_samegrid_indicator) {
+  if (input$overlay_samegrid_indicator == 2) {
     model.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
     crs(vals$models.orig[[model.idx]])
     

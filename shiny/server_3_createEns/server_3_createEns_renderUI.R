@@ -138,8 +138,14 @@ output$create_ens_weights_poly_remove_choices_uiOut_select <- renderUI({
 
 ### Widget with options for rescaling
 output$create_ens_rescale_type_uiOut_radio <- renderUI({
-  pred.type <- vals$models.pred.type
+  if (input$create_ens_table_subset) {
+    models.which <- input$create_ens_datatable_rows_selected
+  } else {
+    models.which <- seq_along(vals$overlaid.models)
+  }
   
+  pred.type <- vals$models.pred.type[models.which]
+
   choices.list <- list("None" = 1, "Abundance" = 2, "Normalization" = 3,
                        "Standardization" = 4, "Sum to 1" = 5)
   if (!all(pred.type == "1")) choices.list <- choices.list[2:5]
