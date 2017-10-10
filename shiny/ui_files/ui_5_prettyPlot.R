@@ -47,13 +47,12 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12, 
+                    tags$h5("Creating or downloading a map of a large set of model predictions may take several minutes"), 
                     tags$br(), 
                     fluidRow(
                       column(2, actionButton("pretty_plot_execute", "Generate map")), 
                       column(10, textOutput("pretty_plot_values_event_text"))  
-                    ), 
-                    tags$br(), 
-                    tags$h5("Plotting or downloading a large set of model predictions may take several minutes")
+                    )
                   )
                 )
               ), 
@@ -65,17 +64,27 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12, 
-                    fluidRow(
-                      column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"), 
-                                             choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2), 
-                                             selected = 2)), 
-                      column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"), 
-                                             choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3), 
-                                             selected = 3)), 
-                      column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
+                    conditionalPanel(
+                      condition = "output.pretty_display_download == false", 
+                      tags$h5("Unlike with the previews in previous tabs, the image that will be downloaded is the image", 
+                              "displayed in the box above.", 
+                              "Thus, you must click 'Generate map' to generate a map before you can download that map.")
                     ), 
-                    tags$br(), 
-                    downloadButton("pretty_plot_download_execute", "Download map")
+                    conditionalPanel(
+                      condition = "output.pretty_display_download", 
+                      tags$h5("The map displayed above will be the map that is downloaded"), 
+                      fluidRow(
+                        column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"), 
+                                               choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2), 
+                                               selected = 2)), 
+                        column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"), 
+                                               choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3), 
+                                               selected = 3)), 
+                        column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
+                      ), 
+                      tags$br(), 
+                      downloadButton("pretty_plot_download_execute", "Download map")
+                    )
                   )
                 )
               )

@@ -56,6 +56,12 @@ output$pretty_pred_selected_flag <- reactive({
 })
 outputOptions(output, "pretty_pred_selected_flag", suspendWhenHidden = FALSE)
 
+### Flag for if map has been generated (download flag)
+output$pretty_display_download <- reactive({
+  length(vals$pretty.params.list) > 0
+})
+outputOptions(output, "pretty_display_download", suspendWhenHidden = FALSE)
+
 
 ###############################################################################
 ### Preview of selected color palette and number of colors

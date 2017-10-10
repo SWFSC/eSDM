@@ -5,7 +5,9 @@
 
 ### Download handler - High Quality Maps
 output$pretty_plot_download_execute <- downloadHandler(
-  filename = function() input$pretty_plot_download_name,
+  filename = function() {
+    input$pretty_plot_download_name
+  },
   
   content = function(file) {
     withProgress(message = "Downloading high quality map", value = 0.4, { 
@@ -16,7 +18,7 @@ output$pretty_plot_download_execute <- downloadHandler(
       incProgress(0.2)
       
       if(plot.format == 1) {
-        jpeg(file, width = 4, height = 4, units = 'in', res = plot.res, 
+        jpeg(file, width = 12, height = 12, units = 'in', res = plot.res, 
              quality = 150)
         grid.arrange(plot.toprint)
         dev.off()
@@ -27,7 +29,7 @@ output$pretty_plot_download_execute <- downloadHandler(
         dev.off()
       }
       if(plot.format == 3) {
-        png(file, width = 4, height = 4, units = "in", res = plot.res)
+        png(file, width = 12, height = 12, units = "in", res = plot.res)
         grid.arrange(plot.toprint)
         dev.off()
       }
