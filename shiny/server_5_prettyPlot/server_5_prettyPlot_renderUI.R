@@ -17,7 +17,7 @@ output$pretty_plot_proj_idx_uiOut_select <- renderUI({
   
   selectInput("pretty_plot_proj_idx", 
               tags$h5("Filename of original model predictions", 
-                      "with desired projection for map"), 
+                      "with desired coordinate system for the map"), 
               choices = choices.list, selected = 1)
 })
 
@@ -73,7 +73,7 @@ output$pretty_plot_title_uiOut_text <- renderUI({
                               "Data header:", 
                               vals$models.data.names[[model.idx]][1]))
   
-  textInput("pretty_plot_title", tags$h5("Plot title"), value = val.default)
+  textInput("pretty_plot_title", tags$h5("Map title"), value = val.default)
 })
 
 
@@ -100,8 +100,7 @@ output$pretty_plot_color_palette_uiOut_select <- renderUI({
   }
   
   selectInput("pretty_plot_color_palette", tags$h5("Color palette"), 
-              choices = choices.list, 
-              selected = col.sel)
+              choices = choices.list, selected = col.sel, width = "80%")
 })
 
 ### Number of colors
@@ -122,12 +121,12 @@ output$pretty_plot_color_num_uiOut_num <- renderUI({
     } else if (input$pretty_plot_color_palette == 2) {
       numericInput("pretty_plot_color_num", 
                    tags$h5("Number of colors (Min: 3; Max: 11)"), 
-                   value = 11, step = 1, min = 3, max = 11)
+                   value = 11, step = 1, min = 3, max = 11, width = "80%")
       
     } else if (input$pretty_plot_color_palette == 3) {
       numericInput("pretty_plot_color_num", 
                    tags$h5("Number of colors (Min: 3; Max: 9)"), 
-                   value = 9, step = 1, min = 3, max = 9)
+                   value = 9, step = 1, min = 3, max = 9, width = "80%")
       
     } else if (input$pretty_plot_color_palette == 6) {
       helpText("The number of colors must be 12 when", 
@@ -135,7 +134,7 @@ output$pretty_plot_color_num_uiOut_num <- renderUI({
       
     } else {
       numericInput("pretty_plot_color_num", tags$h5("Number of colors"), 
-                   value = 10, step = 1, min = 1)
+                   value = 10, step = 1, min = 1, width = "80%")
     }
   }
 })

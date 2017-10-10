@@ -96,7 +96,7 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12, 
-                    checkboxInput("pretty_plot_proj_ll", "Generate map in WGS 84 geographic coordinates (decimal degrees)", 
+                    checkboxInput("pretty_plot_proj_ll", "Generate the map in WGS 84 geographic coordinates (decimal degrees)", 
                                   value = TRUE), 
                     conditionalPanel(
                       condition = "input.pretty_plot_proj_ll == false", 
@@ -251,7 +251,7 @@ ui.prettyPlot <- function() {
                       )
                     ), 
                     tags$br(), 
-                    checkboxInput("pretty_plot_legend", "Include legend with map", value = TRUE), 
+                    checkboxInput("pretty_plot_legend", "Include legend with the map", value = TRUE), 
                     conditionalPanel(
                       condition = "input.pretty_plot_legend", 
                       fluidRow(
@@ -282,8 +282,8 @@ ui.prettyPlot <- function() {
                     conditionalPanel(
                       condition = "input.pretty_plot_other_obj", 
                       helpText("Only the study area polygon and/or the land polygon can be included at this time.", 
-                               "Note that after overlaying models, you can back and upload new 'study area' and/or 'land' polygons", 
-                               "so that you can include them in a high quality map."), 
+                               "Note that after overlaying models, you could go back and upload new 'study area' and/or 'land' polygons", 
+                               "to include in your high quality map."), 
                       helpText("The order in which the polygons are selected controls the order in which they are drawn.", 
                                "This means that if the land polygon is selected before the study area polygon,", 
                                "then the study area polygon will be drawn on top of the land polygon. The reverse is also true.", 

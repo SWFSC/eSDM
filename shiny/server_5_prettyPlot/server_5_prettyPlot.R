@@ -69,7 +69,7 @@ pretty_plot_color_preview <- reactive({
         axes = FALSE, xlab = "", ylab = "")
   
   graphics::box(col = "black")
-  axis(2, at = 1:color.num, tick = FALSE, las = 1)
+  axis(2, at = 1:color.num, labels = color.num:1, tick = FALSE, las = 1)
   par(mai = c(1.02, 0.82, 0.82, 0.42))
 })
 
