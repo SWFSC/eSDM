@@ -165,7 +165,8 @@ ui.evalMetrics <- function() {
                                     "The Area Under the Curve of the ROCR plot is a threshold independent metric that evaluates", 
                                     "the percentage of the time a random selection from the positive group will have a score", 
                                     "greater than a random selection from the negative class (Deleo 1993)."), 
-                             "See", tags$a("Fielding and Bell 1997", href = "http://cescos.fau.edu/gawliklab/papers/FieldingAHandJFBell1997.pdf"), 
+                             "See", tags$a("Fielding and Bell 1997", 
+                                           href = "http://cescos.fau.edu/gawliklab/papers/FieldingAHandJFBell1997.pdf"), 
                              "for more information.")
                   ), 
                   conditionalPanel(
@@ -216,9 +217,9 @@ ui.evalMetrics <- function() {
                              "The downloaded Excel csv file will have both metric values and model information", 
                              "for each set of predictions.", 
                              "Because ensemble predictions have different information than original and overlaid predictions,", 
-                             "then if evaluation metrics have been calculated for both ensemble predictions and at least", 
-                             " one of original and overlaid predictions, some column headers will be formatted as", 
-                             "'Original+Overlaid info/Ensemble info'.")
+                             "if evaluation metrics have been calculated for both ensemble predictions and at least", 
+                             " one of original and overlaid predictions, then some column headers will be formatted as", 
+                             "'Original+Overlaid info name/Ensemble info name'.")
                   )
                 )
               )

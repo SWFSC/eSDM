@@ -8,16 +8,6 @@ ui.roadmap <- function() {
         width = 6, 
         fluidRow(
           box(
-            width = 12, 
-            h4("TODO: eSDM Roadmap")
-            # downloadButton("download_sample_data", "Download sample data")
-          )
-        )
-      ), 
-      column(
-        width = 6, 
-        fluidRow(
-          box(
             title = "Load and Save eSDM Working Environment", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
             fluidRow(
               box(
@@ -44,7 +34,8 @@ ui.roadmap <- function() {
                 width = 8, offset = 1, 
                 tags$h5(
                   tags$strong("Credits"), 
-                  tags$p("Development of eSDM was made possible by...")
+                  tags$p("Development of eSDM was made possible by NOAA's Office of Science and Technology", 
+                         "and Southwest Fisheries Science Center.")
                 ), 
                 tags$h5(
                   tags$strong("Disclaimer"), 
@@ -58,6 +49,16 @@ ui.roadmap <- function() {
                 )
               )
             )
+          )
+        )
+      ), 
+      column(
+        width = 6, 
+        fluidRow(
+          box(
+            width = 12, 
+            h4("eSDM Roadmap")
+            # downloadButton("download_sample_data", "Download sample data")
           )
         )
       )

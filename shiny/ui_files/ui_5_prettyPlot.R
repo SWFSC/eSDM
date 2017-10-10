@@ -41,31 +41,43 @@ ui.prettyPlot <- function() {
             title = "Map Control", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE, 
             fluidRow(
               ################################################ Generate map
-              box(
+              column(
                 width = 6, 
-                tags$br(), 
+                tags$strong("Generate map in-app"), 
                 fluidRow(
-                  column(2, actionButton("pretty_plot_execute", "Generate map")), 
-                  column(10, textOutput("pretty_plot_values_event_text"))  
-                ), 
-                tags$br(), 
-                tags$h5("Plotting or downloading a large set of model predictions may take several minutes")
+                  box(
+                    width = 12, 
+                    tags$br(), 
+                    fluidRow(
+                      column(2, actionButton("pretty_plot_execute", "Generate map")), 
+                      column(10, textOutput("pretty_plot_values_event_text"))  
+                    ), 
+                    tags$br(), 
+                    tags$h5("Plotting or downloading a large set of model predictions may take several minutes")
+                  )
+                )
               ), 
               
               ################################################ Download map
-              box(
+              column(
                 width = 6, 
+                tags$strong("Download map"), 
                 fluidRow(
-                  column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"), 
-                                         choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2), 
-                                         selected = 2)), 
-                  column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"), 
-                                         choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3), 
-                                         selected = 3)), 
-                  column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
-                ), 
-                tags$br(), 
-                downloadButton("pretty_plot_download_execute", "Download map")
+                  box(
+                    width = 12, 
+                    fluidRow(
+                      column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"), 
+                                             choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2), 
+                                             selected = 2)), 
+                      column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"), 
+                                             choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3), 
+                                             selected = 3)), 
+                      column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
+                    ), 
+                    tags$br(), 
+                    downloadButton("pretty_plot_download_execute", "Download map")
+                  )
+                )
               )
             )
             
@@ -133,26 +145,21 @@ ui.prettyPlot <- function() {
                   box(
                     width = 12, 
                     fluidRow(
-                      column(6, checkboxInput("pretty_plot_tick", "Include tick marks in map", value = TRUE)),
-                      column(6, tags$br(), helpText("Length and size values are relative to 1"))
+                      column(6, checkboxInput("pretty_plot_tick", "Include tick marks in the map", value = TRUE)),
+                      column(
+                        width = 6, 
+                        tags$br(), 
+                        conditionalPanel("input.pretty_plot_tick", helpText("Length and size values are relative to 1"))
+                      )
                     ), 
-                    fluidRow(
-                      column(
-                        width = 6, 
-                        conditionalPanel(
-                          condition = "input.pretty_plot_tick", 
-                          radioButtons("pretty_plot_tick_manual", tags$h5("Tick location options"), 
+                    conditionalPanel(
+                      condition = "input.pretty_plot_tick", 
+                      fluidRow(
+                        column(6, radioButtons("pretty_plot_tick_manual", tags$h5("Tick location options"), 
                                        choices = list("Use default tick locations" = 1, "Enter tick locations manually" = 2), 
-                                       selected = 1)
-                        )
-                      ), 
-                      column(
-                        width = 6, 
-                        conditionalPanel(
-                          condition = "input.pretty_plot_tick", 
-                          numericInput("pretty_plot_tick_length", tags$h5("Tick length"), 
-                                       value = 1.0, min = 0, step = 0.1)
-                        )
+                                       selected = 1)), 
+                        column(6, numericInput("pretty_plot_tick_length", tags$h5("Tick length"), 
+                                       value = 1.0, min = 0, step = 0.1))
                       )
                     ), 
                     fluidRow(
@@ -168,16 +175,16 @@ ui.prettyPlot <- function() {
                     fluidRow(
                       conditionalPanel(
                         condition = "input.pretty_plot_tick == false", 
-                        column(12, helpText("The map must include tick marks to have tick labels"))
+                        column(12, helpText("The map must include tick marks to include tick labels"))
                       ), 
                       conditionalPanel(
                         condition = "input.pretty_plot_tick", 
                         column(
                           width = 6, 
-                          checkboxInput("pretty_plot_tick_label", "Plot tick labels", value = TRUE), 
+                          checkboxInput("pretty_plot_tick_label", "Include tick labels in the map", value = TRUE), 
                           conditionalPanel(
                             condition = "input.pretty_plot_tick_label", 
-                            helpText("Tick labels will be generated at all tick locations")
+                            helpText("Tick labels will be generated at all tick marks")
                           )
                         ), 
                         column(
@@ -211,14 +218,18 @@ ui.prettyPlot <- function() {
                     width = 12, 
                     fluidRow(
                       column(
-                        width = 7, 
+                        width = 8, 
                         radioButtons("pretty_plot_color_perc", tags$h5("Prediction display option"), 
-                                     choices = list("Plot relative percentages of predictions" = 1, 
-                                                    "Plot numerical values of predictions" = 2)), 
+                                     choices = list("Color-code predictions by relative percentage" = 1, 
+                                                    "Color-code predictions by numerical value" = 2)), 
                         uiOutput("pretty_plot_color_palette_uiOut_select"), 
                         uiOutput("pretty_plot_color_num_uiOut_num")
                       ), 
-                      column(3, offset = 1, plotOutput("pretty_plot_color_preview_plot", height =  "250px"))
+                      column(
+                        width = 3, 
+                        tags$h5("Color scheme preview"), 
+                        plotOutput("pretty_plot_color_preview_plot", height =  "250px")
+                      )
                     )
                   )
                 )
