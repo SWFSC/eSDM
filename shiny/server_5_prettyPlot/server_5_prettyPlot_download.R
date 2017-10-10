@@ -11,6 +11,7 @@ output$pretty_plot_download_execute <- downloadHandler(
     withProgress(message = "Downloading high quality map", value = 0.4, { 
       plot.toprint <- pretty_plot_generate()
       plot.res <- ifelse(input$pretty_plot_download_res == "1", 300, 72)
+      pdf.res  <- ifelse(input$pretty_plot_download_res == "1", 15, 7)
       plot.format <- input$pretty_plot_download_format
       incProgress(0.2)
       
@@ -21,7 +22,7 @@ output$pretty_plot_download_execute <- downloadHandler(
         dev.off()
       }
       if(plot.format == 2) {
-        pdf(file, width = 4, height = 4)
+        pdf(file, width = pdf.res, height = pdf.res)
         grid.arrange(plot.toprint)
         dev.off()
       }

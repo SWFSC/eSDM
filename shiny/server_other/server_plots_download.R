@@ -16,6 +16,7 @@ output$model_download_preview_execute <- downloadHandler(
       Sys.sleep(0.5)
       plot.toprint <- model_pix_download()
       plot.res <- ifelse(input$model_download_preview_res == "1", 300, 72)
+      pdf.res  <- ifelse(input$model_download_preview_res == "1", 15, 7)
       plot.format <- input$model_download_preview_format
       
       if(plot.format == 1) {
@@ -25,7 +26,7 @@ output$model_download_preview_execute <- downloadHandler(
         dev.off()
       }
       if(plot.format == 2) {
-        pdf(file, width = 4, height = 4)
+        pdf(file, width = pdf.res, height = pdf.res)
         grid.arrange(plot.toprint)
         dev.off()
       }
@@ -52,6 +53,7 @@ output$ens_download_preview_execute <- downloadHandler(
       Sys.sleep(0.5)
       plot.toprint <- ens_pix_download()
       plot.res <- ifelse(input$ens_download_preview_res == "1", 300, 72)
+      pdf.res  <- ifelse(input$ens_download_preview_res == "1", 15, 7)
       plot.format <- input$ens_download_preview_format
       
       if(plot.format == 1) {
@@ -61,7 +63,7 @@ output$ens_download_preview_execute <- downloadHandler(
         dev.off()
       }
       if(plot.format == 2) {
-        pdf(file, width = 4, height = 4)
+        pdf(file, width = pdf.res, height = pdf.res)
         grid.arrange(plot.toprint)
         dev.off()
       }
