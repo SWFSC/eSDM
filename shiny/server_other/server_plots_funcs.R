@@ -15,8 +15,9 @@ plot.ll <- function(spdf.ll, data.name, title.ll, perc, axis.cex, main.cex,
   if(perc == 1) {
     b.model <- suppressWarnings(breaks.calc(spdf.ll@data[,data.name]))
     
-    spplot(spdf.ll, zcol = data.name, col = NA, col.regions = col.ramp,
-           at = b.model, main = list(label = title.ll, cex = main.cex),
+    spplot(spdf.ll, zcol = data.name, 
+           col = NA, col.regions = col.ramp, at = b.model, 
+           main = list(label = title.ll, cex = main.cex),
            colorkey = list(space = "right", col = col.ramp, at = breaks,
                            labels = list(labels = labels.lab,
                                          at = labels.at),
@@ -28,9 +29,17 @@ plot.ll <- function(spdf.ll, data.name, title.ll, perc, axis.cex, main.cex,
   }
   # Generate plot with densities color-coded by values
   else {
+    data.vec <- spdf.ll@data[data.name]
+    b.model <- seq(from = min(data.vec, na.rm = TRUE), 
+                   to = max(data.vec, na.rm = TRUE), 
+                   length.out = 11)
+    
     spplot(spdf.ll, zcol = data.name, 
+           col = NA, col.regions = col.ramp, at = b.model, 
            main = list(label = title.ll, cex = main.cex),
-           colorkey = list(space = "right", #col = col.ramp, at = breaks,
+           colorkey = list(space = "right", col = col.ramp, at = breaks,
+                           labels = list(labels = rev(round(b.model, 5)),
+                                         at = labels.at), 
                            width = 1, axis.text = list(cex = axis.cex)), 
            scales = list(draw = TRUE, alternating = 1, tck = c(1, 0), 
                          # x = list(at = x.at), y = list(at = y.at), 

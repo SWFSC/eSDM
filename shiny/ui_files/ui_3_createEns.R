@@ -438,9 +438,11 @@ ui.createEns <- function() {
                     ####################################### Preview ensemble(s)
                     conditionalPanel(
                       condition = "input.ens_select_action == 1", 
-                      column(3, radioButtons("ens_preview_perc", tags$h5("Units"), choices = list("Percentages" = 1, "Values" = 2), 
-                                             selected = 1)), 
-                      column(3, ui.new.line(), actionButton("ens_preview_execute", "Preview selected ensemble predictions"))
+                      fluidRow(
+                        column(3, radioButtons("ens_preview_perc", tags$h5("Units"), choices = list("Percentages" = 1, "Values" = 2), 
+                                               selected = 1)), 
+                        column(3, ui.new.line(), actionButton("ens_preview_execute", "Preview selected ensemble predictions"))
+                      )
                     ), 
                     ####################################### Download preview of ensemble(s)
                     conditionalPanel(
@@ -464,11 +466,8 @@ ui.createEns <- function() {
                     ####################################### Remove ensemble(s)
                     conditionalPanel(
                       condition = "input.ens_select_action == 3", 
-                      column(
-                        width = 3, 
-                        actionButton("ens_remove_execute", "Remove selected ensemble predictions"), 
-                        uiOutput("ens_remove_text")
-                      )
+                      actionButton("ens_remove_execute", "Remove selected ensemble predictions"), 
+                      uiOutput("ens_remove_text")
                     ), 
                     ####################################### Calculate abundance of ensemble(s)
                     conditionalPanel(

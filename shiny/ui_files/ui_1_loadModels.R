@@ -9,22 +9,7 @@ ui.loadModels <- function() {
         fluidRow(
           box(
             title = "Load Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
-            fluidRow(
-              column(6, selectInput("model_load_type", tags$h5("Data file type"),  choices = file.type.list2, selected = 1))
-              # column(
-              #   width = 5, offset = 1, 
-              #   conditionalPanel(
-              #     condition = "input.model_load_type == 1", 
-              #     selectInput("model_csv_pt_loc", tags$h5("Location of point in grid cell"), 
-              #                 choices = list("Center" = 1, "Top left" = 2, "Top right" = 3, "Bottom right" = 4, "Bottom left" = 5), 
-              #                 selected = 1)
-              #   ), 
-              #   conditionalPanel(
-              #     condition = "input.model_load_type == 2", 
-              #     numericInput("model_gis_raster_band", tags$h5("Band number of prediction data"), value = 1, min = 1, step = 1)
-              #   )
-              # )
-            ), 
+            selectInput("model_load_type", tags$h5("Data file type"),  choices = file.type.list2, selected = 1, width = "50%"), 
             conditionalPanel(
               condition = "input.model_load_type == 1", 
               ui.instructions.upload.csv(), 
@@ -241,13 +226,15 @@ ui.loadModels <- function() {
                                width = 12, 
                                conditionalPanel(
                                  condition = "input.model_select_action == 1", 
-                                 column(3, radioButtons("model_preview_perc", tags$h5("Preview model predictions using"), 
-                                                        choices = list("Percentages" = 1, "Values" = 2), 
-                                                        selected = 1)), 
-                                 column(
-                                   width = 3, 
-                                   ui.new.line(), 
-                                   actionButton("model_pix_preview_execute", "Preview selected model predictions")
+                                 fluidRow(
+                                   column(3, radioButtons("model_preview_perc", tags$h5("Units"), 
+                                                          choices = list("Percentages" = 1, "Values" = 2), 
+                                                          selected = 1)), 
+                                   column(
+                                     width = 3, 
+                                     ui.new.line(), 
+                                     actionButton("model_pix_preview_execute", "Preview selected model predictions")
+                                   )
                                  )
                                ), 
                                conditionalPanel(
@@ -270,7 +257,7 @@ ui.loadModels <- function() {
                                ), 
                                conditionalPanel(
                                  condition = "input.model_select_action == 3", 
-                                 column(3, actionButton("model_remove_execute", "Remove selected model predictions"))
+                                 actionButton("model_remove_execute", "Remove selected model predictions")
                                )
                              )
                            )
