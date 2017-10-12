@@ -371,33 +371,36 @@ ui.createEns <- function() {
                   width = 12, 
                   conditionalPanel(
                     condition = "input.create_ens_rescale_type == 1", 
-                    helpText(tags$strong("Description: Model predictions will not be changed"))
+                    helpText(tags$u("Description:"), "Model predictions will not be changed")
                   ), 
                   conditionalPanel(
                     condition = "input.create_ens_rescale_type == 2", 
                     numericInput("create_ens_rescale_abund", tags$h5("Abundance to which to rescale predictions"), 
                                  value = 0, min = 0, step = 1), 
-                    helpText(tags$strong("Description: For each model, rescale predictions so that the predicted", 
-                                         "abundance is the value entered above"))
+                    helpText(tags$u("Description:"), 
+                             "For each model, rescale predictions so that the predicted", 
+                             "abundance is the value entered above")
                   ), 
                   conditionalPanel(
                     condition = "input.create_ens_rescale_type == 3", 
-                    helpText(tags$strong("Description: For each model, rescale predictions (X) into a range of [0, 1]", 
-                                         "using the following formula:")), 
+                    helpText(tags$u("Description:"), 
+                             "For each model, rescale predictions (X) into a range of [0, 1]", 
+                             "using the following formula:"), 
                     column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -", 
                                              paste0("X", tags$sub("min"), ")"), "/", 
                                              paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")"))))
                   ), 
                   conditionalPanel(
                     condition = "input.create_ens_rescale_type == 4", 
-                    helpText(tags$strong("Description: For each model, rescale predictions (X) to have a mean", HTML("(&mu;)"), 
-                                         "of 0 and", "standard deviation", HTML("(&sigma;)"), 
-                                         "of 1 (unit variance) using the following formula:")), 
+                    helpText(tags$u("Description:"), 
+                             "For each model, rescale predictions (X) to have a mean", HTML("(&mu;)"), 
+                             "of 0 and", "standard deviation", HTML("(&sigma;)"), 
+                             "of 1 (unit variance) using the following formula:"), 
                     column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
                   ), 
                   conditionalPanel(
                     condition = "input.create_ens_rescale_type == 5", 
-                    helpText(tags$strong("Description: For each model, rescale the predictions so that they sum to one"))
+                    helpText(tags$u("Description:"), "For each model, rescale the predictions so that they sum to one")
                   )
                 )
               ), 

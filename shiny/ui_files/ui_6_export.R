@@ -20,39 +20,45 @@ ui.export <- function() {
           title = "Export Predictions", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE, 
           conditionalPanel(
             condition = "output.export_tables_oneselected_flag == false", 
-            strong("Please select exactly one set of predictions to export")
+            tags$span(tags$strong("Please select exactly one set of predictions to export"), style = "color: red")
           ), 
           conditionalPanel(
-            condition = "output.export_tables_oneselected_flag == true", 
+            condition = "output.export_tables_oneselected_flag", 
             fluidRow(
               column(
                 width = 6, 
                 selectInput("export_format", tags$h5("Format in which to export predictions"), 
-                            choices = list("Excel .csv file" = 1, "GIS shapefile" = 2, "KML file" = 3), 
+                            choices = list("Excel .csv file" = 1, "GIS shapefile" = 2, "KML or KMZ file" = 3), 
                             selected = 1), 
                 conditionalPanel(
-                  condition = "input.export_format == 1", 
-                  box(
-                    width = 12, 
-                    helpText("For predictions to be exported as an Excel .csv file, the centroid is determined for each polygon", 
+                  condition = "input.export_format == 3", 
+                  radioButtons("export_format_kml", tags$h5("File type"), 
+                               choices = list("KML" = 1, "KMZ" = 2), 
+                               selected = 2)
+                ), 
+                box(
+                  width = 12, 
+                  conditionalPanel(
+                    condition = "input.export_format == 1", 
+                    helpText(tags$u("Description:"), 
+                             "For predictions to be exported as an Excel .csv file, the centroid is determined for each polygon", 
                              "that contains a prediction. The .csv file that is exported consists of", 
                              "columns with the longitude and latitudes of these centroids,", 
                              "as well as the prediction, and weight values for each of those points.")
-                  )
-                ), 
-                conditionalPanel(
-                  condition = "input.export_format == 2", 
-                  box(
-                    width = 12, 
-                    helpText("Predictions will be exported as polygons with the prediction,", 
+                    
+                  ), 
+                  conditionalPanel(
+                    condition = "input.export_format == 2", 
+                    helpText(tags$u("Description:"), 
+                             "Predictions will be exported as polygons with the prediction,", 
                              "and weight value for each polygon.", tags$br(), 
                              "Predictions cannot be exported to a GIS file or personal geodatabase.")
-                  )
-                ), 
-                conditionalPanel(
-                  condition = "input.export_format == 3", 
-                  checkboxInput("export_format_kml", "KML vs KMZ?", value = TRUE), 
-                  box(width = 12, helpText("Info about exporting predictions in .kml"))
+                    
+                  ), 
+                  conditionalPanel(
+                    condition = "input.export_format == 3", 
+                    helpText(tags$u("Description:"), 
+                             "Info about exporting predictions in .kml"))
                 )
               ), 
               column(
