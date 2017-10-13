@@ -101,9 +101,10 @@ ui.export <- function() {
                 tags$br(), 
                 conditionalPanel(
                   condition = "output.export_filename_flag == false", 
-                  tags$span(tags$strong("Error: Please ensure that the file extension in", tags$em("Filename"), 
-                                        "matches the file extension specified in", 
-                                        tags$em("Format in which to export predictions")), style = "color: red")
+                  tags$span(tags$strong("Error: The file extension in", tags$em("Filename"), 
+                                        "must match the file extension specified in", 
+                                        tags$em("Format in which to export predictions"), "to download the predictions"), 
+                            style = "color: red")
                 ), 
                 conditionalPanel(
                   condition = "output.export_filename_flag", 
