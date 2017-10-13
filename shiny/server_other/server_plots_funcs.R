@@ -12,7 +12,6 @@ preview.ll <- function(spdf.ll, data.name, title.ll, perc,
   x.extent <- c(extent(spdf.ll)@xmin, extent(spdf.ll)@xmax)
   y.extent <- c(extent(spdf.ll)@ymin, extent(spdf.ll)@ymax)
   
-  # browser()
   if (diff(x.extent) > 10) {
     x.list <- list(at = seq(mround(x.extent[1], 5, floor.use = TRUE), 
                             mround(x.extent[2], 5, ceiling.use = TRUE), 

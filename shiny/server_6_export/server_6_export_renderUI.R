@@ -2,12 +2,11 @@
 
 
 ###############################################################################
-### Object with projection in which to export selected model predictions
+### Model with coord system in which to export selected model predictions
 output$export_proj_uiOut_select <- renderUI({
   req(vals$models.names)
   
-  choices.list.names <- c("WGS 84 geographic coordinates", 
-                          vals$models.names)
+  choices.list.names <- vals$models.names
   choices.list <- seq_along(choices.list.names)
   names(choices.list) <- choices.list.names
   
@@ -63,17 +62,20 @@ output$export_filename_uiOut_text <- renderUI({
   }
   
   ## Projection info
-  proj.txt <- ifelse(input$export_proj == 1, "_ll", "_proj")
+  proj.txt <- ifelse(input$export_proj_ll, "_ll", "_proj")
   filename.value <- paste0(filename.value, proj.txt)
   
-  
-  filename.ext <- switch(input$export_format, 
-                         "1" = ".csv", "2" = "", "3" = ".kml")
+  ## Prefix and extensions
+  filename.ext <- switch(
+    input$export_format, 
+    "1" = ".csv", "2" = ".shp", 
+    "3" = ifelse(input$export_format_kml == 1, ".kml", ".kmz")
+  )
   filename.value <- gsub("\\.", "_", filename.value)
   filename.value <- paste0("eSDM_", filename.value, filename.ext)
   
   
-  ## Return textInput
+  ## textInput()
   textInput("export_filename", tags$h5("Filename"), value = filename.value)
 })
 

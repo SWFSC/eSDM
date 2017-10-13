@@ -253,13 +253,13 @@ rownames = TRUE, colnames = FALSE, align = "r")
 
 ### Table of orig model predictions
 output$eval_models_table_orig_out <- DT::renderDataTable({
-  table_orig()[,1:4][, -3] #'[, -3]' is to remove Error column
+  table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'))
 
 ### Table of overlaid model predictions
 output$eval_models_table_over_out <- DT::renderDataTable({
-  table_overlaid()[,1:4][, -3] #'[, -3]' is to remove Error column
+  table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'))
 
@@ -315,13 +315,13 @@ rownames = FALSE, digits = 3)
 
 ### Table of orig model predictions
 output$pretty_table_orig_out <- DT::renderDataTable({
-  table_orig()[,1:4][, -3] #'[, -3]' is to remove Error column
+  table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'))
 
 ### Table of overlaid model predictions
 output$pretty_table_over_out <- DT::renderDataTable({
-  table_overlaid()[,1:4][, -3] #'[, -3]' is to remove Error column
+  table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'))
 
@@ -359,13 +359,13 @@ output$pretty_plot_plot <- renderPlot({
 
 ### Table of orig model predictions
 output$export_table_orig_out <- DT::renderDataTable({
-  table_orig()[,1:4][, -3] #'[, -3]' is to remove Error column
+  table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'), selection = "single")
 
 ### Table of overlaid model predictions
 output$export_table_over_out <- DT::renderDataTable({
-  table_overlaid()[,1:4][, -3] #'[, -3]' is to remove Error column
+  table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, 
 options = list(dom = 't'), selection = "single")
 
@@ -374,12 +374,6 @@ output$export_table_ens_out <- DT::renderDataTable({
   table_ensembles()
 }, 
 options = list(dom = 't'), selection = "single")
-
-###########################################################
-### Text output of model predictions
-output$export_out_text <- renderText({
-  export_out()
-})
 
 
 ###############################################################################

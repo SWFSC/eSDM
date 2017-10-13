@@ -3,7 +3,7 @@
 
 ###############################################################################
 ### Unselect rows in other table when a row is selected
-# Use 'list()' as NULL causes selectRows to throw a 'deprecated' warning
+# Use 'list()' because 'NULL' causes selectRows to throw a 'deprecated' warning
 
 observeEvent(input$export_table_orig_out_rows_selected, {
   x <- input$export_table_orig_out_rows_selected
@@ -65,28 +65,45 @@ output$export_tables_oneselected_flag <- reactive({
 outputOptions(output, "export_tables_oneselected_flag", 
               suspendWhenHidden = FALSE)
 
+### Flag for if filename extension is correct
+output$export_filename_flag <- reactive({
+  export.format <- input$export_format
+  ext.text <- switch(as.numeric(input$export_format), 
+                     ".csv", ".shp", 
+                     ifelse(input$export_format_kml == 1, ".kml", ".kmz"))
+  
+  substrRight(input$export_filename, 4) == ext.text
+})
+outputOptions(output, "export_filename_flag", suspendWhenHidden = FALSE)
+
 
 ###############################################################################
-# Reactive functions to prep for export
+# Reactive functions that perform export prep steps
 
-### Return selected predictions 
+### Get selected predictions 
 export_model_selected <- reactive({
   req(vals$models.ll)
+  
   x <- input$export_table_orig_out_rows_selected
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
-  
   req(!sum(sapply(list(x, y, z), is.null)) == 1)
   
   if(!is.null(x)) {
     model.selected <- vals$models.ll[[x]]
   } else if (!is.null(y)) {
     model.selected <- vals$overlaid.models[[y]]
-  } else { #!is.null(z)
+  } else if (!is.null(z)) {
     model.selected <- vals$ensemble.models[[z]]
+  } else {
+    validate(need(FALSE, "Error: export get predictions error"))
   }
   
-  model.selected
+  ### Retiurn Pred and Weight data
+  to.return <- model.selected[c(1, 3)]
+  names(to.return) <- c("Density", "Weight")
+  
+  to.return
 })
 
 ### Return selected predictions in specified crs
@@ -94,10 +111,10 @@ export_model_selected_proj <- reactive({
   model.selected <- export_model_selected() # handles req()
   model.selected.crs <- crs(model.selected)
   
-  if (input$export_proj == 1) {
+  if (input$export_proj_ll) {
     crs.selected <- crs.ll
   } else {
-    crs.selected.idx <- as.numeric(input$export_proj) - 1
+    crs.selected.idx <- as.numeric(input$export_proj)
     crs.selected <- crs(vals$models.orig[[crs.selected.idx]])
   }
   
@@ -114,11 +131,11 @@ export_model_selected_proj_format <- reactive({
   model.selected <- export_model_selected_proj()
   
   if (input$export_format == 1) {
-    model.selected.sp <- gCentroid(model.selected, byid = TRUE)
-    data.out.coords <- unname(model.selected.sp@coords)
-    data.out <- data.frame(Long = data.out.coords[,1], 
-                           Lat = data.out.coords[,2], 
-                           model.selected@data[,1:3])
+    model.selected.centroid <- gCentroid(model.selected, byid = TRUE)
+    data.out.coords <- unname(model.selected.centroid@coords)
+    data.out <- data.frame(Long = data.out.coords[, 1], 
+                           Lat = data.out.coords[, 2], 
+                           model.selected@data)
   } else { # Exporting data as either .shp and .kml requires SPolyDF
     data.out <- model.selected
   }
@@ -128,33 +145,76 @@ export_model_selected_proj_format <- reactive({
 
 ###############################################################################
 ### Export model predictions as csv, shp, or kml
-export_out <- eventReactive(input$export_out_execute, {
-  withProgress(message = "Exporting predictions", value = 0.4, {
-    export.format <- input$export_format
-    data.out <- export_model_selected_proj_format()
-    
-    folder.path <- "C:/Users/sam.woodman/Downloads/Shiny_out"
-    filename.all <- paste0(folder.path, "/",input$export_filename)
-    
-    dir.create(folder.path, showWarnings = FALSE)
-    
-    if (export.format == 1) {
-      write.csv(data.out, file = filename.all, row.names = FALSE)
+# Download shapefile code is modeled after 
+# https://gist.github.com/RCura/b6b1759ddb8ab4035f30
+output$export_out <- downloadHandler(
+  filename = function() {
+    if (input$export_format == 2) {
+      "eSDM_shpExport.zip"
+    } else {
+      input$export_filename
     }
-    if (export.format == 2) {
-      writeOGR(data.out, dsn = folder.path, layer = input$export_filename, 
-               driver = "ESRI Shapefile")
-    }
-    if (export.format == 3) {
-      writeOGR(data.out, dsn = filename.all, layer = input$export_filename, 
-               driver = "KML")
-    }
-    
-    incProgress(0.6)
-    Sys.sleep(0.5)
-  })
+  }, 
   
-  return()
-})
+  content = function(file) {
+    withProgress(message = "Exporting predictions", value = 0.4, {
+      export.format <- input$export_format
+      data.out <- export_model_selected_proj_format()
+      
+      # browser()
+      if (export.format == 1) {
+        write.csv(data.out, file = file, row.names = FALSE)
+        
+      } else if (export.format == 2) {
+        # browser()
+        # name.base <- paste0(tempdir(), "\\", "shpExport")
+        name.base <- gsub(".{4}$", "", input$export_filename)
+        name.glob <- paste0(name.base, ".*")
+        name.shp <- paste0(name.base, ".shp")
+        name.zip <- paste0(name.base, ".zip")
+        print(name.base)
+        
+        if (length(Sys.glob(name.glob)) > 0) {
+          file.remove(Sys.glob(name.glob))
+        }
+        writeOGR(data.out, dsn = name.shp, layer = "shpExport", driver = "ESRI Shapefile")
+        zip(zipfile = name.zip, files = Sys.glob(name.glob))
+        file.copy(name.zip, file)
+
+        if (length(Sys.glob(name.glob)) > 0) {
+          file.remove(Sys.glob(name.glob))
+        }
+        
+      } else if (export.format == 3) {
+        writeOGR(data.out, dsn = file, layer = "Pred_kml", driver = "KML")
+        
+      } else {
+        validate(need(FALSE, "Download error"))
+      }
+      
+      incProgress(0.6)
+    })
+  }
+)
+
+
+
+# output$downloadShp <- downloadHandler(
+#   filename = "shpExport.zip",
+# 
+#   content = function(file) {
+#     if (length(Sys.glob("shpExport.*")) > 0) {
+#       file.remove(Sys.glob("shpExport.*"))
+#     }
+#     writeOGR(createShp(), dsn = "shpExport.shp", layer = "shpExport", driver = "ESRI Shapefile")
+#     zip(zipfile = 'shpExport.zip', files = Sys.glob("shpExport.*"))
+#     file.copy("shpExport.zip", file)
+#     
+#     if (length(Sys.glob("shpExport.*")) > 0) {
+#       file.remove(Sys.glob("shpExport.*"))
+#     }
+#   }
+# )
+
 
 ###############################################################################
