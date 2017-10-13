@@ -47,20 +47,21 @@ feedback_submit <- eventReactive(input$feedback_submit_event, {
   subject <- paste0("eSDM feedback from ", input$feedback_name, "; ", 
                     Sys.Date())
   body    <- list(f.name, f.email, f.tab, "", f.comment)
-  
-  
+
   #####################################
   ### Send email
   mail.out <- try(suppressWarnings(
-    sendmail(from, to, subject, body, 
-             control = list(smtpServer="ASPMX.L.GOOGLE.COM"))), 
+    sendmailR::sendmail(from, to, subject, body, 
+                        control = list(smtpServer="ASPMX.L.GOOGLE.COM"))), 
     silent = TRUE)
   
   validate(
     need(isTruthy(mail.out), 
          paste("Feedback could not be submitted; please check your", 
                "internet connection. If this problem persists,", 
-               "contact Karin Forney (karin.forney@noaa.gov)."))
+               "you can email your feedback to", 
+               "Sam Woodman (sam.woodman@noaa.gov) and", 
+               "Karin Forney (karin.forney@noaa.gov)."))
   )
   
   "Feedback submitted successfully. Thank you!"
