@@ -141,8 +141,7 @@ ui.loadModels <- function() {
                   textInput("model_gis_gdb_path", label.gdb.path, value = ".../Sample_predictions_4_gdb.gdb")
                 ), 
                 column(6, textInput("model_gis_gdb_name", label.gdb.name, value = "Sample_predictions_4_gdb")), 
-                column(6, tags$br(), tags$br(), actionButton("model_gis_gdb_load", label.gdb.upload)
-                )
+                column(6, tags$br(), tags$br(), actionButton("model_gis_gdb_load", label.gdb.upload))
               ), 
               tags$br(), 
               conditionalPanel(

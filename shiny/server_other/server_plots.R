@@ -127,7 +127,7 @@ plot_overlay_preview_overlaid <- eventReactive(
                               data.name = "Pred.overlaid", 
                               plot.titles = plot.titles, perc.num = 1)
     
-    plot.multi.display(overlaid.pix.list)
+    plot.multi.download(overlaid.pix.list) # because it is a square shape
   }
 )
 
