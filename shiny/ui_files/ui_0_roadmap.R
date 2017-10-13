@@ -100,7 +100,8 @@ ui.roadmap <- function() {
                     "However, running the R Shiny apps locally can be faster than running from them from a server.", 
                     "Thus, you can download the eSDM code from GitHub", 
                     tags$a("at this link", href = "https://github.com/smwoodman/eSDM"), 
-                    "and run the eSDM locally. See the manual for instructions on how to run the eSDM locally."), 
+                    "and run the eSDM locally. See the 'Run the eSDM locally' section of the manual for instructions", 
+                    "on how to run the eSDM locally."), 
             tags$br(), 
             tags$br(), 
             downloadButton("download_sample_data", "Download sample data")

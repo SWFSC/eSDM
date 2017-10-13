@@ -44,19 +44,22 @@ ui.export <- function() {
                   conditionalPanel(
                     condition = "input.export_format == 1", 
                     helpText(tags$u("Description:"), 
-                             "For predictions to be exported as an Excel .csv file, the centroid is determined for each polygon", 
-                             "that contains a prediction. The .csv file that is exported consists of", 
+                             "For predictions to be exported as an Excel .csv file, the centroid is determined for", 
+                             "each prediction polygon. The exported .csv file consists of", 
                              "columns with the longitude and latitudes of these centroids,", 
-                             "as well as the prediction, and weight values for each of those points.", tags$br(), 
-                             tags$u("Filename:"), "Extension must be .csv")
+                             "as well as the prediction, and weight values for each of those points.", 
+                             tags$br(), 
+                             tags$u("Filename:"), "Extension must be '.csv'.")
                     
                   ), 
                   conditionalPanel(
                     condition = "input.export_format == 2", 
                     helpText(tags$u("Description:"), 
                              "Predictions will be exported as polygons with the prediction,", 
-                             "and weight value for each polygon.", tags$br(), 
-                             tags$u("Filename:"), "Extension must be .shp")
+                             "and weight value for each polygon. The eSDM will produce a zip file with the name", 
+                             "‘eSDM_shp_Export.zip’ that will contain the various shapefile files.", 
+                             tags$br(), 
+                             tags$u("Filename:"), "Extension must be '.shp'.")
                     
                   ), 
                   conditionalPanel(
@@ -67,8 +70,10 @@ ui.export <- function() {
                     helpText(tags$u("Description:"), 
                              "Within the kml or kmz file, predictions will be represented as polygons with a red outline.", 
                              "Currently you cannot color-code the polygons by density value. The polygons will have their respective", 
-                             "prediction and weight values as decriptions.", tags$br(), 
-                             tags$u("Filename:"), "Extension must be .kml or .kmz")
+                             "prediction and weight values as decriptions.", 
+                             tags$br(), 
+                             tags$u("Filename:"), "Extension must be '.kml' or '.kmz', depending on the", 
+                             tags$em("File type"), "selection.")
                   )
                 )
               ), 
