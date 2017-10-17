@@ -21,7 +21,7 @@ ui.roadmap <- function() {
                 tags$strong("Save eSDM working environment"), 
                 textInput("save_app_envir_name", tags$h5("Filename for saved eSDM working environment"), 
                           value = paste0("eSDM_", gsub("-", "", Sys.Date()), ".RDATA")), 
-                downloadButton("save_app_envir", "Download current eSDM working environment")
+                downloadButton("save_app_envir", "Download eSDM working environment")
               )
             )
           ), 
@@ -62,7 +62,7 @@ ui.roadmap <- function() {
                     "spatial density model (SDM) layers and create and explore ensemble predictions to inform management", 
                     "and explore spatial uncertainties.", 
                     "This section is intended to provide you a roadmap that gives a brief overview of the eSDM and the order", 
-                    "in which you should use the sections of the app.", 
+                    "in which you can use the sections of the app.", 
                     "This section is NOT intended to explain inputs or replace the manual in any fashion."), 
             tags$h5(tags$strong("1) Load SDM predictions:"), 
                     "The main function of the eSDM is to load in SDM predictions, overlay them onto the same grid,", 

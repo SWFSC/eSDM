@@ -18,7 +18,7 @@
 # Code structure credits: https://gist.github.com/benmarwick/5054846 via
 #                         https://stackoverflow.com/questions/4090169
 list.of.packages <- c("dplyr", "sp", "rgdal", "rgeos", "raster", "cleangeo", 
-                      "lattice", "gridExtra", "RCurl", "ROCR", "DT", 
+                      "lattice", "gridExtra", "RCurl", "ROCR", "DT", "purrr", 
                       "colorRamps",  "RColorBrewer", "viridis", "dichromat", 
                       "colourpicker",  "sendmailR", 
                       "shiny", "shinyjs", "shinydashboard", "shinycssloaders")
@@ -41,6 +41,7 @@ library(gridExtra)
 library(RCurl)
 library(ROCR)
 library(DT)
+library(purrr)
 library(colorRamps)
 library(RColorBrewer)
 library(viridis)
@@ -78,8 +79,17 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       withProgress(message = "Downloading sample data", value = 0.6, {
-        download.file("https://github.com/smwoodman/eSDM/raw/master/data_provided.zip", 
-                      destfile = file, quiet = TRUE)
+        sample.try <- try(download.file("https://github.com/smwoodman/eSDM/raw/master/data_provided.zip", 
+                                        destfile = file, quiet = TRUE), 
+                          silent = TRUE)
+        validate(
+          need(isTruthy(sample.try), 
+               paste("Sample data could not be downloaded; please check your", 
+                     "internet connection. If this problem persists,", 
+                     "you can email your feedback to", 
+                     "Sam Woodman (sam.woodman@noaa.gov) and", 
+                     "Karin Forney (karin.forney@noaa.gov)."))
+        )
         incProgress(0.4)
       })
     }

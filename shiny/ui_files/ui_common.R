@@ -54,14 +54,22 @@ ui.instructions.upload.shp <- function() {
 }
 
 ui.instructions.upload.gdb <- function() {
-  helpText("Enter the full file path of the file geodatabase that contains", 
-           "the desired file geodatabase feature class. The path and the", 
-           "name of the feature class should be", 
-           "exactly as they appear in ArcCatalog.", 
-           "This app does not currently support loading a file geodatabse", 
-           "raster dataset or data from an ESRI personal geodatabase.", 
-           "Note that if this file geodatabase feature class is large", 
-           "(greater than ~50 Mb), then it could take several minutes to load.")
+  tags$h5(
+    tags$span("You can only load SDM predictions from", 
+              "a GIS file geodatabase feature class while", 
+              "running the eSDM locally through RStudio.", 
+              style = "color: red"), 
+    tags$br(), 
+    tags$br(), 
+    helpText("Enter the full file path of the file geodatabase that contains", 
+             "the desired file geodatabase feature class. The path and the", 
+             "name of the feature class should be", 
+             "exactly as they appear in ArcCatalog.", 
+             "This app does not currently support loading a file geodatabse", 
+             "raster dataset or data from an ESRI personal geodatabase.", 
+             "Note that if this file geodatabase feature class is large", 
+             "(greater than ~50 Mb), then it could take several minutes to load.")
+  )
 }
 
 
@@ -75,6 +83,7 @@ ui.instructions.pred.csv <- function() {
            tags$em("Column with latitude data:"), "Longitude and latitude", 
            "points must be in WGS 84 geographic coordinates and", 
            "equally spaced in decimal degrees.", 
+           tags$br(), 
            tags$em("Column with prediciton data:"), "Please ensure that", 
            "missing prediction values are one of the following: 'NA', 'NaN',", 
            " 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.", 
@@ -123,13 +132,13 @@ ui.instructions.poly.csv <- function() {
 
 ###########################################################
 ui.click.row.a1a <- paste("Click on a row in the table below to select or",
-                         "deselect the model predictions.")
+                          "deselect the model predictions.")
 ui.click.row.a2a <- paste("Click on row(s) in the table below to select or", 
-                         "deselect the model predictions.")
+                          "deselect the model predictions.")
 ui.click.row.a1b <- paste("Click on a row in the table(s) below to select or",
-                         "deselect the model predictions.")
+                          "deselect the model predictions.")
 ui.click.row.a2b <- paste("Click on row(s) in the table(s) below to select or", 
-                         "deselect the model predictions.")
+                          "deselect the model predictions.")
 ui.click.row.b1 <- paste("You can only select or deselect a row when", 
                          tags$em("Display additional information"), 
                          "is unchecked.")
