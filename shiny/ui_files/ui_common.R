@@ -86,7 +86,7 @@ ui.instructions.pred.csv <- function() {
            tags$br(), 
            tags$em("Column with prediciton data:"), "Please ensure that", 
            "missing prediction values are one of the following: 'NA', 'NaN',", 
-           " 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.", 
+           " 'N/A', 'n/a', 'na', 'Null', blank, or a negative number.", 
            tags$br(), 
            tags$em("Prediction value type:"), "Select \"Relative density\"", 
            "if the predictions are probabilities of occurrence.", tags$br(), 

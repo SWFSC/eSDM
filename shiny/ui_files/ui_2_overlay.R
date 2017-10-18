@@ -95,12 +95,13 @@ ui.overlay <- function() {
                              "See the", tags$a("GSHHG website", href="http://www.soest.hawaii.edu/pwessel/gshhg/"), 
                              "for more information about the provided land polygons."), 
                     fluidRow(
-                      column(4, selectInput("overlay_land_provided_res", tags$h5("Resolution of land polygon"), 
+                      column(6, selectInput("overlay_land_provided_res", tags$h5("Resolution of land polygon"), 
                                             choices = list("Full" = 1, "High" = 2, "Intermediate" = 3, "Low" = 4, "Crude" = 5), 
                                             selected = 1)), 
-                      column(5, ui.new.line(), tags$br(), actionButton("overlay_land_provided", "Load provided land polygon")), 
-                      column(3, ui.new.line(), tags$br(), tags$span(textOutput("overlay_land_provided_message"), style = "color: blue"))
-                    )
+                      column(6, ui.new.line(), tags$br(), actionButton("overlay_land_provided", "Load provided land polygon"))
+                      # column(3, ui.new.line(), tags$br(), )
+                    ), 
+                    tags$span(textOutput("overlay_land_provided_message"), style = "color: blue")
                   )
                 ), 
                 conditionalPanel(

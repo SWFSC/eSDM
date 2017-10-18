@@ -15,7 +15,7 @@ ui.createEns <- function() {
             tags$h5(tags$strong("Select overlaid model predictions to ensemble:"), 
                     "All overlaid model predictions will be used when creating ensemble predictions.", 
                     "You can select specific sets of overlaid model predictions to ensemble when", 
-                    tags$em("Create ensemble using a subset of the overlaid models"), 
+                    tags$em("Create ensemble using a subset of the overlaid model predictions"), 
                     "is checked."), 
             tableOutput("create_ens_table")
           ), 
@@ -24,7 +24,7 @@ ui.createEns <- function() {
             ui.instructions.table.select(text.pre = "overlaid", text.in = "to ensemble:", sel.num = 2), 
             DT::dataTableOutput("create_ens_datatable")
           ), 
-          column(12, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid models"))
+          column(12, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid model predictions"))
         )
       ), 
       
