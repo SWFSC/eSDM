@@ -58,7 +58,8 @@ ui.roadmap <- function() {
           box(
             title = "eSDM Roadmap", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
             tags$h5(tags$strong("Overview:"), 
-                    "The eSDM is a user-friendly spatial tool with a web-based interface that allows users to import", 
+                    "The Ensemble Tool for Species Distribution Models (eSDM) is a user-friendly spatial tool", 
+                    "with a web-based interface that allows users to import", 
                     "spatial density model (SDM) layers and create and explore ensemble predictions to inform management", 
                     "and explore spatial uncertainties.", 
                     "This section is intended to provide you a roadmap that gives a brief overview of the eSDM and the order", 

@@ -46,7 +46,7 @@ source(file.path("ui_files", "ui_8_feedbackForm.R"), local = TRUE, echo = FALSE,
 ui <- dashboardPage(
   skin = "blue", 
   title = "eSDM", 
-  dashboardHeader(title = "Ensemble Tool for Species Distribution Modeling (eSDM)", 
+  dashboardHeader(title = "Ensemble Tool for Species Distribution Models (eSDM)", 
                   titleWidth = "540px"),
   
   dashboardSidebar(
