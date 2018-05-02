@@ -3,15 +3,9 @@
 
 ###############################################################################
 ### For projection of spatial objects
-EPSG.all <- make_EPSG()
-crs.ll <- CRS(subset(EPSG.all, code == 4326)[,3]) # WGS 84
-# Aka CRS("+init=epsg:4326"), but use other one because
-#   imported GIS objects don't have "+init..." in their crs
-crs.cea <- CRS(paste0("+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 ", 
-                      "+datum=WGS84 +units=m +no_defs", 
-                      " +ellps=WGS84 +towgs84=0,0,0"))
-# From proj4string() of JVR model, 
-#   Had Projected Coordinate System 'World_Cylindrical_Equal_Area'
+crs.ll <- st_crs(4326) # WGS 84
+crs.cea <- st_crs("+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
+# from st_crs(boundary.proj.poly), which had Projected Coordinate System 'World_Cylindrical_Equal_Area'in GIS
 
 
 ###############################################################################

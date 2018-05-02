@@ -50,7 +50,7 @@ ui.loadModels <- function() {
                       tags$br(), 
                       uiOutput("model_csv_NA_idx_uiOut_message")
                     ), 
-                    column(12, tags$span(textOutput("create_spdf_csv_text"), style = "color: blue"))
+                    column(12, tags$span(textOutput("create_sf_csv_text"), style = "color: blue"))
                   )
                 )
               )
@@ -226,7 +226,9 @@ ui.loadModels <- function() {
                                                           selected = 1)), 
                                    column(
                                      width = 3, 
-                                     ui.new.line(), 
+                                     # ui.new.line(), 
+                                     checkboxInput("model_preview_legend", "Include single legend for all previews", 
+                                                   value = TRUE), 
                                      actionButton("model_pix_preview_execute", "Preview selected model predictions")
                                    )
                                  )

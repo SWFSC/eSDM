@@ -18,9 +18,9 @@ output$load_envir_text <- renderText({
 # Created spdf messages
 
 ### Created spdf message for csv
-output$create_spdf_csv_text <- renderText({
+output$create_sf_csv_text <- renderText({
   req(read_model_csv())
-  create_spdf_csv()
+  create_sf_csv()
 })
 
 ### Created spdf message for gis raster
@@ -59,7 +59,9 @@ options = list(dom = 't'), selection = "none")
 ###########################################################
 ### Plot/preview of individual model
 output$model_pix_preview_plot <- renderPlot({
-  grid.arrange(model_pix_preview_event())
+  # grid.arrange(model_pix_preview_event())
+  model_pix_preview_event()
+  
 })
 
 

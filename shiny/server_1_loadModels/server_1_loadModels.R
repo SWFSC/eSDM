@@ -1,4 +1,4 @@
-### Code for loading models and converting them to SPDFs
+### Code for loading models and converting them to sf objects
 
 
 ###############################################################################
@@ -93,25 +93,22 @@ observeEvent(input$model_remove_execute, {
 
 
 ###############################################################################
-# Reset 'Prediction value type' to 'Relative' if new file is loaded
-
+### Reset 'Prediction value type' to 'Relative' if new file is loaded
 observe({
   input$model_csv_file
   updateSelectInput(session, "model_csv_pred_type", selected = 2)
 })
-
 observe({
   input$model_gis_raster_file
   updateSelectInput(session, "model_gis_raster_pred_type", selected = 2)
 })
-
 observe({
   input$model_gis_shp_files
   updateSelectInput(session, "model_gis_shp_pred_type", selected = 2)
 })
-
 observe({
   input$model_gis_gdb_load
   updateSelectInput(session, "model_gis_gdb_pred_type", selected = 2)
 })
+
 ###############################################################################

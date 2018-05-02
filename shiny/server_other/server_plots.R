@@ -20,16 +20,17 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
          "Error: Please select at least one model from table to preview")
   )
   
-  models.toplot <- vals$models.pix[models.idx]
+  models.toplot <- vals$models.ll[models.idx]
   
   plot.titles <- sapply(models.idx, function(i) {
-    paste0(vals$models.data.names[[i]][1], "\n", vals$models.names[i])
+    paste(vals$models.names[i], "|", vals$models.data.names[[i]][1])
   })
   
   model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
-                         plot.titles = plot.titles, perc.num = perc.num)
+                         plot.titles = plot.titles, perc.num = perc.num, 
+                         models.num = length(models.idx))
   #----------------------------------------------
-  
+
   vals$models.plotted.idx <- models.idx
   plot.multi.display(model.pix.list)
 })
@@ -51,14 +52,15 @@ model_pix_download <- reactive({
          "Error: Please select at least one model from table to preview")
   )
   
-  models.toplot <- vals$models.pix[models.idx]
+  models.toplot <- vals$models.ll[models.idx]
   
   plot.titles <- sapply(models.idx, function(i) {
     paste0(vals$models.data.names[[i]][1], "\n", vals$models.names[i])
   })
   
   model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
-                         plot.titles = plot.titles, perc.num = perc.num)
+                         plot.titles = plot.titles, perc.num = perc.num, 
+                         models.num = length(models.idx))
   #----------------------------------------------
   
   plot.multi.download(model.pix.list)

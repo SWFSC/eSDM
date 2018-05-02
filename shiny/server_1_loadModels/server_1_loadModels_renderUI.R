@@ -9,9 +9,7 @@
 ### Lon
 output$model_csv_names_lon_uiOut_select <- renderUI({
   req(read_model_csv())
-  
   choice.input <- csv_names_choice_input()
-  
   selectInput("model_csv_names_lon", tags$h5("Column with longitude data"),
               choices = choice.input, selected = 1)
 })
@@ -19,9 +17,7 @@ output$model_csv_names_lon_uiOut_select <- renderUI({
 ### Lat
 output$model_csv_names_lat_uiOut_select <- renderUI({
   req(read_model_csv())
-  
   choice.input <- csv_names_choice_input()
-  
   selectInput("model_csv_names_lat", tags$h5("Column with latitude data"),
               choices = choice.input, selected = 2)
 })
@@ -29,9 +25,7 @@ output$model_csv_names_lat_uiOut_select <- renderUI({
 ### Predictions
 output$model_csv_names_pred_uiOut_select <- renderUI({
   req(read_model_csv())
-  
   choice.input <- csv_names_choice_input()
-  
   selectInput("model_csv_names_pred", tags$h5("Column with prediction data"),
               choices = choice.input, selected = 3)
 })
@@ -39,7 +33,6 @@ output$model_csv_names_pred_uiOut_select <- renderUI({
 ### Prediction vaue type
 output$model_csv_pred_type_uiOut_select <- renderUI({
   req(read_model_csv())
-  
   selectInput("model_csv_pred_type", tags$h5("Prediction value type"), 
               choices = list("Absolute density" = 1, "Relative density" = 2), 
               selected = 2)
@@ -48,10 +41,8 @@ output$model_csv_pred_type_uiOut_select <- renderUI({
 # ### Error
 # output$model_csv_names_error_uiOut_select <- renderUI({
 #   req(read_model_csv())
-#   
 #   choice.input <- csv_names_choice_input()
 #   choice.input <- c("N/A" = 1, choice.input + 1)
-#   
 #   selectInput("model_csv_names_error", 
 #               tags$h5("Column with error data (optional)"), 
 #               choices = choice.input, selected = NULL)
@@ -60,10 +51,8 @@ output$model_csv_pred_type_uiOut_select <- renderUI({
 ### Weight
 output$model_csv_names_weight_uiOut_select <- renderUI({
   req(read_model_csv())
-  
   choice.input <- csv_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
-  
   selectInput("model_csv_names_weight", 
               tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = NULL)
@@ -72,9 +61,7 @@ output$model_csv_names_weight_uiOut_select <- renderUI({
 ### Message with number of NA predictions
 output$model_csv_NA_idx_uiOut_message <- renderUI({
   req(read_model_csv())
-  
   na.idx <- model_csv_NA_idx()
-  
   na.which.message(na.idx)
 })
 
@@ -87,7 +74,6 @@ output$model_csv_NA_idx_uiOut_message <- renderUI({
 ### Prediction type value
 output$model_gis_raster_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_raster())
-  
   selectInput("model_gis_raster_pred_type", tags$h5("Prediction value type"), 
               choices = list("Absolute density" = 1, "Relative density" = 2), 
               selected = 2)
@@ -96,9 +82,7 @@ output$model_gis_raster_pred_type_uiOut_select <- renderUI({
 ### Message with number of NA predictions
 output$model_gis_raster_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_raster())
-  
   na.idx <- model_gis_raster_NA_idx()
-  
   na.which.message(na.idx)
 })
 
@@ -109,9 +93,7 @@ output$model_gis_raster_NA_idx_uiOut_message <- renderUI({
 ### Pred
 output$model_gis_shp_names_pred_uiOut_select <- renderUI({
   req(read_model_gis_shp())
-  
   choice.input <- shp_names_choice_input()
-  
   selectInput("model_gis_shp_names_pred", tags$h5("Column with prediction data"),
               choices = choice.input, selected = 1)
 })
@@ -119,7 +101,6 @@ output$model_gis_shp_names_pred_uiOut_select <- renderUI({
 ### Prediction value type
 output$model_gis_shp_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_shp())
-  
   selectInput("model_gis_shp_pred_type", tags$h5("Prediction value type"), 
               choices = list("Absolute density" = 1, "Relative density" = 2),
               selected = 2)
@@ -128,10 +109,8 @@ output$model_gis_shp_pred_type_uiOut_select <- renderUI({
 # ### Error
 # output$model_gis_shp_names_error_uiOut_select <- renderUI({
 #   req(read_model_gis_shp())
-#   
 #   choice.input <- shp_names_choice_input()
 #   choice.input <- c("N/A" = 1, choice.input + 1)
-#   
 #   selectInput("model_gis_shp_names_error", 
 #               tags$h5("Column with error data (optional)"),
 #               choices = choice.input, selected = 1)
@@ -140,10 +119,8 @@ output$model_gis_shp_pred_type_uiOut_select <- renderUI({
 ### Weight
 output$model_gis_shp_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_shp())
-  
   choice.input <- shp_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
-  
   selectInput("model_gis_shp_names_weight", 
               tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
@@ -152,9 +129,7 @@ output$model_gis_shp_names_weight_uiOut_select <- renderUI({
 ### Message with number of NA predictions
 output$model_gis_shp_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_shp())
-  
   na.idx <- model_gis_shp_NA_idx()
-  
   na.which.message(na.idx)
 })
 
@@ -165,9 +140,7 @@ output$model_gis_shp_NA_idx_uiOut_message <- renderUI({
 ### Pred
 output$model_gis_gdb_names_pred_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
-  
   choice.input <- gdb_names_choice_input()
-  
   selectInput("model_gis_gdb_names_pred", tags$h5("Column with prediction data"),
               choices = choice.input, selected = 1)
 })
@@ -175,7 +148,6 @@ output$model_gis_gdb_names_pred_uiOut_select <- renderUI({
 ### Prediction value type
 output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
-  
   selectInput("model_gis_gdb_pred_type", tags$h5("Prediction value type"), 
               choices = list("Absolute density" = 1, "Relative density" = 2), 
               selected = 2)
@@ -184,10 +156,8 @@ output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
 # ### Error
 # output$model_gis_gdb_names_error_uiOut_select <- renderUI({
 #   req(read_model_gis_gdb())
-#   
 #   choice.input <- gdb_names_choice_input()
 #   choice.input <- c("N/A" = 1, choice.input + 1)
-#   
 #   selectInput("model_gis_gdb_names_error", 
 #               tags$h5("Column with error data (optional)"),
 #               choices = choice.input, selected = 1)
@@ -196,10 +166,8 @@ output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
 ### Weight
 output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
-  
   choice.input <- gdb_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
-  
   selectInput("model_gis_gdb_names_weight", 
               tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
@@ -208,9 +176,7 @@ output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
 ### Message with number of NA predictions
 output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_gdb())
-  
   na.idx <- model_gis_gdb_NA_idx()
-  
   na.which.message(na.idx)
 })
 
@@ -226,7 +192,7 @@ output$model_create_csv_uiOut_button <- renderUI ({
   weight.idx <- as.numeric(input$model_csv_names_weight) - 1
   if (weight.idx != 0) {
     data.all <- read_model_csv()[[2]]
-    data.weight <- data.all[,weight.idx]
+    data.weight <- data.all[, weight.idx]
     validate(
       need((max(data.weight, na.rm = TRUE) <= 1) & 
              (min(data.weight, na.rm = TRUE) >= 0), 
@@ -240,7 +206,6 @@ output$model_create_csv_uiOut_button <- renderUI ({
 ### GIS raster
 output$model_create_gis_raster_uiOut_button <- renderUI ({
   req(read_model_gis_raster())
-  
   actionButton("model_create_gis_raster", "Load model predictions")
 })
 
@@ -251,8 +216,8 @@ output$model_create_gis_shp_uiOut_button <- renderUI ({
   # Ensure that weight values are between 0 and 1
   weight.idx <- as.numeric(input$model_gis_shp_names_weight) - 1
   if (weight.idx != 0) {
-    data.all <- read_model_gis_shp()[[1]]@data
-    data.weight <- data.all[,weight.idx]
+    data.all <- st_set_geometry(read_model_gis_shp()[[1]], NULL)
+    data.weight <- data.all[, weight.idx]
     validate(
       need((max(data.weight, na.rm = TRUE) <= 1) & 
              (min(data.weight, na.rm = TRUE) >= 0),
@@ -270,8 +235,8 @@ output$model_create_gis_gdb_uiOut_button <- renderUI ({
   # Ensure that weight values are between 0 and 1
   weight.idx <- as.numeric(input$model_gis_gdb_names_weight) - 1
   if (weight.idx != 0) {
-    data.all <- read_model_gis_gdb()[[1]]@data
-    data.weight <- data.all[,weight.idx]
+    data.all <- st_set_geometry(read_model_gis_gdb()[[1]], NULL)
+    data.weight <- data.all[, weight.idx]
     validate(
       need((max(data.weight, na.rm = TRUE) <= 1) & 
              (min(data.weight, na.rm = TRUE) >= 0),

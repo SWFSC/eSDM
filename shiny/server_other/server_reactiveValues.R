@@ -216,9 +216,7 @@ observe({
       "There was an error in eSDM data storage and processing.", 
       "\n", 
       "Please restart the app and report this error via ", 
-      "the 'Submit Feedback' tab. ", 
-      "Do not save the current working environment. ", 
-      "If this problem persists, please contact Karin Forney.")
+      "the 'Submit Feedback' tab.")
     shinyjs::info(text.message)
   }
 })

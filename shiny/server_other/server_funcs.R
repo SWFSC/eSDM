@@ -28,6 +28,18 @@ gClipExtent <- function(shp, bb, buf = NULL) {
 }
 
 
+### Sort data by one or two specified column(s)
+#   column.1 is primary sort and column.2 is secondary sort
+#   column.2 is sorted first (if necessary), then column.1
+data.sort <- function(data.in, column.1 = 1, column.2 = NA) {
+  data.sort <- data.in
+  if (!is.na(column.2)) data.sort <- data.sort[order(data.sort[, column.2]), ]
+  data.sort <- data.sort[order(data.sort[, column.1]), ]
+  
+  return(data.sort)
+}
+
+
 ### Determine whether all values in x are equal, aka have a zero range
 # From Hadley Wickham
 zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
@@ -124,43 +136,33 @@ normalize <- function(x) {
 }
 
 
-### Sort data by one or two specified column(s)
-#   column.1 is primary sort and column.2 is secondary sort
-#   column.2 is sorted first (if necessary), then column.1
-data.sort <- function(data.in, column.1 = 1, column.2 = NA) {
-  data.sort <- data.in
-  if (!is.na(column.2)) data.sort <- data.sort[order(data.sort[, column.2]), ]
-  data.sort <- data.sort[order(data.sort[, column.1]), ]
-  
-  return(data.sort)
-}
-
-
-### Rescale spdf.orig columns cols.data to data in new.abundances
-models.rescale <- function(spdf.list, abund.new) {
-  spdf.list.rescaled <- lapply(spdf.list, function(s) {
-    abund.orig <- model.abundance(s, cols.data = "Pred.overlaid")
-    frac <- abund.orig / abund.new
-    s$Pred.overlaid <- s$Pred.overlaid / frac
-    
-    s
-  })
-  
-  return(spdf.list.rescaled)
-}
+# ### Rescale spdf.orig columns cols.data to data in new.abundances
+# models.rescale <- function(spdf.list, abund.new) {
+#   spdf.list.rescaled <- lapply(spdf.list, function(s) {
+#     abund.orig <- model.abundance(s, cols.data = "Pred.overlaid")
+#     frac <- abund.orig / abund.new
+#     s$Pred.overlaid <- s$Pred.overlaid / frac
+#     
+#     s
+#   })
+#   
+#   return(spdf.list.rescaled)
+# }
 
 
 ### Calculate abundances for each of cols.data
 # Assumes that all cols.data have NAs at same place
 # Abundance depends on crs code of provided spdf
-model.abundance <- function(spdf, cols.data = "Pred") {
-  # Remove NAs, assumes NAs are consistent across cols.data
-  spdf.nona <- spdf[-which(is.na(spdf@data[,cols.data[1]])), ]
-  if (length(spdf.nona) == 0) spdf.nona <- spdf
-  
+model.abundance <- function(sdm, cols.data) {
   # Calculate areas of polygons with no NAs
-  spdf.area <- raster::area(spdf.nona) / 1e+06
-  abunds <- sapply(cols.data, function(j) sum(spdf.nona@data[, j] * spdf.area))
+  sdm.area.m2 <- st_area(sdm)
+  validate(need(all(units(sdm.area.m2)[[1]] == c("m", "m")), "Units error"))
+  sdm.area <- as.numeric(sdm.area.m2) / 1e+06
+  
+  # Calculate abundance for each data column
+  abunds <- sapply(cols.data, function(j) {
+    sum(as.data.frame(sdm)[j] * sdm.area, na.rm = TRUE)
+  })
   
   return(abunds)
 }
@@ -188,8 +190,8 @@ read.shp.in <- function(file.in) {
   outfiles <- file.path(dir, file.in$name)
   purrr::walk2(infiles, outfiles, ~file.rename(.x, .y))
   
-  gis.file <- try(readOGR(dir, strsplit(file.in$name[1], "\\.")[[1]][1], 
-                          verbose = FALSE), 
+  gis.file <- try(st_read(dir, strsplit(file.in$name[1], "\\.")[[1]][1], 
+                          quiet = TRUE), 
                   silent = TRUE)
   
   return(gis.file)
@@ -200,27 +202,37 @@ read.shp.in <- function(file.in) {
 #   Requires that 'gis.loaded' is an SPolyDF or SPtsDF
 gis.model.check <- function(gis.loaded) {
   validate(
-    need(class(gis.loaded)[1] %in% c("SpatialPolygonsDataFrame", 
-                                     "SpatialPointsDataFrame"), 
-         "Error: Object passed to gis.model.check() is not a SPolyDF")
+    need(identical(class(gis.loaded), c("sf", "data.frame")),
+         "Error: GIS object was not read in properly")
   )
   
   # Sort spdf by lat and then long so polygons are ordered bottom up
-  coords <- data.frame(idx = seq_along(gis.loaded), coordinates(gis.loaded))
+  coords <- data.frame(idx = 1:nrow(gis.loaded), st_coordinates(st_centroid(gis.loaded)))
   idx.sorted <- data.sort(coords, 3, 2)[, 1] # Lat is primary sort
   gis.loaded <- gis.loaded[idx.sorted, ]
   
   # Check crs arguments and project to crs.ll if necessary
-  crs.curr <- crs(gis.loaded)
-
   validate(
-    need(!is.na(crs.curr), "Error: GIS file does not have defined projection")
+    need(!is.na(st_crs(gis.loaded)), 
+         "Error: GIS file does not have defined projection")
+  )
+  if (identical(st_crs(gis.loaded), crs.ll)) {
+    list.toreturn <- list(gis.loaded, gis.loaded)
+  } else {
+    list.toreturn <- list(st_transform(gis.loaded, crs.ll), gis.loaded)
+  }
+  
+  # Check that extent is as expected
+  ext <- st_bbox(list.toreturn[[1]])
+  # Run some dateline correction function here..?
+  validate(
+    need(all(ext["xmax"] <= 180 & ext["xmin"] >= -180), 
+         "Error: Raster longitude extent is not -180 to 180 degrees"), 
+    need(all(ext["ymax"] <= 90 & ext["ymin"] >= -90), 
+         "Error: Raster latitude extent is not -90 to 90 degrees")
   )
   
-  if (identical(crs.curr, crs.ll)) { 
-    list(gis.loaded, gis.loaded)
-  } else {
-    list(spTransform(gis.loaded, crs.ll), gis.loaded)
-  }
+  # Return list of sf objects
+  return(list.toreturn)
 }
 ###############################################################################

@@ -31,12 +31,11 @@ if (length(new.packages)) install.packages(new.packages)
 ###############################################################################
 ### Load packages
 library(dplyr) # Loaded first so dplyr functions are those that are masked
+library(sf)
 library(sp)
-library(rgdal)
-library(rgeos)
 library(raster)
-library(cleangeo)
-library(lattice)
+library(lwgeom)
+# library(lattice)
 library(gridExtra)
 library(RCurl)
 library(ROCR)

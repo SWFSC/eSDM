@@ -2,64 +2,6 @@
 
 
 ###############################################################################
-### General function for lat/long spplot
-preview.ll <- function(spdf.ll, data.name, title.ll, perc, 
-                       axis.cex, main.cex) {
-  ### Get extent of plot and where axis labels should go and create scales list
-  scales.list <- list(draw = TRUE, alternating = 1, tck = c(1, 0), 
-                      cex = axis.cex)
-  
-  x.extent <- c(extent(spdf.ll)@xmin, extent(spdf.ll)@xmax)
-  y.extent <- c(extent(spdf.ll)@ymin, extent(spdf.ll)@ymax)
-  
-  if (diff(x.extent) > 10) {
-    x.list <- list(at = seq(mround(x.extent[1], 5, floor.use = TRUE), 
-                            mround(x.extent[2], 5, ceiling.use = TRUE), 
-                            by = 5))
-    
-    scales.list <- c(scales.list, x = list(x.list))
-  }
-  
-  if (diff(y.extent) > 10) {
-    y.list <- list(at = seq(mround(y.extent[1], 5, floor.use = TRUE), 
-                            mround(y.extent[2], 5, ceiling.use = TRUE), 
-                            by = 5))
-    
-    scales.list <- c(scales.list, y = list(y.list))
-  }
-  
-  ### Generate plot with densities color-coded by percentages or values
-  if(perc == 1) {
-    b.model <- suppressWarnings(breaks.calc(spdf.ll@data[,data.name]))
-    
-    spplot(spdf.ll, zcol = data.name, 
-           col = NA, col.regions = col.ramp, at = b.model, 
-           main = list(label = title.ll, cex = main.cex),
-           colorkey = list(space = "right", col = col.ramp, at = breaks,
-                           labels = list(labels = labels.lab,
-                                         at = labels.at),
-                           width = 1, axis.text = list(cex = axis.cex)),
-           scales = scales.list)
-    
-  } else {
-    data.vec <- spdf.ll@data[data.name]
-    b.model <- seq(from = min(data.vec, na.rm = TRUE), 
-                   to = max(data.vec, na.rm = TRUE), 
-                   length.out = 11)
-    
-    spplot(spdf.ll, zcol = data.name, 
-           col = NA, col.regions = col.ramp, at = b.model, 
-           main = list(label = title.ll, cex = main.cex),
-           colorkey = list(space = "right", col = col.ramp, at = breaks,
-                           labels = list(labels = rev(round(b.model, 5)),
-                                         at = labels.at), 
-                           width = 1, axis.text = list(cex = axis.cex)), 
-           scales = scales.list)
-  }
-}
-
-
-###############################################################################
 # Multiplot functions that return gtables
 
 ### Produce gtable for single- or multi-plot for display
@@ -92,19 +34,56 @@ plot.multi.display <- function(list.data.display) {
     TRUE ~ 1.0
   )
   
+  # TODO make this smart?
   x.tick.num <- 5
   y.tick.num <- 5
   
   
-  # Generate gtable object of plot(s)
-  list.spplots <- mapply(function(model.toplot.curr, plot.title.curr) {
-    preview.ll(model.toplot.curr, list.data.display$data.name, 
-               plot.title.curr, list.data.display$perc.num, 
-               axis.cex.curr, main.cex.curr)
-  }, list.data.display$models.toplot, list.data.display$plot.titles, 
-  SIMPLIFY = FALSE)
+  # # Generate gtable object of plot(s)
+  # list.sfplots <- mapply(function(model.toplot.curr, plot.title.curr) {
+  #   preview.ll(model.toplot.curr, list.data.display$data.name, 
+  #              plot.title.curr, list.data.display$perc.num, 
+  #              axis.cex.curr, main.cex.curr)
+  # }, list.data.display$models.toplot, list.data.display$plot.titles, 
+  # SIMPLIFY = FALSE)
+  # 
+  # arrangeGrob(grobs = list.sfplots, nrow = plot.nrow, ncol = plot.ncol)
   
-  arrangeGrob(grobs = list.spplots, nrow = plot.nrow, ncol = plot.ncol)
+  # browser()
+  
+  # # Layout prep
+  # if (input$model_preview_legend) {
+  #   mat.num <- c(1:list.data.display$models.num, 
+  #                rep(1 + list.data.display$models.num, plot.nrow))
+  #   lay.w <- c(rep((0.95 / plot.ncol), plot.ncol), 0.05)
+  #   layout(matrix(mat.num, nrow = plot.nrow, ncol = plot.ncol + 1), 
+  #          width = lay.w)
+  # } else {
+  #   mat.num <- 1:list.data.display$models.num
+  #   layout(matrix(mat.num, nrow = plot.nrow, ncol = plot.ncol))
+  # }
+  # 
+  # # Plot SDM previews
+  # for (i in 1:list.data.display$models.num) {
+  #   preview.ll(list.data.display$models.toplot[[i]],
+  #              list.data.display$data.name,
+  #              list.data.display$plot.titles[[i]],
+  #              list.data.display$perc.num,
+  #              axis.cex.curr, main.cex.curr)
+  # }
+  # 
+  # # Plot legend
+  # if (input$model_preview_legend) {
+  #   .image_scale(1:11, col = col.ramp, key.pos = 4, key.length = 1, key.width = 0.5, 
+  #                at = seq(0.5, 10.5, by = 1), labels = rev(labels.lab))
+  #   # plot.new()
+  #   # legend("top", legend = rev(labels.lab), col = col.ramp, pch = 16, cex = 2)
+  # }
+  # 
+  # # Reset layout
+  # layout(1)
+  
+  mapview(list.data.display$models.toplot[[1]], zcol = "Pred")
 }
 
 
@@ -142,14 +121,63 @@ plot.multi.download <- function(list.data.download) {
   y.tick.num <- 5
   
   # Generate gtable object of plot(s)
-  list.spplots <- mapply(function(model.toplot.curr, plot.title.curr) {
-    preview.ll(model.toplot.curr, list.data.download$data.name, 
-               plot.title.curr, list.data.download$perc.num, 
+  layout(matrix(1:list.data.download$models.num, nrow = plot.nrow,
+                ncol = plot.ncol, byrow = FALSE))
+  for (i in 1:list.data.download$models.num) {
+    preview.ll(list.data.download$models.toplot[[i]],
+               list.data.download$data.name,
+               list.data.download$plot.titles[[i]],
+               list.data.download$perc.num,
                axis.cex.curr, main.cex.curr)
-  }, list.data.download$models.toplot, list.data.download$plot.titles, 
-  SIMPLIFY = FALSE)
+  }
+  layout(1)
+}
+
+
+###############################################################################
+### General function for lat/long spplot
+preview.ll <- function(sf.ll, data.name, title.ll, perc, 
+                       axis.cex, main.cex) {
+  ### Prep: 
+  data.vec <- st_set_geometry(sf.ll, NULL)[, data.name]
   
-  arrangeGrob(grobs = list.spplots, nrow = plot.nrow, ncol = plot.ncol)
+  ### Generate plot with densities color-coded by percentages or values
+  if(perc == 1) {
+    b.model <- breaks.calc(data.vec)
+    # b.model[1] <- b.model[1] - 0.1 # so that left.open = FALSE
+    # temp <- findInterval(data.vec, b.model, 
+    #                      rightmost.closed = TRUE, left.open = FALSE)
+    # 
+    # plot(st_geometry(sf.ll), axes = TRUE, border = NA, 
+    #      col = col.ramp[temp],  
+    #      main = title.ll, cex.main = main.cex, cex.axis = axis.cex)
+    # legend("bottomleft", legend = labels.lab, col = rev(col.ramp), 
+    #        pch = 15, pt.cex = 2, bty = "n", cex = 0.8)
+    
+    plot(sf.ll[data.name], axes = TRUE, border = NA,
+         breaks = b.model, pal = col.ramp, 
+         main = title.ll, cex.main = main.cex, cex.axis = axis.cex, 
+         key.pos = NULL, reset = FALSE)
+    #graticule = st_crs(sf.ll),
+  } else {
+    b.model <- seq(from = min(data.vec, na.rm = TRUE), 
+                   to = max(data.vec, na.rm = TRUE),
+                   length.out = 11)
+    # temp <- findInterval(data.vec, b.model, 
+    #                      rightmost.closed = TRUE, left.open = FALSE)
+    # 
+    # plot(st_geometry(sf.ll), axes = TRUE, border = NA, 
+    #      col = col.ramp[temp],  
+    #      main = title.ll, cex.main = main.cex, cex.axis = axis.cex)
+    # 
+    # legend("bottomleft", legend = labels.lab, col = rev(col.ramp), 
+    #        pch = 15, pt.cex = 2, bty = "n")
+    
+    plot(sf.ll[data.name], axes = TRUE, border = NA,
+         breaks = b.model, pal = col.ramp, 
+         main = title.ll, cex.main = main.cex, cex.axis = axis.cex, 
+         key.pos = NULL, reset = FALSE)
+  }
 }
 
 ###############################################################################
