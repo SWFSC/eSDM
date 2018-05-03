@@ -4,103 +4,101 @@
 ############################################################################
 # Boundary polygon
 
-### Make sure file is.csv and read it in
-overlay_bound_read_csv <- reactive({
-  file.in <- input$overlay_bound_csv_file
-  req(file.in)
+### Create sfc object with one polygon from csv points
+overlay_bound_csv <- reactive({
+  # Read in .csv file, convert longs to [-180, 180] if all are greater 
+  # than 180, and perform checks. Only need df (second object in returned list)
+  csv.df <- read.csv.shiny(input$overlay_bound_csv_file)[[2]][, 1:2]
   
-  # Ensure file ext is .csv; use validate since there are no renderUI's
-  validate(
-    need(file.in$type %in% c("text/csv", "application/vnd.ms-excel"), 
-         "Error: Selected file is not a csv file")
-  )
-  
-  csv.df <- read.csv(file.in$datapath)[, 1:2]
+  # This reactive func does not go to renderUI, so validate is good to use
+  # TODO should boundary csv file only be allowed one polygon?
   validate(
     need(!anyNA(csv.df), 
-         paste("Error: Please load a csv file without invalid entries", 
+         paste("Error: Boundary polygon must be one, single polygon.", 
+               "Please load a csv file without invalid entries (such as NA)", 
                "in the longitude and latitude columns"))
   )
   
-  return(csv.df)
-})
-
-### Create SpatialPolygons with one polygon from csv points
-overlay_bound_csv <- reactive({
-  req(input$overlay_bound_csv_file)
-  
+  # Process input and make it into sf object
   withProgress(message = 'Loading boundary polygon', value = 0.7, {
-    csv.df <- overlay_bound_read_csv()
     Sys.sleep(0.5)
     
-    bound.csv <- SpatialPolygons(list(
-      Polygons(list(Polygon(cbind(csv.df[,1], csv.df[,2]))), ID = "bound")))
-    crs(bound.csv) <- crs.ll
+    bound.sfc <- try(st_sfc(st_polygon(list(as.matrix(csv.df)))), 
+                     silent = TRUE)
+    validate(
+      need(isTruthy(bound.sfc), 
+           paste("Error: The boundary polygon could not be created", 
+                 "from the provided points.", 
+                 "Please ensure that the .csv file has the longitude points", 
+                 "in the first column, the latitude points in the second", 
+                 "column, and that the provided points form a closed", 
+                 "and valid polygon")) %then%
+        need(st_is_valid(bound.csv), 
+             paste("Error: The provided boundary polygon is invalid;", 
+                   "please ensure that the provided points form a closed", 
+                   "and valid polygon (no self-intersections)"))
+    )
+    st_crs(bound.sfc) <- crs.ll
     
     incProgress(0.3)
   })
   
-  vals$overlay.bound <- bound.csv
+  # Add sf object to vals
+  vals$overlay.bound <- bound.sfc
   
-  return("")
+  # Return empty string - success message printed elsewhere
+  ""
 })
 
 
 ############################################################################
 # Land polygon
 
-### Make sure file is.csv and read it in
-overlay_land_read_csv <- reactive({
-  file.in <- input$overlay_land_csv_file
-  req(file.in)
-  
-  # Ensure file ext is .csv; use validate since there are no renderUI's
-  validate(
-    need(file.in$type %in% c("text/csv", "application/vnd.ms-excel"), 
-         "Error: Selected file is not a csv file")
-  )
-  
-  csv.df <- read.csv(file.in$datapath)[, 1:2]
-  csv.df[,1] <- ifelse(csv.df[,1] > 180, csv.df[,1] - 360, csv.df[,1])
-  validate(
-    need(all(csv.df[, 1] <= 180 & csv.df[, 1] >= -180),
-         "Error: .csv file has longitudes > 180")
-  )
-  
-  return(csv.df)
-})
-
-### Create SpatialPolygons from csv points
+### Create sfc object from csv points
 overlay_land_csv <- reactive({
-  req(input$overlay_land_csv_file)
+  # Read in .csv file, convert longs to [-180, 180] if they're all greater 
+  # than 180, and perform checks. Only need df (second object in returned list)
+  csv.df <- read.csv.shiny(input$overlay_land_csv_file)[[2]][, 1:2]
   
+  # Create sfc object for land polygon
   withProgress(message = 'Loading land polygon', value = 0.7, {
-    csv.df <- overlay_land_read_csv()
     Sys.sleep(0.5)
     
-    csv.df.na <- c(0, which(is.na(csv.df$lon) & is.na(csv.df$lat)), 
-                   nrow(csv.df) + 1)
+    names(csv.df) <- c("lon", "lat")
+    land.list <- try(
+      csv.df %>% 
+        mutate(na_sum = cumsum(is.na(lon) & is.na(lat))) %>% 
+        filter(!is.na(lon) & !is.na(lat)) %>%
+        group_by(na_sum) %>% 
+        summarise(list(st_polygon(list(matrix(c(.data$lon, .data$lat), ncol = 2))))), 
+      silent = TRUE)
     
-    csv.df.nona <- mapply(function(i, j) {
-      cbind(csv.df[(i+1):(j-1),], (i+1):(j-1)) 
-    }, 
-    csv.df.na[1:16], csv.df.na[2:17], SIMPLIFY = FALSE)
-    csv.df.nona <- csv.df.nona[sapply(csv.df.nona, function(i) nrow(i) >= 4)]
+    land.sfc <- try(st_sfc(do.call(rbind, land.list[, 2])), silent = TRUE)
     
-    land.csv <- disaggregate(SpatialPolygons(list(
-      Polygons(
-        lapply(csv.df.nona, function(i) {
-          Polygon(cbind(i[,1], i[,2]), hole = FALSE)
-        }), 
-        ID = "land"))))
-    crs(land.csv) <- crs.ll
+    validate(
+      need(isTruthy(land.list) & 
+             identical(class(land.sfc), c("sfc_POLYGON", "sfc")), 
+           paste("Error: The boundary polygon could not be created", 
+                 "from the provided points.", 
+                 "Please ensure that the .csv file has the longitude points", 
+                 "in the first column, the latitude points in the second", 
+                 "column, and that the provided points form a closed", 
+                 "and valid polygon")) %then%
+        need(isTruthy(all(st_is_valid(land.sfc))), #isTruthy() is for NA cases
+             paste("Error: The provided boundary polygon is invalid;", 
+                   "please ensure that the provided points form a closed", 
+                   "and valid polygon (no self-intersections)"))
+    )
+    st_crs(land.sfc) <- crs.ll
     
     incProgress(0.3)
   })
   
-  vals$overlay.land <- land.csv
+  # Add sfc object to vals
+  vals$overlay.land <- land.sfc
   
-  return("")
+  # Return empty string - success message printed elsewhere
+  ""
 })
 
 ###############################################################################

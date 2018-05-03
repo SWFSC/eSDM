@@ -87,7 +87,7 @@ options = list(dom = 't'), selection = "none")
 # Polygon error outputs and loaded messages
 
 ### Boundary (study area) polygon error outputs
-output$overlay_bound_csv_text <- renderText(overlay_bound_csv())
+output$overlay_bound_csv_text     <- renderText(overlay_bound_csv())
 output$overlay_bound_gis_shp_text <- renderText(overlay_bound_gis_shp())
 output$overlay_bound_gis_gdb_text <- renderText(overlay_bound_gis_gdb())
 
@@ -103,7 +103,7 @@ output$overlay_bound_gis_gdb_message <- renderText({
 })
 
 ### Land polygon error outputs
-output$overlay_land_csv_text <- renderText(overlay_land_csv())
+output$overlay_land_csv_text     <- renderText(overlay_land_csv())
 output$overlay_land_gis_shp_text <- renderText(overlay_land_gis_shp())
 output$overlay_land_gis_gdb_text <- renderText(overlay_land_gis_gdb())
 

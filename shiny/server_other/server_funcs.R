@@ -172,13 +172,26 @@ model.abundance <- function(sdm, cols.data) {
 ##### Other
 
 ### Load csv file from given shiny file input
-read.csv.in <- function(file.in) {
+read.csv.shiny <- function(file.in) {
   req(file.in)
   
-  list.out <- list(file.in$name, 
-                   read.csv(file.in$datapath, stringsAsFactors = FALSE))
+  validate(
+    need(file.in$type %in% c("text/csv", "application/vnd.ms-excel"), 
+         "Error: Selected file is not a csv file")
+  )
   
-  return(list.out)
+  csv.df <- read.csv(file.in$datapath, stringsAsFactors = FALSE)
+  
+  if (all(csv.df[, 1] > 180, na.rm = TRUE)) {
+    csv.df[, 1] <- csv.df[, 1] - 360
+  }
+  validate(
+    need(all(csv.df[, 1] <= 180 & csv.df[, 1] >= -180, na.rm = TRUE),
+         paste("Error: The provided .csv file must have longitudes in the", 
+               "range [-180, 180] and latitudes in the range [-90, 90]"))
+  )
+  
+  return(list(file.in$name, csv.df))
 }
 
 ### Load GIS shapefile from given shiny file input, 'file.in'
