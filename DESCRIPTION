@@ -1,5 +1,5 @@
 Package: eSDM
-Title: What the Package Does (one line, title case)
+Title: eSDM tool
 Description: What the package does (one paragraph).
 Version: 0.0.0.9000
 Authors@R: person("Sam", "Woodman", email = "sam.woodman@noaa.gov", role = c("aut", "cre"))
@@ -7,7 +7,9 @@ URL: https://github.com/smwoodman/eSDM
 BugReports: https://github.com/smwoodman/eSDM/issues
 Depends: R (>= 3.5.0)
 Imports:
-    shiny
+    dplyr, 
+    shiny, 
+    sf
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

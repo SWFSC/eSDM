@@ -7,5 +7,5 @@
 eSDM_Shiny()
 }
 \description{
-A graphical user interface for running the eSDM.
+Opens the actual eSDM tool interface
 }

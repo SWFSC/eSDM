@@ -9,4 +9,5 @@
 #'   ...
 #' }
 #' @source \url{http://www.soest.hawaii.edu/pwessel/gshhg/}
-"gshhg.f.L16"
+
+"gshhg.i.L16"
