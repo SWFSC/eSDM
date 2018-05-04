@@ -54,7 +54,7 @@ read_model_gis_shp <- reactive({
   req(input$model_gis_shp_files)
   
   withProgress(message = "Loading GIS shapefile", value = 0.3, {
-    gis.file.shp <- read.shp.in(input$model_gis_shp_files)
+    gis.file.shp <- read.shp.shiny(input$model_gis_shp_files)
     incProgress(0.5)
 
     gis.file.success <- isTruthy(gis.file.shp)

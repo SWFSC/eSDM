@@ -4,26 +4,26 @@
 
 
 ###############################################################################
-### Check that provided SPoly has a valid crs, and return crs.ll version
+### Check that provided sf object has a valid crs, and return crs.ll version
 
 overlay.gis.crs <- function(gis.loaded) {
   validate(
-    need(class(gis.loaded)[1] == "SpatialPolygons", 
-         "Error: Object passed to overlay.gis.crs() is not a SPoly")
+    need(class.sf.sfc(gis.loaded, "sfc"), 
+         "Error: Object passed to overlay.gis.crs() is not an sfc object") %then%
+      need(!is.na(st_crs(gis.loaded)), 
+         "Error: GIS file does not have defined projection")
   )
   
-  crs.curr <- crs(gis.loaded)
+  sf.ll <- st_transform(gis.loaded, crs.ll)
+  
   validate(
-    need(!is.na(crs.curr), "Error: GIS file does not have defined projection")
+    need(st_bbox(sf.ll)["xmax"] <= 180 & st_bbox(sf.ll)["xmin"] >= -180, 
+         "Error: Shapefile has longitudes > 180 or < -180 degrees"), 
+    need(st_bbox(sf.ll)["ymax"] <= 90 & st_bbox(sf.ll)["ymin"] >= -90, 
+         "Error: Shapefile has latitudes > 90 or < -90 degrees")
   )
   
-  if (identical(crs.curr, crs.ll)) { 
-    gis.loaded
-  } else {
-    spTransform(gis.loaded, crs.ll)
-  }
-  
-  return(gis.loaded)
+  return(sf.ll)
 }
 
 
@@ -67,7 +67,7 @@ overlay.func <- function(pol.base, pol.spdf, overlap.perc) {
   #########################################################
   ### Prep and get intersecting overlap
   pol.sp <- as(pol.spdf, "SpatialPolygons")
-
+  
   over.base <- over(pol.base, pol.sp, returnList = TRUE)
   over.base.idx <- sapply(over.base, unname)
   

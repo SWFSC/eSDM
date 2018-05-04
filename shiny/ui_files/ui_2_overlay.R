@@ -14,7 +14,7 @@ ui.overlay <- function() {
               title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE, 
               checkboxInput("overlay_bound", "Use a study area polygon as the boundary for the base grid in the overlay process", 
                             value = FALSE), 
-              helpText("Uncheck the above box to not use the study area polygon in the overlay process"), 
+              helpText("Uncheck the above box to remove the loaded study area polygon from the eSDM"), 
               conditionalPanel(
                 condition = "input.overlay_bound == true", 
                 radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1), 
@@ -73,7 +73,7 @@ ui.overlay <- function() {
                             value = FALSE), 
               conditionalPanel(
                 condition = "input.overlay_land == true", 
-                helpText("Uncheck the above box to not use a land polygon in the overlay process"), 
+                helpText("Uncheck the above box to remove the loaded land polygon from the eSDM"), 
                 fluidRow(
                   column(6, radioButtons("overlay_land_load_type", tags$h5("Land polygon source"), 
                                          choices = list("Use provided" = 1, "Upload personal" = 2), 
@@ -90,10 +90,13 @@ ui.overlay <- function() {
                   condition = "input.overlay_land_load_type == 1", 
                   box(
                     width = 12, 
-                    helpText("The provided land polygon is from the Global Self-consistent, Hierarchical, ", 
-                             "High-resolution Geography (GSHHG) Database.", tags$br(), 
-                             "See the", tags$a("GSHHG website", href="http://www.soest.hawaii.edu/pwessel/gshhg/"), 
-                             "for more information about the provided land polygons."), 
+                    helpText("The provided land polygons are from the Global Self-consistent, Hierarchical, ", 
+                             "High-resolution Geography (GSHHG) Database and contain hierarchical levels L1 and L6,", 
+                             "meaning they are polygons representing all continents including Antarctica,", 
+                             "but not lakes and rivers within those continents.", tags$br(), 
+                             "See the", tags$a("GSHHG website", href = "http://www.soest.hawaii.edu/pwessel/gshhg/"), 
+                             "for more information about the provided land polygons.", tags$br(), 
+                             "Please note that higher resolution polygons will take longer to load."), 
                     fluidRow(
                       column(6, selectInput("overlay_land_provided_res", tags$h5("Resolution of land polygon"), 
                                             choices = list("Full" = 1, "High" = 2, "Intermediate" = 3, "Low" = 4, "Crude" = 5), 
@@ -101,7 +104,8 @@ ui.overlay <- function() {
                       column(6, ui.new.line(), tags$br(), actionButton("overlay_land_provided", "Load provided land polygon"))
                       # column(3, ui.new.line(), tags$br(), )
                     ), 
-                    tags$span(textOutput("overlay_land_provided_message"), style = "color: blue")
+                    tags$span(textOutput("overlay_land_prov_message"), style = "color: blue"), 
+                    textOutput("overlay_land_prov_text")
                   )
                 ), 
                 conditionalPanel(
@@ -117,7 +121,8 @@ ui.overlay <- function() {
                         tags$br(), 
                         tags$br(), 
                         tags$span(textOutput("overlay_land_csv_message"), style = "color: blue"), 
-                        textOutput("overlay_land_csv_text"))
+                        textOutput("overlay_land_csv_text")
+                      )
                     )
                   )
                 ), 

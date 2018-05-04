@@ -6,6 +6,11 @@
 
 ### Create sfc object with one polygon from csv points
 overlay_bound_csv <- reactive({
+  req(input$overlay_bound_csv_file)
+  
+  # Reset vals object here in case validate() is triggered
+  vals$overlay.bound <- NULL
+  
   # Read in .csv file, convert longs to [-180, 180] if all are greater 
   # than 180, and perform checks. Only need df (second object in returned list)
   csv.df <- read.csv.shiny(input$overlay_bound_csv_file)[[2]][, 1:2]
@@ -33,7 +38,7 @@ overlay_bound_csv <- reactive({
                  "in the first column, the latitude points in the second", 
                  "column, and that the provided points form a closed", 
                  "and valid polygon")) %then%
-        need(st_is_valid(bound.csv), 
+        need(st_is_valid(bound.sfc), 
              paste("Error: The provided boundary polygon is invalid;", 
                    "please ensure that the provided points form a closed", 
                    "and valid polygon (no self-intersections)"))
@@ -56,6 +61,11 @@ overlay_bound_csv <- reactive({
 
 ### Create sfc object from csv points
 overlay_land_csv <- reactive({
+  req(input$overlay_land_csv_file)
+  
+  # Reset vals object here in case validate() is triggered
+  vals$overlay.land <- NULL
+  
   # Read in .csv file, convert longs to [-180, 180] if they're all greater 
   # than 180, and perform checks. Only need df (second object in returned list)
   csv.df <- read.csv.shiny(input$overlay_land_csv_file)[[2]][, 1:2]

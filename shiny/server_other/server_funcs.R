@@ -169,12 +169,10 @@ model.abundance <- function(sdm, cols.data) {
 
 
 ###############################################################################
-##### Other
+# Load certain file types into shiny
 
 ### Load csv file from given shiny file input
 read.csv.shiny <- function(file.in) {
-  req(file.in)
-  
   validate(
     need(file.in$type %in% c("text/csv", "application/vnd.ms-excel"), 
          "Error: Selected file is not a csv file")
@@ -195,9 +193,9 @@ read.csv.shiny <- function(file.in) {
 }
 
 ### Load GIS shapefile from given shiny file input, 'file.in'
-# Used for loading shapefiles in Load Model Preds and Overlay sections
+# Used for loading shapefiles into eSDM shiny app
 # From https://github.com/leonawicz/nwtapp/blob/master/mod_shpPoly.R
-read.shp.in <- function(file.in) {
+read.shp.shiny <- function(file.in) {
   infiles <- file.in$datapath
   dir <- unique(dirname(infiles))
   outfiles <- file.path(dir, file.in$name)
@@ -210,6 +208,20 @@ read.shp.in <- function(file.in) {
   return(gis.file)
 }
 
+
+###############################################################################
+# Other
+
+### Return T/F for if class of 'obj' is that of a type (sf or sfc) object
+class.sf.sfc <- function(obj, type) {
+  if (type == "sfc") {
+    return("sfc" %in% class(obj))
+  } else if (type == "sf") {
+    return(identical(class(obj), c("sf", "data.frame")))
+  } else {
+    return(FALSE)
+  }
+}
 
 ### Sort by lat and then long; return crs.ll and orig proj version of file
 #   Requires that 'gis.loaded' is an SPolyDF or SPtsDF

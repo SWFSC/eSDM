@@ -103,12 +103,13 @@ output$overlay_bound_gis_gdb_message <- renderText({
 })
 
 ### Land polygon error outputs
+output$overlay_land_prov_text    <- renderText(overlay_land_prov())
 output$overlay_land_csv_text     <- renderText(overlay_land_csv())
 output$overlay_land_gis_shp_text <- renderText(overlay_land_gis_shp())
 output$overlay_land_gis_gdb_text <- renderText(overlay_land_gis_gdb())
 
 ### Land polygon loaded messages
-output$overlay_land_provided_message <- renderText({
+output$overlay_land_prov_message <- renderText({
   if (!is.null(vals$overlay.land)) "A land polygon is loaded"
 })
 output$overlay_land_csv_message <- renderText({
