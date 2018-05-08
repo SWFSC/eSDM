@@ -41,15 +41,14 @@ polyValidCheck <- function(poly.invalid, dens.col = NA) {
   } else {
     # Check that area wasn't changed much
     area1 <- as.numeric(sum(st_area(poly.maybe)))
-    area.dif <- abs(as.numeric(sum(st_area(poly.maybe)) - area1))
-    stopifnot(area.dif / area1)#< 1e+06
+    area.dif <- abs(as.numeric(sum(st_area(poly.maybe))) - area1)
+    stopifnot((area.dif / area1) < 0.01)
 
     # Check that predicted abundance wasn't changed much
     if (!is.na(dens.col)) {
       abund1 <- model.abundance(poly.invalid, dens.col)
       abund.dif <- model.abundance(poly.maybe, dens.col) - abund1
-
-      stopifnot(abund.dif / abund2 < 0.01)
+      stopifnot((abund.dif / abund1) < 0.01)
     }
 
     return(poly.maybe)

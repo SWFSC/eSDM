@@ -149,8 +149,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   #########################################################
   # print("The entire overlay process took"); print(Sys.time() - t.1)
 
-  if (all(c(gIsValid(base.spdf), gIsValid(base.sp),
-            sapply(models.overlaid, gIsValid)))) {
+  if (all(sapply(models.overlaid, function(i) all(st_is_valid(i))))) {
     "All model predictions overlaid successfully"
   } else {
     "Model predictions overlaid, but outputs invalid. Please restart eSDM."
