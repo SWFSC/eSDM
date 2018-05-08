@@ -36,7 +36,6 @@ specs.curr <- c(model.res,
 
 
 ### Save objects to reactiveValues
-vals$models.pix <- c(vals$models.pix, NA)
 vals$models.ll <- c(vals$models.ll, list(sf.load.ll))
 vals$models.orig <- c(vals$models.orig, list(sf.load.orig))
 vals$models.names <- c(vals$models.names, model.name)
