@@ -48,7 +48,7 @@ overlay_bound_csv <- reactive({
     incProgress(0.3)
   })
 
-  # Add sf object to vals
+  # Add sfc object to vals, this sfc object will always be length 1
   vals$overlay.bound <- bound.sfc
 
   # Return empty string - success message printed elsewhere

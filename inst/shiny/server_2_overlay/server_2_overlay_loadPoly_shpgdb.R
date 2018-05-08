@@ -20,7 +20,14 @@ overlay_bound_gis_shp <- reactive({
     )
     incProgress(0.5)
 
-    vals$overlay.bound <- overlay.gis.crs(st_geometry(bound.sf))
+    temp.bound <- overlay.gis.crs(st_geometry(bound.sf))
+
+    if (length(temp.bound) != 1) {
+      vals$overlay.bound <- st_union(temp.bound)
+    } else {
+      vals$overlay.bound <- temp.bound
+    }
+
     incProgress(0.2)
   })
 
@@ -45,7 +52,13 @@ overlay_bound_gis_gdb <- eventReactive(input$overlay_bound_gis_gdb_load, {
     )
     incProgress(0.5)
 
-    vals$overlay.bound <- overlay.gis.crs(st_geometry(bound.sf))
+    temp.bound <- overlay.gis.crs(st_geometry(bound.sf))
+
+    if (length(temp.bound) != 1) {
+      vals$overlay.bound <- st_union(temp.bound)
+    } else {
+      vals$overlay.bound <- temp.bound
+    }
     incProgress(0.2)
   })
 
@@ -72,7 +85,13 @@ overlay_land_gis_shp <- reactive({
     )
     incProgress(0.5)
 
-    vals$overlay.land <- overlay.gis.crs(st_geometry(land.sf))
+    temp.land <- overlay.gis.crs(st_geometry(land.sf))
+
+    if (length(temp.land) != 1) {
+      vals$overlay.land <- st_union(temp.land)
+    } else {
+      vals$overlay.land <- temp.land
+    }
     incProgress(0.2)
   })
 
@@ -90,9 +109,9 @@ overlay_land_gis_gdb <- eventReactive(input$overlay_land_gis_gdb_load, {
 
   withProgress(message = 'Loading land polygon', value = 0.3, {
     land.sf <- try(st_read(input$overlay_land_gis_gdb_path,
-                            input$overlay_land_gis_gdb_name,
-                            quiet = TRUE),
-                    silent = TRUE)
+                           input$overlay_land_gis_gdb_name,
+                           quiet = TRUE),
+                   silent = TRUE)
 
     validate(
       need(identical(class(land.sf), c("data.frame", "sf")),
@@ -100,7 +119,13 @@ overlay_land_gis_gdb <- eventReactive(input$overlay_land_gis_gdb_load, {
     )
     incProgress(0.5)
 
-    vals$overlay.land <- overlay.gis.crs(st_geometry(land.sf))
+    temp.land <- overlay.gis.crs(st_geometry(land.sf))
+
+    if (length(temp.land) != 1) {
+      vals$overlay.land <- st_union(temp.land)
+    } else {
+      vals$overlay.land <- temp.land
+    }
     incProgress(0.2)
   })
 

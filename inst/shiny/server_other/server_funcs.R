@@ -1,35 +1,3 @@
-#' Clip sf object
-#'
-#' Clip sf object by extent, plus a buffer if desired, of second object
-#' Original code from
-#' \url{http://robinlovelace.net/r/2014/07/29/clipping-with-r.html},
-#' migrated to sf
-#'
-#' @source \url{http://robinlovelace.net/r/2014/07/29/clipping-with-r.html}
-#' @export
-
-g.clip.extent <- function(shp, bb, buf = NULL) {
-  validate(
-    need(identicalCRS(shp, bb),
-         "Error: gClipExtent(): CRS arguments are not equal")
-  )
-  if (class(bb) == "matrix") {
-    b.poly <- as(extent(as.vector(t(bb))), "SpatialPolygons")
-  } else {
-    b.ext <- extent(bb)
-    if (!is.null(buf)) {
-      b.ext <- extent(b.ext@xmin - buf, b.ext@xmax + buf,
-                      b.ext@ymin - buf, b.ext@ymax + buf)
-    }
-    b.poly <- as(b.ext, "SpatialPolygons")
-  }
-  proj4string(b.poly) <- crs(bb)
-
-  gIntersection(shp, b.poly, byid = TRUE)
-}
-
-
-
 ## Sort by lat and then long; return crs.ll and orig proj version of file
 #    Requires that 'gis.loaded' is an sf object
 
