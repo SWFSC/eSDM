@@ -204,13 +204,14 @@ observe({
   vals$pretty.params.list
   vals$pretty.plotted.idx
 
-  vals.list <- reactiveValuesToList(vals)
-  if(length(vals.list) != 34) {
-    text.message <- paste0(
-      "There was an error in eSDM data storage and processing.",
-      "\n",
-      "Please restart the app and report this error via ",
-      "the 'Submit Feedback' tab.")
-    shinyjs::info(text.message)
+
+  if (length(reactiveValuesToList(vals)) != 34) {
+    text.message <-
+      shinyjs::info(paste0(
+        "There was an error in eSDM data storage and processing.",
+        "\n",
+        "Please restart the app and report this error via ",
+        "the 'Submit Feedback' tab."
+      ))
   }
 })

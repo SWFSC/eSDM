@@ -222,8 +222,6 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
 
     #######################################################
     ### Prep for and run function that adds relevant data to vals
-    # spdf.poly.cea <- spTransform(spdf.poly.ll, crs.cea)
-    # sf.load.orig <- sf.load.ll
     incProgress(0.2)
     model.res <- paste(cell.lw, "degrees")
 

@@ -19,30 +19,29 @@ outputOptions(output, "loaded_models_selected_flag", suspendWhenHidden = FALSE)
 ### Delete selected model
 observeEvent(input$model_remove_execute, {
   idx <- as.numeric(input$models_loaded_table_rows_selected)
-  
+
   validate(
-    need(length(idx) > 0, 
-         paste("Error: Please select one or more sets", 
+    need(length(idx) > 0,
+         paste("Error: Please select one or more sets",
                "of model predictions to remove"))
   )
-  
+
   #########################################################
   ### Remove the reactiveValue info for selected set(s) of model predicitons
   vals$models.ll <- vals$models.ll[-idx]
   vals$models.orig <- vals$models.orig[-idx]
-  vals$models.pix <- vals$models.pix[-idx]
   vals$models.names <- vals$models.names[-idx]
   vals$models.data.names <- vals$models.data.names[-idx]
   vals$models.pred.type <- vals$models.pred.type[-idx]
   vals$models.specs <- vals$models.specs[-idx]
-  
+
   if (length(vals$models.names) == 0) vals$models.names <- NULL
   if (length(vals$models.pred.type) == 0) vals$models.pred.type <- NULL
-  
-  
+
+
   #########################################################
   # Handle other places this data was used
-  
+
   ### If these predictions were previewed, hide preview
   ### Else, adjust vals idx
   if (!is.null(vals$models.plotted.idx)) {
@@ -55,12 +54,12 @@ observeEvent(input$model_remove_execute, {
       })
       vals$models.plotted.idx <- vals$models.plotted.idx - idx.adjust
       validate(
-        need(all(vals$models.plotted.idx > 0), 
+        need(all(vals$models.plotted.idx > 0),
              "Error: While deleting original model(s), error 1")
       )
     }
   }
-  
+
   ### Remove evaluation metrics if they're calculated for original model preds
   # TODO: make this so it only removes the metrics of models being removed
   if (!is.null(vals$eval.models.idx)) {
@@ -70,7 +69,7 @@ observeEvent(input$model_remove_execute, {
       vals$eval.metrics.names <- NULL
     }
   }
-  
+
   ### If these predictions were pretty-plotted, reset and hide pretty plot
   ### Else, adjust vals idx
   if (!is.null(vals$pretty.plotted.idx)) {
@@ -84,7 +83,7 @@ observeEvent(input$model_remove_execute, {
       })
       vals$pretty.plotted.idx[[1]] <- vals$pretty.plotted.idx[[1]] - idx.adjust
       validate(
-        need(all(vals$pretty.plotted.idx[[1]] > 0), 
+        need(all(vals$pretty.plotted.idx[[1]] > 0),
              "Error: While deleting 1+ original model(s), error 2")
       )
     }

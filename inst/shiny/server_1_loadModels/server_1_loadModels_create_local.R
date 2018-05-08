@@ -14,11 +14,14 @@
 if (!exists("sf.load.orig")) sf.load.orig <- sf.load.ll
 
 ### Set names for sf.load.ll and sf.load.orig, both for data and sfc columns
-names(sf.load.ll) <- c("Pred", "Error", "Weight", "Pixels", "geometry")
+names(sf.load.ll)   <- c("Pred", "Error", "Weight", "Pixels", "geometry")
 names(sf.load.orig) <- c("Pred", "Error", "Weight", "Pixels", "geometry")
 
-attr(sf.load.ll, "sf_column") <- "geometry"
+attr(sf.load.ll, "sf_column")   <- "geometry"
 attr(sf.load.orig, "sf_column") <- "geometry"
+
+st_agr(sf.load.ll)   <- "constant"
+st_agr(sf.load.orig) <- "constant"
 
 ### Calculate predicted abundance if 'Absolute abundance' is selected
 if(pred.type == 1) {
