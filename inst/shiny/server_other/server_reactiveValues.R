@@ -207,7 +207,7 @@ observe({
 
   if (length(reactiveValuesToList(vals)) != 34) {
     text.message <-
-      shinyjs::info(paste0(
+      shinyjs::alert(paste0(
         "There was an error in eSDM data storage and processing.",
         "\n",
         "Please restart the app and report this error via ",

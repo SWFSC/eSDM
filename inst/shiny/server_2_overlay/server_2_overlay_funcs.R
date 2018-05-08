@@ -33,6 +33,7 @@ overlay.gis.crs <- function(gis.loaded) {
 
 polyValidCheck <- function(poly.invalid, dens.col = NA) {
   poly.maybe <- lwgeom::st_make_valid(poly.invalid)
+  shinyjs::alert("Making polygon valid")
 
   if (!all(st_is_valid(poly.maybe))) {
     stop("Could not make polygon valid")
@@ -40,7 +41,7 @@ polyValidCheck <- function(poly.invalid, dens.col = NA) {
   } else {
     # Check that area wasn't changed much
     area1 <- as.numeric(sum(st_area(poly.maybe)))
-    area.dif <- abs(as.numeric(sum(st_area(poly.maybe)) - area2))
+    area.dif <- abs(as.numeric(sum(st_area(poly.maybe)) - area1))
     stopifnot(area.dif / area1)#< 1e+06
 
     # Check that predicted abundance wasn't changed much

@@ -38,8 +38,9 @@ overlay_create_base_sf <- reactive({
   #--------------------------------------------------------
   # Remove land from base polygon
   if (!is.null(overlay.land)) {
-    base.sf <- try(st_difference(base.sf, overlay.land))
     # Adapted from https://github.com/r-spatial/sf/issues/346
+    base.sf <- try(suppressMessages(st_difference(base.sf, overlay.land)),
+                   silent = TRUE)
 
     validate(
       need(isTruthy(base.sf),
@@ -99,14 +100,17 @@ overlay_clip_base_bound <- reactive({
   base.sf <- overlay_proj_base()
   overlay.bound <- overlay_proj_bound()
 
-  base.bound.try <- try(st_intersection(base.sf, overlay.bound), silent = TRUE)
+  base.bound.try <- try(
+    suppressMessages(st_intersection(base.sf, overlay.bound)), silent = TRUE
+  )
 
   if (isTruthy(base.bound.try)) {
     base.bound.try
 
   } else {
     base.bound.try <- try(
-      st_intersection(overlay_valid_base(), overlay_valid_bound()),
+      suppressMessages(st_intersection(overlay_valid_base(),
+                                       overlay_valid_bound())),
       silent = TRUE
     )
   }
@@ -187,7 +191,6 @@ overlay_proj_base <- reactive({
 
 ### Output boundary polygon in specified projection
 overlay_proj_bound <- reactive({
-  print("overlay_proj_bound")
   bound.curr <- vals$overlay.bound
 
   if (!identical(overlay_crs(), crs.ll)) {
@@ -199,7 +202,6 @@ overlay_proj_bound <- reactive({
 
 ### Output land polygon in specified projection
 overlay_proj_land <- reactive({
-  print("overlay_proj_land")
   land.curr <- overlay_clip_land_llpre()
 
   if (!identical(overlay_crs(), crs.ll)) {
@@ -216,7 +218,6 @@ overlay_proj_land <- reactive({
 ### Clip land poly to base extent (plus a bit) in crs.ll using gClipExtent...
 # ...so that projecting land poly doesn't take as long
 overlay_clip_land_llpre <- reactive({
-  print("overlay_clip_land_llpre")
   overlay.land  <- vals$overlay.land
   overlay.bound <- vals$overlay.bound
   base.pre      <- overlay_base_llpre()
@@ -246,7 +247,6 @@ overlay_clip_land_llpre <- reactive({
 
 ### Get crs.ll version of base.spdf
 overlay_base_llpre <- reactive({
-  print("overlay_base_llpre")
   base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
   validate(
     need(length(base.idx) == 1,
