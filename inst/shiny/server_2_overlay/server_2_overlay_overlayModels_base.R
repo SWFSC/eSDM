@@ -5,47 +5,42 @@
 
 
 ###############################################################################
-### Create base.spdf
+### Create base sf object
+# Boundary and land polygons checked for length = 1 in projection functions
+# TODO: Report any sort of 'stats', ie area erased?
+
 overlay_create_base_sf <- reactive({
   #--------------------------------------------------------
   # The following are the vals$ versions to handle NULL cases
-  overlay.bound <- vals$overlay.bound
-  overlay.land  <- vals$overlay.land
-
-  if (!is.null(overlay.bound)) { #Bound should be of length 1 in vals
-    validate(
-      need(length(overlay.bound) == 1,
-           "Error in pre-overlay: the bound poly is not unioned")
-    )
-  }
+  overlay.bound.orig <- vals$overlay.bound
+  overlay.land.orig  <- vals$overlay.land
 
   #--------------------------------------------------------
-  # If boundary polygon and land exist, clip land by boundary extent
-  if (!is.null(overlay.bound) & !is.null(overlay.land)) {
+  if (!is.null(overlay.bound.orig) & !is.null(overlay.land.orig)) {
+    # If boundary polygon and land exist, clip land by boundary extent
     base.sf <- overlay_clip_base_bound()
     overlay.land <- overlay_clip_land_bound()
-  } else {
+
+  } else if (!is.null(overlay.bound.orig)) {
     # If only boundary exists, clip base with boundary
-    if (!is.null(overlay.bound)) {
-      base.sf <- overlay_clip_base_bound()
-    }
+    base.sf <- overlay_clip_base_bound()
+
+  } else if (!is.null(overlay.land.orig)) {
     # If only land exists, land has already been cropped by base
-    if (!is.null(overlay.land)) {
-      base.sf <- overlay_proj_base()
-      # Redo this here without buffer since now both are in desired projection
-      overlay.land <- st_crop(overlay_proj_land(), st_bbox(base.sf))
-    }
+    base.sf <- overlay_proj_base()
+    # Redo this here without buffer since now both are in desired projection
+    overlay.land <- suppressMessages(
+      st_crop(overlay_proj_land(), st_bbox(base.sf))
+    )
+
+  } else {
+    # No boundary or land polys, so only need base
+    base.sf <- overlay_proj_base()
   }
 
   #--------------------------------------------------------
   # Remove land from base polygon
-  if (!is.null(overlay.land)) {
-    # Land must be of length 1 (have been unioned)
-    validate(
-      need(length(overlay.land) == 1,
-           "Error in pre-overlay: the land poly is not unioned")
-    )
-
+  if (!is.null(overlay.land.orig)) {
     # Adapted from https://github.com/r-spatial/sf/issues/346
     base.sf <- try(suppressMessages(st_difference(base.sf, overlay.land)),
                    silent = TRUE)
@@ -54,18 +49,20 @@ overlay_create_base_sf <- reactive({
       # Calling overlay_valid_land() means that the land isn't optimally
       # cropped, but it is worth attempting
       base.sf <- try(
-        suppressMessages(st_difference(overlay_valid_base(),
-                                       overlay_valid_land())),
+        suppressMessages(
+          st_difference(overlay_valid_base(), overlay_valid_land())
+        ),
         silent = TRUE
       )
     }
 
     validate(
       need(isTruthy(base.sf),
-           "Error: Unable to erase land from base. Please...")
+           paste("Error: Unable to erase land from base.",
+                 "Please try using a different land polygon"))
     )
 
-    # Report any sort of 'stats', ie area erased?
+    st_agr(base.sf) <- "constant"
   }
 
   #--------------------------------------------------------
@@ -87,23 +84,27 @@ overlay_create_base_sf <- reactive({
 
 
 ###############################################################################
-# If applicable, clip base and land by bound poly to minimize later computation
+# Clip base and land by boundary poly using to minimize later computation
 
 ### Clip land polygon by boundary using st_crop()
 # st_crop is used rather than st_intersection to avoid tiny slices of coastline
 overlay_clip_land_bound <- reactive({
-  overlay.land <- overlay_proj_land()
+  overlay.land  <- overlay_proj_land()
   overlay.bound <- overlay_proj_bound()
 
-  land.bound.try <- try(st_crop(overlay.land, st_bbox(overlay.bound)),
-                        silent = TRUE)
+  land.bound.try <- try(
+    suppressMessages(st_crop(overlay.land, st_bbox(overlay.bound))),
+    silent = TRUE
+  )
 
   if (isTruthy(land.bound.try)) {
     land.bound.try
 
   } else {
     land.bound.try <- try(
-      st_crop(overlay_valid_land(), st_bbox(overlay_valid_bound())),
+      suppressMessages(
+        st_crop(overlay_valid_land(), st_bbox(overlay_valid_bound()))
+      ),
       silent = TRUE
     )
     if (isTruthy(land.bound.try)) {
@@ -123,22 +124,20 @@ overlay_clip_base_bound <- reactive({
     suppressMessages(st_intersection(base.sf, overlay.bound)), silent = TRUE
   )
 
-  if (isTruthy(base.bound.try)) {
-    base.bound.try
-
-  } else {
+  if (!isTruthy(base.bound.try)) {
     base.bound.try <- try(
-      suppressMessages(st_intersection(overlay_valid_base(),
-                                       overlay_valid_bound())),
-      silent = TRUE
+      suppressMessages(
+        st_intersection(overlay_valid_base(), overlay_valid_bound())
+      ), silent = TRUE
+    )
+
+    validate(
+      need(isTruthy(base.bound.try),
+           "Error: Unable to trim base to study area polygon region. Please...")
     )
   }
 
-  validate(
-    need(isTruthy(base.bound.try),
-         "Error: Unable to intersect base with study area polygon. Please...")
-  )
-
+  st_agr(base.bound.try) <- "constant"
   base.bound.try
 })
 
@@ -154,7 +153,11 @@ overlay_valid_base <- reactive({
     base.sf <- try(polyValidCheck(base.sf), silent = TRUE)
     validate(
       need(isTruthy(base.sf),
-           "Error: The eSDM was able to make the base polygon valid without compromising the area of the polygon")
+           paste("Error: The eSDM was unable to make the base valid",
+                 "without compromising the area and predicted abundance.",
+                 "Please ensure that your loaded SDMs are valid polygons",
+                 "with no self-intersections and all polygons having",
+                 "at least four vertices"))
     )
   }
 
@@ -169,7 +172,10 @@ overlay_valid_bound <- reactive({
     overlay.bound <- try(polyValidCheck(overlay.bound), silent = TRUE)
     validate(
       need(isTruthy(overlay.bound),
-           "Error: The eSDM was able to make the study area polygon valid without compromising the area of the polygon")
+           paste("Error: The eSDM was unable to make the study area polygon",
+                 "valid without compromising the area of the polygon.",
+                 "Please ensure that your loaded boundary polygon is valid",
+                 "with no self-intersections and at least four vertices"))
     )
   }
 
@@ -184,7 +190,11 @@ overlay_valid_land <- reactive({
     overlay.land <- try(polyValidCheck(overlay.land), silent = TRUE)
     validate(
       need(isTruthy(overlay.land),
-           "Error: The eSDM was able to make the land polygon valid without compromising the area of the polygon")
+           paste("Error: The eSDM was unable to make the land polygon valid",
+                 "without compromising the area of the polygon",
+                 "Please use one of the provided polygons or",
+                 "ensure that your loaded land polygon(s) are valid",
+                 "with no self-intersections and at least four vertices"))
     )
   }
 
@@ -197,57 +207,61 @@ overlay_valid_land <- reactive({
 
 ### Output base model predictions in specified projection
 overlay_proj_base <- reactive({
-  base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
-  validate(
-    need(length(base.idx) == 1,
-         "Error: Please select exactly one model from table to preview")
-  )
-  base.orig <- vals$models.orig[[base.idx]]
+  base.ll   <- overlay_base_pre()[[1]]
+  base.orig <- overlay_base_pre()[[2]]
 
-  # Project if needed
+  # Return base with desired crs/projection
   if (identical(overlay_crs(), crs.ll)) {
-    overlay_base_llpre()
+    base.ll
+  } else if (identical(overlay_crs(), st_crs(base.orig))) {
+    base.orig
   } else {
-    if (identical(overlay_crs(), crs(base.orig))) {
-      base.orig
-    } else {
-      st_transform(overlay_base_llpre(), overlay_crs())
-    }
+    # Use base.orig so base obj has as few transformations as possible
+    st_transform(base.orig, overlay_crs())
   }
 })
 
 ### Output boundary polygon in specified projection
 overlay_proj_bound <- reactive({
-  bound.curr <- vals$overlay.bound
+  overlay.bound <- vals$overlay.bound
 
   if (!identical(overlay_crs(), crs.ll)) {
-    bound.curr <- st_transform(bound.curr, overlay_crs())
+    overlay.bound <- st_transform(overlay.bound, overlay_crs())
   }
 
-  bound.curr
+  validate(
+    need(length(overlay.bound) == 1,
+         "Error in base creation: the bound poly is not unioned")
+  )
+
+  overlay.bound
 })
 
 ### Output land polygon in specified projection
 overlay_proj_land <- reactive({
-  land.curr <- overlay_clip_land_llpre()
+  overlay.land <- overlay_clip_land_llpre()
 
   if (!identical(overlay_crs(), crs.ll)) {
-    land.curr <- st_transform(land.curr, overlay_crs())
+    overlay.land <- st_transform(overlay.land, overlay_crs())
   }
 
-  land.curr
+  validate(
+    need(length(overlay.land) == 1,
+         "Error in base creation: the land poly is not unioned")
+  )
+
+  overlay.land
 })
 
 
 ###############################################################################
-# _llpre() funcs, so they use data in WGS 84 geog coordinates pre-projection
+# Prep functions; outputs used in multiple higher-level reactive functions
 
-### Clip land poly to base extent (plus a bit) in crs.ll using gClipExtent...
+### Crop land poly to base or boundary extent (plus 5 degrees) in crs.ll
 # ...so that projecting land poly doesn't take as long
 overlay_clip_land_llpre <- reactive({
   overlay.land  <- vals$overlay.land
   overlay.bound <- vals$overlay.bound
-  base.pre      <- overlay_base_llpre()
 
   if (!is.null(overlay.bound)) {
     overlay.land.clipll <- suppressMessages(
@@ -256,9 +270,10 @@ overlay_clip_land_llpre <- reactive({
           silent = TRUE)
     )
   } else {
+    base.ll <- overlay_base_pre()[[1]]
     overlay.land.clipll <- suppressMessages(
       try(st_crop(overlay.land,
-                  st_bbox(suppressWarnings(st_buffer(base.pre, 5)))),
+                  st_bbox(suppressWarnings(st_buffer(base.ll, 5)))),
           silent = TRUE)
     )
   }
@@ -266,20 +281,22 @@ overlay_clip_land_llpre <- reactive({
   if (isTruthy(overlay.land.clipll)) {
     st_union(overlay.land.clipll)
   } else {
-    validate(need(FALSE, "Error: Issue with land prep for overlay"))
+    validate(need(FALSE, "Error in base creation: Issue with land prep"))
   }
-
 })
 
-
-### Get crs.ll version of base.spdf
-overlay_base_llpre <- reactive({
+### Return a list with the crs.ll and orig crs versions of the base
+overlay_base_pre <- reactive({
   base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
   validate(
     need(length(base.idx) == 1,
-         "Error: Please select exactly one model from table")
+         paste("Error: Please select exactly one model from the table",
+               "to use as the base"))
   )
-  vals$models.ll[[base.idx]]
+
+  list(vals$models.ll[[base.idx]], vals$models.orig[[base.idx]])
+
 })
+
 
 ###############################################################################

@@ -126,7 +126,7 @@ output$overlay_land_gis_gdb_message <- renderText({
 # Overlaying process outputs
 
 output$overlay_overlaid_models_message <- renderText({
-  if (length(vals$overlaid.model) > 0) "Overlaid models are created"
+  if (length(vals$overlaid.models) > 0) "Overlaid models are created"
 })
 
 #######################################
