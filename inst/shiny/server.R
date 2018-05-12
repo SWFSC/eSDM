@@ -14,40 +14,27 @@
 
 
 ###############################################################################
-### Install packages (if necessary), including packages loaded in ui.R
-# Code structure credits: https://gist.github.com/benmarwick/5054846 via
-#                         https://stackoverflow.com/questions/4090169
-list.of.packages <- c("dplyr", "sp", "rgdal", "rgeos", "raster", "cleangeo",
-                      "lattice", "gridExtra", "RCurl", "ROCR", "DT", "purrr",
-                      "colorRamps",  "RColorBrewer", "viridis", "dichromat",
-                      "colourpicker",  "sendmailR",
-                      "shiny", "shinyjs", "shinydashboard", "shinycssloaders")
-
-list.of.packages.tf <- list.of.packages %in% installed.packages()[, "Package"]
-new.packages <- list.of.packages[!list.of.packages.tf]
-if (length(new.packages)) install.packages(new.packages)
-
-
-###############################################################################
-### Load packages
-library(dplyr) # Loaded first so dplyr functions are those that are masked
+### Load packages specific to shiny app rather than eSDM package
+library(colorRamps)
+library(colourpicker)
+library(dichromat)
+library(dplyr)
+library(DT)
+library(eSDM)
+# library(gridExtra)
+# library(lattice)
+library(leaflet)
+library(lwgeom)
+library(mapview)
+library(purrr)
+library(raster)
+library(RColorBrewer)
+# library(RCurl)
+library(ROCR)
+# library(sendmailR)
 library(sf)
 library(sp)
-library(raster)
-library(lwgeom)
-# library(lattice)
-library(gridExtra)
-library(RCurl)
-library(ROCR)
-library(DT)
-library(purrr)
-library(colorRamps)
-library(RColorBrewer)
 library(viridis)
-library(dichromat)
-library(colourpicker)
-library(sendmailR)
-library(eSDM)
 
 
 ###############################################################################
@@ -83,8 +70,8 @@ server <- function(input, output, session) {
   # For plotting
   col.ramp <- c("#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0",
                 "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026")
-  breaks <- seq(1, 0, -0.1)
-  labels.at <- seq(0.95, 0.05, -0.1)
+  # breaks <- seq(1, 0, -0.1)
+  # labels.at <- seq(0.95, 0.05, -0.1)
   labels.lab <- rev(c("Lowest 60%", "35 - 40%", "30 - 35%", "25 - 30%",
                       "20 - 25%", "15 - 20%", "10 - 15%",
                       "5 - 10%", "2 - 5%", "Highest 2%"))
@@ -170,8 +157,8 @@ server <- function(input, output, session) {
   # The function tags$iframe(...) is in ui.R so that the manual renders immediately
 
 
-  # Submit feedback
-  source(file.path("server_8_feedbackForm", "server_8_feedbackForm.R"), local = TRUE, chdir = TRUE)
+  # # Submit feedback
+  # source(file.path("server_8_feedbackForm", "server_8_feedbackForm.R"), local = TRUE, chdir = TRUE)
 
 
   # General server code

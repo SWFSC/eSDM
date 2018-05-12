@@ -38,62 +38,62 @@ source(file.path("ui_files", "ui_4_evalMetrics.R"), local = TRUE, echo = FALSE, 
 source(file.path("ui_files", "ui_5_prettyPlot.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_6_export.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_7_manual.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-source(file.path("ui_files", "ui_8_feedbackForm.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+# source(file.path("ui_files", "ui_8_feedbackForm.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 
 
 ###############################################################################
 ### UI object for Shiny app
 ui <- dashboardPage(
-  skin = "blue", 
-  title = "eSDM", 
-  dashboardHeader(title = "Ensemble Tool for Species Distribution Models (eSDM)", 
+  skin = "blue",
+  title = "eSDM",
+  dashboardHeader(title = "Ensemble Tool for Species Distribution Models (eSDM)",
                   titleWidth = "540px"),
-  
+
   dashboardSidebar(
-    sidebarMenu(id = "tabs", 
-                menuItem(HTML(paste0("eSDM Roadmap and", "<br/>", "Load or Save Environment")), 
-                         tabName = "roadmap", 
+    sidebarMenu(id = "tabs",
+                menuItem(HTML(paste0("eSDM Roadmap and", "<br/>", "Load or Save Environment")),
+                         tabName = "roadmap",
                          icon = icon("road")), #icon("sitemap")
-                menuItem("Load Model Predictions", 
-                         tabName = "loadModels", 
-                         icon = icon("cloud-upload")), 
-                menuItem("Overlay Model Predictions", 
-                         tabName = "overlay", 
-                         icon = icon("cogs")), 
-                menuItem("Create Ensemble Predictions", 
-                         tabName = "createEns", 
-                         icon = icon("cog")), 
-                menuItem("Evaluation Metrics", 
-                         tabName = "evalMetrics", 
+                menuItem("Load Model Predictions",
+                         tabName = "loadModels",
+                         icon = icon("cloud-upload")),
+                menuItem("Overlay Model Predictions",
+                         tabName = "overlay",
+                         icon = icon("cogs")),
+                menuItem("Create Ensemble Predictions",
+                         tabName = "createEns",
+                         icon = icon("cog")),
+                menuItem("Evaluation Metrics",
+                         tabName = "evalMetrics",
                          icon = icon("check")),
-                menuItem("High Quality Maps", 
-                         tabName = "prettyPlot", 
+                menuItem("High Quality Maps",
+                         tabName = "prettyPlot",
                          icon = icon("file-image-o")),
-                menuItem("Export Predictions", 
-                         tabName = "export", 
-                         icon = icon("cloud-download")), 
-                menuItem("Manual", 
-                         tabName = "manual", 
-                         icon = icon("book")), 
-                menuItem("Submit Feedback", 
-                         tabName = "feedbackForm", 
-                         icon = icon("commenting"))
+                menuItem("Export Predictions",
+                         tabName = "export",
+                         icon = icon("cloud-download")),
+                menuItem("Manual",
+                         tabName = "manual",
+                         icon = icon("book"))
+                # menuItem("Submit Feedback",
+                #          tabName = "feedbackForm",
+                #          icon = icon("commenting"))
     ),
-    br(), 
+    br(),
     actionButton("close_app", label = "Close App")
   ),
-  
+
   dashboardBody(
     ### Required by shinyjs package
-    useShinyjs(), 
-    
+    useShinyjs(),
+
     ### Control validate text output
     tags$head(
       tags$style(HTML(".shiny-output-error-validation {
                       color: red; font-weight: bold;
                       }"))
     ),
-    
+
     ### UI code separated by tabs
     tabItems(
       ui.roadmap(),      # etSDM Roadmap and Load or Save Session
@@ -103,8 +103,8 @@ ui <- dashboardPage(
       ui.evalMetrics(),  # Evaluation Metrics
       ui.prettyPlot(),   # High Quality Maps
       ui.export(),       # Export Predictions
-      ui.manual(),       # Manual
-      ui.feedbackForm()  # Feedback form
+      ui.manual()        # Manual
+      # ui.feedbackForm()  # Feedback form
     )
   )
 )

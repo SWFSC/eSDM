@@ -2,10 +2,10 @@
 % Please edit documentation in R/data_vector_processing.R
 \name{models.rescale}
 \alias{models.rescale}
-\title{## Rescale spdf.orig columns cols.data to data in new.abundances}
+\title{Rescale prediction data}
 \usage{
-models.rescale(spdf.list, abund.new)
+models.rescale(sf.list, abund.new)
 }
 \description{
-## Rescale spdf.orig columns cols.data to data in new.abundances
+Rescale prediction data...
 }

@@ -8,6 +8,7 @@ BugReports: https://github.com/smwoodman/eSDM/issues
 Depends: R (>= 3.5.0)
 Imports:
     dplyr, 
+    leaflet, 
     shiny, 
     sf
 License: GPL-3

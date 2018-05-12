@@ -82,21 +82,24 @@ normalize <- function(x) {
 }
 
 
-#' ## Rescale spdf.orig columns cols.data to data in new.abundances
+#' Rescale prediction data
+#'
+#' Rescale prediction data...
+#'
 #' @export
 
-models.rescale <- function(spdf.list, abund.new) {
-  spdf.list.rescaled <- lapply(spdf.list, function(s) {
-    abund.orig <- model.abundance(s, cols.data = "Pred.overlaid")
-    frac <- abund.orig / abund.new
-    s$Pred.overlaid <- s$Pred.overlaid / frac
-
-    s
-  })
-
-  return(spdf.list.rescaled)
+models.rescale <- function(sf.list, abund.new) {
+  # TODO: Input checks, make col.name input a thing
+  # col.name <- enquo(col.name)
+  return(
+    lapply(sf.list, function(s) {
+      abund.orig <- model.abundance(s, cols.data = "Pred.overlaid")
+      # s %>% dplyr::mutate(x / 500)#(abund.orig / abund.new))
+      s$Pred.overlaid <- s$Pred.overlaid / (abund.orig / abund.new)
+      s
+    })
+  )
 }
-
 
 #------------------------------------------------------------------------------
 #' ## Round 'x' to nearest 'base' value

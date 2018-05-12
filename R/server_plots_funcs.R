@@ -1,13 +1,14 @@
 #' Title
 #'
-#' Produce gtable for single- or multi-plot for display
+#' Produce thing for plotting
 #'
-#' @param list.data.display List of proper things
+#' @param models.toplot List of sf objects to plot
 #'
 #' @export
 
-plot.multi.display <- function(list.data.display) {
-  models.num <- length(list.data.display$models.toplot)
+multiplot <- function(models.toplot, data.name, plot.titles, perc.num,
+                      col.num, col.pal, leg.inc, leg.labels) {
+  models.num <- length(models.toplot)
 
   # Set variables with plot parameters
   plot.ncol <- case_when(
@@ -26,8 +27,8 @@ plot.multi.display <- function(list.data.display) {
   )
 
   axis.cex.curr <- case_when(
-    models.num == 1 ~ 1.2,
-    models.num <= 3 ~ 0.9,
+    # models.num == 1 ~ 1.2,
+    models.num <= 3 ~ 1.2,
     TRUE ~ 0.6
   )
   main.cex.curr <- case_when(
@@ -40,63 +41,55 @@ plot.multi.display <- function(list.data.display) {
   y.tick.num <- 5
 
 
-  # # Generate gtable object of plot(s)
-  # list.sfplots <- mapply(function(model.toplot.curr, plot.title.curr) {
-  #   preview.ll(model.toplot.curr, list.data.display$data.name,
-  #              plot.title.curr, list.data.display$perc.num,
-  #              axis.cex.curr, main.cex.curr)
-  # }, list.data.display$models.toplot, list.data.display$plot.titles,
-  # SIMPLIFY = FALSE)
-  #
-  # arrangeGrob(grobs = list.sfplots, nrow = plot.nrow, ncol = plot.ncol)
+  # Layout prep
+  if (leg.inc & perc.num == 1) {
+    mat.num <- c(1:models.num,
+                 rep(1 + models.num, plot.nrow))
+    lay.w <- c(rep((0.92 / plot.ncol), plot.ncol), 0.08)
+    layout(matrix(mat.num, nrow = plot.nrow, ncol = plot.ncol + 1),
+           width = lay.w)
+  } else {
+    mat.num <- 1:models.num
+    layout(matrix(mat.num, nrow = plot.nrow, ncol = plot.ncol))
+  }
 
-  # browser()
+  # Plot SDM previews
+  for (i in 1:models.num) {
+    preview_ll(models.toplot[[i]],
+               data.name,
+               plot.titles[[i]],
+               perc.num,
+               axis.cex.curr, main.cex.curr,
+               col.pal = col.pal)
+  }
 
-  # # Layout prep
-  # if (input$model_preview_legend) {
-  #   mat.num <- c(1:list.data.display$models.num,
-  #                rep(1 + list.data.display$models.num, plot.nrow))
-  #   lay.w <- c(rep((0.95 / plot.ncol), plot.ncol), 0.05)
-  #   layout(matrix(mat.num, nrow = plot.nrow, ncol = plot.ncol + 1),
-  #          width = lay.w)
-  # } else {
-  #   mat.num <- 1:list.data.display$models.num
-  #   layout(matrix(mat.num, nrow = plot.nrow, ncol = plot.ncol))
-  # }
-  #
-  # # Plot SDM previews
-  # for (i in 1:list.data.display$models.num) {
-  #   preview.ll(list.data.display$models.toplot[[i]],
-  #              list.data.display$data.name,
-  #              list.data.display$plot.titles[[i]],
-  #              list.data.display$perc.num,
-  #              axis.cex.curr, main.cex.curr)
-  # }
-  #
-  # # Plot legend
-  # if (input$model_preview_legend) {
-  #   .image_scale(1:11, col = col.ramp, key.pos = 4, key.length = 1, key.width = 0.5,
-  #                at = seq(0.5, 10.5, by = 1), labels = rev(labels.lab))
-  #   # plot.new()
-  #   # legend("top", legend = rev(labels.lab), col = col.ramp, pch = 16, cex = 2)
-  # }
-  #
-  # # Reset layout
-  # layout(1)
+  # Plot legend
+  if (leg.inc & perc.num == 1) {
+    # Set plot margins to minimal for top, right, and bottom to fill space
+    opar <- par(mai = c(0.1, 0.82, 0.1, 0))
+    on.exit(par(opar), add = TRUE)
 
-  mapview(list.data.display$models.toplot[[1]], zcol = "Pred")
+    # Plot things
+    graphics::image(1, 1:col.num, t(as.matrix(1:col.num)), col = col.pal,
+                    axes = FALSE, xlab = "", ylab = "")
+    graphics::box(col = "black")
+    axis(2, at = 1:col.num, labels = leg.labels, tick = FALSE, las = 1, cex.axis = 1.2)
+  }
+
+  # Reset layout
+  layout(1)
 }
 
 
 #' Title
 #'
-#' Produce gtable for single- or multi-plot for download
+#' Produce thing for download
 #'
 #' @param list.data.display List of proper things
 #'
 #' @export
 
-plot.multi.download <- function(list.data.download) {
+plot_multi_download <- function(list.data.download) {
   models.num <- length(list.data.download$models.toplot)
 
   # Set variables with plot parameters
@@ -131,7 +124,7 @@ plot.multi.download <- function(list.data.download) {
   layout(matrix(1:list.data.download$models.num, nrow = plot.nrow,
                 ncol = plot.ncol, byrow = FALSE))
   for (i in 1:list.data.download$models.num) {
-    preview.ll(list.data.download$models.toplot[[i]],
+    preview_ll(list.data.download$models.toplot[[i]],
                list.data.download$data.name,
                list.data.download$plot.titles[[i]],
                list.data.download$perc.num,
@@ -149,8 +142,8 @@ plot.multi.download <- function(list.data.download) {
 #'
 #' @export
 
-preview.ll <- function(sf.ll, data.name, title.ll, perc,
-                       axis.cex, main.cex) {
+preview_ll <- function(sf.ll, data.name, title.ll, perc,
+                       axis.cex, main.cex, col.pal) {
   ### Prep:
   data.vec <- st_set_geometry(sf.ll, NULL)[, data.name]
 
@@ -168,7 +161,7 @@ preview.ll <- function(sf.ll, data.name, title.ll, perc,
     #        pch = 15, pt.cex = 2, bty = "n", cex = 0.8)
 
     plot(sf.ll[data.name], axes = TRUE, border = NA,
-         breaks = b.model, pal = col.ramp,
+         breaks = b.model, pal = col.pal,
          main = title.ll, cex.main = main.cex, cex.axis = axis.cex,
          key.pos = NULL, reset = FALSE)
     #graticule = st_crs(sf.ll),
@@ -187,7 +180,7 @@ preview.ll <- function(sf.ll, data.name, title.ll, perc,
     #        pch = 15, pt.cex = 2, bty = "n")
 
     plot(sf.ll[data.name], axes = TRUE, border = NA,
-         breaks = b.model, pal = col.ramp,
+         breaks = b.model, pal = col.pal,
          main = title.ll, cex.main = main.cex, cex.axis = axis.cex,
          key.pos = NULL, reset = FALSE)
   }

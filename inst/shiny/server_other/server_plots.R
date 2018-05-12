@@ -1,38 +1,39 @@
 ### Reactive plotting code for Ensemble App divided by tab
 
 
-############################################################################### 
+###############################################################################
 # Load Model Predictions tab
 
 #################################################
 ### Get preview of predictions to plot in-app
 model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
   req(length(vals$models.pix) > 0)
-  
+
   perc.num <- as.numeric(input$model_preview_perc)
-  
+
   #----------------------------------------------
   # Same code as in model_pix_download()
   models.idx <- as.numeric(input$models_loaded_table_rows_selected)
-  
+
   validate(
-    need(length(models.idx) > 0, 
+    need(length(models.idx) > 0,
          "Error: Please select at least one model from table to preview")
   )
-  
+
   models.toplot <- vals$models.ll[models.idx]
-  
+
   plot.titles <- sapply(models.idx, function(i) {
     paste(vals$models.names[i], "|", vals$models.data.names[[i]][1])
   })
-  
-  model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
-                         plot.titles = plot.titles, perc.num = perc.num, 
-                         models.num = length(models.idx))
+
   #----------------------------------------------
 
   vals$models.plotted.idx <- models.idx
-  plot.multi.display(model.pix.list)
+  eSDM::multiplot(
+    models.toplot = models.toplot, data.name = "Pred", perc.num = perc.num,
+    plot.titles = plot.titles, col.num = 10, col.pal = col.ramp,
+    leg.inc = input$model_preview_legend, leg.labels = labels.lab
+  )
 })
 
 
@@ -40,29 +41,29 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
 ### Get preview of predictions to download
 model_pix_download <- reactive({
   req(length(vals$models.pix) > 0)
-  
+
   perc.num <- as.numeric(input$model_download_preview_perc)
-  
+
   #----------------------------------------------
   # Same code as in model_pix_download()
   models.idx <- as.numeric(input$models_loaded_table_rows_selected)
-  
+
   validate(
-    need(length(models.idx) > 0, 
+    need(length(models.idx) > 0,
          "Error: Please select at least one model from table to preview")
   )
-  
+
   models.toplot <- vals$models.ll[models.idx]
-  
+
   plot.titles <- sapply(models.idx, function(i) {
     paste0(vals$models.data.names[[i]][1], "\n", vals$models.names[i])
   })
-  
-  model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred", 
-                         plot.titles = plot.titles, perc.num = perc.num, 
+
+  model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred",
+                         plot.titles = plot.titles, perc.num = perc.num,
                          models.num = length(models.idx))
   #----------------------------------------------
-  
+
   plot.multi.download(model.pix.list)
 })
 
@@ -72,44 +73,83 @@ model_pix_download <- reactive({
 
 #################################################
 ### Generate preview of base grid to plot in-app
-#
+# Helper reactive functions are in server_2_overlay_plot.R
 plot_overlay_preview_base <- eventReactive(
-  input$overlay_preview_base_execute, 
+  input$overlay_preview_base_execute,
   {
     b.inc <- !is.null(vals$overlay.bound)
     l.inc <- !is.null(vals$overlay.land)
-    
+
     validate(
-      if (input$overlay_bound) 
+      if (input$overlay_bound)
         need(b.inc,
-             paste("Error: Please either uncheck boundary box or", 
-                   "load a boundary polygon")), 
-      if (input$overlay_land) 
+             paste("Error: Please either uncheck boundary box or",
+                   "load a boundary polygon")),
+      if (input$overlay_land)
         need(l.inc,
              "Error: Please either uncheck land box or load a land polygon")
     )
-    
-    # overlay_preview_base_model() is in server_2_overlay.R
+    # browser()
     model.toplot <- overlay_preview_base_model()
-    
-    if (b.inc) {
-      bound.toplot <- vals$overlay.bound
-      plot.extent <- extent(bound.toplot)
-    } else {
-      plot.extent <- extent(model.toplot)
-      
-    }
-    plot.xlim <- c(plot.extent@xmin, plot.extent@xmax)
-    plot.ylim <- c(plot.extent@ymin, plot.extent@ymax)
-    
-    plot(model.toplot, xlim = plot.xlim, ylim = plot.ylim, axes = TRUE)
+
+    leaf.map <- leaflet() %>%
+      addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
+      addTiles(group = "OpenStreetMap") %>%
+      addProviderTiles(providers$Esri.WorldImagery, group = "ESRI Topo") %>%
+      addPolygons(
+        data = st_geometry(model.toplot),
+        stroke = TRUE, color = "black", fillColor = "lightskyblue",
+        fillOpacity = 1, group = "Base map") %>%
+      mapview::addMouseCoordinates()
+    overlay.groups <- c("Base map")
+
     if (l.inc) {
-      plot(overlay_preview_base_land(), add = TRUE, border = NA, col = "tan")
-      # overlay_preview_base_land() is in server_2_overlay.R
+      land.toplot <- overlay_preview_base_land()
+      leaf.map <- leaf.map %>%
+        addPolygons(
+          data = land.toplot, fillColor = "tan",
+          stroke = FALSE, fillOpacity = 0.7, group = "Land")
+      overlay.groups <- c(overlay.groups, "Land")
     }
     if (b.inc) {
-      plot(vals$overlay.bound, add = TRUE, border = "red", col = NA, lwd = 2)
+      # boundary.toplot <- vals$overlay.bound
+      leaf.map <- leaf.map %>%
+        addPolygons(
+          data = vals$overlay.bound, fillColor = "transparent",
+          stroke = TRUE, color = "red", group = "Study area")
+      overlay.groups <- c(overlay.groups, "Study area")
     }
+
+    leaf.map <- leaf.map %>%
+      addLayersControl(
+        baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
+        overlayGroups = overlay.groups,
+        position = "bottomright",
+        options = layersControlOptions(collapsed = FALSE)
+      )
+
+    leaf.map
+
+    # model.toplot <- overlay_preview_base_model()
+    #
+    # if (b.inc) {
+    #   bound.toplot <- vals$overlay.bound
+    #   plot.extent <- extent(bound.toplot)
+    # } else {
+    #   plot.extent <- extent(model.toplot)
+    #
+    # }
+    # plot.xlim <- c(plot.extent@xmin, plot.extent@xmax)
+    # plot.ylim <- c(plot.extent@ymin, plot.extent@ymax)
+    #
+    # plot(model.toplot, xlim = plot.xlim, ylim = plot.ylim, axes = TRUE)
+    # if (l.inc) {
+    #   plot(overlay_preview_base_land(), add = TRUE, border = NA, col = "tan")
+    #   # overlay_preview_base_land() is in server_2_overlay.R
+    # }
+    # if (b.inc) {
+    #   plot(vals$overlay.bound, add = TRUE, border = "red", col = NA, lwd = 2)
+    # }
   }
 )
 
@@ -118,17 +158,17 @@ plot_overlay_preview_base <- eventReactive(
 ### Generate preview of overlaid model predictions to plot in-app
 #
 plot_overlay_preview_overlaid <- eventReactive(
-  input$overlay_preview_overlaid_execute, 
+  input$overlay_preview_overlaid_execute,
   {
     models.toplot <- overlay_preview_overlaid_pix()
     overlaid.idx <- input$overlay_preview_overlaid_models
-    
+
     plot.titles <- paste("Overlaid", overlaid.idx)
-    
-    overlaid.pix.list <- list(models.toplot = models.toplot, 
-                              data.name = "Pred.overlaid", 
+
+    overlaid.pix.list <- list(models.toplot = models.toplot,
+                              data.name = "Pred.overlaid",
                               plot.titles = plot.titles, perc.num = 1)
-    
+
     plot.multi.download(overlaid.pix.list) # because it is a square shape
   }
 )
@@ -139,10 +179,10 @@ plot_overlay_preview_overlaid <- eventReactive(
 
 #################################################
 ### Get preview of ensemble predictions to plot in-app
-# 
+#
 ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
   perc.num <- input$ens_preview_perc
-  
+
   #----------------------------------------------
   # Same code as in ens_pix_download()
   ensemble.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
@@ -150,18 +190,18 @@ ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
     need(length(ensemble.idx) > 0,
          "Error: Please select at least one model from table to preview")
   )
-  
+
   models.toplot <- create_ens_preview_model()
-  
+
   plot.titles <- sapply(ensemble.idx, function(i) {
-    paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i], 
+    paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
           "|", vals$ensemble.overlaid.idx[i])
   })
-  
-  ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens", 
+
+  ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens",
                        plot.titles = plot.titles, perc.num = perc.num)
   #----------------------------------------------
-  
+
   vals$ensemble.plotted.idx <- ensemble.idx
   plot.multi.display(ens.pix.list)
 })
@@ -171,7 +211,7 @@ ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
 ### Get preview of ensemble predictions to download
 ens_pix_download <- reactive({
   perc.num <- input$ens_download_preview_perc
-  
+
   #----------------------------------------------
   # Same code as in ens_pix_preview_event()
   ensemble.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
@@ -179,17 +219,17 @@ ens_pix_download <- reactive({
     need(length(ensemble.idx) > 0,
          "Error: Please select at least one model from table to preview")
   )
-  
+
   models.toplot <- create_ens_preview_model()
-  
+
   plot.titles <- sapply(ensemble.idx, function(i) {
-    # paste0("Ensembling method: ", vals$ensemble.method[i], "\n", 
+    # paste0("Ensembling method: ", vals$ensemble.method[i], "\n",
     #        "Rescaling method: ", vals$ensemble.rescaling[i])
-    paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i], 
+    paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
           "|", vals$ensemble.overlaid.idx[i])
   })
-  
-  ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens", 
+
+  ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens",
                        plot.titles = plot.titles, perc.num = perc.num)
   #----------------------------------------------
 
