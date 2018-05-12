@@ -207,8 +207,10 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
 
     #####################################
     ### d) Perform final quality checks
+    incProgress(detail = "Checking if model polygons are valid")
     if (!all(st_is_valid(sf.load.ll))) {
-      sf.load.ll <- st_make_valid(sf.load.ll)
+      incProgress(detail = "Making model polygons valid")
+      sf.load.ll <- polyValidCheck(sf.load.ll)
     }
 
     sf.bbox <- as.numeric(st_bbox(sf.load.ll))
@@ -222,7 +224,7 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
 
     #######################################################
     ### Prep for and run function that adds relevant data to vals
-    incProgress(0.2)
+    incProgress(0.2, detail = "Finishing model processing")
     model.res <- paste(cell.lw, "degrees")
 
     pred.type <- input$model_csv_pred_type

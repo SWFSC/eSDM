@@ -29,11 +29,11 @@ read_model_gis_raster <- reactive({
 
     # If specified file could be loaded as a raster, process raster
     if (gis.file.success) {
-      incProgress(0.3)
+      incProgress(0.2)
       sf.load.raster <- st_as_sf(as(gis.file.raster, "SpatialPolygonsDataFrame"))
       st_agr(sf.load.raster) <- "constant"
       stopifnot(ncol(sf.load.raster) == 2)
-      incProgress(0.3)
+      incProgress(0.1)
 
       # Determine resolution of raster cells
       z <- gis.file.raster
@@ -41,9 +41,14 @@ read_model_gis_raster <- reactive({
       z.2 <- round((z@extent@ymax - z@extent@ymin) / z@nrows / 1e+6, 3)
       model.res <- ifelse(z.1 == z.2, z.1, NA)
 
-      # QA/QC, and if nec create crs.ll projection
+      # QA/QC, ensure that sf.load.orig is valid, and if nec create crs.ll projection
+      incProgress(detail = "Checking if model polygons are valid")
+      if (!all(st_is_valid(sf.load.raster))) {
+        incProgress(detail = "Making model polygons valid")
+        sf.load.raster <- polyValidCheck(sf.load.raster)
+      }
       sf.list <- gis.model.check(sf.load.raster)
-      incProgress(0.1)
+      incProgress(0.2, detail = "")
     }
   })
 

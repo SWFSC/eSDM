@@ -12,6 +12,8 @@
 
 
 if (!exists("sf.load.orig")) sf.load.orig <- sf.load.ll
+# Check of if sf.load.orig is valid happens in individual functions so that
+#   it can happen before transformation to crs.ll
 
 ### Set names for sf.load.ll and sf.load.orig, both for data and sfc columns
 names(sf.load.ll)   <- c("Pred", "Error", "Weight", "Pixels", "geometry")
@@ -24,7 +26,7 @@ st_agr(sf.load.ll)   <- "constant"
 st_agr(sf.load.orig) <- "constant"
 
 ### Calculate predicted abundance if 'Absolute abundance' is selected
-if(pred.type == 1) {
+if (pred.type == 1) {
   spdf.abund <- unname(round(model.abundance(sf.load.orig, "Pred"), 0))
 } else {
   spdf.abund <- "N/A"

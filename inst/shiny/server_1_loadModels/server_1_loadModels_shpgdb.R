@@ -55,11 +55,18 @@ read_model_gis_shp <- reactive({
 
   withProgress(message = "Loading GIS shapefile", value = 0.3, {
     gis.file.shp <- shiny.read.shp(input$model_gis_shp_files)
-    incProgress(0.5)
+    incProgress(0.4)
 
     gis.file.success <- isTruthy(gis.file.shp)
-    if (gis.file.success) sf.list <- gis.model.check(gis.file.shp)
-    incProgress(0.2)
+    if (gis.file.success) {
+      incProgress(detail = "Checking if model polygons are valid")
+      if (!all(st_is_valid(gis.file.shp))) {
+        incProgress(0.1, detail = "Making model polygons valid")
+        gis.file.shp <- polyValidCheck(gis.file.shp)
+      }
+      sf.list <- gis.model.check(gis.file.shp)
+    }
+    incProgress(0.2, detail = "")
   })
 
   if(!gis.file.success) {
@@ -108,11 +115,18 @@ read_model_gis_gdb <- eventReactive(input$model_gis_gdb_load, {
   withProgress(message = "Loading GIS .gdb file", value = 0.3, {
     gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),
                         silent = TRUE)
-    incProgress(0.5)
+    incProgress(0.4)
 
     gis.file.success <- isTruthy(gis.file.gdb)
-    if (gis.file.success) sf.list <- gis.model.check(gis.file.gdb)
-    incProgress(0.2)
+    if (gis.file.success) {
+      incProgress(detail = "Checking if model polygons are valid")
+      if (!all(st_is_valid(gis.file.gdb))) {
+        incProgress(0.1, detail = "Making model polygons valid")
+        gis.file.gdb <- polyValidCheck(gis.file.gdb)
+      }
+      sf.list <- gis.model.check(gis.file.gdb)
+    }
+    incProgress(0.2, detail = "")
   })
 
   if (!gis.file.success) {
