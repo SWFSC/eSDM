@@ -8,37 +8,38 @@
 create_ens_weights_num <- reactive({
   models.weights.text <- input$create_ens_weight_manual
   models.weights <- as.numeric(unlist(strsplit(models.weights.text, ", ")))
-  
+
   models.num <- length(vals$overlaid.models)
-  if (input$create_ens_table_subset) 
+  if (input$create_ens_table_subset)
     models.num <- length(input$create_ens_datatable_rows_selected)
-  
+
   # Validate weights input
   validate(
-    need(length(models.weights) == models.num, 
-         paste("Error: The number of provided weights does not", 
+    need(length(models.weights) == models.num,
+         paste("Error: The number of provided weights does not",
                "match the number of overlaid models"))
   )
-  
+
   models.weights
 })
 
 ### Create weighted ensemble from manually entered weights
 create_ens_weighted_manual <- reactive({
   overlaid.data <- create_ens_data()
-  base.sp <- vals$overlay.base.sp
+  base.sfc <- vals$overlay.base.sfc
   weights <- create_ens_weights_num()
-  
+
   # Check that length of weights == length of overlaid models to ensemble
   validate(
-    need(length(weights) == ncol(overlaid.data), 
+    need(length(weights) == ncol(overlaid.data),
          "Weighted ens 1: number of weights != number of overlaid models")
   )
-  
-  data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, function(p) 
-    weighted.mean(p, weights, na.rm = TRUE)))
-  
-  SpatialPolygonsDataFrame(base.sp, data.ens, match.ID = FALSE)
+
+  data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, function(p) {
+    weighted.mean(p, weights, na.rm = TRUE)
+  }))
+
+  st_sf(data.ens, base.sfc)
 })
 
 
@@ -49,10 +50,10 @@ create_ens_weighted_manual <- reactive({
 output$create_ens_weights_metric_flag <- reactive({
   ens.overlaid.which <- create_ens_overlaid_idx()
   eval.overlaid.which <- vals$eval.models.idx[[2]]
-  
+
   all(ens.overlaid.which %in% eval.overlaid.which)
 })
-outputOptions(output, "create_ens_weights_metric_flag", 
+outputOptions(output, "create_ens_weights_metric_flag",
               suspendWhenHidden = FALSE)
 
 ### Table of selected metrics
@@ -61,37 +62,37 @@ create_ens_weights_metric_table <- reactive({
 
   # Get desired metric for desired overlaid models from eval metrics table
   eval.metrics <- table_eval_metrics()
-  
+
   idx.col <- which(names(eval.metrics) == input$create_ens_weights_metric)
   idx.row <- grep("Overlaid", eval.metrics$Model)
   idx.row <- idx.row[vals$eval.models.idx[[2]] %in% create_ens_overlaid_idx()]
-  
+
   weights.table <- eval.metrics[idx.row, c(1, idx.col)]
-  
+
   # Prep for display
   weights.table$R.weights <- weights.table[, 2] / max(weights.table[, 2])
   names(weights.table)[3] <- "Relative weights"
   row.names(weights.table) <- 1:nrow(weights.table)
-  
+
   weights.table
 })
 
 ### Create weighted ensemble using some evaluation metric as weights
 create_ens_weighted_metric <- reactive({
   overlaid.data <- create_ens_data()
-  base.sp <- vals$overlay.base.sp
+  base.sfc <- vals$overlay.base.sfc
   weights <- create_ens_weights_metric_table()[, 2]
 
   # Check that length of weights == length of overlaid models to ensemble
   validate(
-    need(length(weights) == ncol(overlaid.data), 
+    need(length(weights) == ncol(overlaid.data),
          "Weighted ens by metrics: number of weights != number of o model")
   )
-  
-  data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, function(p) 
+
+  data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, function(p)
     weighted.mean(p, weights, na.rm = TRUE)))
-  
-  SpatialPolygonsDataFrame(base.sp, data.ens, match.ID = FALSE)
+
+  st_sf(data.ens, base.sfc)
 })
 
 
@@ -105,7 +106,7 @@ create_ens_weights_pix_which <- reactive({
   ens.which.spatial <- sapply(ens.overlaid, function(i) {
     any(!is.na(i$Weight.overlaid))
   })
-  
+
   ens.which[ens.which.spatial]
 })
 
@@ -113,20 +114,20 @@ create_ens_weights_pix_which <- reactive({
 output$create_ens_weights_pix_flag <- reactive({
   length(create_ens_weights_pix_which()) >= 1
 })
-outputOptions(output, "create_ens_weights_pix_flag", 
+outputOptions(output, "create_ens_weights_pix_flag",
               suspendWhenHidden = FALSE)
 
 ### Table of selected overlaid models and if they have any spatial weights
 create_ens_weights_pix_table <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.spatial <- create_ens_weights_pix_which()
-  
-  ens.which.spatial.text <- ifelse(ens.which %in% ens.which.spatial, 
+
+  ens.which.spatial.text <- ifelse(ens.which %in% ens.which.spatial,
                                    "Yes", "No")
-  
+
   table.out <- data.frame(paste("Overlaid", ens.which), ens.which.spatial.text)
   names(table.out) <- c("Model", "Has spatial weights")
-  
+
   table.out
 })
 
@@ -134,16 +135,16 @@ create_ens_weights_pix_table <- reactive({
 create_ens_weights_pix_weights <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.spatial <- create_ens_weights_pix_which()
-  
+
   df.out <- as.data.frame(lapply(ens.which, function(idx) {
     overlaid.curr <- vals$overlaid.models[[idx]]
-    
+
     if (idx %in% ens.which.spatial) {
       validate(
-        need(identical(is.na(overlaid.curr$Pred.overlaid), 
-                       is.na(overlaid.curr$Weight.overlaid)), 
-             paste("Error: number of in for Pred is different from", 
-                   "number in Weight for overlaid #", 
+        need(identical(is.na(overlaid.curr$Pred.overlaid),
+                       is.na(overlaid.curr$Weight.overlaid)),
+             paste("Error: number of in for Pred is different from",
+                   "number in Weight for overlaid #",
                    idx))
       )
       overlaid.curr$Weight.overlaid
@@ -152,27 +153,27 @@ create_ens_weights_pix_weights <- reactive({
     }
   }))
   names(df.out) <- letters[1:ncol(df.out)]
-  
+
   df.out
 })
 
 ### Create weighted ensemble using pixel-level spatial weights
 create_ens_weighted_pix <- reactive({
   overlaid.data <- create_ens_data()
-  base.sp <- vals$overlay.base.sp
+  base.sfc <- vals$overlay.base.sfc
   weights <- create_ens_weights_pix_weights()
-  
+
   # Check that length of weights == length of overlaid models to ensemble
   validate(
-    need(length(weights) == ncol(overlaid.data), 
+    need(length(weights) == ncol(overlaid.data),
          "Weighted ens 3: number of weights != number of overlaid models")
   )
-  
+
   overlaid.data.w <- overlaid.data * weights
   data.ens <- data.frame(apply(overlaid.data.w, 1, mean, na.rm = TRUE))
   names(data.ens) <- "Pred.ens"
-  
-  SpatialPolygonsDataFrame(base.sp, data.ens, match.ID = FALSE)
+
+  st_sf(data.ens, base.sfc)
 })
 
 
