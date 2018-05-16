@@ -242,7 +242,17 @@ overlay_crs <- reactive({
     if (input$overlay_proj_ll) {
       crs.ll
     } else {
-      st_crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
+      if (input$overlay_proj_opt == 1) {
+        st_crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
+      } else {
+        x <- suppressWarnings(st_crs(input$overlay_proj_epsg))
+        validate(
+          need(!is.na(x$epsg),
+               paste("Error: The entered EPSG code was not recognized,",
+                     "please enter a valid EPSG code"))
+        )
+        x
+      }
     }
   }
 })

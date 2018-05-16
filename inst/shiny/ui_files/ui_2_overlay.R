@@ -211,7 +211,20 @@ ui.overlay <- function() {
                            ),
                            conditionalPanel(
                              condition = "input.overlay_proj_ll == false",
-                             column(12, uiOutput("overlay_proj_which_uiOut_select"))
+                             column(
+                               width = 5,
+                               radioButtons("overlay_proj_opt", NULL,
+                                            choices = list("Select model" = 1, "Enter numeric EPSG code" = 2),
+                                            selected = 1)
+                             ),
+                             column(
+                               width = 7,
+                               conditionalPanel("input.overlay_proj_opt == 1", uiOutput("overlay_proj_which_uiOut_select")),
+                               conditionalPanel(
+                                 condition = "input.overlay_proj_opt == 2",
+                                 numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)
+                               )
+                             )
                            )
                          )
                        )
