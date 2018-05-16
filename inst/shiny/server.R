@@ -6,10 +6,9 @@
 ### Naming convention
 # File names: 'server/ui' + 'tab number' + camelCase + description
 # File names (cont): '_' used as separator
-# Separator for variable and reactive function names: '_'
+# Separator for variable and function names: '_'
 # Separator for variables that aren't being passed from server to ui: '.'
 #    This includes reactiveValues
-# Separator for non-reactive functions: '.'
 # renderUI output names for widgets: 'output$inputId_uiOut_(widget type)'
 
 
@@ -21,33 +20,46 @@ library(dichromat)
 library(dplyr)
 library(DT)
 library(eSDM)
-# library(gridExtra)
-# library(lattice)
 library(leaflet)
 library(lwgeom)
 library(mapview)
 library(purrr)
 library(raster)
 library(RColorBrewer)
-# library(RCurl)
 library(ROCR)
-# library(sendmailR)
 library(sf)
-library(sp)
 library(viridis)
 
 
 ###############################################################################
 # Pre-server work
 
-### Max file upload size is now 150MB
+# Max file upload size is now 150MB
 options(shiny.maxRequestSize = 150 * 1024^2)
 
-### Use to perform sequential rather than concurrent validate checks
+
+# Use to perform sequential rather than concurrent validate checks
 `%then%` <- shiny:::`%OR%`
 
 
+# Server-wide CRS code(s)
+crs.ll <- st_crs(4326) # WGS 84
+# crs.cea <- st_crs(
+#   paste("+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m",
+#         "+no_defs +ellps=WGS84 +towgs84=0,0,0")
+# )
+# # crs.cea is proj4string from st_crs(boundary.proj.poly), which had
+# #   Projected Coordinate System 'World_Cylindrical_Equal_Area'in GIS
 
+# For plotting
+pal.esdm <- c(
+  "#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0", "#fee090",
+  "#fdae61", "#f46d43", "#d73027", "#a50026"
+)
+leg.perc.esdm <- c(
+  "Lowest 60%", "35 - 40%", "30 - 35%", "25 - 30%", "20 - 25%", "15 - 20%",
+  "10 - 15%", "5 - 10%", "2 - 5%", "Highest 2%"
+)
 
 
 ###############################################################################
@@ -59,50 +71,31 @@ server <- function(input, output, session) {
     stopApp(returnValue = "Ensemble app was closed")
   })
 
-
-  ###############################################
-  ### Set applicable objects used server-wide
-  # CRS codes
-  crs.ll <- st_crs(4326) # WGS 84
-  crs.cea <- st_crs("+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
-  #from st_crs(boundary.proj.poly), which had Projected Coordinate System 'World_Cylindrical_Equal_Area'in GIS
-
-  # For plotting
-  col.ramp <- c("#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0",
-                "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026")
-  # breaks <- seq(1, 0, -0.1)
-  # labels.at <- seq(0.95, 0.05, -0.1)
-  labels.lab <- rev(c("Lowest 60%", "35 - 40%", "30 - 35%", "25 - 30%",
-                      "20 - 25%", "15 - 20%", "10 - 15%",
-                      "5 - 10%", "2 - 5%", "Highest 2%"))
-
-
   ###############################################
   ### Load all other server code: tab-specific scripts and general server code
   source(file.path("server_other", "server_reactiveValues.R"), local = TRUE, chdir = TRUE)
 
-  # Roadmap: download sample data
-  output$download_sample_data <- downloadHandler(
-    filename = function() {
-      "eSDM_sample_data.zip"
-    },
-    content = function(file) {
-      withProgress(message = "Downloading sample data", value = 0.6, {
-        sample.try <- try(download.file("https://github.com/smwoodman/eSDM/raw/master/data_provided.zip",
-                                        destfile = file, quiet = TRUE),
-                          silent = TRUE)
-        validate(
-          need(isTruthy(sample.try),
-               paste("Sample data could not be downloaded; please check your",
-                     "internet connection. If this problem persists,",
-                     "you can email your feedback to",
-                     "Sam Woodman (sam.woodman@noaa.gov) and",
-                     "Karin Forney (karin.forney@noaa.gov)."))
-        )
-        incProgress(0.4)
-      })
-    }
-  )
+  # # Roadmap: download sample data
+  # output$download_sample_data <- downloadHandler(
+  #   filename = function() {
+  #     "eSDM_sample_data.zip"
+  #   },
+  #   content = function(file) {
+  #     withProgress(message = "Downloading sample data", value = 0.6, {
+  #       sample.try <- try(download.file("https://github.com/smwoodman/eSDM/raw/master/data_provided.zip",
+  #                                       destfile = file, quiet = TRUE),
+  #                         silent = TRUE)
+  #       validate(
+  #         need(isTruthy(sample.try),
+  #              paste("Sample data could not be downloaded; please check your",
+  #                    "internet connection. If this problem persists,",
+  #                    "email Sam Woodman (sam.woodman@noaa.gov) or",
+  #                    "Karin Forney (karin.forney@noaa.gov)."))
+  #       )
+  #       incProgress(0.4)
+  #     })
+  #   }
+  # )
 
   # Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
@@ -165,20 +158,11 @@ server <- function(input, output, session) {
   source(file.path("server_other", "server_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots_download.R"), local = TRUE, chdir = TRUE)
-  # source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, chdir = TRUE)
   # server_reactiveValues.R is sourced at the top of the server code in order to initialize reactiveValues
   source(file.path("server_other", "server_render.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_render_tables.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_hide+show.R"), local = TRUE, chdir = TRUE)
-
-
-  ### Hide plot outputs when app is first started
-  shinyjs::hide("model_pix_preview_plot", time = 0)
-  shinyjs::hide("overlay_preview_base", time = 0)
-  shinyjs::hide("overlay_preview_overlaid", time = 0)
-  shinyjs::hide("create_ens_weights_poly_preview_plot", time = 0)
-  shinyjs::hide("ens_pix_preview_plot", time = 0)
-  shinyjs::hide("pretty_plot", time = 0)
 }
 
 ###############################################################################

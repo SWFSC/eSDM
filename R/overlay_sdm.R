@@ -37,7 +37,7 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
   st_agr(sdm) <- "constant" #st_crop() removes agr info
   int <- try(suppressMessages(st_intersection(sdm, base.poly)))
 
-  if (class(int) == "try-error") {
+  if (inherits(int, "try-error")) {
     stop("Unable to run 'st_intersection(sdm, base.poly)'; make sure that ",
          "'base.poly' and 'sdm' are both valid")
   }

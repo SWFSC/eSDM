@@ -18,11 +18,12 @@
 
 ###############################################################################
 ### Load packages; packages installed in server.R (if necessary)
-library(shiny)
-library(shinyjs)
-library(shinydashboard)
 library(DT) # Load here too because we need DT::dataTableOutput
+library(leaflet)
+library(shiny)
 library(shinycssloaders)
+library(shinydashboard)
+library(shinyjs)
 
 
 ###########################################################
