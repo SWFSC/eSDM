@@ -163,45 +163,34 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
 
 
     #####################################
-    ### c) Convert points to SPolyDF objects
-    range.lon <- range(csv.data$Lon)
+    ### c) Convert points to a list of sfc_POLYGONs and then to a sf object
 
-    if ((range.lon[[1]] - cell.lw) < 180 & (range.lon[[2]] + cell.lw) > 180) {
-      # Run dateline function
-      # TODO fix
-      spdf.poly.ll <- dateline.process(csv.data, 1, 2)
+    # If all lon points are between 180 and 360, shift them to -180 to 180 range
+    #   Otherwise fix datealine issue after createing sf object
+    # range.lon <- range(csv.data$Lon)
+    # if ((range.lon[[1]] - cell.lw) > 180 & (range.lon[[2]] + cell.lw) > 180) {
+    #   csv.data$Lon <- ifelse(csv.data$Lon > 180, csv.data$Lon - 360,
+    #                          csv.data$Lon)
+    # }
 
-    } else {
-      # If all lon points are between 180 and 360, shift them to -180 to 180 range
-      if (all(range.lon >= 180)) {
-        csv.data$Lon <- ifelse(csv.data$Lon > 180, csv.data$Lon - 360,
-                               csv.data$Lon)
-      }
+    # Make sf object
+    incProgress(0.15)
+    sfc.list <- apply(csv.data[, c("Lon", "Lat")], 1, function(i, j) {
+      st_sfc(st_polygon(list(matrix(
+        c(i[1] + j, i[1] - j, i[1] - j, i[1] + j, i[1] + j,
+          i[2] + j, i[2] + j, i[2] - j, i[2] - j, i[2] + j),
+        ncol = 2))))
+    }, j = (cell.lw / 2))
+    incProgress(0.3)
 
-      # Make sf object
-      incProgress(0.2)
-      sfc.list <- apply(csv.data[, c("Lon", "Lat")], 1, function(i, j) {
-        st_sfc(st_polygon(list(matrix(
-          c(i[1] + j, i[1] - j, i[1] - j, i[1] + j, i[1] + j,
-            i[2] + j, i[2] + j, i[2] - j, i[2] - j, i[2] + j),
-          ncol = 2))))
-      }, j = (cell.lw / 2))
-      incProgress(0.3)
+    sfc.poly <- st_sfc(do.call(rbind, sfc.list))
+    sf.load.ll <- st_sf(csv.data[, -c(1:2)], sfc.poly, crs = crs.ll,
+                        agr = "constant")
 
-      sfc.poly <- st_sfc(do.call(rbind, sfc.list))
-      sf.load.ll <- st_sf(csv.data[, -c(1:2)], sfc.poly, crs = crs.ll,
-                          agr = "constant")
-
-      # spdf.pts <- csv.data
-      # coordinates(spdf.pts) <- ~Lon+Lat
-      # spdf.pix <- try(as(spdf.pts, "SpatialPixelsDataFrame"))
-      # validate(need(class(spdf.pix) != "try-error, "Error: "))
-      # spdf.ll <- as(spdf.pix, "SpatialPolygonsDataFrame")
-      # sf.spdf.ll <- st_as_sf(spdf.ll)
-      # st_crs(sf.spdf.ll) <- crs.ll
-      # st_agr(sf.spdf.ll) <- "constant"
-      # sum(as.numeric(st_area(sf.spdf.ll))) - sum(as.numeric(st_area(sf.spdf.ll)))
-      # model.abundance(sf.spdf.ll, "Pred") - model.abundance(sf.load.ll, "Pred")
+    # Ensure that sf object is in -180 to 180 longitude range
+    if (st_bbox(sf.load.ll)[3] > 180) {
+      incProgress(0.05, detail = "Polygon(s) span dateline; handling now")
+      sf.load.ll <- st_wrap_dateline(sf.load.ll)
     }
 
 

@@ -42,6 +42,11 @@ read_model_gis_raster <- reactive({
       model.res <- ifelse(z.1 == z.2, z.1, NA)
 
       # QA/QC, ensure that sf.load.orig is valid, and if nec create crs.ll projection
+      if (st_bbox(sf.load.raster)[3] > 180) {
+        incProgress(0.05, detail = "Polygon(s) span dateline; handling now")
+        sf.load.raster <- st_wrap_dateline(sf.load.raster)
+      }
+
       incProgress(detail = "Checking if model polygons are valid")
       if (!all(st_is_valid(sf.load.raster))) {
         incProgress(detail = "Making model polygons valid")

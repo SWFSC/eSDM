@@ -33,8 +33,8 @@ output$model_csv_names_pred_uiOut_select <- renderUI({
 ### Prediction vaue type
 output$model_csv_pred_type_uiOut_select <- renderUI({
   req(read_model_csv())
-  selectInput("model_csv_pred_type", tags$h5("Prediction value type"), 
-              choices = list("Absolute density" = 1, "Relative density" = 2), 
+  selectInput("model_csv_pred_type", tags$h5("Prediction value type"),
+              choices = list("Absolute density" = 1, "Relative density" = 2),
               selected = 2)
 })
 
@@ -43,8 +43,8 @@ output$model_csv_pred_type_uiOut_select <- renderUI({
 #   req(read_model_csv())
 #   choice.input <- csv_names_choice_input()
 #   choice.input <- c("N/A" = 1, choice.input + 1)
-#   selectInput("model_csv_names_error", 
-#               tags$h5("Column with error data (optional)"), 
+#   selectInput("model_csv_names_error",
+#               tags$h5("Column with error data (optional)"),
 #               choices = choice.input, selected = NULL)
 # })
 
@@ -53,7 +53,7 @@ output$model_csv_names_weight_uiOut_select <- renderUI({
   req(read_model_csv())
   choice.input <- csv_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
-  selectInput("model_csv_names_weight", 
+  selectInput("model_csv_names_weight",
               tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = NULL)
 })
@@ -74,8 +74,8 @@ output$model_csv_NA_idx_uiOut_message <- renderUI({
 ### Prediction type value
 output$model_gis_raster_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_raster())
-  selectInput("model_gis_raster_pred_type", tags$h5("Prediction value type"), 
-              choices = list("Absolute density" = 1, "Relative density" = 2), 
+  selectInput("model_gis_raster_pred_type", tags$h5("Prediction value type"),
+              choices = list("Absolute density" = 1, "Relative density" = 2),
               selected = 2)
 })
 
@@ -101,7 +101,7 @@ output$model_gis_shp_names_pred_uiOut_select <- renderUI({
 ### Prediction value type
 output$model_gis_shp_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_shp())
-  selectInput("model_gis_shp_pred_type", tags$h5("Prediction value type"), 
+  selectInput("model_gis_shp_pred_type", tags$h5("Prediction value type"),
               choices = list("Absolute density" = 1, "Relative density" = 2),
               selected = 2)
 })
@@ -111,7 +111,7 @@ output$model_gis_shp_pred_type_uiOut_select <- renderUI({
 #   req(read_model_gis_shp())
 #   choice.input <- shp_names_choice_input()
 #   choice.input <- c("N/A" = 1, choice.input + 1)
-#   selectInput("model_gis_shp_names_error", 
+#   selectInput("model_gis_shp_names_error",
 #               tags$h5("Column with error data (optional)"),
 #               choices = choice.input, selected = 1)
 # })
@@ -121,7 +121,7 @@ output$model_gis_shp_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_shp())
   choice.input <- shp_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
-  selectInput("model_gis_shp_names_weight", 
+  selectInput("model_gis_shp_names_weight",
               tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
 })
@@ -148,8 +148,8 @@ output$model_gis_gdb_names_pred_uiOut_select <- renderUI({
 ### Prediction value type
 output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
-  selectInput("model_gis_gdb_pred_type", tags$h5("Prediction value type"), 
-              choices = list("Absolute density" = 1, "Relative density" = 2), 
+  selectInput("model_gis_gdb_pred_type", tags$h5("Prediction value type"),
+              choices = list("Absolute density" = 1, "Relative density" = 2),
               selected = 2)
 })
 
@@ -158,7 +158,7 @@ output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
 #   req(read_model_gis_gdb())
 #   choice.input <- gdb_names_choice_input()
 #   choice.input <- c("N/A" = 1, choice.input + 1)
-#   selectInput("model_gis_gdb_names_error", 
+#   selectInput("model_gis_gdb_names_error",
 #               tags$h5("Column with error data (optional)"),
 #               choices = choice.input, selected = 1)
 # })
@@ -168,7 +168,7 @@ output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
   choice.input <- gdb_names_choice_input()
   choice.input <- c("N/A" = 1, choice.input + 1)
-  selectInput("model_gis_gdb_names_weight", 
+  selectInput("model_gis_gdb_names_weight",
               tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
 })
@@ -187,19 +187,19 @@ output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
 ### csv
 output$model_create_csv_uiOut_button <- renderUI ({
   req(read_model_csv(), input$model_csv_names_weight)
-  
+
   # Ensure that weight values are between 0 and 1
   weight.idx <- as.numeric(input$model_csv_names_weight) - 1
   if (weight.idx != 0) {
     data.all <- read_model_csv()[[2]]
     data.weight <- data.all[, weight.idx]
     validate(
-      need((max(data.weight, na.rm = TRUE) <= 1) & 
-             (min(data.weight, na.rm = TRUE) >= 0), 
+      need((max(data.weight, na.rm = TRUE) <= 1) &
+             (min(data.weight, na.rm = TRUE) >= 0),
            "Error: Values in 'Weight' column must be between 0 and 1")
     )
   }
-  
+
   actionButton("model_create_csv", "Load model predictions")
 })
 
@@ -212,57 +212,84 @@ output$model_create_gis_raster_uiOut_button <- renderUI ({
 ### GIS .shp
 output$model_create_gis_shp_uiOut_button <- renderUI ({
   req(read_model_gis_shp()[[1]], input$model_gis_shp_names_weight)
-  
+
   # Ensure that weight values are between 0 and 1
   weight.idx <- as.numeric(input$model_gis_shp_names_weight) - 1
   if (weight.idx != 0) {
     data.all <- st_set_geometry(read_model_gis_shp()[[1]], NULL)
     data.weight <- data.all[, weight.idx]
     validate(
-      need((max(data.weight, na.rm = TRUE) <= 1) & 
+      need((max(data.weight, na.rm = TRUE) <= 1) &
              (min(data.weight, na.rm = TRUE) >= 0),
            "Error: Values in 'Weight' column must be between 0 and 1")
     )
   }
-  
+
   actionButton("model_create_gis_shp", "Load model predictions")
 })
 
 ### GIS .gdb
 output$model_create_gis_gdb_uiOut_button <- renderUI ({
   req(read_model_gis_gdb()[[1]], input$model_gis_gdb_names_weight)
-  
+
   # Ensure that weight values are between 0 and 1
   weight.idx <- as.numeric(input$model_gis_gdb_names_weight) - 1
   if (weight.idx != 0) {
     data.all <- st_set_geometry(read_model_gis_gdb()[[1]], NULL)
     data.weight <- data.all[, weight.idx]
     validate(
-      need((max(data.weight, na.rm = TRUE) <= 1) & 
+      need((max(data.weight, na.rm = TRUE) <= 1) &
              (min(data.weight, na.rm = TRUE) >= 0),
            "Error: Values in 'Weight' column must be between 0 and 1")
     )
   }
-  
+
   actionButton("model_create_gis_gdb", "Load model predictions")
 })
 
 
 ###############################################################################
+# Preview model predictions
+
+# output$model_pix_preview_interactive_execute_uiOut_button <- renderUI({
+#   req(input$models_loaded_table_rows_selected)
+#
+#   validate(
+#     need(length(input$models_loaded_table_rows_selected) <= 1,
+#          paste("Error: You can only interactively preview one set of",
+#                "model predictions at a time"))
+#   )
+#
+#   actionButton("model_pix_preview_interactive_execute",
+#                "Preview selected model predictions interactively")
+# })
+
+# output$model_preview_legend_uiOut_check <- renderUI({
+#   req(input$models_loaded_table_rows_selected)
+#
+#   if (input$model_preview_perc == 1) {
+#     checkboxInput("model_preview_legend", "Include legend in preview", value = TRUE)
+#   } else {
+#     helpText("A legend must be generated for value previews")
+#   }
+# })
+
+
+# ---------------------------------------------------------
 ### Generate default filename for download of model preditcions preview
 output$model_download_preview_name_uiOut_text <- renderUI({
   req(input$models_loaded_table_rows_selected)
-  
+
   # Same for multi- and single- preview
   idx.selected <- as.numeric(input$models_loaded_table_rows_selected)
-  
-  perc.txt <- ifelse(input$model_download_preview_perc == 1, 
+
+  perc.txt <- ifelse(input$model_download_preview_perc == 1,
                      "perc_", "values_")
-  res.txt <- ifelse(input$model_download_preview_res == "1", 
+  res.txt <- ifelse(input$model_download_preview_res == "1",
                     "300ppi", "72ppi")
-  file.ext <- switch(input$model_download_preview_format, 
+  file.ext <- switch(input$model_download_preview_format,
                      "1" = ".jpeg", "2" = ".pdf", "3" = ".png")
-  
+
   models.num <- length(input$models_loaded_table_rows_selected)
   if(models.num > 1) {
     # Multi
@@ -271,11 +298,11 @@ output$model_download_preview_name_uiOut_text <- renderUI({
     # Single
     model.name <- vals$models.names[[idx.selected]]
     pred.name <- vals$models.data.names[[idx.selected]][1]
-    
-    f.val <- paste0("eSDM_", model.name, "__", pred.name, "__", 
+
+    f.val <- paste0("eSDM_", model.name, "__", pred.name, "__",
                     perc.txt, res.txt, file.ext)
   }
-  
+
   textInput("model_download_preview_name", tags$h5("Filename"), value = f.val)
 })
 

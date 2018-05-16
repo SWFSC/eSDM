@@ -59,6 +59,11 @@ read_model_gis_shp <- reactive({
 
     gis.file.success <- isTruthy(gis.file.shp)
     if (gis.file.success) {
+      if (st_bbox(gis.file.shp)[3] > 180) {
+        incProgress(0.05, detail = "Polygon(s) span dateline; handling now")
+        gis.file.shp <- st_wrap_dateline(gis.file.shp)
+      }
+
       incProgress(detail = "Checking if model polygons are valid")
       if (!all(st_is_valid(gis.file.shp))) {
         incProgress(0.1, detail = "Making model polygons valid")
@@ -66,7 +71,7 @@ read_model_gis_shp <- reactive({
       }
       sf.list <- gis.model.check(gis.file.shp)
     }
-    incProgress(0.2, detail = "")
+    incProgress(0.15, detail = "")
   })
 
   if(!gis.file.success) {
@@ -119,6 +124,11 @@ read_model_gis_gdb <- eventReactive(input$model_gis_gdb_load, {
 
     gis.file.success <- isTruthy(gis.file.gdb)
     if (gis.file.success) {
+      if (st_bbox(gis.file.gdb)[3] > 180) {
+        incProgress(0.05, detail = "Polygon(s) span dateline; handling now")
+        gis.file.gdb <- st_wrap_dateline(gis.file.gdb)
+      }
+
       incProgress(detail = "Checking if model polygons are valid")
       if (!all(st_is_valid(gis.file.gdb))) {
         incProgress(0.1, detail = "Making model polygons valid")
