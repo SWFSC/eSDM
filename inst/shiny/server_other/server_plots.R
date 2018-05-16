@@ -5,15 +5,45 @@
 # Load Model Predictions tab
 
 #################################################
-### Get preview of predictions to plot in-app
+### Generate interactive preview of predictions to display in-app
+model_pix_preview_interactive_event <- eventReactive(
+  input$model_pix_preview_interactive_execute,
+  {
+    req(length(vals$models.ll) > 0)
+
+    # Show/hide is here because for some reason observeEvent didn't run before
+    #   model_pix_preview_interactive_event()
+    shinyjs::hide("model_pix_preview_plot", time = 0)
+    shinyjs::show("model_pix_preview_interactive_plot", time = 0)
+
+    perc.num <- as.numeric(input$model_preview_interactive_perc)
+
+    model.idx <- as.numeric(input$models_loaded_table_rows_selected)
+    validate(
+      need(length(model.idx)  == 1,
+           paste("Error: Please ensure that exactly one model from the table",
+                 "is selected to preview"))
+    )
+    model.toplot <- vals$models.ll[[model.idx]]
+
+    vals$models.plotted.idx <- model.idx
+
+    eSDM::preview_interactive(model.toplot, "Pred", perc.num, pal.esdm,
+                              leg.perc.esdm)
+  }
+)
+
+
+#################################################
+### Generate static preview of predictions to display in-app
 model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
-  req(length(vals$models.pix) > 0)
+  req(length(vals$models.ll) > 0)
 
   perc.num <- as.numeric(input$model_preview_perc)
 
   #----------------------------------------------
-  # Same code as in model_pix_download()
   models.idx <- as.numeric(input$models_loaded_table_rows_selected)
+  models.num <- length(models.idx)
 
   validate(
     need(length(models.idx) > 0,
@@ -21,6 +51,7 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
   )
 
   models.toplot <- vals$models.ll[models.idx]
+  stopifnot(models.num == length(models.toplot))
 
   plot.titles <- sapply(models.idx, function(i) {
     paste(vals$models.names[i], "|", vals$models.data.names[[i]][1])
@@ -28,44 +59,20 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
 
   #----------------------------------------------
 
+
   vals$models.plotted.idx <- models.idx
-  eSDM::multiplot(
-    models.toplot = models.toplot, data.name = "Pred", perc.num = perc.num,
-    plot.titles = plot.titles, col.num = 10, col.pal = col.ramp,
-    leg.inc = input$model_preview_legend, leg.labels = labels.lab
+  plot.dims <- multiplot_inapp(models.num)
+
+  eSDM::multiplot_layout(
+    models.toplot, rep("Pred", models.num), plot.titles,
+    perc.num, pal.esdm, leg.perc.esdm,
+    plot.dims[1], plot.dims[2], plot.dims[3], plot.dims[4], plot.dims[5]
   )
 })
 
 
 #################################################
-### Get preview of predictions to download
-model_pix_download <- reactive({
-  req(length(vals$models.pix) > 0)
-
-  perc.num <- as.numeric(input$model_download_preview_perc)
-
-  #----------------------------------------------
-  # Same code as in model_pix_download()
-  models.idx <- as.numeric(input$models_loaded_table_rows_selected)
-
-  validate(
-    need(length(models.idx) > 0,
-         "Error: Please select at least one model from table to preview")
-  )
-
-  models.toplot <- vals$models.ll[models.idx]
-
-  plot.titles <- sapply(models.idx, function(i) {
-    paste0(vals$models.data.names[[i]][1], "\n", vals$models.names[i])
-  })
-
-  model.pix.list <- list(models.toplot = models.toplot, data.name = "Pred",
-                         plot.titles = plot.titles, perc.num = perc.num,
-                         models.num = length(models.idx))
-  #----------------------------------------------
-
-  plot.multi.download(model.pix.list)
-})
+### Download predictions code is in server_plots_download.R
 
 
 ###############################################################################
@@ -89,7 +96,9 @@ plot_overlay_preview_base <- eventReactive(
         need(l.inc,
              "Error: Please either uncheck land box or load a land polygon")
     )
-    # browser()
+
+    shinyjs::show("overlay_preview_base", time = 0)
+
     model.toplot <- overlay_preview_base_model()
 
     leaf.map <- leaflet() %>%
@@ -129,27 +138,6 @@ plot_overlay_preview_base <- eventReactive(
       )
 
     leaf.map
-
-    # model.toplot <- overlay_preview_base_model()
-    #
-    # if (b.inc) {
-    #   bound.toplot <- vals$overlay.bound
-    #   plot.extent <- extent(bound.toplot)
-    # } else {
-    #   plot.extent <- extent(model.toplot)
-    #
-    # }
-    # plot.xlim <- c(plot.extent@xmin, plot.extent@xmax)
-    # plot.ylim <- c(plot.extent@ymin, plot.extent@ymax)
-    #
-    # plot(model.toplot, xlim = plot.xlim, ylim = plot.ylim, axes = TRUE)
-    # if (l.inc) {
-    #   plot(overlay_preview_base_land(), add = TRUE, border = NA, col = "tan")
-    #   # overlay_preview_base_land() is in server_2_overlay.R
-    # }
-    # if (b.inc) {
-    #   plot(vals$overlay.bound, add = TRUE, border = "red", col = NA, lwd = 2)
-    # }
   }
 )
 

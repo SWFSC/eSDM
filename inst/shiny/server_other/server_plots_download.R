@@ -10,29 +10,60 @@ output$model_download_preview_execute <- downloadHandler(
   filename = function() {
     input$model_download_preview_name
   },
-  
+
   content = function(file) {
-    withProgress(message = "Downloading preview", value = 0.6, { 
-      Sys.sleep(0.5)
-      # plot.toprint <- model_pix_download()
+    withProgress(message = "Downloading preview", value = 0.6, {
+      #-------------------------------------------------------------
+      perc.num <- as.numeric(input$model_download_preview_perc)
+      models.idx <- as.numeric(input$models_loaded_table_rows_selected)
+      models.num <- length(models.idx)
+
+      req(length(vals$models.ll) > 0, length(models.idx) > 0)
+
+      models.toplot <- vals$models.ll[models.idx]
+      stopifnot(models.num == length(models.toplot))
+      # plot.titles <- sapply(models.idx, function(i) {
+      #   paste(vals$models.data.names[[i]][1], "|", vals$models.names[i])
+      # })
+      plot.titles <- vals$models.names[models.idx]
+      plot.dims <- multiplot_download(models.num)
+
+
+      #-------------------------------------------------------------
       plot.res <- ifelse(input$model_download_preview_res == "1", 300, 72)
       pdf.res  <- ifelse(input$model_download_preview_res == "1", 15, 7)
       plot.format <- input$model_download_preview_format
-      
-      if(plot.format == 1) {
-        jpeg(file, width = 4, height = 4, units = 'in', res = plot.res, 
+
+
+      #-------------------------------------------------------------
+      if (plot.format == 1) {
+        jpeg(file, width = 4, height = 4, units = 'in', res = plot.res,
              quality = 150)
-        model_pix_download()
+        eSDM::multiplot_layout(
+          models.toplot, rep("Pred", models.num), plot.titles,
+          perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
+          plot.dims[3], plot.dims[4], plot.dims[5]
+        )
         dev.off()
-      }
-      if(plot.format == 2) {
+
+      } else if (plot.format == 2) {
         pdf(file, width = pdf.res, height = pdf.res)
-        model_pix_download()
+        eSDM::multiplot_layout(
+          models.toplot, rep("Pred", models.num), plot.titles,
+          perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
+          plot.dims[3], plot.dims[4], plot.dims[5]
+        )
         dev.off()
-      }
-      if(plot.format == 3) {
+
+      } else if (plot.format == 3) {
+        # browser()
         png(file, width = 4, height = 4, units = "in", res = plot.res)
-        model_pix_download()
+        # model_pix_download()
+        eSDM::multiplot_layout(
+          models.toplot, rep("Pred", models.num), plot.titles,
+          perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
+          plot.dims[3], plot.dims[4], plot.dims[5]
+        )
         dev.off()
       }
       incProgress(0.4)
@@ -47,15 +78,15 @@ output$ens_download_preview_execute <- downloadHandler(
   filename = function() {
     input$ens_download_preview_name
   },
-  
+
   content = function(file) {
-    withProgress(message = "Downloading preview", value = 0.6, { 
+    withProgress(message = "Downloading preview", value = 0.6, {
       Sys.sleep(0.5)
       plot.toprint <- ens_pix_download()
       plot.res <- ifelse(input$ens_download_preview_res == "1", 300, 72)
       pdf.res  <- ifelse(input$ens_download_preview_res == "1", 15, 7)
       plot.format <- input$ens_download_preview_format
-      
+
       if(plot.format == 1) {
         jpeg(file, width = 4, height = 4, units = 'in', res = plot.res,
              quality = 150)

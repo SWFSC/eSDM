@@ -2,17 +2,30 @@
 
 
 ###############################################################################
+### Hide all plot outputs when app is first started
+shinyjs::hide("model_pix_preview_plot", time = 0)
+shinyjs::hide("model_pix_preview_interactive_plot", time = 0)
+shinyjs::hide("overlay_preview_base", time = 0)
+shinyjs::hide("overlay_preview_overlaid", time = 0)
+shinyjs::hide("create_ens_weights_poly_preview_plot", time = 0)
+shinyjs::hide("ens_pix_preview_plot", time = 0)
+shinyjs::hide("pretty_plot", time = 0)
+
+
+###############################################################################
 # This is done because even if new predictions are loaded/created, the
-# reactive functions still store and plot/display old information. Thus, 
+# reactive functions still store and plot/display old information. Thus,
 # this code hides that old information until new, updated info is generated.
 
 
-# The following must be done so that these plots render to NULL and thus 
-# shinycssloaders spinner isn't shown. 
+# The following must be done so that these plots render to NULL and thus
+# shinycssloaders spinner isn't shown.
 outputOptions(output, "model_pix_preview_plot", suspendWhenHidden = FALSE)
+outputOptions(output, "model_pix_preview_interactive_plot",
+              suspendWhenHidden = FALSE)
 outputOptions(output, "overlay_preview_base", suspendWhenHidden = FALSE)
 outputOptions(output, "overlay_preview_overlaid", suspendWhenHidden = FALSE)
-outputOptions(output, "create_ens_weights_poly_preview_plot", 
+outputOptions(output, "create_ens_weights_poly_preview_plot",
               suspendWhenHidden = FALSE)
 outputOptions(output, "ens_pix_preview_plot", suspendWhenHidden = FALSE)
 outputOptions(output, "pretty_plot_plot", suspendWhenHidden = FALSE)
@@ -20,16 +33,27 @@ outputOptions(output, "pretty_plot_plot", suspendWhenHidden = FALSE)
 
 ###############################################################################
 # Show elements when their respective 'execute' buttons are clicked
+# Also hide other elements as appropriate
 
 ### Show original model predictions preview
 observeEvent(input$model_pix_preview_execute, {
   shinyjs::show("model_pix_preview_plot", time = 0)
+  shinyjs::hide("model_pix_preview_interactive_plot", time = 0)
 })
 
-### Show base grid preview
-observeEvent(input$overlay_preview_base_execute, {
-  shinyjs::show("overlay_preview_base", time = 0)
-})
+# Show/hide is in model_pix_preview_interactive_event() in server_plots.R
+#   Not sure why observeEvent() executes first for other buttons
+# ### Show original model predictions interactive preview
+# observeEvent(input$model_pix_preview_interactive_execute, {
+#   shinyjs::show("model_pix_preview_interactive_plot", time = 0)
+#   shinyjs::hide("model_pix_preview_plot", time = 0)
+# })
+
+# Show/hide is in plot_overlay_preview_base() in server_plots.R
+# ### Show base grid preview
+# observeEvent(input$overlay_preview_base_execute, {
+#   shinyjs::show("overlay_preview_base", time = 0)
+# })
 
 ### Show overlaid model predictions preview
 observeEvent(input$overlay_preview_overlaid_execute, {
@@ -65,7 +89,8 @@ observeEvent(input$overlay_create_overlaid_models, {
   shinyjs::hide("create_ens_weights_poly_preview_plot", time = 0)
   shinyjs::hide("ens_create_ensemble_text", time = 0)
   shinyjs::hide("ens_pix_preview_plot", time = 0)
-  shinyjs::hide("pretty_plot_plot", time = 0) # Make this more robust so it only happens when an overlaid or ensemble model is plotted
+  shinyjs::hide("pretty_plot_plot", time = 0)
+  # Make ^ this more robust so it only happens when an overlaid or ensemble model is plotted
 })
 
 
@@ -73,6 +98,7 @@ observeEvent(input$overlay_create_overlaid_models, {
 ### Hide elements when a saved environment is loaded
 observeEvent(input$load_app_envir_file, {
   shinyjs::hide("model_pix_preview_plot", time = 0)
+  shinyjs::hide("model_pix_preview_interactive_plot", time = 0)
   shinyjs::hide("overlay_preview_base", time = 0)
   shinyjs::hide("overlay_preview_overlaid", time = 0)
   shinyjs::hide("create_ens_weights_poly_preview_plot", time = 0)

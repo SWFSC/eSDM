@@ -57,11 +57,13 @@ output$models_loaded_table_stats <- DT::renderDataTable({
 options = list(dom = 't'), selection = "none")
 
 ###########################################################
-### Plot/preview of individual model
+### Plot/preview of loaded, original model(s)
 output$model_pix_preview_plot <- renderPlot({
-  # grid.arrange(model_pix_preview_event())
   model_pix_preview_event()
+})
 
+output$model_pix_preview_interactive_plot <- renderLeaflet({
+  model_pix_preview_interactive_event()
 })
 
 
