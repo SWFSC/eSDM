@@ -60,36 +60,50 @@ csv_names_choice_input <- reactive({
 ###############################################################################
 
 # Load and process data from csv file, and then add relevant data to vals
-create_sf_csv <- eventReactive(input$model_create_csv, {
-  withProgress(message = "Loading SDM from .csv file", value = 0.3, {
-    #######################################################
-    ### Load and process data and input variables
+create_sf_csv_data <- reactive({
+  #######################################################
+  ### Load and process data and input variables
+  lon.idx <- as.numeric(input$model_csv_names_lon)
+  lat.idx <- as.numeric(input$model_csv_names_lat)
+  pred.idx <- as.numeric(input$model_csv_names_pred)
+  error.idx <- NA #as.numeric(input$model_csv_names_error)
+  weight.idx <- as.numeric(input$model_csv_names_weight)
+
+  error.idx <- NA #ifelse(error.idx == 1, NA, error.idx - 1)
+  weight.idx <- ifelse(weight.idx == 1, NA, weight.idx - 1)
+
+  csv.idx <- c(lon.idx, lat.idx, pred.idx, error.idx, weight.idx)
+
+  csv.all <- read_model_csv()[[2]]
+  csv.data <- cbind(csv.all[, csv.idx[1:3]], NA, NA)
+  if (!is.na(csv.idx[4])) csv.data[, 4] <- csv.all[csv.idx[4]]
+  if (!is.na(csv.idx[5])) csv.data[, 5] <- csv.all[csv.idx[5]]
+
+  # Change invalid densities to NA
+  na.idx <- model_csv_NA_idx()
+  if (!anyNA(na.idx)) csv.data[na.idx, 3:5] <- NA
+
+  # Sort data by lat (primary) then long for bottom up sort
+  csv.data <- data_sort(csv.data, 2, 1)
+
+  # Remove lat/long; add 'Pixel' column to keep track of indices
+  csv.data <- cbind(csv.data, 1:nrow(csv.data))
+  names(csv.data) <- c("Lon", "Lat", "Pred", "Error", "Weight", "Pixels")
+
+  csv.data
+})
+
+
+###############################################################################
+create_sf_csv_sfc <- reactive({
+  withProgress(message = "Creating polygons for .csv file", value = 0.3, {
     lon.idx <- as.numeric(input$model_csv_names_lon)
     lat.idx <- as.numeric(input$model_csv_names_lat)
-    pred.idx <- as.numeric(input$model_csv_names_pred)
-    error.idx <- NA #as.numeric(input$model_csv_names_error)
-    weight.idx <- as.numeric(input$model_csv_names_weight)
+    csv.data <- read_model_csv()[[2]][, c(lon.idx, lat.idx)]
 
-    error.idx <- NA #ifelse(error.idx == 1, NA, error.idx - 1)
-    weight.idx <- ifelse(weight.idx == 1, NA, weight.idx - 1)
-
-    csv.idx <- c(lon.idx, lat.idx, pred.idx, error.idx, weight.idx)
-
-    csv.all <- read_model_csv()[[2]]
-    csv.data <- cbind(csv.all[, csv.idx[1:3]], NA, NA)
-    if (!is.na(csv.idx[4])) csv.data[, 4] <- csv.all[csv.idx[4]]
-    if (!is.na(csv.idx[5])) csv.data[, 5] <- csv.all[csv.idx[5]]
-
-    # Change invalid densities to NA
-    na.idx <- model_csv_NA_idx()
-    if (!anyNA(na.idx)) csv.data[na.idx, 3:5] <- NA
-
-    # Sort data by lat (primary) then long for bottom up sort
     csv.data <- data_sort(csv.data, 2, 1)
-
-    # Remove lat/long; add 'Pixel' column to keep track of indices
     csv.data <- cbind(csv.data, 1:nrow(csv.data))
-    names(csv.data) <- c("Lon", "Lat", "Pred", "Error", "Weight", "Pixels")
+    names(csv.data) <- c("Lon", "Lat", "Pixels")
 
 
     #######################################################
@@ -174,7 +188,7 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
     # }
 
     # Make sf object
-    incProgress(0.15)
+    incProgress(0.2)
     sfc.list <- apply(csv.data[, c("Lon", "Lat")], 1, function(i, j) {
       st_sfc(st_polygon(list(matrix(
         c(i[1] + j, i[1] - j, i[1] - j, i[1] + j, i[1] + j,
@@ -184,44 +198,60 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
     incProgress(0.3)
 
     sfc.poly <- st_sfc(do.call(rbind, sfc.list))
-    sf.load.ll <- st_sf(csv.data[, -c(1:2)], sfc.poly, crs = crs.ll,
-                        agr = "constant")
+
+    sf.temp.ll <- st_sf(csv.data, sfc.poly, crs = crs.ll, agr = "constant")
 
     # Ensure that sf object is in -180 to 180 longitude range
-    if (st_bbox(sf.load.ll)[3] > 180) {
-      incProgress(0.05, detail = "Polygon(s) span dateline; handling now")
-      sf.load.ll <- st_wrap_dateline(sf.load.ll)
+    if (st_bbox(sf.temp.ll)[3] > 180) {
+      incProgress(detail = "Polygon(s) span dateline; handling now")
+      sf.temp.ll <- st_wrap_dateline(sf.temp.ll)
     }
 
 
     #####################################
     ### d) Perform final quality checks
     incProgress(detail = "Checking if model polygons are valid")
-    if (!all(st_is_valid(sf.load.ll))) {
+    if (!all(st_is_valid(sf.temp.ll))) {
       incProgress(detail = "Making model polygons valid")
-      sf.load.ll <- poly_valid_check(sf.load.ll)
+      sf.temp.ll <- poly_valid_check(sf.temp.ll)
     }
 
-    sf.bbox <- as.numeric(st_bbox(sf.load.ll))
+    sf.bbox <- as.numeric(st_bbox(sf.temp.ll))
     validate(
       need(all(c(sf.bbox[3:4] <= c(180, 90), sf.bbox[1:2] >= c(-180, -90))),
            paste("Error: There was an issue processing this .csv data;",
                  "please manually ensure that all longitude and latitude values",
                  "are between [-180, 180] and [-90, 90], respectively"))
     )
+    incProgress(0.2)
+
+    list(sf.temp.ll, cell.lw)
+  })
+})
 
 
-    #######################################################
+###############################################################################
+create_sf_csv <- eventReactive(input$model_create_csv, {
+  # Combine data df and sfc object
+  csv.sf.temp <- create_sf_csv_sfc()[[1]]
+
+  withProgress(message = "Combining .csv file data and polygons", value = 0.6, {
+    csv.data <- create_sf_csv_data()
+    if (identical(csv.data$Lon, csv.sf.temp$Lon) &
+        identical(csv.data$Lat, csv.sf.temp$Lat)) {
+      sf.load.ll <- st_sf(csv.data[, 3:6], geometry = st_geometry(csv.sf.temp))
+    }
+
+
     ### Prep for and run function that adds relevant data to vals
-    incProgress(0.2, detail = "Finishing model processing")
-    model.res <- paste(cell.lw, "degrees")
+    incProgress(0.4, detail = "Finishing model processing")
+    model.res <- paste(create_sf_csv_sfc()[[2]], "degrees")
 
     pred.type <- input$model_csv_pred_type
     model.name <- read_model_csv()[[1]]
     data.names <- model_csv_names_selected()
 
 
-    #######################################################
     #### Code common to csv, raster, and gis_shp/gis_gdb functions ####
     source(file.path("server_1_loadModels",
                      "server_1_loadModels_create_local.R"),
