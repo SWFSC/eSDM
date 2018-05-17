@@ -80,7 +80,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
                              "Weight.overlaid", "Pixels")
     base.sfc <- st_geometry(base.sf)
 
-    # Get specs of base.sp
+    # Get specs of base.sfc
     base.specs <- vals$models.specs[[base.idx]]
     base.specs[2] <- length(base.sfc)
     base.specs[3:4] <- NA
