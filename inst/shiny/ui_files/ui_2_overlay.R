@@ -194,7 +194,7 @@ ui.overlay <- function() {
                          condition = "input.overlay_samegrid_indicator == 1",
                          box(
                            width = 12,
-                           tags$h5("Overlay options: coordinate system"),
+                           tags$strong("Overlay options: coordinate system"),
                            helpText("A major element of the overlay process is calculating the area of polygons and their overlap.",
                                     "Thus, the coordinate system of the model predictions during the overlay process",
                                     "can have an effect on the overlay results."),
@@ -214,7 +214,8 @@ ui.overlay <- function() {
                              column(
                                width = 5,
                                radioButtons("overlay_proj_opt", NULL,
-                                            choices = list("Select model" = 1, "Enter numeric EPSG code" = 2),
+                                            choices = list("Select model with desired coordinate system" = 1,
+                                                           "Enter numeric EPSG code" = 2),
                                             selected = 1)
                              ),
                              column(

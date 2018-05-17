@@ -70,7 +70,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
 
   file.load <- input$load_app_envir_file
   validate(
-    need((substrRight(input$load_app_envir_file$name, 6) == ".RDATA" &
+    need((substr_right(input$load_app_envir_file$name, 6) == ".RDATA" &
             input$load_app_envir_file$type == ""),
          "Error: Please load a file with the extension '.RDATA'")
   )

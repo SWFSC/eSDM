@@ -96,7 +96,7 @@ preview_ll <- function(sf.ll, data.name, title.ll, perc, col.pal,
 
   ### Generate plot with densities color-coded by percentages or values
   if (perc == 1) {
-    b.model <- breaks.calc(data.vec)
+    b.model <- breaks_calc(data.vec)
 
     plot(sf.ll[data.name], axes = TRUE, border = NA,
          breaks = b.model, pal = col.pal,
@@ -141,7 +141,7 @@ preview_interactive <- function(sf.ll, data.name, perc, col.pal,
   stopifnot(is.numeric(data.vec))
 
   if (perc == 1) {
-    b.model <- eSDM::breaks.calc(data.vec)
+    b.model <- eSDM::breaks_calc(data.vec)
     binpal <- colorBin(col.pal, data.vec, bins = b.model, na.color = "grey")
 
     leaflet(sf.ll) %>%

@@ -27,7 +27,7 @@ st_agr(sf.load.orig) <- "constant"
 
 ### Calculate predicted abundance if 'Absolute abundance' is selected
 if (pred.type == 1) {
-  spdf.abund <- unname(round(model.abundance(sf.load.orig, "Pred"), 0))
+  spdf.abund <- unname(round(model_abundance(sf.load.orig, "Pred"), 0))
 } else {
   spdf.abund <- "N/A"
 }

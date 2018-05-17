@@ -60,72 +60,46 @@ overlay_preview_base_model <- reactive({
   )
 
   vals$models.ll[[base.which]]
-  # model.toplot <- vals$models.ll[[base.which]]
-
-  # # If study area polygon is loaded,
-  # # then get intersection of model and study area poly
-  # if (!is.null(vals$overlay.bound)) {
-  #   st_crop(model.toplot, st_bbox(vals$overlay.bound))
-  # } else {
-  #   model.toplot
-  # }
 })
 
 ### Crop land by bbox of selected model
 # For overlay base preview
 overlay_preview_base_land <- reactive({
-  suppressWarnings(
+  suppressMessages(
     st_crop(vals$overlay.land, st_bbox(overlay_preview_base_model()))
   )
-
-  # overlay.land <- vals$overlay.land
-  #
-  # # If study area polygon is loaded, clip land by study area poly extent
-  # sp.clipper <- vals$overlay.bound
-  # if (is.null(vals$overlay.bound)  | !("1" %in% input$overlay_preview_options)) {
-  #   sp.clipper <- overlay_preview_base_model()
-  # }
-  #
-  # land.clip.try <- try(gClipExtent(overlay.land, sp.clipper),
-  #                      silent = TRUE)
-  #
-  # if (class(land.clip.try) == "try-error") {
-  #   overlay.land
-  # } else {
-  #   land.clip.try
-  # }
 })
 
 
-###########################################################
-### Generate list of SPixDF objects for overlaid model predictions preview
-overlay_preview_overlaid_pix <- reactive({
-  overlaid.which <- as.numeric(input$overlay_preview_overlaid_models)
-
-  validate(
-    need(length(overlaid.which) > 0,
-         paste("Error: Please select at least one set of overlaid",
-               "model predictions to preview"))
-  )
-
-  overlaid.spdf.list <- vals$overlaid.models[overlaid.which]
-
-  # Get SPixDF object, whose data being rasterized pixel indices
-  # Pixel object was originally made for ensemble previews,...
-  # ...but works for overlaid previews too
-  overlaid.pix <- vals$ens.over.pix
-  names(overlaid.pix) <- "Pred.overlaid.pix"
-  overlaid.pix.idx <- vals$ens.over.pix$pix
-
-  overlaid.pix.list <- lapply(overlaid.spdf.list, function(i) {
-    overlaid.pix.curr <- overlaid.pix
-    overlaid.pix.curr$Pred.overlaid.pix <- i$Pred.overlaid[overlaid.pix.idx]
-    names(overlaid.pix.curr) <- "Pred.overlaid"
-
-    overlaid.pix.curr
-  })
-
-  overlaid.pix.list
-})
-
-###############################################################################
+# ###########################################################
+# ### Generate list of SPixDF objects for overlaid model predictions preview
+# overlay_preview_overlaid_pix <- reactive({
+#   overlaid.which <- as.numeric(input$overlay_preview_overlaid_models)
+#
+#   validate(
+#     need(length(overlaid.which) > 0,
+#          paste("Error: Please select at least one set of overlaid",
+#                "model predictions to preview"))
+#   )
+#
+#   overlaid.spdf.list <- vals$overlaid.models[overlaid.which]
+#
+#   # Get SPixDF object, whose data being rasterized pixel indices
+#   # Pixel object was originally made for ensemble previews,...
+#   # ...but works for overlaid previews too
+#   overlaid.pix <- vals$ens.over.pix
+#   names(overlaid.pix) <- "Pred.overlaid.pix"
+#   overlaid.pix.idx <- vals$ens.over.pix$pix
+#
+#   overlaid.pix.list <- lapply(overlaid.spdf.list, function(i) {
+#     overlaid.pix.curr <- overlaid.pix
+#     overlaid.pix.curr$Pred.overlaid.pix <- i$Pred.overlaid[overlaid.pix.idx]
+#     names(overlaid.pix.curr) <- "Pred.overlaid"
+#
+#     overlaid.pix.curr
+#   })
+#
+#   overlaid.pix.list
+# })
+#
+# ###############################################################################

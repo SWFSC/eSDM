@@ -62,7 +62,7 @@ output$model_csv_names_weight_uiOut_select <- renderUI({
 output$model_csv_NA_idx_uiOut_message <- renderUI({
   req(read_model_csv())
   na.idx <- model_csv_NA_idx()
-  na.which.message(na.idx)
+  na_which_message(na.idx)
 })
 
 
@@ -83,7 +83,7 @@ output$model_gis_raster_pred_type_uiOut_select <- renderUI({
 output$model_gis_raster_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_raster())
   na.idx <- model_gis_raster_NA_idx()
-  na.which.message(na.idx)
+  na_which_message(na.idx)
 })
 
 
@@ -130,7 +130,7 @@ output$model_gis_shp_names_weight_uiOut_select <- renderUI({
 output$model_gis_shp_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_shp())
   na.idx <- model_gis_shp_NA_idx()
-  na.which.message(na.idx)
+  na_which_message(na.idx)
 })
 
 
@@ -177,7 +177,7 @@ output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
 output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_gdb())
   na.idx <- model_gis_gdb_NA_idx()
-  na.which.message(na.idx)
+  na_which_message(na.idx)
 })
 
 

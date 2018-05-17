@@ -232,7 +232,6 @@ overlay_reset <- reactive({
 
 ###############################################################################
 ### Get crs object with projection to be used in overlay process
-# Currently this only handles the loaded model preds as possible inputs
 overlay_crs <- reactive({
   if (input$overlay_samegrid_indicator == 2) {
     model.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
@@ -244,6 +243,7 @@ overlay_crs <- reactive({
     } else {
       if (input$overlay_proj_opt == 1) {
         st_crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
+
       } else {
         x <- suppressWarnings(st_crs(input$overlay_proj_epsg))
         validate(

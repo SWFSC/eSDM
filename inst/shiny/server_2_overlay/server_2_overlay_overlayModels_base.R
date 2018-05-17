@@ -68,13 +68,13 @@ overlay_create_base_sf <- reactive({
   #--------------------------------------------------------
   # Make sure final version of base polygon is valid
   if (!all(st_is_valid(base.sf))) {
-    base.sf <- try(polyValidCheck(base.sf, "Pred"), silent = TRUE)
+    base.sf <- try(poly_valid_check(base.sf, "Pred"), silent = TRUE)
   }
 
   validate(
     need(isTruthy(base.sf),
          "Error: Overlay cannot be performed with selected base polygon") %then%
-      need(identical(class(base.sf), c("sf", "data.frame")),
+      need(inherits(base.sf, "sf"),
            "An error occurred during the overlay, please reload the eSDM app and try again")
   )
 
@@ -150,7 +150,7 @@ overlay_valid_base <- reactive({
   base.sf <- overlay_proj_base()
 
   if (!all(st_is_valid(base.sf))) {
-    base.sf <- try(polyValidCheck(base.sf), silent = TRUE)
+    base.sf <- try(poly_valid_check(base.sf), silent = TRUE)
     validate(
       need(isTruthy(base.sf),
            paste("Error: The eSDM was unable to make the base valid",
@@ -169,7 +169,7 @@ overlay_valid_bound <- reactive({
   overlay.bound <- overlay_proj_bound()
 
   if (!all(st_is_valid(overlay.bound))) {
-    overlay.bound <- try(polyValidCheck(overlay.bound), silent = TRUE)
+    overlay.bound <- try(poly_valid_check(overlay.bound), silent = TRUE)
     validate(
       need(isTruthy(overlay.bound),
            paste("Error: The eSDM was unable to make the study area polygon",
@@ -187,7 +187,7 @@ overlay_valid_land <- reactive({
   overlay.land <- overlay_proj_land()
 
   if (!all(st_is_valid(overlay.land))) {
-    overlay.land <- try(polyValidCheck(overlay.land), silent = TRUE)
+    overlay.land <- try(poly_valid_check(overlay.land), silent = TRUE)
     validate(
       need(isTruthy(overlay.land),
            paste("Error: The eSDM was unable to make the land polygon valid",

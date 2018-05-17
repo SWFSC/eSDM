@@ -2,12 +2,12 @@
 
 
 ###############################################################################
-### Get indices of predictions that area NA's using na.which()
+### Get indices of predictions that area NA's using na_which()
 model_gis_raster_NA_idx <- reactive({
   req(read_model_gis_raster())
   data.raster.pred <- read_model_gis_raster()[[1]]$Pred
 
-  na.which(data.raster.pred)
+  na_which(data.raster.pred)
 })
 
 
@@ -50,9 +50,9 @@ read_model_gis_raster <- reactive({
       incProgress(detail = "Checking if model polygons are valid")
       if (!all(st_is_valid(sf.load.raster))) {
         incProgress(detail = "Making model polygons valid")
-        sf.load.raster <- polyValidCheck(sf.load.raster)
+        sf.load.raster <- poly_valid_check(sf.load.raster)
       }
-      sf.list <- gis.model.check(sf.load.raster)
+      sf.list <- gis_model_check(sf.load.raster)
       incProgress(0.2, detail = "")
     }
   })
@@ -83,10 +83,10 @@ create_spdf_gis_raster <- eventReactive(input$model_create_gis_raster, {
     sf.load.orig <- data.list[[2]]
     model.res    <- data.list[[3]]
 
-    sf.load.ll <- sf.load.ll %>% mutate(Error = NA, Weight = NA,
-                                        Pixels = 1:nrow(sf.load.ll))
-    sf.load.orig <- sf.load.orig %>% mutate(Error = NA, Weight = NA,
-                                            Pixels = 1:nrow(sf.load.orig))
+    sf.load.ll <- sf.load.ll %>%
+      mutate(Error = NA, Weight = NA, Pixels = 1:nrow(sf.load.ll))
+    sf.load.orig <- sf.load.orig %>%
+      mutate(Error = NA, Weight = NA, Pixels = 1:nrow(sf.load.orig))
 
     incProgress(0.3)
 
@@ -118,9 +118,10 @@ create_spdf_gis_raster <- eventReactive(input$model_create_gis_raster, {
 
 
     #### Code common to csv, raster, and gis_shp/gis_gdb functions ####
-    source(file.path("server_1_loadModels",
-                     "server_1_loadModels_create_local.R"),
-           local = TRUE, echo = FALSE, chdir = TRUE)
+    source(
+      file.path("server_1_loadModels", "server_1_loadModels_create_local.R"),
+      local = TRUE, echo = FALSE, chdir = TRUE
+    )
     ###################################################################
   })
 

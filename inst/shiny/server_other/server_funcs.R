@@ -1,26 +1,28 @@
-#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+# @title Read GIS shpaefile from Shiny fileInput
+# @description Read in a GIS shapefile from a fileInput ouptput in a Shiny app
+#
+# @param file.in.list The list returned by shiny::fileInput()
+#
+# @return A sf object
+#
+# @source \url{https://github.com/leonawicz/nwtapp/blob/master/mod_shpPoly.R}
+#
+# @export
 
+read.shp.shiny <- function(file.in.list) {
+  infiles <- file.in.list$datapath
+  dir <- unique(dirname(infiles))
+  outfiles <- file.path(dir, file.in.list$name)
+  purrr::walk2(infiles, outfiles, ~file.rename(.x, .y))
 
-shiny.read.csv <- function(file.in.df) {
-  validate(
-    need(file.in.df$type %in% c("text/csv", "application/vnd.ms-excel"),
-         "Error: Selected file is not a csv file")
-  )
+  gis.file <- try(st_read(dir, strsplit(file.in.list$name[1], "\\.")[[1]][1],
+                          quiet = TRUE),
+                  silent = TRUE)
 
-  csv.df <- read.csv(file.in.df$datapath, stringsAsFactors = FALSE)
-
-  # TODO This should not be in here
-  if (all(csv.df[, 1] > 180, na.rm = TRUE)) {
-    csv.df[, 1] <- csv.df[, 1] - 360
-  }
-  validate(
-    need(all(csv.df[, 1] <= 180 & csv.df[, 1] >= -180, na.rm = TRUE),
-         paste("Error: The provided .csv file must have longitudes in the",
-               "range [-180, 180] and latitudes in the range [-90, 90]"))
-  )
-
-  return(list(file.in.df$name, csv.df))
+  return(gis.file)
 }
+
 
 
 #------------------------------------------------------------------------------
@@ -32,7 +34,7 @@ shiny.read.csv <- function(file.in.df) {
 # TODO: What to do if polygon can't be made valid -
 #   REturn original poly along with ALERT about invalidity and possible errors if that polygon is used?
 
-polyValidCheck <- function(poly.invalid, dens.col = NA, poly.info = NA) {
+poly_valid_check <- function(poly.invalid, dens.col = NA, poly.info = NA) {
   poly.maybe <- lwgeom::st_make_valid(poly.invalid)
 
   if (!all(st_is_valid(poly.maybe))) {
@@ -93,7 +95,7 @@ polyValidCheck <- function(poly.invalid, dens.col = NA, poly.info = NA) {
 ## Sort by lat and then long; return crs.ll and orig proj version of file
 #    Requires that 'gis.loaded' is an sf object
 
-gis.model.check <- function(gis.loaded) {
+gis_model_check <- function(gis.loaded) {
   validate(
     need(identical(class(gis.loaded), c("sf", "data.frame")),
          "Error: GIS object was not read in properly")
@@ -104,7 +106,7 @@ gis.model.check <- function(gis.loaded) {
     idx = 1:nrow(gis.loaded),
     st_coordinates(suppressWarnings(st_centroid(gis.loaded)))
   )
-  idx.sorted <- data.sort(coords, 3, 2)$idx # Lat is primary sort
+  idx.sorted <- data_sort(coords, 3, 2)$idx # Lat is primary sort
   gis.loaded <- gis.loaded[idx.sorted, ]
 
   # Check crs arguments and project to crs.ll if necessary

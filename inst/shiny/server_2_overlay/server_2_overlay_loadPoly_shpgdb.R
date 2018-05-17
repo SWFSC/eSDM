@@ -12,15 +12,15 @@ overlay_bound_gis_shp <- reactive({
   vals$overlay.bound <- NULL
 
   withProgress(message = 'Loading boundary polygon', value = 0.3, {
-    bound.sf <- eSDM::shiny.read.shp(input$overlay_bound_gis_shp_files)
+    bound.sf <- read.shp.shiny(input$overlay_bound_gis_shp_files)
 
     validate(
-      need(identical(class(bound.sf), c("data.frame", "sf")),
+      need(inherits(bound.sf, "sf"),
            "Error: Could not load shapefile using selected files")
     )
     incProgress(0.5)
 
-    temp.bound <- overlay.gis.crs(st_geometry(bound.sf))
+    temp.bound <- overlay_gis_check(st_geometry(bound.sf))
 
     if (length(temp.bound) != 1) {
       vals$overlay.bound <- st_union(temp.bound)
@@ -47,12 +47,12 @@ overlay_bound_gis_gdb <- eventReactive(input$overlay_bound_gis_gdb_load, {
                     silent = TRUE)
 
     validate(
-      need(identical(class(bound.sf), c("data.frame", "sf")),
+      need(inherits(bound.sf, "sf"),
            "Error: Could not load object using provided path and name")
     )
     incProgress(0.5)
 
-    temp.bound <- overlay.gis.crs(st_geometry(bound.sf))
+    temp.bound <- overlay_gis_check(st_geometry(bound.sf))
 
     if (length(temp.bound) != 1) {
       vals$overlay.bound <- st_union(temp.bound)
@@ -77,15 +77,15 @@ overlay_land_gis_shp <- reactive({
   vals$overlay.land <- NULL
 
   withProgress(message = 'Loading land polygon', value = 0.3, {
-    land.sf <- eSDM::shiny.read.shp(input$overlay_land_gis_shp_files)
+    land.sf <- read.shp.shiny(input$overlay_land_gis_shp_files)
 
     validate(
-      need(identical(class(land.sf), c("data.frame", "sf")),
+      need(inherits(land.sf, "sf"),
            "Error: Could not load shapefile using selected files")
     )
     incProgress(0.5)
 
-    temp.land <- overlay.gis.crs(st_geometry(land.sf))
+    temp.land <- overlay_gis_check(st_geometry(land.sf))
 
     if (length(temp.land) != 1) {
       vals$overlay.land <- st_union(temp.land)
@@ -114,12 +114,12 @@ overlay_land_gis_gdb <- eventReactive(input$overlay_land_gis_gdb_load, {
                    silent = TRUE)
 
     validate(
-      need(identical(class(land.sf), c("data.frame", "sf")),
+      need(inherits(land.sf, "sf"),
            "Error: Could not load object using provided path and name")
     )
     incProgress(0.5)
 
-    temp.land <- overlay.gis.crs(st_geometry(land.sf))
+    temp.land <- overlay_gis_check(st_geometry(land.sf))
 
     if (length(temp.land) != 1) {
       vals$overlay.land <- st_union(temp.land)

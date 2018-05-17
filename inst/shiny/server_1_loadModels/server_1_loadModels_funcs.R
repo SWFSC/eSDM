@@ -1,87 +1,12 @@
 #' Title
 #'
-#' Details
-#'
-#' @export
-
-dateline.process <- function(data.all, lat.idx, lon.idx) {
-  # sp.crs.ll <- sp::CRS("+init=epsg:4326")
-  browser()
-  dateline.line <- Line(coords = cbind(c(180, 180), c(90, -90)))
-  dateline <- SpatialLines(list(Lines(list(dateline.line), ID = "l1")))
-
-  proj4string(dateline) <- sp.crs.ll
-  dateline.poly <- suppressWarnings(gBuffer(dateline, width = 1e-8))
-  # warning is because of lat/long coords; ok because width is so small
-
-  sp.orig <- data.all
-  lat.name <- names(sp.orig)[lat.idx]
-  lon.name <- names(sp.orig)[lon.idx]
-
-  which.g180 <- which(sp.orig[,lon.name] > 180)
-  sp.orig[, lon.name] <- ifelse(sp.orig[,lon.name] > 180, sp.orig[, lon.name] - 360, sp.orig[, lon.name])
-
-  # l.180
-  sp1 <- sp.orig[-which.g180, ]
-  coordinates(sp1) <- c(lon.name, lat.name)
-  proj4string(sp1) <- crs.ll
-  spixdf1 <- as(sp1, "SpatialPixelsDataFrame")
-  spdf1 <- as(spixdf1, "SpatialPolygonsDataFrame")
-  rm(sp1, spixdf1)
-
-  # g.180
-  sp2 <- sp.orig[which.g180, ]
-  coordinates(sp2) <- c(lon.name, lat.name)
-  proj4string(sp2) <- crs.ll
-  spixdf2 <- as(sp2, "SpatialPixelsDataFrame")
-  spdf2 <- as(spixdf2, "SpatialPolygonsDataFrame")
-  rm(sp2, spixdf2)
-
-  # gArea(spdf1) + gArea(spdf2)
-
-  # Split polys that overlap with 180 deg
-  spdf1.split <- erase(spdf1, dateline.poly)
-  spdf1.fix <- spdf1.split[sapply(spdf1.split@polygons, function(i) bbox(i)[1, 2] > 180), ]
-
-  spdf1.fix.disag <- disaggregate(spdf1.fix)
-  l <- length(spdf1.fix.disag)
-  toadd.l180 <- spdf1.fix.disag[seq(1, l, by = 2), ]
-  tofix.g180 <- spdf1.fix.disag[seq(2, l, by = 2), ]
-  # gArea(toadd.l180); gArea(tofix.g180)
-  # tofix.g180@polygons[[109]]@Polygons[[1]]@area
-
-  # Fix corrdinates > 180
-  n.coords <- coordinates(tofix.g180)
-  n.coords[, 1] <- n.coords[, 1] - 360
-  n.pix <- SpatialPixelsDataFrame(n.coords, tofix.g180@data)
-  proj4string(n.pix) <- crs.ll
-  n.pix.width <- suppressWarnings(gArea(tofix.g180) / length(tofix.g180) / n.pix@grid@cellsize[2])
-  n.pix@grid@cellsize[1] <- n.pix.width
-  n.spdf <- as(n.pix, "SpatialPolygonsDataFrame")
-
-  # Put spdfs together
-  l.180 <- rbind(spdf1[is.na(over(spdf1, dateline.poly)), ], toadd.l180)
-  g.180 <- rbind(spdf2, n.spdf)
-
-  # gArea(l.180) + gArea(g.180)
-
-  spdf.new <- rbind(l.180, g.180)
-  # gArea(spdf.new)
-
-  return(spdf.new)
-}
-
-
-#' Title
-#'
 #' Determine the resolution of provided gis model
 #'
 #' @export
 
-gis.res.calc <- function(sf.ll, sf.orig) {
+gis_res_calc <- function(sf.ll, sf.orig) {
   validate(
-    need(identical(class(sf.ll), c("sf", "data.frame")) &
-           identical(class(sf.orig), c("sf", "data.frame")),
+    need(inherits(sf.ll, "sf") & inherits(sf.orig, "sf"),
          "Error: gis.res.calc(): inputs must be sf objects"),
     need(identical(st_crs(sf.ll), crs.ll),
          "Error: gis.res.calc(): first input must have crs = crs.ll")

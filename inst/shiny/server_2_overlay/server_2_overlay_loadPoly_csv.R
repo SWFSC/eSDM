@@ -11,11 +11,16 @@ overlay_bound_csv <- reactive({
   # Reset vals object here in case validate() is triggered
   vals$overlay.bound <- NULL
 
-  # Read in .csv file, convert longs to [-180, 180] if all are greater
-  # than 180, and perform checks. Only need df (second object in returned list)
-  csv.df <- shiny.read.csv(input$overlay_bound_csv_file)[[2]][, 1:2]
+  # Read in .csv file
+  validate(
+    need(input$overlay_bound_csv_file$type %in%
+           c("text/csv", "application/vnd.ms-excel"),
+         "Error: Selected file is not a csv file")
+  )
+  csv.df <- read.csv(input$overlay_bound_csv_file$datapath,
+                     stringsAsFactors = FALSE)
 
-  # This reactive func does not go to renderUI, so validate is good to use
+  # This reactive func does not go to renderUI, so validate is ok to use
   # TODO should boundary csv file only be allowed one polygon?
   validate(
     need(!anyNA(csv.df),
@@ -45,6 +50,13 @@ overlay_bound_csv <- reactive({
     )
     st_crs(bound.sfc) <- crs.ll
 
+    if (st_bbox(bound.sfc)[3] > 180) {
+      incProgress(detail = "Polygon spans dateline; handling now")
+      bound.sfc <- st_wrap_dateline(
+        bound.sfc, options = c("WRAPDATELINE=YES", "DATELINEOFFSET=60")
+      )
+    }
+
     incProgress(0.3)
   })
 
@@ -66,9 +78,14 @@ overlay_land_csv <- reactive({
   # Reset vals object here in case validate() is triggered
   vals$overlay.land <- NULL
 
-  # Read in .csv file, convert longs to [-180, 180] if they're all greater
-  # than 180, and perform checks. Only need df (second object in returned list)
-  csv.df <- shiny.read.csv(input$overlay_land_csv_file)[[2]][, 1:2]
+  # Read in .csv file
+  validate(
+    need(input$overlay_land_csv_file$type %in%
+           c("text/csv", "application/vnd.ms-excel"),
+         "Error: Selected file is not a csv file")
+  )
+  csv.df <- read.csv(input$overlay_land_csv_file$datapath,
+                     stringsAsFactors = FALSE)
 
   # Create sfc object for land polygon
   withProgress(message = 'Loading land polygon', value = 0.7, {
@@ -86,8 +103,7 @@ overlay_land_csv <- reactive({
     land.sfc <- try(st_sfc(do.call(rbind, land.list[, 2])), silent = TRUE)
 
     validate(
-      need(isTruthy(land.list) &
-             identical(class(land.sfc), c("sfc_POLYGON", "sfc")),
+      need(isTruthy(land.list) & inherits(land.sfc, "sfc"),
            paste("Error: The boundary polygon could not be created",
                  "from the provided points.",
                  "Please ensure that the .csv file has the longitude points",
@@ -100,6 +116,13 @@ overlay_land_csv <- reactive({
                    "and valid polygon (no self-intersections)"))
     )
     st_crs(land.sfc) <- crs.ll
+
+    if (st_bbox(land.sfc)[3] > 180) {
+      incProgress(detail = "Polygon(s) span dateline; handling now")
+      land.sfc <- st_wrap_dateline(
+        land.sfc, options = c("WRAPDATELINE=YES", "DATELINEOFFSET=60")
+      )
+    }
 
     incProgress(0.3)
   })

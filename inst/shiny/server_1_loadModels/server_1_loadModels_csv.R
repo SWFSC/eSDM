@@ -43,7 +43,7 @@ model_csv_NA_idx <- reactive({
 
   data.csv.pred <- data.csv[, as.numeric(input$model_csv_names_pred)]
 
-  na.which(data.csv[, as.numeric(input$model_csv_names_pred)])
+  na_which(data.csv[, as.numeric(input$model_csv_names_pred)])
 })
 
 ### Get column names of csv data
@@ -85,7 +85,7 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
     if (!anyNA(na.idx)) csv.data[na.idx, 3:5] <- NA
 
     # Sort data by lat (primary) then long for bottom up sort
-    csv.data <- data.sort(csv.data, 2, 1)
+    csv.data <- data_sort(csv.data, 2, 1)
 
     # Remove lat/long; add 'Pixel' column to keep track of indices
     csv.data <- cbind(csv.data, 1:nrow(csv.data))
@@ -199,7 +199,7 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
     incProgress(detail = "Checking if model polygons are valid")
     if (!all(st_is_valid(sf.load.ll))) {
       incProgress(detail = "Making model polygons valid")
-      sf.load.ll <- polyValidCheck(sf.load.ll)
+      sf.load.ll <- poly_valid_check(sf.load.ll)
     }
 
     sf.bbox <- as.numeric(st_bbox(sf.load.ll))

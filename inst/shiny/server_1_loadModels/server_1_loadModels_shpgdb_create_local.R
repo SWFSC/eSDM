@@ -26,7 +26,7 @@ withProgress(message = "Adding model predictions to app", value = 0.3, {
   incProgress(0.3)
 
   # Calculate resolution of the model predictions
-  model.res <- gis.res.calc(sf.load.ll, sf.load.orig) # JVR 0.9sec
+  model.res <- gis_res_calc(sf.load.ll, sf.load.orig) # JVR 0.9sec
   incProgress(0.2)
 
   data.names <- list(names(sf.list[[1]])[c(pred.idx, error.idx, weight.idx)])

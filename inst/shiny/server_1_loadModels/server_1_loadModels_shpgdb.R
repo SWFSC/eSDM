@@ -33,7 +33,7 @@ model_gis_shp_NA_idx <- reactive({
 
   data.shp.pred <- data.shp[, as.numeric(input$model_gis_shp_names_pred)]
 
-  na.which(data.shp.pred)
+  na_which(data.shp.pred)
 })
 
 model_gis_gdb_NA_idx <- reactive({
@@ -42,7 +42,7 @@ model_gis_gdb_NA_idx <- reactive({
 
   data.gdb.pred <- data.gdb[, as.numeric(input$model_gis_gdb_names_pred)]
 
-  na.which(data.gdb.pred)
+  na_which(data.gdb.pred)
 })
 
 
@@ -54,7 +54,7 @@ read_model_gis_shp <- reactive({
   req(input$model_gis_shp_files)
 
   withProgress(message = "Loading GIS shapefile", value = 0.3, {
-    gis.file.shp <- shiny.read.shp(input$model_gis_shp_files)
+    gis.file.shp <- read.shp.shiny(input$model_gis_shp_files)
     incProgress(0.4)
 
     gis.file.success <- isTruthy(gis.file.shp)
@@ -67,9 +67,9 @@ read_model_gis_shp <- reactive({
       incProgress(detail = "Checking if model polygons are valid")
       if (!all(st_is_valid(gis.file.shp))) {
         incProgress(0.1, detail = "Making model polygons valid")
-        gis.file.shp <- polyValidCheck(gis.file.shp)
+        gis.file.shp <- poly_valid_check(gis.file.shp)
       }
-      sf.list <- gis.model.check(gis.file.shp)
+      sf.list <- gis_model_check(gis.file.shp)
     }
     incProgress(0.15, detail = "")
   })
@@ -105,7 +105,7 @@ create_spdf_gis_shp <- eventReactive(input$model_create_gis_shp, {
                    "server_1_loadModels_shpgdb_create_local.R"),
          local = TRUE, echo = FALSE, chdir = TRUE)
 
-  return("Model predictions loaded from GIS shapefile")
+  "Model predictions loaded from GIS shapefile"
 })
 
 
@@ -132,9 +132,9 @@ read_model_gis_gdb <- eventReactive(input$model_gis_gdb_load, {
       incProgress(detail = "Checking if model polygons are valid")
       if (!all(st_is_valid(gis.file.gdb))) {
         incProgress(0.1, detail = "Making model polygons valid")
-        gis.file.gdb <- polyValidCheck(gis.file.gdb)
+        gis.file.gdb <- poly_valid_check(gis.file.gdb)
       }
-      sf.list <- gis.model.check(gis.file.gdb)
+      sf.list <- gis_model_check(gis.file.gdb)
     }
     incProgress(0.2, detail = "")
   })
@@ -168,5 +168,5 @@ create_spdf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
                    "server_1_loadModels_shpgdb_create_local.R"),
          local = TRUE, echo = FALSE, chdir = TRUE)
 
-  return("Model predictions loaded from GIS .gdb")
+  "Model predictions loaded from GIS .gdb"
 })

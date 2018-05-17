@@ -11,9 +11,8 @@
 #'
 #' @export
 
-data.sort <- function(x, col1 = 1, col2 = NA) {
+data_sort <- function(x, col1 = 1, col2 = NA) {
   if (!is.na(col2)) x <- x[order(x[, col2]), ]
-
   x[order(x[, col1]), ]
 }
 
@@ -22,7 +21,7 @@ data.sort <- function(x, col1 = 1, col2 = NA) {
 #' From Hadley Wickham
 #' @export
 
-zero.range <- function(x, tol = .Machine$double.eps ^ 0.5) {
+zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
   if (length(x) == 1) return(TRUE)
   x <- range(x) / mean(x)
   isTRUE(all.equal(x[1], x[2], tolerance = tol))
@@ -32,7 +31,7 @@ zero.range <- function(x, tol = .Machine$double.eps ^ 0.5) {
 #' ## Get last n element from string x
 #' From https://stackoverflow.com/questions/7963898
 #' @export
-substrRight <- function(x, n){
+substr_right <- function(x, n) {
   substr(x, nchar(x) - n + 1, nchar(x))
 }
 
@@ -41,7 +40,7 @@ substrRight <- function(x, n){
 #' one of "N/A", "n/a", "na", "NaN", or ""
 #' @export
 
-na.which <- function(x) {
+na_which <- function(x) {
   na.char <- c("N/A", "n/a", "na", "NaN", "")
 
   na.idx <- suppressWarnings(c(which(is.na(x)),
@@ -59,7 +58,7 @@ na.which <- function(x) {
 #' This message was built to refer to prediction values
 #' @export
 
-na.which.message <- function(x) {
+na_which_message <- function(x) {
   if (anyNA(x)) {
     na.len <- "No prediction values were classified as NA"
   } else {
@@ -88,7 +87,7 @@ normalize <- function(x) {
 #'
 #' @export
 
-models.rescale <- function(sf.list, abund.new) {
+models_rescale <- function(sf.list, abund.new) {
   # TODO: Input checks, make col.name input a thing
   # col.name <- enquo(col.name)
   return(
@@ -123,7 +122,7 @@ mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) {
 #'
 #' @export
 
-breaks.calc <- function(x) {
+breaks_calc <- function(x) {
   breaks <- rev(c(0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40))
   # if (any(is.na(sp.data))) warning("NA's removed")
   # if (any(sp.data == 0, na.rm = TRUE)) warning("Densities contain 0's")
@@ -151,7 +150,7 @@ breaks.calc <- function(x) {
 #' Abundance depends on crs code of provided spdf
 #' @export
 
-model.abundance <- function(sdm, cols.data) {
+model_abundance <- function(sdm, cols.data) {
   # Calculate areas of polygons with no NAs
   sdm.area.m2 <- st_area(sdm)
   validate(need(all(units(sdm.area.m2)[[1]] == c("m", "m")), "Units error"))
