@@ -84,6 +84,8 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
 plot_overlay_preview_base <- eventReactive(
   input$overlay_preview_base_execute,
   {
+    shinyjs::show("overlay_preview_base", time = 0)
+
     b.inc <- !is.null(vals$overlay.bound)
     l.inc <- !is.null(vals$overlay.land)
 
@@ -96,8 +98,6 @@ plot_overlay_preview_base <- eventReactive(
         need(l.inc,
              "Error: Please either uncheck land box or load a land polygon")
     )
-
-    shinyjs::show("overlay_preview_base", time = 0)
 
     model.toplot <- overlay_preview_base_model()
 
