@@ -91,7 +91,7 @@ ui.loadModels <- function() {
                       uiOutput("model_gis_raster_NA_idx_uiOut_message"),
                       tags$br()
                     ),
-                    column(12, tags$span(textOutput("create_spdf_gis_raster_text"), style = "color: blue"))
+                    column(12, tags$span(textOutput("create_sf_gis_raster_text"), style = "color: blue"))
                   )
                 )
               )
@@ -126,7 +126,7 @@ ui.loadModels <- function() {
                       tags$br(),
                       uiOutput("model_gis_shp_NA_idx_uiOut_message")
                     ),
-                    column(12, tags$span(textOutput("create_spdf_gis_shp_text"), style = "color: blue"))
+                    column(12, tags$span(textOutput("create_sf_gis_shp_text"), style = "color: blue"))
                   )
                 )
               )
@@ -169,7 +169,7 @@ ui.loadModels <- function() {
                       tags$br(),
                       uiOutput("model_gis_gdb_NA_idx_uiOut_message")
                     ),
-                    column(12, tags$span(textOutput("create_spdf_gis_gdb_text"), style = "color: blue"))
+                    column(12, tags$span(textOutput("create_sf_gis_gdb_text"), style = "color: blue"))
                   )
                 )
               )

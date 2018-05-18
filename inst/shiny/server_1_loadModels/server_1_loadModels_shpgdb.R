@@ -90,7 +90,7 @@ outputOptions(output, "read_model_gis_shp_flag", suspendWhenHidden = FALSE)
 
 #######################################
 ### Process data and add it to list.all
-create_spdf_gis_shp <- eventReactive(input$model_create_gis_shp, {
+create_sf_gis_shp <- eventReactive(input$model_create_gis_shp, {
   sf.list <- read_model_gis_shp()
 
   pred.idx <- as.numeric(input$model_gis_shp_names_pred)
@@ -155,7 +155,7 @@ outputOptions(output, "read_model_gis_gdb_flag", suspendWhenHidden = FALSE)
 
 #######################################
 ### Process data and add it to list.all
-create_spdf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
+create_sf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
   sf.list <- read_model_gis_gdb()
 
   pred.idx <- as.numeric(input$model_gis_gdb_names_pred)

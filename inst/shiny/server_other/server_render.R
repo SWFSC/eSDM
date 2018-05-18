@@ -24,21 +24,21 @@ output$create_sf_csv_text <- renderText({
 })
 
 ### Created spdf message for gis raster
-output$create_spdf_gis_raster_text <- renderText({
+output$create_sf_gis_raster_text <- renderText({
   req(read_model_gis_raster())
-  create_spdf_gis_raster()
+  create_sf_gis_raster()
 })
 
 ### Created spdf message for gis shp
-output$create_spdf_gis_shp_text <- renderText({
+output$create_sf_gis_shp_text <- renderText({
   req(read_model_gis_shp())
-  create_spdf_gis_shp()
+  create_sf_gis_shp()
 })
 
 ### Created spdf message for gis gdb
-output$create_spdf_gis_gdb_text <- renderText({
+output$create_sf_gis_gdb_text <- renderText({
   req(read_model_gis_gdb())
-  create_spdf_gis_gdb()
+  create_sf_gis_gdb()
 })
 
 ###########################################################

@@ -76,7 +76,7 @@ outputOptions(output, "read_model_gis_raster_flag", suspendWhenHidden = FALSE)
 
 #######################################
 ### Process data and add it to vals
-create_spdf_gis_raster <- eventReactive(input$model_create_gis_raster, {
+create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
   data.list <- read_model_gis_raster()
   withProgress(message = "Adding model predictions to app", value = 0.3, {
     sf.load.ll   <- data.list[[1]]
