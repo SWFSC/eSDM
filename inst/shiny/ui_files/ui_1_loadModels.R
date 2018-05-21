@@ -238,8 +238,7 @@ ui.loadModels <- function() {
                                      ),
                                      conditionalPanel(
                                        condition = "output.loaded_models_selected_1_flag",
-                                       # uiOutput("model_pix_preview_interactive_execute_uiOut_button")
-                                       actionButton("model_pix_preview_interactive_execute",
+                                       actionButton("model_preview_interactive_execute",
                                                     "Preview selected model predictions interactively")
                                      )
                                    )
@@ -256,7 +255,7 @@ ui.loadModels <- function() {
                                    column(
                                      width = 9,
                                      tags$br(), tags$br(),
-                                     actionButton("model_pix_preview_execute", "Preview selected model predictions")
+                                     actionButton("model_preview_execute", "Preview selected model predictions")
                                    )
                                  )
                                ),
@@ -292,8 +291,8 @@ ui.loadModels <- function() {
 
                  box(
                    title = "Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
-                   shinycssloaders::withSpinner(plotOutput("model_pix_preview_plot"), type = 1),
-                   shinycssloaders::withSpinner(leafletOutput("model_pix_preview_interactive_plot"), type = 1)
+                   shinycssloaders::withSpinner(plotOutput("model_preview_plot"), type = 1),
+                   shinycssloaders::withSpinner(leafletOutput("model_preview_interactive_plot"), type = 1)
                  )
                )
              )

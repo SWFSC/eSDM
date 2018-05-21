@@ -58,12 +58,12 @@ options = list(dom = 't'), selection = "none")
 
 ###########################################################
 ### Plot/preview of loaded, original model(s)
-output$model_pix_preview_plot <- renderPlot({
-  model_pix_preview_event()
+output$model_preview_plot <- renderPlot({
+  model_preview_event()
 })
 
-output$model_pix_preview_interactive_plot <- renderLeaflet({
-  model_pix_preview_interactive_event()
+output$model_preview_interactive_plot <- renderLeaflet({
+  model_preview_interactive_event()
 })
 
 
@@ -152,13 +152,13 @@ output$overlay_overlay_all_text <- renderText({
 ### Preview of base grid
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$overlay_preview_base <- renderLeaflet({
-  plot_overlay_preview_base()
+  overlay_preview_base_event()
 })
 
 ### Preview of overlaid model predictions
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$overlay_preview_overlaid <- renderPlot({
-  grid.arrange(plot_overlay_preview_overlaid())
+  overlay_preview_overlaid_event()
 })
 
 
@@ -238,7 +238,6 @@ output$ens_remove_text <- renderUI({
 })
 
 ### Plot preview of ensemble predictions
-# 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$ens_pix_preview_plot <- renderPlot({
   grid.arrange(ens_pix_preview_event())
 })
@@ -351,9 +350,9 @@ output$pretty_plot_values_event_text <- renderText({
 
 ### Pretty plot
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
-output$pretty_plot_plot <- renderPlot({
-  print(pretty_plot_generate())
-})
+# output$pretty_plot_plot <- renderPlot({
+#   print(pretty_plot_generate())
+# })
 
 
 ###############################################################################

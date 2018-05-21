@@ -6,15 +6,16 @@
 
 #################################################
 ### Generate interactive preview of predictions to display in-app
-model_pix_preview_interactive_event <- eventReactive(
-  input$model_pix_preview_interactive_execute,
+model_preview_interactive_event <- eventReactive(
+  input$model_preview_interactive_execute,
   {
     req(length(vals$models.ll) > 0)
+    print("hi")
 
     # Show/hide is here because for some reason observeEvent didn't run before
-    #   model_pix_preview_interactive_event()
-    shinyjs::hide("model_pix_preview_plot", time = 0)
-    shinyjs::show("model_pix_preview_interactive_plot", time = 0)
+    #   model_preview_interactive_event()
+    # shinyjs::hide("model_preview_plot", time = 0)
+    # shinyjs::show("model_preview_interactive_plot", time = 0)
 
     perc.num <- as.numeric(input$model_preview_interactive_perc)
 
@@ -36,8 +37,9 @@ model_pix_preview_interactive_event <- eventReactive(
 
 #################################################
 ### Generate static preview of predictions to display in-app
-model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
+model_preview_event <- eventReactive(input$model_preview_execute, {
   req(length(vals$models.ll) > 0)
+  print("hi2")
 
   perc.num <- as.numeric(input$model_preview_perc)
 
@@ -46,7 +48,7 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
   models.num <- length(models.idx)
 
   validate(
-    need(length(models.idx) > 0,
+    need(models.num > 0,
          "Error: Please select at least one model from table to preview")
   )
 
@@ -81,10 +83,10 @@ model_pix_preview_event <- eventReactive(input$model_pix_preview_execute, {
 #################################################
 ### Generate preview of base grid to plot in-app
 # Helper reactive functions are in server_2_overlay_plot.R
-plot_overlay_preview_base <- eventReactive(
+overlay_preview_base_event <- eventReactive(
   input$overlay_preview_base_execute,
   {
-    shinyjs::show("overlay_preview_base", time = 0)
+    # shinyjs::show("overlay_preview_base", time = 0)
 
     b.inc <- !is.null(vals$overlay.bound)
     l.inc <- !is.null(vals$overlay.land)
@@ -145,19 +147,23 @@ plot_overlay_preview_base <- eventReactive(
 #################################################
 ### Generate preview of overlaid model predictions to plot in-app
 #
-plot_overlay_preview_overlaid <- eventReactive(
+overlay_preview_overlaid_event <- eventReactive(
   input$overlay_preview_overlaid_execute,
   {
-    models.toplot <- overlay_preview_overlaid_pix()
-    overlaid.idx <- input$overlay_preview_overlaid_models
+    # browser()
+    overlaid.idx <- as.numeric(input$overlay_preview_overlaid_models)
+    models.toplot <- vals$overlaid.models[overlaid.idx]
+    models.num <- length(models.toplot)
 
     plot.titles <- paste("Overlaid", overlaid.idx)
 
-    overlaid.pix.list <- list(models.toplot = models.toplot,
-                              data.name = "Pred.overlaid",
-                              plot.titles = plot.titles, perc.num = 1)
 
-    plot.multi.download(overlaid.pix.list) # because it is a square shape
+    plot.dims <- multiplot_inapp(models.num) # TODO change this?
+    eSDM::multiplot_layout(
+      models.toplot, rep("Pred.overlaid", models.num), plot.titles,
+      1, pal.esdm, leg.perc.esdm,
+      plot.dims[1], plot.dims[2], plot.dims[3], plot.dims[4], plot.dims[5]
+    )
   }
 )
 

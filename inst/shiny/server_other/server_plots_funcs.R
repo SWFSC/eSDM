@@ -39,13 +39,13 @@ multiplot_inapp <- function(x) {
 multiplot_download <- function(x) {
   plot.ncol <- case_when(
     x == 1 ~ 1,
-    x <= 4 ~ 2,
+    x <= 6 ~ 2,
     x <= 9 ~ 3,
     TRUE ~ ceiling(sqrt(x))
   )
   plot.nrow <- case_when(
     x <= 2 ~ 1,
-    x <= 6 ~ 2,
+    x <= 4 ~ 2,
     x <= 9 ~ 3,
     TRUE ~ ceiling(sqrt(x))
   )
@@ -65,11 +65,12 @@ multiplot_download <- function(x) {
   # y.tick.num <- 5
 
   leg.lcm <- case_when(
-    x == 1 ~ 3.0,
-    x == 2 ~ 2.0,
-    TRUE ~ 2.0
+    # x == 1 ~ 3.0,
+    # x == 2 ~ 2.0,
+    TRUE ~ 3.0
   )
 
-  return(c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm))}
+  return(c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm))
+}
 
 ###############################################################################
