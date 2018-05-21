@@ -77,20 +77,28 @@ overlay_samegrid_validate <- reactive({
   TRUE
 })
 
+
 ###############################################################################
-### Do overlay of predictions that are already on the same grid
+# Overlay of predictions that are already on the same grid
 overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
   #########################################################
   ### Same-grid overlay prep
-  withProgress(message = "Preparing for same-grid overlay", value = 0.5, {
-    overlay_samegrid_validate() #Basically the req() statement for this func
+  withProgress(message = "Performing same-grid overlay", value = 0.2, {
+    incProgress(detail = "Performing same-grid pre-checks")
+    #----------------------------------
+    validate(
+      need(overlay_samegrid_validate(),
+           "Cannot perform a same-grid overlay with these predictions")
+    )
 
-    #####################################
+    #----------------------------------
     ### Reset/hide reactive values, preview plots, and eval metrics
-    overlay_reset()
-    incProgress(0.3)
+    validate(
+      need(overlay_reset(),
+           "There was an error within the eSDM, please restart the tool")
+    )
 
-    #####################################
+    #----------------------------------
     ### Model overlay prep. ***Same code as in overlay_all() for this section
     # Get index of model predictions to be base grid
     base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
@@ -116,23 +124,24 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
 
     vals$overlay.base.idx <- base.idx
 
+    #----------------------------------
     # Get crs of projection to be used in overlay process
     vals$overlay.crs <- overlay_crs()
-    incProgress(0.2)
-  })
 
-  #########################################################
-  ### Perform same-grid 'overlay'
+    #########################################################
+    ### Perform same-grid 'overlay'
 
-  withProgress(message = "Performing same-grid overlay", value = 0.3, {
-    #####################################
+    incProgress(0.2, detail = "Creating base grid")
+    #----------------------------------
     # Create base grid and spdf of model predictions used as grid
     # ***Same code as in overlay_all() for this section
 
     base.sf <- overlay_create_base_sf()
+
     names(base.sf)[1:4] <- c("Pred.overlaid", "Error.overlaid",
                              "Weight.overlaid", "Pixels")
     base.sfc <- st_geometry(base.sf)
+    incProgress(0.2)
 
     # Get specs of base.sfc
     base.specs <- vals$models.specs[[base.idx]]
@@ -143,40 +152,42 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
     } else {
       base.sfc.ll <- st_transform(base.sfc, crs.ll)
     }
-    base.specs[5] <- paste(as.character(round(st_bbox(base.sfc.ll)[c(1, 3, 2, 4)], 0)),
-                           collapse = ", ")
+    base.specs[5] <- paste(
+      as.character(round(st_bbox(base.sfc.ll)[c(1, 3, 2, 4)], 0)),
+      collapse = ", "
+    )
 
-    # Store data; vals$base.sfc set below
+    #----------------------------------
+    # Store data
+    vals$overlay.base.sfc <- base.sfc
     vals$overlay.base.specs <- base.specs
-    incProgress(0.1)
 
-    #####################################
+
+    #########################################################
+    incProgress(0.1, detail = "Overlaying predictions")
+    #----------------------------------
     # Create 'overlaid' models
-    browser()
-    validate(need(FALSE, "This is not functional"))
-    models.preoverlay <- vals$models.ll[-base.idx]
-
-
-    ### If study area or land polys are loaded, intersect models with base
-    if (!is.null(vals$overlay.bound) | !is.null(vals$overlay.land)) {
-      base.sfc.union <- aggregate(base.sfc, do_union = TRUE)
-      models.preoverlay <- lapply(models.preoverlay, st_intersection, base.sfc.union)
-
-    }
+    ### TODO? Project models if necessary
+    base.temp <- base.sf[, 4]
+    models.overlaid <- lapply(vals$models.orig, function(i) {
+      sf.temp <- base.temp %>%
+        dplyr::left_join(st_set_geometry(i, NULL), by = "Pixels") %>%
+        dplyr::select(Pred.overlaid = Pred, Error.overlaid = Error,
+                      Weight.overlaid = Weight, Pixels)
+    })
     incProgress(0.2)
 
-    ### Update names
-    models.overlaid <- lapply(models.preoverlay, function(i) {
-      names(i)[1:4] <- c("Pred.overlaid", "Error.overlaid",
-                         "Weight.overlaid", "Pixels")
-      i
+    temp.test <- sapply(models.overlaid, function(i) {
+      identical(base.sfc, st_geometry(i))
     })
+    validate(
+      need(all(temp.test),
+           paste("Error: Same-grid overlay was not performed successfully;",
+                 "please try using standard overlay"))
+    )
 
-    # This ensures that polygon order is same for vals$ base and overlaid models
-    vals$overlay.base.sfc <- as(models.overlaid[[base.idx]], "SpatialPolygons")
-
-
-    ### Save specs
+    #----------------------------------
+    # Save specs
     specs.list <- mapply(function(n, p) {
       if (p == 1) {
         n.abund <- unname(round(model.abundance(n, "Pred.overlaid")))
@@ -186,24 +197,19 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
       list(c(base.specs[1], length(n), sum(!is.na(n$Pred.overlaid)),
              n.abund, base.specs[5]))
     }, models.overlaid, vals$models.pred.type)
+    incProgress(0.1)
 
     vals$overlaid.models <- models.overlaid
     vals$overlaid.models.specs <- specs.list
 
-    ###################################
+    #----------------------------------
     ### Ens.over prep
-    incProgress(0.2, detail = "Finishing overlay process")
-    overlay_ensemble_prep()
-    incProgress(0.3)
+    # overlay_ensemble_prep()
+    # incProgress(0.2)
   })
 
   #########################################################
-  if (all(c(gIsValid(base.sf), gIsValid(base.sp),
-            sapply(models.overlaid, gIsValid)))) {
-    "Same-grid overlay performed successfully"
-  } else {
-    "Same-grid overlay performed, but outputs invalid. Please restart eSDM."
-  }
+  "Same-grid overlay performed successfully"
 })
 
 ###############################################################################

@@ -13,7 +13,10 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   t.1 <- Sys.time() # For testing purposes
   #########################################################
   ### Reset/hide reactive values, preview plots, and eval metrics
-  overlay_reset()
+  validate(
+    need(overlay_reset(),
+         "There was an error in the eSDM, please reload the tool")
+  )
 
   #########################################################
   ### Model overlay prep
