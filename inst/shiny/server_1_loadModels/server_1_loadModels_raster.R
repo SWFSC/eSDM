@@ -30,7 +30,7 @@ read_model_gis_raster <- reactive({
     # If specified file could be loaded as a raster, process raster
     if (gis.file.success) {
       incProgress(0.2)
-      sf.load.raster <- st_as_sf(as(gis.file.raster, "SpatialPolygonsDataFrame"))
+      sf.load.raster <- st_as_sf(gis.file.raster)
       st_agr(sf.load.raster) <- "constant"
       stopifnot(ncol(sf.load.raster) == 2)
       incProgress(0.1)
