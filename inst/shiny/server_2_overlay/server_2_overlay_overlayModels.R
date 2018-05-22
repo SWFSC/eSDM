@@ -115,11 +115,12 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
         eSDM::overlay_sdm(base.sfc, model, overlap.perc, c("Pred", "Weight")),
         silent = TRUE
       )
+
       validate(
         need(isTruthy(temp),
              paste("Error: the eSDM was unable to overlay model", prog.num))
       )
-      browser()
+
       df.toadd <- data.frame(Error.overlaid = NA, Pixels = 1:nrow(temp))
       temp %>%
         dplyr::bind_cols(df.toadd) %>%
@@ -152,7 +153,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     # Get model specs
     specs.list <- mapply(function(n, p) {
       if (p == 1) {
-        n.abund <- unname(round(model.abundance(n, "Pred.overlaid")))
+        n.abund <- unname(round(model_abundance(n, "Pred.overlaid")))
       } else {
         n.abund <- "N/A"
       }
@@ -265,50 +266,4 @@ overlay_crs <- reactive({
   }
 })
 
-
 ###############################################################################
-###
-# overlay_ensemble_prep <- reactive({
-#   ### Make relavent vals$ens.... lists the length of the num of models
-#   list.null <- lapply(seq_along(vals$models.ll), function(d) NULL)
-#   vals$ens.over.wpoly.sf     <- list.null
-#   vals$ens.over.wpoly.filename <- list.null
-#   vals$ens.over.wpoly.coverage <- list.null
-#
-#   ### Use rasterize() to create an SPixDF of pixel nums for ensemble previews
-#   ens.sp <- vals$overlay.base.sp # base.sp is used as ensemble base
-#   ens.data <- data.frame(pix = 1:length(ens.sp))
-#   ens.spdf <- SpatialPolygonsDataFrame(ens.sp, ens.data, match.ID = FALSE)
-#   ens.crs <- crs(ens.spdf)
-#
-#   if (!identical(ens.crs, crs.ll)) ens.spdf <- spTransform(ens.spdf, crs.ll)
-#
-#   # Determine max of x and y extent and set raster dimensions appropriately
-#   ens.ext <- extent(ens.spdf)
-#   ens.xrange <- ens.ext@xmax - ens.ext@xmin
-#   ens.yrange <- ens.ext@ymax - ens.ext@ymin
-#
-#   if (ens.xrange >= ens.yrange) {
-#     r.ncol <- 80
-#     r.res <- ens.xrange / r.ncol
-#     r.nrow <- round(ens.yrange / r.res, 0)
-#   } else {
-#     r.nrow <- 80
-#     r.res <- ens.yrange / r.nrow
-#     r.ncol <- round(ens.xrange / r.res, 0)
-#   }
-#
-#   r <- raster(ens.spdf, nrow = r.nrow, ncol = r.ncol)
-#   # rasterize takes the value of polygon that overlaps center of raster cell
-#   ens.raster <- rasterize(ens.spdf, r, field = "pix")
-#   ens.pix <- as(ens.raster, "SpatialPixelsDataFrame")
-#   names(ens.pix) <- "pix"
-#
-#   vals$ens.over.pix <- ens.pix
-#
-#   TRUE
-# })
-
-
-###############################################################################
-

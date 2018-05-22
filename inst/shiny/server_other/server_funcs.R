@@ -24,14 +24,13 @@ read.shp.shiny <- function(file.in.list) {
 }
 
 
-
 #------------------------------------------------------------------------------
 # Title
 #
 # Attempt to make an invalid polygon (poly.invalid) valid
 # Perform checks to see if area/predicted abundance were changed much (?)
 #
-# TODO: What to do if polygon can't be made valid -
+# TODO: What exactly to do if polygon can't be made valid -
 #   REturn original poly along with ALERT about invalidity and possible errors if that polygon is used?
 
 poly_valid_check <- function(poly.invalid, dens.col = NA, poly.info = NA) {
@@ -82,9 +81,9 @@ poly_valid_check <- function(poly.invalid, dens.col = NA, poly.info = NA) {
       alert4 <- NULL
     }
 
-    alert.text <- paste0(alert1, "\n", alert2, "\n", alert3, "\n", alert4)
-
-    shinyjs::alert(alert.text)
+    shinyjs::alert(
+      paste0(alert1, "\n\n", alert2, "\n\n", alert3, "\n\n", alert4)
+    )
 
     return(poly.maybe)
   }
@@ -182,12 +181,7 @@ create_sfc_csv_func <- function(x, crs.prov) {
   )
   st_crs(obj.sfc) <- crs.prov
 
-  if (st_bbox(obj.sfc)[3] > 180) {
-    incProgress(detail = "Polygon(s) span dateline; handling now")
-    obj.sfc <- st_wrap_dateline(
-      obj.sfc, options = c("WRAPDATELINE=YES", "DATELINEOFFSET=60")
-    )
-  }
+  check_dateline(obj.sfc, 60)
 
   return(obj.sfc)
 }
@@ -195,9 +189,9 @@ create_sfc_csv_func <- function(x, crs.prov) {
 
 #------------------------------------------------------------------------------
 # Adjust sf object from 0 - 360 range to -180 to 180 range
-sf_dateline <- function(x, wrap.offset = 10) {
+check_dateline <- function(x, wrap.offset = 10) {
   stopifnot(
-    inherits(x, "sf"),
+    inherits(x, "sf") | inherits(x, "sfc"),
     inherits(wrap.offset, "numeric")
   )
   if (st_bbox(x)[3] > 180) {
@@ -207,4 +201,22 @@ sf_dateline <- function(x, wrap.offset = 10) {
   }
 
   x
+}
+
+
+#------------------------------------------------------------------------------
+check_valid <- function(x, progress.detail = FALSE) {
+  stopifnot(
+    inherits(x, "sf") | inherits(x, "sfc"),
+    is.logical(progress.detail)
+  )
+
+  if (progress.detail) incProgress(detail = "Checking if polygons are valid")
+
+  if (!isTruthy(all(st_is_valid(x)))) { #isTruthy() is for NA cases
+    if (progress.detail) incProgress(detail = "Making polygons valid")
+    poly_valid_check(x)
+  } else {
+    x
+  }
 }
