@@ -144,5 +144,5 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
   #########################################################
   # 8) Put base grid together with predicted densities to make overlaid SDM
   stopifnot(nrow(new.dens.df) == nrow(base.poly))
-  return(st_sf(new.dens.df, base.poly, agr = "constant"))
+  return(st_sf(new.dens.df, geometry = base.poly, agr = "constant"))
 }

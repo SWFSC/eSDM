@@ -173,7 +173,8 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
       sf.temp <- base.temp %>%
         dplyr::left_join(st_set_geometry(i, NULL), by = "Pixels") %>%
         dplyr::select(Pred.overlaid = Pred, Error.overlaid = Error,
-                      Weight.overlaid = Weight, Pixels)
+                      Weight.overlaid = Weight, Pixels) %>%
+        st_set_agr("constant")
     })
     incProgress(0.2)
 

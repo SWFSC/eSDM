@@ -10,7 +10,7 @@
 ### Where the overlay magic aka science happens
 
 overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
-  t.1 <- Sys.time() # For testing purposes
+  # t.1 <- Sys.time() # For testing purposes
   #########################################################
   ### Reset/hide reactive values, preview plots, and eval metrics
   validate(
@@ -99,12 +99,12 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     vals$overlay.base.sfc <- base.sfc
     vals$overlay.base.specs <- base.specs
 
-    print("Creating/processing base grid took:"); print(Sys.time() - t.1)
+    # print("Creating/processing base grid took:"); print(Sys.time() - t.1)
 
 
     #--------------------------------------------
     ### Create overlaid models
-    t.2 <- Sys.time()
+    # t.2 <- Sys.time()
     overlap.perc <- input$overlay_grid_coverage / 100
 
     models.overlaid <- mapply(function(model, prog.num) {
@@ -119,11 +119,16 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
         need(isTruthy(temp),
              paste("Error: the eSDM was unable to overlay model", prog.num))
       )
-      cbind(temp, Error.overlaid = NA, Pixels = 1:nrow(temp))[, c(1, 3, 2, 4)]
+      browser()
+      df.toadd <- data.frame(Error.overlaid = NA, Pixels = 1:nrow(temp))
+      temp %>%
+        dplyr::bind_cols(df.toadd) %>%
+        dplyr::select(c(1, 4, 2, 5, 3)) %>%
+        st_set_agr("constant")
     }, models.preoverlay, 2:(prog.total - 1), SIMPLIFY = FALSE)
 
     incProgress(0.9 / prog.total, detail = "Finishing overlay process")
-    print("Overlaying of models took:"); print(Sys.time() - t.2)
+    # print("Overlaying of models took:"); print(Sys.time() - t.2)
 
 
     #--------------------------------------------
@@ -173,7 +178,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   # Do not need to test validity of any polygons because base polygon was
   # already checked and overlaid were made directly from base poly
-  print("The entire overlay process took"); print(Sys.time() - t.1)
+  # print("The entire overlay process took"); print(Sys.time() - t.1)
   "All model predictions overlaid successfully"
 })
 
