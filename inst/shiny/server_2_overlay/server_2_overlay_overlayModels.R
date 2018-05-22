@@ -163,7 +163,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     #--------------------------------------------
     ### Ensemble prep
     # overlay_ensemble_prep()
-    list.null <- lapply(seq_along(vals$models.ll), function(d) NULL)
+    list.null <- lapply(seq_along(vals$overlaid.models), function(d) NULL)
     vals$ens.over.wpoly.sf       <- list.null
     vals$ens.over.wpoly.filename <- list.null
     vals$ens.over.wpoly.coverage <- list.null
