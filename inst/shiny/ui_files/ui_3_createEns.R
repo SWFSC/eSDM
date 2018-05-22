@@ -178,11 +178,13 @@ ui.createEns <- function() {
                                     ui.new.line(),
                                     ui.error.upload.csv
                                   ),
-                                  conditionalPanel(
-                                    condition = "output.create_ens_weights_poly_csv_flag",
-                                    numericInput("create_ens_weights_poly_csv_weight", tags$h5("Weight for csv polygon(s)"),
-                                                 min = 0, value = 1, step = 0.1)
-                                  )
+                                  numericInput("create_ens_weights_poly_csv_weight", tags$h5("Weight for csv polygon(s)"),
+                                               min = 0, value = 1, step = 0.1)
+                                  # conditionalPanel(
+                                  #   condition = "output.create_ens_weights_poly_csv_flag",
+                                  #   numericInput("create_ens_weights_poly_csv_weight", tags$h5("Weight for csv polygon(s)"),
+                                  #                min = 0, value = 1, step = 0.1)
+                                  # )
                                 )
                               )
                             ),
@@ -191,35 +193,16 @@ ui.createEns <- function() {
                               condition = "input.create_ens_weights_poly_type == 2",
                               ui.instructions.upload.raster(),
                               fluidRow(
-                                column(6, fileInput("create_ens_weights_poly_raster_file", label.raster.upload, accept = ".tif")),
-                                column(
-                                  width = 5, offset = 1,
-                                  conditionalPanel(
-                                    condition = "output.create_ens_weights_poly_raster_flag == false",
-                                    ui.new.line(),
-                                    ui.error.upload.raster
-                                  )
-                                )
-                              ),
-                              fluidRow(
-                                column(6, radioButtons("create_ens_weights_poly_raster_weight_type", NULL,
-                                                       choices = list("Enter single weight for area covered by raster" = 1,
-                                                                      "Select band number with weights" = 2),
-                                                       selected = 1)),
                                 column(
                                   width = 6,
-                                  conditionalPanel(
-                                    condition = "input.create_ens_weights_poly_raster_weight_type == 1",
-                                    numericInput("create_ens_weights_poly_raster_weight",
-                                                 tags$h5("Weight for area covered by raster"),
-                                                 value = 1, min = 0, step = 0.1)
-                                  ),
-                                  conditionalPanel(
-                                    condition = "input.create_ens_weights_poly_raster_weight_type == 2",
-                                    helpText("This functionality is not yet implemented")
-                                    # numericInput("create_ens_weights_poly_raster_band", tags$h5("Band number of weight(s)"),
-                                    #              value = 1, min = 1, step = 1)
-                                  )
+                                  fileInput("create_ens_weights_poly_raster_file", label.raster.upload, accept = ".tif"),
+                                  conditionalPanel("output.create_ens_weights_poly_raster_flag == false", ui.error.upload.raster)
+                                ),
+                                column(
+                                  width = 5, offset = 1,
+                                  numericInput("create_ens_weights_poly_raster_weight",
+                                               tags$h5("Weight for area covered by raster"),
+                                               value = 1, min = 0, step = 0.1)
                                 )
                               )
                             ),
@@ -228,37 +211,16 @@ ui.createEns <- function() {
                               condition = "input.create_ens_weights_poly_type == 3",
                               ui.instructions.upload.shp(),
                               fluidRow(
-                                column(6, fileInput("create_ens_weights_poly_shp_files", label.shp.upload, multiple = TRUE)),
+                                column(
+                                  width = 6,
+                                  fileInput("create_ens_weights_poly_shp_files", label.shp.upload, multiple = TRUE),
+                                  conditionalPanel("output.create_ens_weights_poly_shp_flag == false", ui.error.upload.shp)
+                                ),
                                 column(
                                   width = 5, offset = 1,
-                                  conditionalPanel(
-                                    condition = "output.create_ens_weights_poly_shp_flag == false",
-                                    ui.error.upload.shp
-                                  )
-                                )
-                              ),
-                              fluidRow(
-                                conditionalPanel(
-                                  condition = "output.create_ens_weights_poly_shp_flag",
-                                  column(6, radioButtons("create_ens_weights_poly_shp_weight_type", NULL,
-                                                         choices = list("Enter single weight for area covered by shapefile" = 1,
-                                                                        "Select data column with weights" = 2),
-                                                         selected = 2)),
-
-                                  column(
-                                    width = 6,
-                                    conditionalPanel(
-                                      condition = "input.create_ens_weights_poly_shp_weight_type == 1",
-                                      numericInput("create_ens_weights_poly_shp_weight",
-                                                   tags$h5("Weight for area covered by shapefile"),
-                                                   value = 1, min = 0, step = 0.1)
-                                    ),
-                                    conditionalPanel(
-                                      condition = "input.create_ens_weights_poly_shp_weight_type == 2",
-                                      helpText("This functionality is not yet implemented")
-                                      # uiOutput("create_ens_weights_poly_shp_field_uiOut_select")
-                                    )
-                                  )
+                                  numericInput("create_ens_weights_poly_shp_weight",
+                                               tags$h5("Weight for area covered by shapefile"),
+                                               value = 1, min = 0, step = 0.1)
                                 )
                               )
                             ),
@@ -281,39 +243,22 @@ ui.createEns <- function() {
                                 )
                               ),
                               fluidRow(
-                                conditionalPanel(
-                                  condition = "output.create_ens_weights_poly_gdb_flag",
-                                  column(6, radioButtons("create_ens_weights_poly_gdb_weight_type", NULL,
-                                                         choices = list("Enter single weight for area covered by .gdb file" = 1,
-                                                                        "Select data column with weights" = 2),
-                                                         selected = 2)),
-                                  column(
-                                    width = 6,
-                                    conditionalPanel(
-                                      condition = "input.create_ens_weights_poly_gdb_weight_type == 1",
-                                      numericInput("create_ens_weights_poly_gdb_weight",
-                                                   tags$h5("Weight for area covered by file geodatabase file"),
-                                                   value = 1, min = 0, step = 0.1)
-                                    ),
-                                    conditionalPanel(
-                                      condition = "input.create_ens_weights_poly_gdb_weight_type == 2",
-                                      helpText("This functionality is not yet implemented")
-                                      # uiOutput("create_ens_weights_poly_gdb_field_uiOut_select")
-                                    )
-                                  )
-                                )
+                                column(6, numericInput("create_ens_weights_poly_gdb_weight",
+                                                       tags$h5("Weight for area covered by file geodatabase file"),
+                                                       value = 1, min = 0, step = 0.1))
                               )
-                            )
+                            ),
+                            sliderInput("create_ens_weights_poly_coverage",
+                                        tags$h5("Percentage of prediction polygon that must be covered by the weight polygon(s)",
+                                                "for the prediction polygon to be weighted.",
+                                                "If '0' is selected then the prediction polygon will be weighted",
+                                                "if there is any overlap."),
+                                        min = 0, max = 100, value = 100)
                           ),
-                          sliderInput("create_ens_weights_poly_coverage",
-                                      tags$h5("Percentage of prediction polygon that must be covered by the weight polygon(s)",
-                                              "for the prediction polygon to be weighted.",
-                                              "If '0' is selected then the prediction polygon will be weighted if there is any overlap."),
-                                      min = 0, max = 100, value = 100),
                           fluidRow(
                             column(6, actionButton("create_ens_weights_poly_add_execute",
-                                                   "Assign loaded weight polygon to selected predictions")),
-                            column(4, offset = 1, textOutput("create_ens_weights_poly_add_text"))
+                                                   "Assign weight polygon to selected predictions")),
+                            column(4, offset = 1, tags$span(textOutput("create_ens_weights_poly_add_text"), style = "color: blue"))
                           )
                         )
                       )
@@ -346,7 +291,7 @@ ui.createEns <- function() {
                           width = 5,
                           uiOutput("create_ens_weights_poly_remove_choices_uiOut_select"),
                           actionButton("create_ens_weights_poly_remove_execute", "Remove selected weight polygons"),
-                          textOutput("create_ens_weights_poly_remove_text")
+                          tags$span(textOutput("create_ens_weights_poly_remove_text"), style = "color: blue")
                         )
                       )
                     )
@@ -416,7 +361,8 @@ ui.createEns <- function() {
                   ),
                   conditionalPanel(
                     condition = "output.create_ens_weighted_poly_flag",
-                    helpText("Preview weighted polygons for selected overlaid predictions"),
+                    helpText("Preview weighted polygons for selected overlaid predictions.",
+                             "The overlaid predictions will be black and the weight polygon(s) will have a red border"),
                     fluidRow(
                       column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")),
                       column(4, tags$br(), tags$br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))

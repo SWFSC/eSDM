@@ -10,6 +10,7 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
   withProgress(message = "Creating ensemble", value = 0.6, {
     ### Create ensemble
     ens.type <- input$create_ens_type
+
     # Unweighted
     if (ens.type == "1") ens.sf <- create_ens_unweighted()
 
@@ -105,7 +106,7 @@ create_ens_data_rescale_abund <- reactive({
     sf.list <- sf.list[models.which]
   }
 
-  sf.list.rescaled <- models.rescale(sf.list, abund)
+  sf.list.rescaled <- models_rescale(sf.list, abund)
   as.data.frame(lapply(sf.list.rescaled, function(i) i$Pred.overlaid))
 })
 

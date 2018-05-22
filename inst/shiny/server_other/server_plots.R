@@ -148,7 +148,6 @@ overlay_preview_base_event <- eventReactive(
 overlay_preview_overlaid_event <- eventReactive(
   input$overlay_preview_overlaid_execute,
   {
-    # browser()
     overlaid.idx <- as.numeric(input$overlay_preview_overlaid_models)
     models.toplot <- vals$overlaid.models[overlaid.idx]
     models.num <- length(models.toplot)
@@ -173,59 +172,68 @@ overlay_preview_overlaid_event <- eventReactive(
 ### Get preview of ensemble predictions to plot in-app
 #
 ens_preview_event <- eventReactive(input$ens_preview_execute, {
-  perc.num <- input$ens_preview_perc
+  req(length(vals$ensemble.models) > 0)
+
+  perc.num <- as.numeric(input$ens_preview_perc)
 
   #----------------------------------------------
-  # Same code as in ens_pix_download()
-  ensemble.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
+  models.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
+  models.num <- length(models.idx)
+
   validate(
-    need(length(ensemble.idx) > 0,
+    need(models.num > 0,
          "Error: Please select at least one model from table to preview")
   )
 
-  models.toplot <- create_ens_preview_model()
+  models.toplot <- vals$ensemble.models[models.idx]
+  stopifnot(models.num == length(models.toplot))
 
-  plot.titles <- sapply(ensemble.idx, function(i) {
+  plot.titles <- sapply(models.idx, function(i) {
     paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
           "|", vals$ensemble.overlaid.idx[i])
   })
 
-  ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens",
-                       plot.titles = plot.titles, perc.num = perc.num)
   #----------------------------------------------
 
-  vals$ensemble.plotted.idx <- ensemble.idx
-  plot.multi.display(ens.pix.list)
+
+  vals$ensemble.plotted.idx <- models.idx
+  plot.dims <- multiplot_inapp(models.num)
+
+  eSDM::multiplot_layout(
+    models.toplot, rep("Pred.ens", models.num), plot.titles,
+    perc.num, pal.esdm, leg.perc.esdm,
+    plot.dims[1], plot.dims[2], plot.dims[3], plot.dims[4], plot.dims[5]
+  )
 })
 
 
 #################################################
 ### Get preview of ensemble predictions to download
-ens_pix_download <- reactive({
+ens_preview_download <- reactive({
   perc.num <- input$ens_download_preview_perc
 
-  #----------------------------------------------
-  # Same code as in ens_pix_preview_event()
-  ensemble.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
-  validate(
-    need(length(ensemble.idx) > 0,
-         "Error: Please select at least one model from table to preview")
-  )
-
-  models.toplot <- create_ens_preview_model()
-
-  plot.titles <- sapply(ensemble.idx, function(i) {
-    # paste0("Ensembling method: ", vals$ensemble.method[i], "\n",
-    #        "Rescaling method: ", vals$ensemble.rescaling[i])
-    paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
-          "|", vals$ensemble.overlaid.idx[i])
-  })
-
-  ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens",
-                       plot.titles = plot.titles, perc.num = perc.num)
-  #----------------------------------------------
-
-  plot.multi.download(ens.pix.list)
+  # #----------------------------------------------
+  # # Same code as in ens_pix_preview_event()
+  # ensemble.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
+  # validate(
+  #   need(length(ensemble.idx) > 0,
+  #        "Error: Please select at least one model from table to preview")
+  # )
+  #
+  # models.toplot <- create_ens_preview_model()
+  #
+  # plot.titles <- sapply(ensemble.idx, function(i) {
+  #   # paste0("Ensembling method: ", vals$ensemble.method[i], "\n",
+  #   #        "Rescaling method: ", vals$ensemble.rescaling[i])
+  #   paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
+  #         "|", vals$ensemble.overlaid.idx[i])
+  # })
+  #
+  # ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens",
+  #                      plot.titles = plot.titles, perc.num = perc.num)
+  # #----------------------------------------------
+  #
+  # plot.multi.download(ens.pix.list)
 })
 
 ###############################################################################

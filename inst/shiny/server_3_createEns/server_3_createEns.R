@@ -41,7 +41,7 @@ outputOptions(output, "ens_rescale_none_flag", suspendWhenHidden = FALSE)
 # This flag is in 'server_3_createEns_create_weighted.R'
 
 ### Flag for if metrics have been calculated for selected overlaid model preds
-# is in 'server_3_createEns_create_weighted.R'
+# This flag is in 'server_3_createEns_create_weighted.R'
 
 ### Flag for if at least 1 of the selected overlaid models have spatial weights
 # This flag is in 'server_3_createEns_create_weighted.R'
@@ -188,7 +188,7 @@ ens_abund_values <- reactive({
   ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
 
   ens.tocalc <- vals$ensemble.models[ensemble.which]
-  ens.abund <- round(sapply(ens.tocalc, model.abundance, "Pred.ens"), 0)
+  ens.abund <- round(sapply(ens.tocalc, model_abundance, "Pred.ens"), 0)
   names(ens.abund) <- paste("Ensemble", ensemble.which)
 
   ens.abund

@@ -138,6 +138,7 @@ create_ens_weights_pix_weights <- reactive({
 
   df.out <- as.data.frame(lapply(ens.which, function(idx) {
     overlaid.curr <- vals$overlaid.models[[idx]]
+    print(idx)
 
     if (idx %in% ens.which.spatial) {
       validate(
@@ -149,7 +150,7 @@ create_ens_weights_pix_weights <- reactive({
       )
       overlaid.curr$Weight.overlaid
     } else {
-      rep(1, length(overlaid.curr))
+      rep(1, nrow(overlaid.curr))
     }
   }))
   names(df.out) <- letters[1:ncol(df.out)]
