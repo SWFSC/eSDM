@@ -10,7 +10,6 @@ model_preview_interactive_event <- eventReactive(
   input$model_preview_interactive_execute,
   {
     req(length(vals$models.ll) > 0)
-    print("hi")
 
     # Show/hide is here because for some reason observeEvent didn't run before
     #   model_preview_interactive_event()
@@ -39,7 +38,6 @@ model_preview_interactive_event <- eventReactive(
 ### Generate static preview of predictions to display in-app
 model_preview_event <- eventReactive(input$model_preview_execute, {
   req(length(vals$models.ll) > 0)
-  print("hi2")
 
   perc.num <- as.numeric(input$model_preview_perc)
 
@@ -174,7 +172,7 @@ overlay_preview_overlaid_event <- eventReactive(
 #################################################
 ### Get preview of ensemble predictions to plot in-app
 #
-ens_pix_preview_event <- eventReactive(input$ens_preview_execute, {
+ens_preview_event <- eventReactive(input$ens_preview_execute, {
   perc.num <- input$ens_preview_perc
 
   #----------------------------------------------

@@ -91,39 +91,7 @@ overlay_land_csv <- reactive({
   withProgress(message = 'Loading land polygon', value = 0.7, {
     Sys.sleep(0.5)
 
-    names(csv.df) <- c("lon", "lat")
-    land.list <- try(
-      csv.df %>%
-        mutate(na_sum = cumsum(is.na(lon) & is.na(lat))) %>%
-        filter(!is.na(lon) & !is.na(lat)) %>%
-        group_by(na_sum) %>%
-        summarise(list(st_polygon(list(matrix(c(.data$lon, .data$lat), ncol = 2))))),
-      silent = TRUE)
-
-    land.sfc <- try(st_sfc(do.call(rbind, land.list[, 2])), silent = TRUE)
-
-    validate(
-      need(isTruthy(land.list) & inherits(land.sfc, "sfc"),
-           paste("Error: The boundary polygon could not be created",
-                 "from the provided points.",
-                 "Please ensure that the .csv file has the longitude points",
-                 "in the first column, the latitude points in the second",
-                 "column, and that the provided points form a closed",
-                 "and valid polygon")) %then%
-        need(isTruthy(all(st_is_valid(land.sfc))), #isTruthy() is for NA cases
-             paste("Error: The provided boundary polygon is invalid;",
-                   "please ensure that the provided points form a closed",
-                   "and valid polygon (no self-intersections)"))
-    )
-    st_crs(land.sfc) <- crs.ll
-
-    if (st_bbox(land.sfc)[3] > 180) {
-      incProgress(detail = "Polygon(s) span dateline; handling now")
-      land.sfc <- st_wrap_dateline(
-        land.sfc, options = c("WRAPDATELINE=YES", "DATELINEOFFSET=60")
-      )
-    }
-
+    land.sfc <- create_sfc_csv(csv.df, crs.ll)
     incProgress(0.3)
   })
 

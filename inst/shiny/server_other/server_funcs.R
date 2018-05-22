@@ -138,3 +138,73 @@ gis_model_check <- function(gis.loaded) {
 #------------------------------------------------------------------------------
 # From https://github.com/r-spatial/sf/issues/346
 # st_erase = function(x, y) st_difference(x, st_union(st_combine(y)))
+
+
+#------------------------------------------------------------------------------
+# Create sfc object from data frame (from csv) with only long and lat,
+#   respectively, as columns. crs set as crs.prov
+# Designed only for use within eSDM with sf and dplyr loaded
+create_sfc_csv_func <- function(x, crs.prov) {
+  stopifnot(
+    inherits(x, "data.frame"),
+    ncol(x) == 2
+  )
+
+  names(x) <- c("lon", "lat")
+  if (anyNA(x$lon)) {
+    obj.list <- try(
+      x %>%
+        mutate(na_sum = cumsum(is.na(lon) & is.na(lat))) %>%
+        filter(!is.na(lon) & !is.na(lat)) %>%
+        group_by(na_sum) %>%
+        summarise(list(st_polygon(list(matrix(c(.data$lon, .data$lat), ncol = 2))))),
+      silent = TRUE)
+    obj.sfc <- try(st_sfc(do.call(rbind, obj.list[, 2])), silent = TRUE)
+
+  } else {
+    obj.list <- list()
+    obj.sfc <- try(st_sfc(st_polygon(list(as.matrix(x)))),
+                   silent = TRUE)
+  }
+
+  validate(
+    need(isTruthy(obj.list) & inherits(obj.sfc, "sfc"),
+         paste("Error: The polygon could not be created",
+               "from the provided points.",
+               "Please ensure that the .csv file has the longitude points",
+               "in the first column, the latitude points in the second",
+               "column, and that the provided points form a closed",
+               "and valid polygon")) %then%
+      need(isTruthy(all(st_is_valid(obj.sfc))), #isTruthy() is for NA cases
+           paste("Error: The provided polygon is invalid;",
+                 "please ensure that the provided points form a closed",
+                 "and valid polygon (no self-intersections)"))
+  )
+  st_crs(obj.sfc) <- crs.prov
+
+  if (st_bbox(obj.sfc)[3] > 180) {
+    incProgress(detail = "Polygon(s) span dateline; handling now")
+    obj.sfc <- st_wrap_dateline(
+      obj.sfc, options = c("WRAPDATELINE=YES", "DATELINEOFFSET=60")
+    )
+  }
+
+  return(obj.sfc)
+}
+
+
+#------------------------------------------------------------------------------
+# Adjust sf object from 0 - 360 range to -180 to 180 range
+sf_dateline <- function(x, wrap.offset = 10) {
+  stopifnot(
+    inherits(x, "sf"),
+    inherits(wrap.offset, "numeric")
+  )
+  if (st_bbox(x)[3] > 180) {
+    x <- st_wrap_dateline(
+      x, options = c("WRAPDATELINE=YES", paste0("DATELINEOFFSET=", wrap.offset))
+    )
+  }
+
+  x
+}

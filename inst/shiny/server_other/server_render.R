@@ -47,14 +47,12 @@ output$create_sf_gis_gdb_text <- renderText({
 ### Table of loaded original model preds
 output$models_loaded_table <- DT::renderDataTable({
   table_orig()[, -3] #'[, -3]' is to remove Error column
-},
-options = list(dom = 't'), selection = "multiple")
+}, options = list(dom = 't'), selection = "multiple")
 
 ### Table of stats of loaded original model preds
 output$models_loaded_table_stats <- DT::renderDataTable({
   table_orig_stats()
-},
-options = list(dom = 't'), selection = "none")
+}, options = list(dom = 't'), selection = "none")
 
 ###########################################################
 ### Plot/preview of loaded, original model(s)
@@ -76,14 +74,12 @@ output$model_preview_interactive_plot <- renderLeaflet({
 ### Table of loaded model predictions
 output$overlay_loaded_table <- DT::renderDataTable({
   table_orig()[, -3] #'[, -3]' is to remove Error column
-},
-options = list(dom = 't'), selection = "single")
+}, options = list(dom = 't'), selection = "single")
 
 ### Table of stats of loaded model predictions
 output$overlay_loaded_stats_table <- DT::renderDataTable({
   table_orig_stats()
-},
-options = list(dom = 't'), selection = "none")
+}, options = list(dom = 't'), selection = "none")
 
 ###########################################################
 # Polygon error outputs and loaded messages
@@ -171,14 +167,12 @@ output$overlay_preview_overlaid <- renderPlot({
 ### Display table of overlaid predictions and info
 output$create_ens_table <- renderTable({
   table_overlaid()[, -3] #'[, -3]' is to remove Error column
-},
-rownames = TRUE)
+}, rownames = TRUE)
 
 ### Datatable of overlaid predictions and info
 output$create_ens_datatable <- DT::renderDataTable({
   table_overlaid()[, -3] #'[, -3]' is to remove Error column
-},
-options = list(dom = 't'))
+}, options = list(dom = 't'))
 
 ###########################################################
 # Weights outputs
@@ -186,20 +180,17 @@ options = list(dom = 't'))
 ### Table of metric values to be used as weights
 output$create_ens_weights_metric_table_out <- renderTable({
   create_ens_weights_metric_table()
-},
-rownames = FALSE, digits = 3)
+}, rownames = FALSE, digits = 3)
 
 ### Table of if overlaid models have spatial pixel weights
 output$create_ens_weights_pix_table_out <- renderTable({
   create_ens_weights_pix_table()
-},
-rownames = FALSE, align = "lr")
+}, rownames = FALSE, align = "lr")
 
 ### Table summarizing overlaid models and their polygon weights
 output$create_ens_weights_poly_table_out <- renderTable({
   create_ens_weights_poly_table()
-},
-rownames = FALSE)
+}, rownames = FALSE)
 
 ### Preview plot of weight polygons
 output$create_ens_weights_poly_preview_plot <- renderPlot({
@@ -238,15 +229,14 @@ output$ens_remove_text <- renderUI({
 })
 
 ### Plot preview of ensemble predictions
-output$ens_pix_preview_plot <- renderPlot({
-  grid.arrange(ens_pix_preview_event())
+output$ens_preview_plot <- renderPlot({
+  ens_preview_event()
 })
 
 ### Table of abundances of created ensemble predictions
 output$ens_abund_table_out <- renderTable({
   table_ens_abund()
-},
-rownames = TRUE, colnames = FALSE, align = "r")
+}, rownames = TRUE, colnames = FALSE, align = "r")
 
 
 ###############################################################################
@@ -258,20 +248,17 @@ rownames = TRUE, colnames = FALSE, align = "r")
 ### Table of orig model predictions
 output$eval_models_table_orig_out <- DT::renderDataTable({
   table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
-},
-options = list(dom = 't'))
+}, options = list(dom = 't'))
 
 ### Table of overlaid model predictions
 output$eval_models_table_over_out <- DT::renderDataTable({
   table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
-},
-options = list(dom = 't'))
+}, options = list(dom = 't'))
 
 ### Table of ensemble models
 output$eval_models_table_ens_out <- DT::renderDataTable({
   table_ensembles()
-},
-options = list(dom = 't'))
+}, options = list(dom = 't'))
 
 ###########################################################
 # Presence/absence loaded message, error outputs, and table
@@ -280,12 +267,11 @@ options = list(dom = 't'))
 output$eval_data_1_message <- renderText({
   eval.data.list <- vals$eval.data.list
   ifelse(!(is.na(eval.data.list)[1] & is.na(eval.data.list)[2]),
-         "Validation data loaded",
-         "")
+         "Validation data loaded", "")
 })
 
 # Text outputs
-output$eval_csv_data_1_text <- renderText({ eval_data_1_csv() })
+output$eval_csv_data_1_text <- renderText(eval_data_1_csv())
 
 output$eval_data_1_gis_text <- renderText({
   pa.spdf.list <- vals$eval.data.gis.file.1
@@ -295,20 +281,18 @@ output$eval_data_1_gis_text <- renderText({
   eval_data_1_gis()
 })
 
-output$eval_metrics_text <- renderText({ eval_metrics() })
+output$eval_metrics_text <- renderText(eval_metrics())
 
 # Presence/absence table
 output$table_pa_pts_out <- renderTable({
   table_data_pts()
-},
-colnames = FALSE)
+}, colnames = FALSE)
 
 ###########################################################
 ### Metrics table
 output$table_eval_metrics_out <- renderTable({
   table_eval_metrics()
-},
-rownames = FALSE, digits = 3)
+}, rownames = FALSE, digits = 3)
 
 
 ###############################################################################
@@ -320,20 +304,17 @@ rownames = FALSE, digits = 3)
 ### Table of orig model predictions
 output$pretty_table_orig_out <- DT::renderDataTable({
   table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
-},
-options = list(dom = 't'))
+}, options = list(dom = 't'))
 
 ### Table of overlaid model predictions
 output$pretty_table_over_out <- DT::renderDataTable({
   table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
-},
-options = list(dom = 't'))
+}, options = list(dom = 't'))
 
 ### Table of ensemble model predictions
 output$pretty_table_ens_out <- DT::renderDataTable({
   table_ensembles()
-},
-options = list(dom = 't'))
+}, options = list(dom = 't'))
 
 ###########################################################
 # Outputs
@@ -364,31 +345,28 @@ output$pretty_plot_values_event_text <- renderText({
 ### Table of orig model predictions
 output$export_table_orig_out <- DT::renderDataTable({
   table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
-},
-options = list(dom = 't'), selection = "single")
+}, options = list(dom = 't'), selection = "single")
 
 ### Table of overlaid model predictions
 output$export_table_over_out <- DT::renderDataTable({
   table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
-},
-options = list(dom = 't'), selection = "single")
+}, options = list(dom = 't'), selection = "single")
 
 ### Table of ensemble models
 output$export_table_ens_out <- DT::renderDataTable({
   table_ensembles()
-},
-options = list(dom = 't'), selection = "single")
+}, options = list(dom = 't'), selection = "single")
 
 
 ###############################################################################
-##### Submit Feedback #####
-### Feedback function text
-output$feedback_submit_text <- renderText({
-  feedback_submit()
-})
-
-### Warning message if no internet connection is detected
-output$feedback_internet_connection_text <- renderText({
-  feedback_internet_connection()
-})
+# ##### Submit Feedback #####
+# ### Feedback function text
+# output$feedback_submit_text <- renderText({
+#   feedback_submit()
+# })
+#
+# ### Warning message if no internet connection is detected
+# output$feedback_internet_connection_text <- renderText({
+#   feedback_internet_connection()
+# })
 ###############################################################################

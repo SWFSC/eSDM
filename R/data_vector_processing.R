@@ -92,7 +92,7 @@ models_rescale <- function(sf.list, abund.new) {
   # col.name <- enquo(col.name)
   return(
     lapply(sf.list, function(s) {
-      abund.orig <- model.abundance(s, cols.data = "Pred.overlaid")
+      abund.orig <- eSDM::model_abundance(s, cols.data = "Pred.overlaid")
       # s %>% dplyr::mutate(x / 500)#(abund.orig / abund.new))
       s$Pred.overlaid <- s$Pred.overlaid / (abund.orig / abund.new)
       s
