@@ -33,9 +33,9 @@ vals <- reactiveValues(
   overlaid.models.specs = list(), # models.spec info about overlaid models
 
   # Objects that store elements used by ensemble and overlaid models
-  ens.over.wpoly.filename = NULL, # List of filenames of polygons with weights; idx corresponds to overlaid pred idx
-  ens.over.wpoly.sf       = NULL, # List of polygons with weights; idx corresponds to overlaid pred idx
-  ens.over.wpoly.coverage = NULL, # List of overlap perc for weight to be applied; idx corresponds to overlaid pred idx
+  ens.over.wpoly.filename = NULL, # List of filenames of polygons with weights; index corresponds to overlaid pred index
+  ens.over.wpoly.sf       = NULL, # List of polygons with weights; index corresponds to overlaid pred index
+  ens.over.wpoly.coverage = NULL, # List of overlap perc for weight to be applied; index corresponds to overlaid pred index
 
   # Objects that store spdfs of and data on created ensembles
   ensemble.models       = list(), # Ensemble model predictions
