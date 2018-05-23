@@ -78,6 +78,61 @@ outputOptions(output, "export_filename_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
+### Export model predictions as csv, shp, or kml
+# Download shapefile code is modeled after
+# https://gist.github.com/RCura/b6b1759ddb8ab4035f30
+output$export_out <- downloadHandler(
+  filename = function() {
+    if (input$export_format == 2) {
+      "eSDM_shpExport.zip"
+    } else {
+      input$export_filename
+    }
+  },
+
+  content = function(file) {
+    withProgress(message = "Exporting predictions", value = 0.4, {
+      # Prep
+      export.format <- input$export_format
+      data.out <- export_model_selected_proj_format()
+
+      # Write file
+      if (export.format == 1) {
+        write.csv(data.out, file = file, row.names = FALSE)
+
+      } else if (export.format == 2) {
+        name.base <- gsub(".{4}$", "", input$export_filename)
+        name.glob <- paste0(name.base, ".*")
+        name.shp <- paste0(name.base, ".shp")
+        name.zip <- paste0(name.base, ".zip")
+
+        if (length(Sys.glob(name.glob)) > 0) {
+          file.remove(Sys.glob(name.glob))
+        }
+        st_write(data.out, dsn = name.shp, layer = "shpExport",
+                 driver = "ESRI Shapefile", quiet = TRUE)
+        zip(zipfile = name.zip, files = Sys.glob(name.glob))
+        file.copy(name.zip, file)
+
+        if (length(Sys.glob(name.glob)) > 0) {
+          file.remove(Sys.glob(name.glob))
+        }
+
+      } else if (export.format == 3) {
+        st_write(data.out, dsn = file, layer = "Pred_kml", driver = "KML",
+                 quiet = TRUE)
+
+      } else {
+        validate(need(FALSE, "Download error"))
+      }
+
+      incProgress(0.6)
+    })
+  }
+)
+
+
+###############################################################################
 # Reactive functions that perform export prep steps
 
 ### Get selected predictions
@@ -99,27 +154,42 @@ export_model_selected <- reactive({
     validate(need(FALSE, "Error: export get predictions error"))
   }
 
-  ### Retiurn Pred and Weight data
-  to.return <- model.selected[c(1, 3)]
-  names(to.return) <- c("Density", "Weight")
-
-  to.return
+  ### Return Pred and Weight data
+  # TODO include pixels?
+  st_sf(
+    st_set_geometry(model.selected, NULL) %>% dplyr::select(Density = 1, 3),
+    st_geometry(model.selected), agr = "constant"
+  )
 })
 
 ### Return selected predictions in specified crs
 export_model_selected_proj <- reactive({
   model.selected <- export_model_selected() # handles req()
-  model.selected.crs <- crs(model.selected)
+  model.selected.crs <- st_crs(model.selected)
 
   if (input$export_proj_ll) {
     crs.selected <- crs.ll
+
   } else {
-    crs.selected.idx <- as.numeric(input$export_proj)
-    crs.selected <- crs(vals$models.orig[[crs.selected.idx]])
+    if (input$export_proj_method == 1) {
+      crs.selected <- st_crs(vals$models.orig[[as.numeric(input$export_proj)]])
+
+    } else if (input$export_proj_method == 2) {
+      crs.selected <- suppressWarnings(st_crs(input$export_proj_epsg))
+
+    } else{
+      stop("Error in export crs")
+    }
   }
 
+  validate(
+    need(isTruthy(crs.selected[[1]]),
+         paste("Error: The entered EPSG code was not recognized,",
+               "please enter a valid EPSG code"))
+  )
+
   if (!identical(model.selected.crs, crs.selected)) {
-    model.selected <- spTransform(model.selected, crs.selected)
+    model.selected <- st_transform(model.selected, crs.selected)
   }
 
   model.selected
@@ -131,90 +201,19 @@ export_model_selected_proj_format <- reactive({
   model.selected <- export_model_selected_proj()
 
   if (input$export_format == 1) {
-    model.selected.centroid <- gCentroid(model.selected, byid = TRUE)
-    data.out.coords <- unname(model.selected.centroid@coords)
-    data.out <- data.frame(Long = data.out.coords[, 1],
-                           Lat = data.out.coords[, 2],
-                           model.selected@data)
-  } else { # Exporting data as either .shp and .kml requires SPolyDF
-    data.out <- model.selected
-  }
+    # Exporting data as .csv requires data.frame with centroids
+    model.selected.centroid <- suppressWarnings(suppressMessages(
+      st_centroid(model.selected)
+    ))
+    data.out.coords <- do.call(rbind, st_geometry(model.selected.centroid))
+    data.frame(Long = data.out.coords[, 1], Lat = data.out.coords[, 2],
+               st_set_geometry(model.selected, NULL))
 
-  data.out
+  } else {
+    # Exporting data as either .shp and .kml requires sf object
+    model.selected
+  }
 })
-
-###############################################################################
-### Export model predictions as csv, shp, or kml
-# Download shapefile code is modeled after
-# https://gist.github.com/RCura/b6b1759ddb8ab4035f30
-output$export_out <- downloadHandler(
-  filename = function() {
-    if (input$export_format == 2) {
-      "eSDM_shpExport.zip"
-    } else {
-      input$export_filename
-    }
-  },
-
-  content = function(file) {
-    withProgress(message = "Exporting predictions", value = 0.4, {
-      export.format <- input$export_format
-      data.out <- export_model_selected_proj_format()
-
-      # browser()
-      if (export.format == 1) {
-        write.csv(data.out, file = file, row.names = FALSE)
-
-      } else if (export.format == 2) {
-        # browser()
-        # name.base <- paste0(tempdir(), "\\", "shpExport")
-        name.base <- gsub(".{4}$", "", input$export_filename)
-        name.glob <- paste0(name.base, ".*")
-        name.shp <- paste0(name.base, ".shp")
-        name.zip <- paste0(name.base, ".zip")
-        print(name.base)
-
-        if (length(Sys.glob(name.glob)) > 0) {
-          file.remove(Sys.glob(name.glob))
-        }
-        writeOGR(data.out, dsn = name.shp, layer = "shpExport", driver = "ESRI Shapefile")
-        zip(zipfile = name.zip, files = Sys.glob(name.glob))
-        file.copy(name.zip, file)
-
-        if (length(Sys.glob(name.glob)) > 0) {
-          file.remove(Sys.glob(name.glob))
-        }
-
-      } else if (export.format == 3) {
-        writeOGR(data.out, dsn = file, layer = "Pred_kml", driver = "KML")
-
-      } else {
-        validate(need(FALSE, "Download error"))
-      }
-
-      incProgress(0.6)
-    })
-  }
-)
-
-
-
-# output$downloadShp <- downloadHandler(
-#   filename = "shpExport.zip",
-#
-#   content = function(file) {
-#     if (length(Sys.glob("shpExport.*")) > 0) {
-#       file.remove(Sys.glob("shpExport.*"))
-#     }
-#     writeOGR(createShp(), dsn = "shpExport.shp", layer = "shpExport", driver = "ESRI Shapefile")
-#     zip(zipfile = 'shpExport.zip', files = Sys.glob("shpExport.*"))
-#     file.copy("shpExport.zip", file)
-#
-#     if (length(Sys.glob("shpExport.*")) > 0) {
-#       file.remove(Sys.glob("shpExport.*"))
-#     }
-#   }
-# )
 
 
 ###############################################################################
