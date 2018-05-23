@@ -60,7 +60,9 @@ output$export_tables_oneselected_flag <- reactive({
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
 
-  sum(!sapply(list(x, y, z), is.null)) == 1
+  # Use >= 1 here so that error message doesn't pop up briefly when
+  #   user selects a model from a different table
+  sum(!sapply(list(x, y, z), is.null)) >= 1
 })
 outputOptions(output, "export_tables_oneselected_flag",
               suspendWhenHidden = FALSE)
@@ -182,8 +184,9 @@ export_model_selected_proj <- reactive({
     }
   }
 
+  # Use [[2]] in case of custom crs w/out epsg code
   validate(
-    need(isTruthy(crs.selected[[1]]),
+    need(isTruthy(crs.selected[[2]]),
          paste("Error: The entered EPSG code was not recognized,",
                "please enter a valid EPSG code"))
   )

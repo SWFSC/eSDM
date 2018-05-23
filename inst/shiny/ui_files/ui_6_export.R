@@ -40,9 +40,9 @@ ui.export <- function() {
                     helpText(tags$u("Description:"),
                              "For predictions to be exported as an Excel .csv file, the centroid is determined for",
                              "each prediction polygon. The exported .csv file consists of",
-                             "columns with the longitude and latitudes of these centroids,",
+                             "columns with the COORDIANTES of these centroids,",
                              "as well as the prediction (density), and weight values for each of those points.",
-                             tags$br(),
+                             tags$br(), tags$br(),
                              tags$u("Filename:"), "Extension must be '.csv'.")
 
                   ),
@@ -52,7 +52,7 @@ ui.export <- function() {
                              "Predictions will be exported as polygons with the prediction (density),",
                              "and weight value for each polygon. The eSDM will produce a zip file with the name",
                              "'eSDM_shp_Export.zip' that will contain the various shapefile files.",
-                             tags$br(),
+                             tags$br(), tags$br(),
                              tags$u("Filename:"), "Extension must be '.shp'.")
 
                   ),
@@ -64,7 +64,7 @@ ui.export <- function() {
                              "Within the kml or kmz file, predictions will be represented as polygons with a red outline.",
                              "Currently you cannot color-code the polygons by density value. The polygons will have their respective",
                              "prediction (density) and weight values as decriptions.",
-                             tags$br(),
+                             tags$br(), tags$br(),
                              tags$u("Filename:"), "Extension must be '.kml' or '.kmz', depending on the",
                              tags$em("File type"), "selection.")
                   )
@@ -82,7 +82,7 @@ ui.export <- function() {
                   condition = "input.export_proj_ll == false",
                   radioButtons("export_proj_method", NULL,
                                choices = list("Select predictions with desired coordinate system" = 1,
-                                              "Enter desired EPSG code" = 2),
+                                              "Enter EPSG code of desired coordinate system" = 2),
                                selected = 1),
                   column(
                     width = 12,
@@ -100,12 +100,12 @@ ui.export <- function() {
                   width = 12,
                   helpText(tags$u("Description:"),
                            "Predictions can be exported in WGS 84 geographic coordinates (lat/long, default), ",
-                           "in the projection of one of the loaded sets of model predictions, ",
-                           "or in the projection of a given EPSG code.",
-                           tags$br(),
-                           "Please note that if you export predictions to an Excel .csv file in WGS 84 geographic coordinates",
-                           "the eSDM calculates the centroids using longitude/latitude coordinates and thus the",
-                           "centroids may not be geographically accurate.")
+                           "in the coordinate system of one of the loaded sets of model predictions, ",
+                           "or in the coordinate system of a given EPSG code.",
+                           tags$br(), tags$br(),
+                           "Please note that if you export predictions to an Excel .csv file in a longitude/latitude",
+                           "coordinate system the eSDM calculates the centroids using said coordinates",
+                           "and thus the centroids may not be geographically accurate.")
                 )
               )
             ),
