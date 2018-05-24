@@ -112,8 +112,8 @@ create_ens_weights_poly_remove <- eventReactive(
     poly.toremove.idx <- lapply(strsplit(poly.toremove.idx, ", "), as.numeric)
     poly.toremove.df  <- data.frame(t(data.frame(poly.toremove.idx)))
 
-    poly.toremove.df.list <- by(poly.toremove.df, poly.toremove.df[,1],
-                                function(j) c(j[,2]))
+    poly.toremove.df.list <- by(poly.toremove.df, poly.toremove.df[, 1],
+                                function(j) c(j[, 2]))
 
     # Generate 3 element list of vectors of wpoly objects to remove
     poly.toremove.list <- lapply(1:3, function(i) {
@@ -136,11 +136,11 @@ create_ens_weights_poly_remove <- eventReactive(
 
         if (length(x) == 0) {
           vals$ens.over.wpoly.filename[idx.model] <- list(NULL)
-          vals$ens.over.wpoly.sf[idx.model] <- list(NULL)
+          vals$ens.over.wpoly.sf[idx.model]       <- list(NULL)
           vals$ens.over.wpoly.coverage[idx.model] <- list(NULL)
         } else {
           vals$ens.over.wpoly.filename[[idx.model]] <- x
-          vals$ens.over.wpoly.sf[[idx.model]] <- y
+          vals$ens.over.wpoly.sf[[idx.model]]       <- y
           vals$ens.over.wpoly.coverage[[idx.model]] <- z
         }
       }
@@ -157,7 +157,7 @@ create_ens_weights_poly_table <- reactive({
   req(vals$ens.over.wpoly.filename)
 
   models.which <- seq_along(vals$overlaid.models)
-  if(input$create_ens_table_subset) {
+  if (input$create_ens_table_subset) {
     ens.selected <- input$create_ens_datatable_rows_selected
     models.which <- models.which[models.which %in% ens.selected]
   }
@@ -178,8 +178,7 @@ create_ens_weights_poly_table <- reactive({
     overlaid.weights <- sapply(vals$ens.over.wpoly.sf, function(i) {
       paste(lapply(i, function(j) {
         ifelse(length(unique(j$Weight)) > 1, "Multiple", j$Weight[1])
-      }),
-      collapse = ", ")
+      }), collapse = ", ")
     })[models.which]
 
     overlaid.coverage <- sapply(
@@ -394,8 +393,8 @@ create_ens_weights_poly_raster_read <- reactive({
 
     # If specified file could be loaded as a raster, process raster
     if (gis.file.success) {
-      browser()
-      gis.file.raster <- st_as_sf(gis.file.raster)
+      gis.file.raster <- st_as_sf(as(gis.file.raster, "SpatialPolygonsDataF"))
+      # TODO change ^ to as(x, "SpatialPolygons")?
       st_agr(gis.file.raster) <- "constant"
       stopifnot(ncol(gis.file.raster) == 2)
       incProgress(0.1)
