@@ -4,7 +4,7 @@
 ###############################################################################
 ### Flag for if any model predictions are loaded
 output$loadModels_display_flag <- reactive({
-  length(vals$models.ll) != 0
+  length(vals$models.ll) > 0
 })
 outputOptions(output, "loadModels_display_flag", suspendWhenHidden = FALSE)
 
@@ -47,7 +47,9 @@ observeEvent(input$model_remove_execute, {
   vals$models.specs <- vals$models.specs[-idx]
 
   if (length(vals$models.names) == 0) vals$models.names <- NULL
+  if (length(vals$models.data.names) == 0) vals$models.data.names <- NULL
   if (length(vals$models.pred.type) == 0) vals$models.pred.type <- NULL
+  if (length(vals$models.specs) == 0) vals$models.specs <- NULL
 
 
   #########################################################
@@ -76,7 +78,7 @@ observeEvent(input$model_remove_execute, {
   if (!is.null(vals$eval.models.idx)) {
     if (!is.null(vals$eval.models.idx[[1]])){
       vals$eval.models.idx <- NULL
-      vals$eval.metrics <- list()
+      vals$eval.metrics <- NULL
       vals$eval.metrics.names <- NULL
     }
   }
@@ -86,7 +88,7 @@ observeEvent(input$model_remove_execute, {
   if (!is.null(vals$pretty.plotted.idx)) {
     if (any(idx %in% vals$pretty.plotted.idx[[1]])) {
       shinyjs::hide("pretty_plot_plot", time = 0)
-      vals$pretty.params.list <- list()
+      vals$pretty.params.list <- NULL
       vals$pretty.plotted.idx <- NULL
     } else {
       idx.adjust <- sapply(vals$pretty.plotted.idx[[1]], function(i) {

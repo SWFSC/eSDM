@@ -147,7 +147,7 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   if (!is.null(vals$eval.models.idx)) {
     if (!is.null(vals$eval.models.idx[[3]])) {
       vals$eval.models.idx <- NULL
-      vals$eval.metrics <- list()
+      vals$eval.metrics <- NULL
       vals$eval.metrics.names <- NULL
     }
   }
@@ -158,7 +158,7 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   if (!is.null(vals$pretty.plotted.idx)) {
     if (any(idx %in% vals$pretty.plotted.idx[[3]])) {
       shinyjs::hide("pretty_plot_plot", time = 0)
-      vals$pretty.params.list <- list()
+      vals$pretty.params.list <- NULL
       vals$pretty.plotted.idx <- NULL
     } else {
       idx.adjust <- sapply(vals$pretty.plotted.idx[[3]], function(i) {

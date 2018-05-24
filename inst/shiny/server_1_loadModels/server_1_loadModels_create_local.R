@@ -33,14 +33,13 @@ if (pred.type == 1) {
 }
 
 
-### Create list of specs about the model predictions
+### Create vector of specs about the predictions, added to list of vectors
 specs.curr <- c(
   model.res, nrow(sf.load.ll), sum(!is.na(sf.load.ll$Pred)), spdf.abund,
   paste0("(", paste(round(st_bbox(sf.load.ll), 0)[1:2], collapse = ", "),
          "), (",
          paste(round(st_bbox(sf.load.ll), 0)[3:4], collapse = ", "), ")")
 )
-
 
 
 ### Save objects to reactiveValues

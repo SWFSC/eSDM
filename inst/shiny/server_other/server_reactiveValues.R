@@ -1,25 +1,24 @@
-### 'Initialize' all reactiveVals (vals)
+### 'Initialize' both general reactiveValues and tab-specific reactiveVal's
 ### Reactive funcs to load/save vals object
 
 
 ###############################################################################
-# reactiveVal's used in various tabs
+# reactiveVal's used in specific tabs
 
 ### Pretty plot tabs
 val.pretty.color.num <- reactiveVal(value = NULL)
 
 ###############################################################################
-### 'Initialize' all 36 reactive values
-# Note: If any reactiveValues elements are added, be sure to update length num
-#       in observe() statement below
+# 'Initialize' all 32 elements of vals
+
 vals <- reactiveValues(
   # Objects that store loaded models and related info
   models.ll          = list(),    # List of models; crs is crs.ll
   models.orig        = list(),    # List of models; crs is crs of predictions when loaded
   models.names       = NULL,      # Vector of model names
-  models.data.names  = list(),    # List of vectors of model, error, and weights names
+  models.data.names  = NULL,      # List of vectors of model, error, and weights names
   models.pred.type   = NULL,      # Vector of prediction type (absolute vs relative)
-  models.specs       = list(),    # List of vectors of res, num of cells/preds, abund, and extent
+  models.specs       = NULL,      # List of vectors of res, num of cells/preds, abund, and extent
   models.plotted.idx = NULL,      # Vector of the indicies of currently previewed original models
 
   # Objects that store data for and from overlay section
@@ -30,7 +29,7 @@ vals <- reactiveValues(
   overlay.base.sfc      = NULL,   # sfc object of base grid
   overlay.base.specs    = NULL,   # models.spec info about base grid
   overlaid.models       = list(), # List of overlaid models
-  overlaid.models.specs = list(), # models.spec info about overlaid models
+  overlaid.models.specs = NULL,   # vals$models.spec info about overlaid models
 
   # Objects that store elements used by ensemble and overlaid models
   ens.over.wpoly.filename = NULL, # List of filenames of polygons with weights; index corresponds to overlaid pred index
@@ -46,17 +45,15 @@ vals <- reactiveValues(
   ensemble.plotted.idx  = NULL,   # Vector of the indicies of currently previewed ensemble models
 
   # Objects that store data for evaluation metrics section
-  eval.data.list        = list(NA, NA),  # List with sptsdf of pres & abs
-  eval.data.specs       = NULL,   # Data type (1 = counts, 2 = p/a)
-  eval.data.gis.file.1  = list(), # Loaded gis spdf with p/a points
-  eval.data.gis.file.2p = list(), # Loaded gis spdf with pres points
-  eval.data.gis.file.2a = list(), # Loaded gis spdf with abs points
-  eval.models.idx       = NULL,   # List of indices of evaluated models
-  eval.metrics          = list(), # Metric values
-  eval.metrics.names    = NULL,   # Names of metrics calculated
+  eval.data           = NULL,     # Validation data (sf obj) with 'count' and 'sight' columns
+  eval.data.specs     = NULL,     # Data type (1 = counts, 2 = p/a)
+  eval.data.gis.info  = NULL,     # List with loaded gis validation data (sf obj) and shp/gdb indicator (num 2 or 3)
+  eval.models.idx     = NULL,     # List of indices of evaluated models
+  eval.metrics        = NULL,     # Metric values
+  eval.metrics.names  = NULL,     # Names of metrics calculated
 
   # Objects that store data for high quality (pretty) plots
-  pretty.params.list = list(),    # List of parameters to use in high quality plots
+  pretty.params.list = NULL,      # List of parameters to use in high quality plots
   pretty.plotted.idx = NULL       # List of vectors of the indicies of currently pretty-plotted models
 )
 
@@ -112,14 +109,12 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$ensemble.overlaid.idx <- vals.save[["ensemble.overlaid.idx"]]
     vals$ensemble.plotted.idx  <- vals.save[["ensemble.plotted.idx"]]
 
-    vals$eval.data.list        <- vals.save[["eval.data.list"]]
-    vals$eval.data.specs       <- vals.save[["eval.data.specs"]]
-    vals$eval.data.gis.file.1  <- vals.save[["eval.data.gis.file.1"]]
-    vals$eval.data.gis.file.2p <- vals.save[["eval.data.gis.file.2p"]]
-    vals$eval.data.gis.file.2a <- vals.save[["eval.data.gis.file.2a"]]
-    vals$eval.models.idx       <- vals.save[["eval.models.idx"]]
-    vals$eval.metrics          <- vals.save[["eval.metrics"]]
-    vals$eval.metrics.names    <- vals.save[["eval.metrics.names"]]
+    vals$eval.data          <- vals.save[["eval.data"]]
+    vals$eval.data.specs    <- vals.save[["eval.data.specs"]]
+    vals$eval.data.gis.info <- vals.save[["eval.data.gis.info"]]
+    vals$eval.models.idx    <- vals.save[["eval.models.idx"]]
+    vals$eval.metrics       <- vals.save[["eval.metrics"]]
+    vals$eval.metrics.names <- vals.save[["eval.metrics.names"]]
 
     vals$pretty.params.list <- vals.save[["pretty.params.list"]]
     vals$pretty.plotted.idx <- vals.save[["pretty.plotted.idx"]]
@@ -142,8 +137,8 @@ load_envir <- eventReactive(input$load_app_envir_file, {
   return(paste("App data loaded from", file.load$name))
 })
 
-### This is here so that the selected saved app environment...
-# ...loads even if user isn't on first page
+### This is here so that the selected saved app environment loads
+###   even if user isn't on first page
 observe({
   load_envir()
 })
@@ -167,7 +162,7 @@ output$save_app_envir <- downloadHandler(
 )
 
 ###############################################################################
-### Make sure no extra reactive values get added and length(vals) == 6
+### Make sure no extra reactive values get added and length(vals) == 32
 observe({
   vals$models.ll
   vals$models.orig
@@ -194,18 +189,16 @@ observe({
   vals$ensemble.overlaid.idx
   vals$ensemble.plotted.idx
   vals$eval.models.idx
-  vals$eval.data.list
+  vals$eval.data
   vals$eval.data.specs
-  vals$eval.data.gis.file.1
-  vals$eval.data.gis.file.2p
-  vals$eval.data.gis.file.2a
+  vals$eval.data.gis.info
   vals$eval.metrics
   vals$eval.metrics.names
   vals$pretty.params.list
   vals$pretty.plotted.idx
 
 
-  if (length(reactiveValuesToList(vals)) != 34) {
+  if (length(reactiveValuesToList(vals)) != 32) {
     text.message <-
       shinyjs::alert(paste0(
         "There was an error in eSDM data storage and processing.",

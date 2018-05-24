@@ -112,7 +112,7 @@ create_sf_gis_shp <- eventReactive(input$model_create_gis_shp, {
 ###############################################################################
 # Load and process data from file geodatabase (.gdb)
 
-### Read in data and return SPolyDFs
+### Read in data and return sf object
 read_model_gis_gdb <- eventReactive(input$model_gis_gdb_load, {
   gdb.path <- input$model_gis_gdb_path
   gdb.name <- input$model_gis_gdb_name

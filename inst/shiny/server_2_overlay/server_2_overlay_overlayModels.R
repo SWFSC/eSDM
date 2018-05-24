@@ -200,7 +200,7 @@ overlay_reset <- reactive({
   vals$overlay.base.sfc      <- NULL
   vals$overlay.base.specs    <- NULL
   vals$overlaid.models       <- list()
-  vals$overlaid.models.specs <- list()
+  vals$overlaid.models.specs <- NULL
 
   vals$ens.over.wpoly.filename <- NULL
   vals$ens.over.wpoly.sf       <- NULL
@@ -218,7 +218,7 @@ overlay_reset <- reactive({
   if (!is.null(vals$eval.models.idx)) {
     if (!is.null(vals$eval.models.idx[[2]])){
       vals$eval.models.idx    <- NULL
-      vals$eval.metrics       <- list()
+      vals$eval.metrics       <- NULL
       vals$eval.metrics.names <- NULL
     }
   }
@@ -228,7 +228,7 @@ overlay_reset <- reactive({
     if (any(idx %in% vals$pretty.plotted.idx[[2]]) |
         any(idx %in% vals$pretty.plotted.idx[[3]])) {
       shinyjs::hide("pretty_plot_plot", time = 0)
-      vals$pretty.params.list <- list()
+      vals$pretty.params.list <- NULL
       vals$pretty.plotted.idx <- NULL
     }
   }
