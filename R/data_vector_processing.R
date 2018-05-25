@@ -43,14 +43,14 @@ substr_right <- function(x, n) {
 na_which <- function(x) {
   na.char <- c("N/A", "n/a", "na", "NaN", "")
 
-  na.idx <- suppressWarnings(c(which(is.na(x)),
-                               which(is.nan(x)),
-                               which(x %in% na.char),
-                               which(x < 0)))
+  na.idx <- suppressWarnings(
+    c(which(is.na(x)), which(is.nan(x)),
+      which(x %in% na.char), which(x < 0))
+  )
   na.idx <- sort(unique(na.idx))
   if (length(na.idx) == 0) na.idx <- NA
 
-  return(na.idx)
+  na.idx
 }
 
 
@@ -60,12 +60,13 @@ na_which <- function(x) {
 
 na_which_message <- function(x) {
   if (anyNA(x)) {
-    na.len <- "No prediction values were classified as NA"
+    "No prediction values were classified as NA"
+
   } else {
     len.x <- length(x)
-    na.len <- ifelse(len.x == 1,
-                     paste(len.x, "prediction value was classified as NA"),
-                     paste(len.x, "prediction values were classified as NA"))
+    ifelse(len.x == 1,
+           paste(len.x, "prediction value was classified as NA"),
+           paste(len.x, "prediction values were classified as NA"))
   }
 }
 
@@ -77,7 +78,7 @@ normalize <- function(x) {
   num <- (x - min(x, na.rm = TRUE))
   denom <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
 
-  return (num / denom)
+  num / denom
 }
 
 
@@ -90,14 +91,12 @@ normalize <- function(x) {
 models_rescale <- function(sf.list, abund.new) {
   # TODO: Input checks, make col.name input a thing
   # col.name <- enquo(col.name)
-  return(
-    lapply(sf.list, function(s) {
-      abund.orig <- eSDM::model_abundance(s, cols.data = "Pred.overlaid")
-      # s %>% dplyr::mutate(x / 500)#(abund.orig / abund.new))
-      s$Pred.overlaid <- s$Pred.overlaid / (abund.orig / abund.new)
-      s
-    })
-  )
+  lapply(sf.list, function(s) {
+    abund.orig <- eSDM::model_abundance(s, cols.data = "Pred.overlaid")
+    # s %>% dplyr::mutate(x / 500)#(abund.orig / abund.new))
+    s$Pred.overlaid <- s$Pred.overlaid / (abund.orig / abund.new)
+    s
+  })
 }
 
 #------------------------------------------------------------------------------
@@ -107,8 +106,10 @@ models_rescale <- function(sf.list, abund.new) {
 mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) {
   if (floor.use) {
     base * floor(x / base)
+
   } else if (ceiling.use) {
     base * ceiling(x / base)
+
   } else {
     base * round(x / base)
   }
@@ -129,18 +130,17 @@ breaks_calc <- function(x) {
   # if (any(sp.data < 0, na.rm = TRUE)) warning("Densities contain values < 0")
 
   x <- x[!is.na(x)]
+  x <- sort(x, decreasing = TRUE)
 
   data.len <- length(x)
   data.max <- max(x)
   data.min <- min(x)
 
-  sp.data.sort <- sort(x, decreasing = TRUE)
   data.breaks.mid <- sapply(breaks, function(i) {
-    sp.data.sort[ceiling(i * data.len)]
+    x[ceiling(i * data.len)]
   })
-  data.breaks <- c(data.min, data.breaks.mid, data.max)
 
-  return(data.breaks)
+  c(data.min, data.breaks.mid, data.max)
 }
 
 
@@ -150,16 +150,21 @@ breaks_calc <- function(x) {
 #' Abundance depends on crs code of provided spdf
 #' @export
 
-model_abundance <- function(sdm, cols.data) {
+model_abundance <- function(x, dens.idx, sum.abund = TRUE) {
   # Calculate areas of polygons with no NAs
-  sdm.area.m2 <- st_area(sdm)
-  validate(need(all(units(sdm.area.m2)[[1]] == c("m", "m")), "Units error"))
-  sdm.area <- as.numeric(sdm.area.m2) / 1e+06
+  x.area.m2 <- st_area(x)
+  if (!all(units(x.area.m2)[[1]] == c("m", "m"))) {
+    stop("Units error")
+  }
+  x.area <- as.numeric(x.area.m2) / 1e+06
 
   # Calculate abundance for each data column
-  abunds <- sapply(cols.data, function(j) {
-    sum(as.data.frame(sdm)[j] * sdm.area, na.rm = TRUE)
+  sapply(dens.idx, function(j) {
+    abund.vec <- as.data.frame(x)[j] * x.area
+    if (sum.abund) {
+      sum(abund.vec, na.rm = TRUE)
+    } else {
+      abund.vec
+    }
   })
-
-  return(abunds)
 }

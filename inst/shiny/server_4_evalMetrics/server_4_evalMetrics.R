@@ -98,19 +98,18 @@ eval_models <- reactive({
 ### Calculate metrics
 eval_metrics <- eventReactive(input$eval_metrics_execute, {
   # Reset eval reactiveValues
-  vals$eval.models.idx <- NULL
   vals$eval.metrics <- NULL
   vals$eval.metrics.names <- NULL
+  vals$eval.models.idx <- NULL
 
   # Set necessary variables
-  eval.p <- vals$eval.data.list[[1]]
-  eval.a <- vals$eval.data.list[[2]]
+  data.sf <- vals$eval.data
   models.idx.any <- any(!sapply(eval_models_idx(), is.null))
   which.metrics <- input$eval_metrics_which
 
   # All validating done here so all messages are displayed at same time
   validate(
-    need(all(sapply(pa.list, inherits, "sf")),
+    need(inherits(data.sf, "sf"),
          paste("Error: Please load validation data in order",
                "to calculate model evaluation metrics")),
     need(models.idx.any,
@@ -120,29 +119,28 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
          "Error: Please select at least one evaluation metric to calculate")
   )
 
-  browser()
   # Calculate metrics
   withProgress(message = 'Evaluating models', value = 0.1, {
     models.toeval <- eval_models()
     incProgress(0.1)
 
     eval.results <- lapply(models.toeval, function(m) {
-      overlap.out <- eval_overlap(pa.list[[1]], pa.list[[2]], m, 1)
-      prediction.out <- eval_prediction(pa.list[[1]], pa.list[[2]], m, 1,
-                                        overlap.out = overlap.out)
+      # TODO calculate abundance here instead of in eval_overlap()?
+      m <- m[!is.na(m[, 1]), ]
+      overlap.out <- eSDM::eval_overlap(data.sf, m, names(m)[1])
+      prediction.out <- eSDM::eval_prediction(
+        NA, NA, names(m)[1], "sight", overlap.out
+      )
 
       out1 <- out2 <- out3 <- NULL
-      if("AUC" %in% which.metrics) {
-        out1 <- auc.func(pa.list[[1]], pa.list[[2]], m, 1, "",
-                         helper.pred.result = helper.pred.out)
+      if ("AUC" %in% which.metrics) {
+        out1 <- eSDM::eval_auc(NA, NA, NA, NA, prediction.out)
       }
-      if("TSS" %in% which.metrics) {
-        out2 <- tss.func(pa.list[[1]], pa.list[[2]], m, 1,
-                         helper.pred.result = helper.pred.out)
+      if ("TSS" %in% which.metrics) {
+        out2 <- eSDM::eval_tss(NA, NA, NA, NA, prediction.out)
       }
-      if("RMSE" %in% which.metrics) {
-        out3 <- rmse.func(pa.list[[1]], pa.list[[2]], m, 1,
-                          helper.over.result = helper.over.out)
+      if ("RMSE" %in% which.metrics) {
+        out3 <- eSDM::eval_rmse(NA, NA, "abund", "count", overlap.out)
       }
 
       incProgress(amount = 0.8 / length(models.toeval))
@@ -156,7 +154,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   vals$eval.metrics <- eval.results
   vals$eval.metrics.names <- which.metrics
 
-  return("Metric(s) calculated")
+  "Metric(s) calculated"
 })
 
 
@@ -166,7 +164,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 ###########################################################
 ### Generate table of calculated metrics
 table_eval_metrics <- reactive({
-  req(length(vals$eval.metrics) > 0, vals$eval.metrics.names)
+  req(vals$eval.metrics, vals$eval.metrics.names)
 
   metrics.table <- as.data.frame(t(as.data.frame(vals$eval.metrics)))
   names(metrics.table) <- vals$eval.metrics.names
@@ -192,7 +190,7 @@ table_eval_metrics <- reactive({
 ### Download table
 # Currently set for no Error column: #'[, -3]' is to remove Error column
 output$eval_metrics_table_save <- downloadHandler(
-  filename = paste0("eSDM_eval_metrics.csv"),
+  filename = "eSDM_eval_metrics.csv",
 
   content = function(file) {
     eval.metrics <- table_eval_metrics()
@@ -211,9 +209,10 @@ output$eval_metrics_table_save <- downloadHandler(
     ### Create and set column names as necessary
     if ((!is.null(orig.table) | !is.null(over.table)) & !is.null(ens.table)) {
       if (!is.null(orig.table)) {
-        all.models.names <- c(paste(names(orig.table), names(ens.table),
-                                    sep = "/")[1:4],
-                              names(orig.table)[5:9])
+        all.models.names <- c(
+          paste(names(orig.table), names(ens.table), sep = "/")[1:4],
+          names(orig.table)[5:9]
+        )
 
         names(orig.table) <- all.models.names
       }
@@ -239,6 +238,7 @@ output$eval_metrics_table_save <- downloadHandler(
     need.check.table <- all(sapply(models.list.all, function(j, names.1) {
       names(j) == names(models.list.all[[1]])
     }, names.1 = models.list.all[[1]]))
+
     validate(
       need(zero_range(sapply(models.list.all, ncol)),
            paste("Error: while downloading metrics, data tables",
