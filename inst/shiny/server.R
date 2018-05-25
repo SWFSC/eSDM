@@ -51,6 +51,7 @@ crs.ll <- st_crs(4326) # WGS 84
 # # crs.cea is proj4string from st_crs(boundary.proj.poly), which had
 # #   Projected Coordinate System 'World_Cylindrical_Equal_Area'in GIS
 
+
 # For plotting
 pal.esdm <- c(
   "#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0", "#fee090",
@@ -75,27 +76,27 @@ server <- function(input, output, session) {
   ### Load all other server code: tab-specific scripts and general server code
   source(file.path("server_other", "server_reactiveValues.R"), local = TRUE, chdir = TRUE)
 
-  # # Roadmap: download sample data
-  # output$download_sample_data <- downloadHandler(
-  #   filename = function() {
-  #     "eSDM_sample_data.zip"
-  #   },
-  #   content = function(file) {
-  #     withProgress(message = "Downloading sample data", value = 0.6, {
-  #       sample.try <- try(download.file("https://github.com/smwoodman/eSDM/raw/master/data_provided.zip",
-  #                                       destfile = file, quiet = TRUE),
-  #                         silent = TRUE)
-  #       validate(
-  #         need(isTruthy(sample.try),
-  #              paste("Sample data could not be downloaded; please check your",
-  #                    "internet connection. If this problem persists,",
-  #                    "email Sam Woodman (sam.woodman@noaa.gov) or",
-  #                    "Karin Forney (karin.forney@noaa.gov)."))
-  #       )
-  #       incProgress(0.4)
-  #     })
-  #   }
-  # )
+  # Roadmap: download sample data
+  output$download_sample_data <- downloadHandler(
+    filename = function() {
+      "eSDM_sample_data.zip"
+    },
+    content = function(file) {
+      withProgress(message = "Downloading sample data", value = 0.6, {
+        sample.try <- try(download.file("https://github.com/smwoodman/eSDM/raw/master/inst/extdata/data_provided.zip",
+                                        destfile = file, quiet = TRUE),
+                          silent = TRUE)
+        validate(
+          need(isTruthy(sample.try),
+               paste("Sample data could not be downloaded; please check your",
+                     "internet connection. If this problem persists,",
+                     "email Sam Woodman (sam.woodman@noaa.gov) or",
+                     "Karin Forney (karin.forney@noaa.gov)."))
+        )
+        incProgress(0.4)
+      })
+    }
+  )
 
   # Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
