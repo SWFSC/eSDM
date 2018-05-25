@@ -264,28 +264,33 @@ output$eval_models_table_ens_out <- DT::renderDataTable({
 # Presence/absence loaded message, error outputs, and table
 
 # Presence and absence points
-output$eval_data_1_message <- renderText({
-  eval.data.list <- vals$eval.data.list
-  ifelse(!(is.na(eval.data.list)[1] & is.na(eval.data.list)[2]),
-         "Validation data loaded", "")
+output$eval_data_message <- renderText({
+  ifelse(inherits(vals$eval.data, "sf"), "Validation data loaded", "")
 })
 
 # Text outputs
-output$eval_csv_data_1_text <- renderText(eval_data_1_csv())
+output$eval_csv_data_text <- renderText(eval_data_csv())
 
-output$eval_data_1_gis_text <- renderText({
-  pa.spdf.list <- vals$eval.data.gis.file.1
-  req(length(pa.spdf.list) > 0)
-  req(pa.spdf.list[[1]], pa.spdf.list[[2]] == input$eval_load_type_1)
+output$eval_data_gis_text <- renderText({
+  req(vals$eval.data.gis.info)
+  req(vals$eval.data.gis.info[[3]] == input$eval_load_type)
 
-  eval_data_1_gis()
+  eval_data_gis()
 })
 
 output$eval_metrics_text <- renderText(eval_metrics())
 
-# Presence/absence table
-output$table_pa_pts_out <- renderTable({
-  table_data_pts()
+# Validatoin data title
+output$table_eval_pts_title <- renderText({
+  req(vals$eval.data.specs)
+  ifelse(vals$eval.data.specs[2] == 1,
+         "Validation data (count) info",
+         "Validation data (presence/absence) info")
+})
+
+# Validation data table
+output$table_eval_pts_out <- renderTable({
+  table_eval_pts()
 }, colnames = FALSE)
 
 ###########################################################

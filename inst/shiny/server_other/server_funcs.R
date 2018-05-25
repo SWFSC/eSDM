@@ -110,7 +110,7 @@ gis_model_check <- function(gis.loaded) {
 
   # Check crs arguments and project to crs.ll if necessary
   validate(
-    need(!is.na(st_crs(gis.loaded)),
+    need(!is.na(st_crs(gis.loaded)$proj4string),
          "Error: GIS file does not have defined projection")
   )
   if (identical(st_crs(gis.loaded), crs.ll)) {
@@ -198,7 +198,13 @@ check_dateline <- function(x, wrap.offset = 10) {
     x <- st_wrap_dateline(
       x, options = c("WRAPDATELINE=YES", paste0("DATELINEOFFSET=", wrap.offset))
     )
+
+    if (st_bbox(x)[3] > 180) {
+      validate(need(FALSE, "Unable to correct poly longitude range"))
+    }
   }
+
+
 
   x
 }

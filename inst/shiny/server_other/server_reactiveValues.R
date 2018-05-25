@@ -45,12 +45,12 @@ vals <- reactiveValues(
   ensemble.plotted.idx  = NULL,   # Vector of the indicies of currently previewed ensemble models
 
   # Objects that store data for evaluation metrics section
-  eval.data           = NULL,     # Validation data (sf obj) with 'count' and 'sight' columns
-  eval.data.specs     = NULL,     # Data type (1 = counts, 2 = p/a)
-  eval.data.gis.info  = NULL,     # List with loaded gis validation data (sf obj) and shp/gdb indicator (num 2 or 3)
-  eval.models.idx     = NULL,     # List of indices of evaluated models
-  eval.metrics        = NULL,     # Metric values
-  eval.metrics.names  = NULL,     # Names of metrics calculated
+  eval.data          = NULL,      # Validation data (sf obj) with 'count' and 'sight' columns
+  eval.data.specs    = NULL,      # Data type (1 = counts, 2 = p/a)
+  eval.data.gis.info = NULL,      # List with loaded gis validation data (sf obj) and shp/gdb indicator (num 2 or 3)
+  eval.models.idx    = NULL,      # List of indices of evaluated models
+  eval.metrics       = NULL,      # Metric values
+  eval.metrics.names = NULL,      # Names of metrics calculated
 
   # Objects that store data for high quality (pretty) plots
   pretty.params.list = NULL,      # List of parameters to use in high quality plots

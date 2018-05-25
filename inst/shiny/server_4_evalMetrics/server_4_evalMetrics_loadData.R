@@ -8,23 +8,23 @@
 
 ###########################################################
 ### CSV error message and inputs
-output$eval_csv_1_flag <- reactive({
-  !is.null(eval_data_1_csv_load())
+output$eval_csv_flag <- reactive({
+  !is.null(eval_data_csv_load())
 })
-outputOptions(output, "eval_csv_1_flag", suspendWhenHidden = FALSE)
+outputOptions(output, "eval_csv_flag", suspendWhenHidden = FALSE)
 
 
 ###########################################################
 ### GIS error messages
-output$eval_gis_1_shp_flag <- reactive({
-  !is.null(eval_data_1_shp_load())
+output$eval_gis_shp_flag <- reactive({
+  isTruthy(eval_data_shp_load())
 })
-outputOptions(output, "eval_gis_1_shp_flag", suspendWhenHidden = FALSE)
+outputOptions(output, "eval_gis_shp_flag", suspendWhenHidden = FALSE)
 
-output$eval_gis_1_gdb_flag <- reactive({
-  !is.null(eval_data_1_gdb_load())
+output$eval_gis_gdb_flag <- reactive({
+  isTruthy(eval_data_gdb_load())
 })
-outputOptions(output, "eval_gis_1_gdb_flag", suspendWhenHidden = FALSE)
+outputOptions(output, "eval_gis_gdb_flag", suspendWhenHidden = FALSE)
 
 
 ###########################################################
@@ -32,15 +32,15 @@ outputOptions(output, "eval_gis_1_gdb_flag", suspendWhenHidden = FALSE)
 # Ouputs only control error messages; rendered widgets use req() statements
 
 ### CSV
-output$eval_csv_1_error_flag <- reactive({
-  if (input$eval_data_type_1 == 1) {
-    if (length(input$eval_csv_names_1) != 3) {
+output$eval_csv_error_flag <- reactive({
+  if (input$eval_data_type == 1) {
+    if (length(input$eval_csv_names) != 3) {
       1
     } else {
       FALSE
     }
   } else {
-    code.flag <- eval_data_1_csv_pacodes()
+    code.flag <- eval_data_csv_pacodes()
     if ("error1" %in% code.flag) {
       1
     } else if ("error2" %in% code.flag) {
@@ -50,14 +50,14 @@ output$eval_csv_1_error_flag <- reactive({
     }
   }
 })
-outputOptions(output, "eval_csv_1_error_flag", suspendWhenHidden = FALSE)
+outputOptions(output, "eval_csv_error_flag", suspendWhenHidden = FALSE)
 
 ### GIS
-output$eval_gis_1_error_flag <- reactive({
-  if (input$eval_data_type_1 == 1) {
+output$eval_gis_error_flag <- reactive({
+  if (input$eval_data_type == 1) {
     FALSE
   } else {
-    code.flag <- eval_data_1_gis_pacodes()
+    code.flag <- eval_data_gis_pacodes()
     if ("error2" %in% code.flag) { #"error2" to keep consistent with csv
       2
     } else {
@@ -65,25 +65,25 @@ output$eval_gis_1_error_flag <- reactive({
     }
   }
 })
-outputOptions(output, "eval_gis_1_error_flag", suspendWhenHidden = FALSE)
+outputOptions(output, "eval_gis_error_flag", suspendWhenHidden = FALSE)
 
 
 ###########################################################
 ### Display GIS 'general' input if data has been loaded from shp and...
 # ...shp is selected, or if same for gdb
-output$eval_gis_1_flag <- reactive({
-  req(length(vals$eval.data.gis.file.1) != 0)
+output$eval_gis_flag <- reactive({
+  req(length(vals$eval.data.gis.info) != 0)
 
-  x <- try((!is.null(eval_data_1_shp_load()) & input$eval_load_type_1 == 2 &
-              vals$eval.data.gis.file.1[[2]] == 2),
+  x <- try((!is.null(eval_data_shp_load()) & input$eval_load_type == 2 &
+              vals$eval.data.gis.info[[3]] == 2),
            silent = TRUE)
-  y <- try((!is.null(eval_data_1_gdb_load()) & input$eval_load_type_1 == 3 &
-              vals$eval.data.gis.file.1[[2]] == 3),
+  y <- try((!is.null(eval_data_gdb_load()) & input$eval_load_type == 3 &
+              vals$eval.data.gis.info[[3]] == 3),
            silent = TRUE)
 
   isTruthy(x) | isTruthy(y)
 })
-outputOptions(output, "eval_gis_1_flag", suspendWhenHidden = FALSE)
+outputOptions(output, "eval_gis_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
@@ -91,8 +91,8 @@ outputOptions(output, "eval_gis_1_flag", suspendWhenHidden = FALSE)
 # Loading validation data from csv
 
 ### Read in .csv file
-eval_data_1_csv_load <- reactive({
-  file.in <- input$eval_csv_1
+eval_data_csv_load <- reactive({
+  file.in <- input$eval_csv
   req(file.in)
 
   if (!(file.in$type %in% c("text/csv", "application/vnd.ms-excel"))) return()
@@ -102,13 +102,13 @@ eval_data_1_csv_load <- reactive({
 })
 
 ### Get options for presence/absence codes
-eval_data_1_csv_pacodes <- reactive({
-  csv.info <- eval_data_1_csv_load()
-  req(csv.info, input$eval_data_type_1 == 2)
+eval_data_csv_pacodes <- reactive({
+  csv.info <- eval_data_csv_load()
+  req(csv.info, input$eval_data_type == 2)
 
-  if (length(input$eval_csv_names_1) != 3) return("error1")
+  if (length(input$eval_csv_names) != 3) return("error1")
 
-  col.pa <- as.numeric(input$eval_csv_names_1[3])
+  col.pa <- as.numeric(input$eval_csv_names[3])
   choice.input.names <- unique(csv.info[[2]][, col.pa])
   choice.input.names <- choice.input.names[order(choice.input.names)]
 
@@ -118,19 +118,19 @@ eval_data_1_csv_pacodes <- reactive({
 })
 
 ### CSV: Process and then save validation data to reactiveVal
-eval_data_1_csv <- eventReactive(input$eval_csv_execute_1, {
-  req(eval_data_1_csv_load(), length(input$eval_csv_names_1) == 3)
+eval_data_csv <- eventReactive(input$eval_csv_execute, {
+  req(eval_data_csv_load(), length(input$eval_csv_names) == 3)
 
   # Prep for processing
-  data.type <- as.numeric(input$eval_data_type_1)
-  csv.all <- eval_data_1_csv_load()[[2]]
-  csv.selected <- csv.all[, as.numeric(input$eval_csv_names_1)]
+  data.type <- as.numeric(input$eval_data_type)
+  csv.all <- eval_data_csv_load()[[2]]
+  csv.selected <- csv.all[, as.numeric(input$eval_csv_names)]
 
   # Process data.frame with selected data and create sf object
-  vals$eval.data.list <- eval_proc_df(
-    csv.selected, data.type, input$eval_csv_codes_1_p, input$eval_csv_codes_1_a
+  vals$eval.data <- eval_proc_df(
+    csv.selected, data.type, input$eval_csv_codes_p, input$eval_csv_codes_a
   )
-  vals$eval.data.specs <- data.type
+  vals$eval.data.specs <- c(eval_data_csv_load()[[1]], data.type)
 
   "Loaded and stored validation data"
 })
@@ -142,11 +142,11 @@ eval_data_1_csv <- eventReactive(input$eval_csv_execute_1, {
 
 ###########################################################
 ### Load validation shp and save it to reactiveValue
-eval_data_1_shp_load <- reactive({
-  req(input$eval_gis_shp_1)
+eval_data_shp_load <- reactive({
+  req(input$eval_gis_shp)
 
   withProgress(message = "Loading GIS file", value = 0.3, {
-    gis.file.shp <- read.shp.shiny(input$eval_gis_shp_1)
+    gis.file.shp <- read.shp.shiny(input$eval_gis_shp)
     gis.file.success <- isTruthy(gis.file.shp)
     incProgress(0.4)
 
@@ -174,21 +174,22 @@ eval_data_1_shp_load <- reactive({
   if (!gis.file.success) {
     NULL
   } else {
-    gis.file.shp.ll
+    list(strsplit(input$model_gis_shp_files$name[1], "\\.")[[1]][1],
+         gis.file.shp.ll)
   }
 })
 
 observe({
-  req(eval_data_1_shp_load())
-  vals$eval.data.gis.file.1 <- list(eval_data_1_shp_load(), 2)
+  req(eval_data_shp_load())
+  vals$eval.data.gis.info <- c(eval_data_shp_load(), 2)
 })
 
 
 ###########################################################
 ### Load validation gdb and save it to reactiveValue
-eval_data_1_gdb_load <- eventReactive(input$eval_gis_gdb_load_1, {
-  gdb.path <- input$eval_gis_gdb_path_1
-  gdb.name <- input$eval_gis_gdb_name_1
+eval_data_gdb_load <- eventReactive(input$eval_gis_gdb_load, {
+  gdb.path <- input$eval_gis_gdb_path
+  gdb.name <- input$eval_gis_gdb_name
 
   withProgress(message = "Loading GIS file", value = 0.3, {
     gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),
@@ -220,26 +221,25 @@ eval_data_1_gdb_load <- eventReactive(input$eval_gis_gdb_load_1, {
   if (!gis.file.success) {
     NULL
   } else {
-    gis.file.gdb.ll
+    list(gdb.name, gis.file.gdb.ll)
   }
 })
 
 observe({
-  req(eval_data_1_gdb_load())
-  vals$eval.data.gis.file.1 <- list(eval_data_1_gdb_load(), 3)
-  shinyjs::reset("eval_gis_shp_1")
+  req(eval_data_gdb_load())
+  vals$eval.data.gis.info <- list(eval_data_gdb_load(), 3)
+  shinyjs::reset("eval_gis_shp")
 })
 
 
 ###########################################################
 ### Get options for presence/absence codes
-eval_data_1_gis_pacodes <- reactive({
-  pa.sf.list <- vals$eval.data.gis.file.1
-  req(length(pa.sf.list) > 0)
-  pa.sf <- pa.sf.list[[1]]
-  req(pa.sf, pa.sf.list[[2]] == input$eval_load_type_1)
+eval_data_gis_pacodes <- reactive({
+  req(vals$eval.data.gis.info)
+  req(vals$eval.data.gis.info[[3]] == input$eval_load_type)
 
-  col.pa <- as.numeric(input$eval_gis_names_1)
+  pa.sf <- vals$eval.data.gis.info[[2]]
+  col.pa <- as.numeric(input$eval_gis_names)
   choice.input.names <- unique(st_set_geometry(pa.sf, NULL)[, col.pa])
 
   if (length(choice.input.names) > 50) return("error2")
@@ -250,23 +250,23 @@ eval_data_1_gis_pacodes <- reactive({
 
 ###########################################################
 ### GIS: process and then save validation data to reactiveVar
-eval_data_1_gis <- eventReactive(input$eval_gis_execute_1, {
-  req(length(vals$eval.data.gis.file.1) > 0)
+eval_data_gis <- eventReactive(input$eval_gis_execute, {
+  req(vals$eval.data.gis.info)
 
   # Prep for processing
-  data.type <- as.numeric(input$eval_data_type_1)
-  pa.sf <- vals$eval.data.gis.file.1[[1]]
-  x <- do.call(rbind, st_geometry(pa.sf))
+  data.type <- as.numeric(input$eval_data_type)
+  x <- vals$eval.data.gis.info[[2]]
+  x <- do.call(rbind, st_geometry(x))
   gis.selected <- data.frame(
     lon = x[, 1], lat = x[, 2],
-    z = st_set_geometry(pa.sf, NULL)[, as.numeric(input$eval_gis_names_1)]
+    z = st_set_geometry(pa.sf, NULL)[, as.numeric(input$eval_gis_names)]
   )
 
   # Process data.frame with selected data and create sf object
-  vals$eval.data.list <- eval_proc_df(
-    gis.selected, data.type, input$eval_gis_codes_1_p, input$eval_gis_codes_1_a
+  vals$eval.data <- eval_proc_df(
+    gis.selected, data.type, input$eval_gis_codes_p, input$eval_gis_codes_a
   )
-  vals$eval.data.specs <- data.type
+  vals$eval.data.specs <- c(vals$eval.data.gis.info[[1]], data.type)
 
   "Loaded and stored validation data"
 })

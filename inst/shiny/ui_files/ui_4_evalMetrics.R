@@ -21,102 +21,102 @@ ui.evalMetrics <- function() {
         box(
           title = "Load Validation Data", status = "warning", solidHeader = FALSE, width = 5, collapsible = TRUE,
           fluidRow(
-            column(6, radioButtons("eval_load_type_1", tags$h5("Validation data file type"),
+            column(6, radioButtons("eval_load_type", tags$h5("Validation data file type"),
                                    choices = file.type.list1, selected = 1)),
-            column(6, radioButtons("eval_data_type_1", tags$h5("Validation data type"),
-                                   choices = list("Counts (numerical)" = 1, "Presence or absence" = 2),
+            column(6, radioButtons("eval_data_type", tags$h5("Validation data type"),
+                                   choices = list("Count (numerical)" = 1, "Presence or absence" = 2),
                                    selected = 1))
           ),
           #########################################################  Excel csv file
           conditionalPanel(
-            condition = "input.eval_load_type_1 == 1",
+            condition = "input.eval_load_type == 1",
             ui.instructions.upload.csv(),
             helpText("The Excel .csv file must have columns with the longitude and latitude coordinates of the data, ",
                      "in addition to the column with validation data"),
-            fileInput("eval_csv_1", label.csv.upload, accept = ".csv"),
-            conditionalPanel("output.eval_csv_1_flag == false", ui.error.upload.csv),
+            fileInput("eval_csv", label.csv.upload, accept = ".csv"),
+            conditionalPanel("output.eval_csv_flag == false", ui.error.upload.csv),
             conditionalPanel(
-              condition = "output.eval_csv_1_flag",
+              condition = "output.eval_csv_flag",
               box(
                 width = 12,
-                uiOutput("eval_csv_names_1_uiOut_select"),
+                uiOutput("eval_csv_names_uiOut_select"),
                 conditionalPanel(
-                  condition = "input.eval_data_type_1 == 1",
+                  condition = "input.eval_data_type == 1",
                   conditionalPanel(
-                    condition = "output.eval_csv_1_error_flag == 1",
+                    condition = "output.eval_csv_error_flag == 1",
                     helpText("Please select exactly three columns above")
                   )
                 ),
                 conditionalPanel(
-                  condition = "input.eval_data_type_1 == 2",
+                  condition = "input.eval_data_type == 2",
                   conditionalPanel(
-                    condition = "output.eval_csv_1_error_flag == 1",
+                    condition = "output.eval_csv_error_flag == 1",
                     helpText("Please select exactly three columns above to select presence and absence codes")
                   ),
                   conditionalPanel(
-                    condition = "output.eval_csv_1_error_flag == 2",
+                    condition = "output.eval_csv_error_flag == 2",
                     helpText("There are more than 50 unique codes for the currently selected validation data column.",
                              "Please select a different column or select \"Counts (numerical)\" for",
                              tags$em("Validation data type"), ".")
                   ),
                   fluidRow(
-                    column(6, uiOutput("eval_csv_codes_1_p_uiOut_select")),
-                    column(6, uiOutput("eval_csv_codes_1_a_uiOut_select"))
+                    column(6, uiOutput("eval_csv_codes_p_uiOut_select")),
+                    column(6, uiOutput("eval_csv_codes_a_uiOut_select"))
                   )
                 ),
                 fluidRow(
-                  column(6, uiOutput("eval_csv_execute_1_uiOut_button")),
-                  column(6, textOutput("eval_csv_data_1_text"))
+                  column(6, uiOutput("eval_csv_execute_uiOut_button")),
+                  column(6, textOutput("eval_csv_data_text"))
                 )
               )
             )
           ),
           ######################################################### GIS shp file
           conditionalPanel(
-            condition = "input.eval_load_type_1 == 2",
+            condition = "input.eval_load_type == 2",
             ui.instructions.upload.shp(),
-            fileInput("eval_gis_shp_1", label.shp.upload, multiple = TRUE),
-            conditionalPanel("output.eval_gis_1_shp_flag == false", ui.error.upload.shp)
+            fileInput("eval_gis_shp", label.shp.upload, multiple = TRUE),
+            conditionalPanel("output.eval_gis_shp_flag == false", ui.error.upload.shp)
           ),
           ######################################################### GIS gdb file
           conditionalPanel(
-            condition = "input.eval_load_type_1 == 3",
+            condition = "input.eval_load_type == 3",
             ui.instructions.upload.gdb(),
-            textInput("eval_gis_gdb_path_1", label.gdb.path, value = ".../folder.gdb"),
+            textInput("eval_gis_gdb_path", label.gdb.path, value = ".../folder.gdb"),
             fluidRow(
-              column(6, textInput("eval_gis_gdb_name_1", label.gdb.name, value = "")),
-              column(6, tags$br(), tags$br(), actionButton("eval_gis_gdb_load_1", label.gdb.upload))
+              column(6, textInput("eval_gis_gdb_name", label.gdb.name, value = "")),
+              column(6, tags$br(), tags$br(), actionButton("eval_gis_gdb_load", label.gdb.upload))
             ),
             tags$br(),
-            conditionalPanel("output.eval_gis_1_gdb_flag == false", ui.error.upload.gdb)
+            conditionalPanel("output.eval_gis_gdb_flag == false", ui.error.upload.gdb)
           ),
 
           ######################################################### GIS shp or gdb file
           conditionalPanel(
-            condition = "output.eval_gis_1_flag",
+            condition = "output.eval_gis_flag",
             box(
               width = 12,
-              uiOutput("eval_gis_names_1_uiOut_select"),
+              uiOutput("eval_gis_names_uiOut_select"),
               conditionalPanel(
-                condition = "input.eval_data_type_1 == 2",
+                condition = "input.eval_data_type == 2",
                 conditionalPanel(
-                  condition = "output.eval_gis_1_error_flag == 2",
+                  condition = "output.eval_gis_error_flag == 2",
                   helpText("There are more than 50 unique codes for the currently selected validation data column.",
                            "Please select a different column or select \"Counts (numerical)\" for",
                            tags$em("Validation data type"), ".")
                 ),
                 fluidRow(
-                  column(6, uiOutput("eval_gis_codes_1_p_uiOut_select")),
-                  column(6, uiOutput("eval_gis_codes_1_a_uiOut_select"))
+                  column(6, uiOutput("eval_gis_codes_p_uiOut_select")),
+                  column(6, uiOutput("eval_gis_codes_a_uiOut_select"))
                 )
               ),
               fluidRow(
-                column(6, uiOutput("eval_gis_execute_1_uiOut_button")),
-                column(6, textOutput("eval_data_1_gis_text"))
+                column(6, uiOutput("eval_gis_execute_uiOut_button")),
+                column(6, textOutput("eval_data_gis_text"))
               )
             )
           ),
-          tags$span(textOutput("eval_data_1_message"), style = "color: blue")
+          tags$span(textOutput("eval_data_message"), style = "color: blue")
         )
       ),
       fluidRow(
@@ -135,8 +135,8 @@ ui.evalMetrics <- function() {
                 fluidRow(
                   column(
                     width = 5,
-                    tags$h5("Validation data info"),
-                    tableOutput("table_pa_pts_out"),
+                    tags$strong(textOutput("table_eval_pts_title")),
+                    tableOutput("table_eval_pts_out"),
                     tags$style(type="text/css", "#table_pa_pts_out td:first-child {font-weight:bold;}")
                     #tr:first-child for first row
                   ),

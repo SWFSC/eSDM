@@ -17,7 +17,7 @@ outputOptions(output, "eval_display_flag", suspendWhenHidden = FALSE)
 
 ### Flag for if validation data has been loaded
 output$eval_display_calc_metrics_flag <- reactive({
-  all(!is.na(vals$eval.data.list))
+  inherits(vals$eval.data, "sf")
 })
 outputOptions(output, "eval_display_calc_metrics_flag",
               suspendWhenHidden = FALSE)
@@ -25,31 +25,36 @@ outputOptions(output, "eval_display_calc_metrics_flag",
 
 ###############################################################################
 ### Generate table with validation data stats
-table_data_pts <- reactive({
-  data.list <- vals$eval.data.list
-  data.type <- vals$eval.data.specs
-  req(all(!is.na(data.list)), data.type)
+table_eval_pts <- reactive({
+  data.sf <- vals$eval.data
+  data.type <- vals$eval.data.specs[2]
+  req(inherits(data.sf, "sf"), data.type)
 
-  pres.data <- data.list[[1]]
-
-  pres.num <- nrow(pres.data)
-  abs.num <- nrow(data.list[[2]])
+  pres.num <- sum(data.sf$sight == 1)
+  abs.num <- sum(data.sf$sight == 0)
 
   if (data.type == 1) {
+    pres.data <- data.sf %>% dplyr::filter(sight == 1)
     count.range <- paste(range(round(pres.data$count, 2)), collapse = " to ")
-    table.out.col1<- c("Number of points with non-zero counts",
-                       "Number of points with counts of 0",
-                       "Range of non-zero counts")
-    table.out.col2 <- c(pres.num, abs.num, count.range)
-    data.frame(x = table.out.col1, y = table.out.col2)
+
+    data.frame(
+      x = c("Filename",
+            "Number of points with non-zero counts",
+            "Number of points with counts of 0",
+            "Range of non-zero counts"),
+      y = c(vals$eval.data.specs[1], pres.num, abs.num, count.range)
+    )
 
   } else if (data.type == 2) {
-    table.out.col1<- c("Number of presence points", "Number of absence points")
-    table.out.col2 <- c(pres.num, abs.num)
-    data.frame(x = table.out.col1, y = table.out.col2)
+    data.frame(
+      x = c(
+        "Filename", "Number of presence points", "Number of absence points"
+      ),
+      y = c(vals$eval.data.specs[1], pres.num, abs.num)
+    )
 
   } else {
-    validate(need(FALSE, "Error: vals$eval.data.specs is not 1 or 2"))
+    stop("table_eval_pts(): vals$eval.data.specs[[2]] is not 1 or 2")
   }
 })
 
@@ -61,10 +66,12 @@ table_data_pts <- reactive({
 # Prep
 
 ### Generate indicies of models for which to calculate metrics
-eval_models_toeval_idx <- reactive({
-  eval.models.idx <- list(input$eval_models_table_orig_out_rows_selected,
-                          input$eval_models_table_over_out_rows_selected,
-                          input$eval_models_table_ens_out_rows_selected)
+eval_models_idx <- reactive({
+  eval.models.idx <- list(
+    input$eval_models_table_orig_out_rows_selected,
+    input$eval_models_table_over_out_rows_selected,
+    input$eval_models_table_ens_out_rows_selected
+  )
 
   lapply(eval.models.idx, function(i) {
     if (!is.null(i)) sort(i) else i
@@ -73,20 +80,16 @@ eval_models_toeval_idx <- reactive({
 
 ### Generate list of crs.ll models with which to calculate metrics
 # Validating done in eval_metrics()
-eval_models_toeval <- reactive({
-  eval.models.idx <- eval_models_toeval_idx()
+eval_models <- reactive({
+  eval.models.idx <- eval_models_idx()
 
   models.list.orig <- vals$models.ll[eval.models.idx[[1]]]
   models.list.over <- vals$overlaid.models[eval.models.idx[[2]]]
-  models.list.ens <- vals$ensemble.models[eval.models.idx[[3]]]
+  models.list.ens  <- vals$ensemble.models[eval.models.idx[[3]]]
 
   models.all <- c(models.list.orig, models.list.over, models.list.ens)
   lapply(models.all, function(j) {
-    if (identical(st_crs(j), crs.ll)) {
-      j
-    } else {
-      st_transform(j, crs.ll)
-    }
+    if (identical(st_crs(j), crs.ll)) j else st_transform(j, crs.ll)
   })
 })
 
@@ -96,21 +99,19 @@ eval_models_toeval <- reactive({
 eval_metrics <- eventReactive(input$eval_metrics_execute, {
   # Reset eval reactiveValues
   vals$eval.models.idx <- NULL
-  vals$eval.metrics <- list()
+  vals$eval.metrics <- NULL
   vals$eval.metrics.names <- NULL
 
   # Set necessary variables
-  pa.sptsdf <- vals$eval.data.list
-  pa.sptsdf.both <- suppressWarnings(all(!sapply(pa.sptsdf, is.na)))
-
-  models.idx.any <- any(!sapply(eval_models_toeval_idx(), is.null))
-
+  eval.p <- vals$eval.data.list[[1]]
+  eval.a <- vals$eval.data.list[[2]]
+  models.idx.any <- any(!sapply(eval_models_idx(), is.null))
   which.metrics <- input$eval_metrics_which
 
   # All validating done here so all messages are displayed at same time
   validate(
-    need(pa.sptsdf.both,
-         paste("Error: Please load presence and absence points in order",
+    need(all(sapply(pa.list, inherits, "sf")),
+         paste("Error: Please load validation data in order",
                "to calculate model evaluation metrics")),
     need(models.idx.any,
          paste("Error: Please select at least one model for which ",
@@ -119,27 +120,28 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
          "Error: Please select at least one evaluation metric to calculate")
   )
 
+  browser()
   # Calculate metrics
   withProgress(message = 'Evaluating models', value = 0.1, {
-    models.toeval <- eval_models_toeval()
+    models.toeval <- eval_models()
     incProgress(0.1)
 
     eval.results <- lapply(models.toeval, function(m) {
-      helper.over.out <- helper.over(pa.sptsdf[[1]], pa.sptsdf[[2]], m, 1)
-      helper.pred.out <- helper.pred(pa.sptsdf[[1]], pa.sptsdf[[2]], m, 1,
-                                     helper.over.result = helper.over.out)
+      overlap.out <- eval_overlap(pa.list[[1]], pa.list[[2]], m, 1)
+      prediction.out <- eval_prediction(pa.list[[1]], pa.list[[2]], m, 1,
+                                        overlap.out = overlap.out)
 
       out1 <- out2 <- out3 <- NULL
       if("AUC" %in% which.metrics) {
-        out1 <- auc.func(pa.sptsdf[[1]], pa.sptsdf[[2]], m, 1, "",
+        out1 <- auc.func(pa.list[[1]], pa.list[[2]], m, 1, "",
                          helper.pred.result = helper.pred.out)
       }
       if("TSS" %in% which.metrics) {
-        out2 <- tss.func(pa.sptsdf[[1]], pa.sptsdf[[2]], m, 1,
+        out2 <- tss.func(pa.list[[1]], pa.list[[2]], m, 1,
                          helper.pred.result = helper.pred.out)
       }
       if("RMSE" %in% which.metrics) {
-        out3 <- rmse.func(pa.sptsdf[[1]], pa.sptsdf[[2]], m, 1,
+        out3 <- rmse.func(pa.list[[1]], pa.list[[2]], m, 1,
                           helper.over.result = helper.over.out)
       }
 
@@ -150,7 +152,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   })
 
   # Save model idx and metrics to reactiveValues
-  vals$eval.models.idx <- eval_models_toeval_idx()
+  vals$eval.models.idx <- eval_models_idx()
   vals$eval.metrics <- eval.results
   vals$eval.metrics.names <- which.metrics
 
@@ -176,10 +178,10 @@ table_eval_metrics <- reactive({
     table.ensembles <- table_ensembles()[models.idx[[3]], ]
   })
 
-  metrics.table <- data.frame("Model" = c(row.names(table.orig),
-                                          row.names(table.over),
-                                          row.names(table.ensembles)),
-                              metrics.table, stringsAsFactors = FALSE)
+  metrics.table <- data.frame(
+    "Model" = c(row.names(table.orig), row.names(table.over),
+                row.names(table.ensembles)),
+    metrics.table, stringsAsFactors = FALSE)
   row.names(metrics.table) <- 1:nrow(metrics.table)
 
   metrics.table

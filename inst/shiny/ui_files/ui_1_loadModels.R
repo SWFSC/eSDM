@@ -17,9 +17,10 @@ ui.loadModels <- function() {
               fluidRow(
                 column(6, fileInput("model_csv_file", label.csv.upload, accept = ".csv")),
                 column(
-                  width = 5, offset = 1,
+                  width = 4, offset = 1,
                   selectInput("model_csv_pt_loc", tags$h5("Location of point in grid cell"),
-                              choices = list("Center" = 1, "Top left" = 2, "Top right" = 3, "Bottom right" = 4, "Bottom left" = 5),
+                              choices = list("Center" = 1, "Top left" = 2, "Top right" = 3,
+                                             "Bottom right" = 4, "Bottom left" = 5),
                               selected = 1)
                 )
               ),
