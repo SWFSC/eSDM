@@ -96,7 +96,7 @@ poly_valid_check <- function(poly.invalid, dens.col = NA, poly.info = NA) {
 
 gis_model_check <- function(gis.loaded) {
   validate(
-    need(identical(class(gis.loaded), c("sf", "data.frame")),
+    need(inherits(gis.loaded, "sf"),
          "Error: GIS object was not read in properly")
   )
 
@@ -121,16 +121,14 @@ gis_model_check <- function(gis.loaded) {
 
   # Check that extent is as expected
   ext <- st_bbox(list.toreturn[[1]])
-  # Run some dateline correction function here..?
   validate(
     need(all(ext["xmax"] <= 180 & ext["xmin"] >= -180),
-         "Error: Raster longitude extent is not -180 to 180 degrees"),
+         "Error: GIS object longitude extent is not -180 to 180 degrees"),
     need(all(ext["ymax"] <= 90 & ext["ymin"] >= -90),
-         "Error: Raster latitude extent is not -90 to 90 degrees")
+         "Error: GIS object latitude extent is not -90 to 90 degrees")
   )
 
-  # Return list of sf objects
-  return(list.toreturn)
+  list.toreturn
 }
 
 

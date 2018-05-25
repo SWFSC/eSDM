@@ -59,16 +59,10 @@ read_model_gis_shp <- reactive({
 
     gis.file.success <- isTruthy(gis.file.shp)
     if (gis.file.success) {
-      if (st_bbox(gis.file.shp)[3] > 180) {
-        incProgress(0.05, detail = "Polygon(s) span dateline; handling now")
-        gis.file.shp <- st_wrap_dateline(gis.file.shp)
-      }
+      gis.file.shp <- check_dateline(gis.file.shp)
 
-      incProgress(detail = "Checking if model polygons are valid")
-      if (!all(st_is_valid(gis.file.shp))) {
-        incProgress(0.1, detail = "Making model polygons valid")
-        gis.file.shp <- poly_valid_check(gis.file.shp)
-      }
+      gis.file.shp <- check_valid(gis.file.shp, progress.detail = TRUE)
+
       sf.list <- gis_model_check(gis.file.shp)
     }
     incProgress(0.15, detail = "")
@@ -83,7 +77,7 @@ read_model_gis_shp <- reactive({
 
 ### Flag for if the shapefile was fully loaded and processed
 output$read_model_gis_shp_flag <- reactive({
-  !is.null(read_model_gis_shp())
+  isTruthy(read_model_gis_shp())
 })
 outputOptions(output, "read_model_gis_shp_flag", suspendWhenHidden = FALSE)
 
@@ -124,16 +118,10 @@ read_model_gis_gdb <- eventReactive(input$model_gis_gdb_load, {
 
     gis.file.success <- isTruthy(gis.file.gdb)
     if (gis.file.success) {
-      if (st_bbox(gis.file.gdb)[3] > 180) {
-        incProgress(0.05, detail = "Polygon(s) span dateline; handling now")
-        gis.file.gdb <- st_wrap_dateline(gis.file.gdb)
-      }
+      gis.file.gdb <- check_dateline(gis.file.gdb)
 
-      incProgress(detail = "Checking if model polygons are valid")
-      if (!all(st_is_valid(gis.file.gdb))) {
-        incProgress(0.1, detail = "Making model polygons valid")
-        gis.file.gdb <- poly_valid_check(gis.file.gdb)
-      }
+      gis.file.gdb <- check_valid(gis.file.gdb, progress.detail = TRUE)
+
       sf.list <- c(gis_model_check(gis.file.gdb), gdb.name)
       # gdb.name is included in list in case user types something else before
       #   actually importing the SDM into the app
@@ -149,20 +137,20 @@ read_model_gis_gdb <- eventReactive(input$model_gis_gdb_load, {
 })
 
 output$read_model_gis_gdb_flag <- reactive({
-  !is.null(read_model_gis_gdb())
+  isTruthy(read_model_gis_gdb())
 })
 outputOptions(output, "read_model_gis_gdb_flag", suspendWhenHidden = FALSE)
 
 #######################################
 ### Process data and add it to list.all
 create_sf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
-  sf.list <- read_model_gis_gdb()
+  sf.list <- read_model_gis_gdb()[1:2]
 
   pred.idx <- as.numeric(input$model_gis_gdb_names_pred)
   error.idx <- NA #as.numeric(input$model_gis_gdb_names_error)
   weight.idx <- as.numeric(input$model_gis_gdb_names_weight)
 
-  model.name <- sf.list[[3]]
+  model.name <- read_model_gis_gdb()[[3]]
   pred.type <- input$model_gis_gdb_pred_type
 
   #### The code from this file is the same as in create_spdf_gis_shp() ####

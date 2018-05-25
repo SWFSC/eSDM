@@ -1,8 +1,6 @@
 #' Title
 #'
 #' Determine the resolution of provided gis model
-#'
-#' @export
 
 gis_res_calc <- function(sf.ll, sf.orig) {
   validate(
@@ -65,10 +63,12 @@ gis_res_calc <- function(sf.ll, sf.orig) {
 
   ## Return appropriate object
   if (is.na(res.orig) & !is.na(res.ll)) {
-    return(res.ll)
+    res.ll
+
   } else if (!is.na(res.orig) & is.na(res.ll)) {
-    return(res.orig)
+    res.orig
+
   } else {
-    return("Unk")
+    "Unk"
   }
 }

@@ -141,11 +141,15 @@ create_sf_csv_sfc <- reactive({
     table.l <- table(round(diff(sort(csv.data$Lon)), 5))
     table.w <- table(round(diff(sort(csv.data$Lat)), 5))
 
+    # Also test for if points are lat/long regular
     test1 <- length(table.l) == 2 & length(table.w) == 2
     test2 <- "0" %in% names(table.l) & "0" %in% names(table.w)
     test3 <- as.numeric(names(table.l[2])) == as.numeric(names(table.w[2]))
 
-    validate(need(all(c(test1, test2, test3)), "Not lat/long regular"))
+    validate(
+      need(all(c(test1, test2, test3)),
+           "Error: The points in the .csv file are not lat/long regular")
+    )
     cell.lw <- as.numeric(names(table.w[2]))
     rm(table.l, table.w, test1, test2, test3)
 
@@ -179,51 +183,43 @@ create_sf_csv_sfc <- reactive({
     #####################################
     ### c) Convert points to a list of sfc_POLYGONs and then to a sf object
 
-    # If all lon points are between 180 and 360, shift them to -180 to 180 range
-    #   Otherwise fix datealine issue after createing sf object
-    # range.lon <- range(csv.data$Lon)
-    # if ((range.lon[[1]] - cell.lw) > 180 & (range.lon[[2]] + cell.lw) > 180) {
-    #   csv.data$Lon <- ifelse(csv.data$Lon > 180, csv.data$Lon - 360,
-    #                          csv.data$Lon)
-    # }
-
     # Make sf object
-    incProgress(0.2)
+    incProgress(0.1)
     sfc.list <- apply(csv.data[, c("Lon", "Lat")], 1, function(i, j) {
       st_sfc(st_polygon(list(matrix(
         c(i[1] + j, i[1] - j, i[1] - j, i[1] + j, i[1] + j,
           i[2] + j, i[2] + j, i[2] - j, i[2] - j, i[2] + j),
         ncol = 2))))
     }, j = (cell.lw / 2))
-    incProgress(0.3)
+    incProgress(0.2)
 
     sfc.poly <- st_sfc(do.call(rbind, sfc.list))
 
-    sf.temp.ll <- st_sf(csv.data, sfc.poly, crs = crs.ll, agr = "constant")
+    validate(
+      need(all(sapply(st_contains(sfc.poly, sfc.poly), length) == 1),
+           "Error: The points in the .csv file are not lat/long regular")
+    )
 
-    # Ensure that sf object is in -180 to 180 longitude range
-    if (st_bbox(sf.temp.ll)[3] > 180) {
-      incProgress(detail = "Polygon(s) span dateline; handling now")
-      sf.temp.ll <- st_wrap_dateline(sf.temp.ll)
-    }
+    sf.temp.ll <- st_sf(csv.data, sfc.poly, crs = crs.ll, agr = "constant")
 
 
     #####################################
     ### d) Perform final quality checks
+    # Ensure that sf object is in -180 to 180 longitude range
+    sf.temp.ll <- check_dateline(sf.temp.ll)
+
     incProgress(detail = "Checking if model polygons are valid")
-    if (!all(st_is_valid(sf.temp.ll))) {
-      incProgress(detail = "Making model polygons valid")
-      sf.temp.ll <- poly_valid_check(sf.temp.ll)
-    }
+    sf.temp.ll <- check_valid(sf.temp.ll, progress.detail = TRUE)
+    incProgress(0.3)
 
     sf.bbox <- as.numeric(st_bbox(sf.temp.ll))
     validate(
       need(all(c(sf.bbox[3:4] <= c(180, 90), sf.bbox[1:2] >= c(-180, -90))),
            paste("Error: There was an issue processing this .csv data;",
-                 "please manually ensure that all longitude and latitude values",
-                 "are between [-180, 180] and [-90, 90], respectively"))
+                 "please manually ensure that all longitude and latitude",
+                 "values in .csv file are between [-180, 180] and [-90, 90],",
+                 "respectively"))
     )
-    incProgress(0.2)
 
     list(sf.temp.ll, cell.lw)
   })
@@ -237,9 +233,12 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
 
   withProgress(message = "Combining .csv file data and polygons", value = 0.6, {
     csv.data <- create_sf_csv_data()
-    if (identical(csv.data$Lon, csv.sf.temp$Lon) &
-        identical(csv.data$Lat, csv.sf.temp$Lat)) {
-      sf.load.ll <- st_sf(csv.data[, 3:6], geometry = st_geometry(csv.sf.temp))
+    if (nrow(csv.data) == nrow(csv.sf.temp)) {
+      sf.load.ll <- st_sf(csv.data[, 3:6], geometry = st_geometry(csv.sf.temp),
+                          agr = "constant")
+
+    } else {
+      validate(need(FALSE, "Error in creating sf object from .csv file"))
     }
 
 

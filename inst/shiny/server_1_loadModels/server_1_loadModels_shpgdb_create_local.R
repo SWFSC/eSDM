@@ -2,33 +2,38 @@
 ### Used in create_spdf_gis_shp() and create_spdf_gis_gdb()
 
 withProgress(message = "Adding model predictions to app", value = 0.3, {
-  sf.load.ll.1   <- sf.list[[1]]
-  sf.load.orig.1 <- sf.list[[2]]
+  sf.load.ll   <- sf.list[[1]]
+  sf.load.orig <- sf.list[[2]]
 
   error.idx <- NA #ifelse(error.idx == 1, NA, error.idx - 1)
   weight.idx <- ifelse(weight.idx == 1, NA, weight.idx - 1)
 
-  # browser()
   toadd.e <- toadd.w <- NA
   # if(!is.na(error.idx))  {
-  #   toadd.e  <- st_set_geometry(sf.load.ll.1, NULL)[, error.idx]
+  #   toadd.e  <- st_set_geometry(sf.load.ll, NULL)[, error.idx]
   # }
   if(!is.na(weight.idx)) {
-    toadd.w <- st_set_geometry(sf.load.ll.1, NULL)[, weight.idx]
+    toadd.w <- st_set_geometry(sf.load.ll, NULL)[, weight.idx]
   }
 
-  # Can't pipe to select() because select() can't handle sf objects (yet)
-  # Names of sf objects set in load.val.set()
-  sf.load.ll <- sf.load.ll.1[, pred.idx] %>%
-     mutate(toadd.e, toadd.w, 1:nrow(sf.load.ll.1))
-  sf.load.orig <- sf.load.orig.1[, pred.idx] %>%
-    mutate(toadd.e, toadd.w, 1:nrow(sf.load.orig.1))
+
+  # Names of sf object columns set in ...create_local code
+  sf.load.ll <- sf.load.ll %>% st_set_geometry(NULL) %>%
+    dplyr::select(pred.idx) %>%
+    dplyr::mutate(toadd.e, toadd.w, 1:nrow(sf.load.ll)) %>%
+    st_sf(geometry = st_geometry(sf.load.ll), agr = "constant")
+
+  sf.load.orig <- sf.load.orig %>% st_set_geometry(NULL) %>%
+    dplyr::select(pred.idx) %>%
+    dplyr::mutate(toadd.e, toadd.w, 1:nrow(sf.load.orig)) %>%
+    st_sf(geometry = st_geometry(sf.load.orig), agr = "constant")
   incProgress(0.3)
 
   # Calculate resolution of the model predictions
   model.res <- gis_res_calc(sf.load.ll, sf.load.orig) # JVR 0.9sec
   incProgress(0.2)
 
+  # Need names from sf.list[[1]] since sf.load.ll names will be different
   data.names <- list(names(sf.list[[1]])[c(pred.idx, error.idx, weight.idx)])
 
 

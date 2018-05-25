@@ -18,7 +18,7 @@ model_gis_raster_NA_idx <- reactive({
 read_model_gis_raster <- reactive({
   req(input$model_gis_raster_file)
 
-  # Ensure file extension is .tif
+  ### Ensure file extension is .tif
   if (input$model_gis_raster_file$type != "image/tiff") return()
 
   withProgress(message = "Loading GIS raster", value = 0.3, {
@@ -27,31 +27,47 @@ read_model_gis_raster <- reactive({
                            silent = TRUE)
     gis.file.success <- isTruthy(gis.file.raster)
 
-    # If specified file could be loaded as a raster, process raster
+    ### If specified file could be loaded as a raster, process raster
     if (gis.file.success) {
       incProgress(0.2)
       sf.load.raster <- st_as_sf(as(gis.file.raster, "SpatialPolygonsDataFrame"))
-      st_agr(sf.load.raster) <- "constant"
       stopifnot(ncol(sf.load.raster) == 2)
       incProgress(0.1)
 
-      # Determine resolution of raster cells
-      z <- gis.file.raster
-      z.1 <- round((z@extent@xmax - z@extent@xmin) / z@ncols / 1e+6, 3)
-      z.2 <- round((z@extent@ymax - z@extent@ymin) / z@nrows / 1e+6, 3)
-      model.res <- ifelse(z.1 == z.2, z.1, NA)
+      ### Determine resolution of raster cells
+      crs.orig <- st_crs(sf.load.raster)$proj4string
+      crs.orig.m  <- grepl("+units=m", crs.orig)
+      crs.orig.ll <- grepl("+proj=longlat", crs.orig)
 
-      # QA/QC, ensure that sf.load.orig is valid, and if nec create crs.ll projection
-      if (st_bbox(sf.load.raster)[3] > 180) {
-        incProgress(0.05, detail = "Polygon(s) span dateline; handling now")
-        sf.load.raster <- st_wrap_dateline(sf.load.raster)
+      if (crs.orig.ll & crs.orig.m) {
+        model.res <- NA
+
+      } else if (crs.orig.ll) {
+        z <- gis.file.raster
+        z.1 <- round((z@extent@xmax - z@extent@xmin) / z@ncols, 3)
+        z.2 <- round((z@extent@ymax - z@extent@ymin) / z@nrows, 3)
+        model.res <- ifelse(z.1 == z.2, paste(z.1, "degrees"), NA)
+        rm(z)
+
+      } else if (crs.orig.m) {
+        z <- gis.file.raster
+        z.1 <- round((z@extent@xmax - z@extent@xmin) / z@ncols / 1e+3, 3)
+        z.2 <- round((z@extent@ymax - z@extent@ymin) / z@nrows / 1e+3, 3)
+        model.res <- ifelse(z.1 == z.2, paste(z.1, "km"), NA)
+        rm(z)
+
+      } else {
+        model.res <- NA
       }
 
+      ### QA/QC, ensure that sf.load.orig longitude extent is -180 to 180
+      sf.load.raster <- check_dateline(sf.load.raster)
+
+      ### QA/QC, ensure that sf.load.raster is valid
       incProgress(detail = "Checking if model polygons are valid")
-      if (!all(st_is_valid(sf.load.raster))) {
-        incProgress(detail = "Making model polygons valid")
-        sf.load.raster <- poly_valid_check(sf.load.raster)
-      }
+      sf.load.raster <- check_valid(sf.load.raster, progress.detail = TRUE)
+
+      ### QA/QC, if necessary create crs.ll projection
       sf.list <- gis_model_check(sf.load.raster)
       incProgress(0.2, detail = "")
     }
@@ -88,26 +104,7 @@ create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
     sf.load.orig <- sf.load.orig %>%
       mutate(Error = NA, Weight = NA, Pixels = 1:nrow(sf.load.orig))
 
-    incProgress(0.3)
-
-    # Calculate resolution of the model predictions
-    ### TODO test this more ###
-    if (grepl("longlat", st_crs(sf.load.orig)$proj4string)) {
-      model.res <- paste(pix.res[1], "degrees")
-    } else {
-      model.res <- paste(model.res, "km")
-    }
-
-    # Assumes raster cells are square
-    # y <- table(round(st_area(s)))
-    # pix.res <- names(table(round(y, 0)))
-    # if (pix.res[1] != pix.res[2]) warning("X and Y pixel width is not the same")
-    incProgress(0.2)
-
-    # # If raster is not crs.ll, generate crs.ll raster
-    # if (!identical(crs.ll, crs(spdf.pix))) {
-    #   spdf.pix <- gis.rasterize.poly(spdf.poly.ll)
-    # }
+    incProgress(0.5)
 
     # Prepare for 'local' code
     pred.type <- input$model_gis_raster_pred_type
@@ -125,7 +122,7 @@ create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
     ###################################################################
   })
 
-  return("Model predictions loaded from raster")
+  "Model predictions loaded from raster"
 })
 
 ###############################################################################
