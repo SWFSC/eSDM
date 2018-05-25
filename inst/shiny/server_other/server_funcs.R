@@ -192,6 +192,13 @@ check_dateline <- function(x, wrap.offset = 10) {
     inherits(x, "sf") | inherits(x, "sfc"),
     inherits(wrap.offset, "numeric")
   )
+
+  x.crs.orig <- st_crs(x)
+  if (is.na(x.crs.orig$proj4string))
+    stop("Error: Poly does not have defined projection")
+
+  if (!grepl("proj=longlat", x.crs.orig$proj4string)) x <- st_transform(x, crs.ll)
+
   if (st_bbox(x)[3] > 180) {
     x <- st_wrap_dateline(
       x, options = c("WRAPDATELINE=YES", paste0("DATELINEOFFSET=", wrap.offset))
@@ -202,7 +209,7 @@ check_dateline <- function(x, wrap.offset = 10) {
     }
   }
 
-
+  if (!identical(st_crs(x), x.crs.orig)) x <- st_transform(x, x.crs.orig)
 
   x
 }
@@ -220,6 +227,7 @@ check_valid <- function(x, progress.detail = FALSE) {
   if (!isTruthy(all(st_is_valid(x)))) { #isTruthy() is for NA cases
     if (progress.detail) incProgress(detail = "Making polygons valid")
     poly_valid_check(x)
+
   } else {
     x
   }
