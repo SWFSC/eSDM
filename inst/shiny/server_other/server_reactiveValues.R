@@ -9,7 +9,7 @@
 val.pretty.color.num <- reactiveVal(value = NULL)
 
 ###############################################################################
-# 'Initialize' all 32 elements of vals
+# 'Initialize' all 31 elements of vals
 
 vals <- reactiveValues(
   # Objects that store loaded models and related info
@@ -26,10 +26,9 @@ vals <- reactiveValues(
   overlay.land          = NULL,   # Coastline/land SpatialPolygons; crs is crs.ll
   overlay.crs           = NULL,   # Class crs object of projection for overlay process
   overlay.base.idx      = NULL,   # Index of model used as base grid
-  overlay.base.sfc      = NULL,   # sfc object of base grid
-  overlay.base.specs    = NULL,   # models.spec info about base grid
+  overlay.base.sfc      = NULL,   # sfc object that is base grid
   overlaid.models       = list(), # List of overlaid models
-  overlaid.models.specs = NULL,   # vals$models.spec info about overlaid models
+  overlaid.models.specs = NULL,   # models.spec info about overlaid models
 
   # Objects that store elements used by ensemble and overlaid models
   ens.over.wpoly.filename = NULL, # List of filenames of polygons with weights; index corresponds to overlaid pred index
@@ -94,7 +93,6 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$overlay.crs           <- vals.save[["overlay.crs"]]
     vals$overlay.base.idx      <- vals.save[["overlay.base.idx"]]
     vals$overlay.base.sfc      <- vals.save[["overlay.base.sfc"]]
-    vals$overlay.base.specs    <- vals.save[["overlay.base.specs"]]
     vals$overlaid.models       <- vals.save[["overlaid.models"]]
     vals$overlaid.models.specs <- vals.save[["overlaid.models.specs"]]
 
@@ -176,7 +174,6 @@ observe({
   vals$overlay.crs
   vals$overlay.base.idx
   vals$overlay.base.sfc
-  vals$overlay.base.specs
   vals$overlaid.models
   vals$overlaid.models.specs
   vals$ens.over.wpoly.filename
@@ -198,7 +195,7 @@ observe({
   vals$pretty.plotted.idx
 
 
-  if (length(reactiveValuesToList(vals)) != 32) {
+  if (length(reactiveValuesToList(vals)) != 31) {
     text.message <-
       shinyjs::alert(paste0(
         "There was an error in eSDM data storage and processing.",

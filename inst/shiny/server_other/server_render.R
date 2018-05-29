@@ -124,7 +124,13 @@ output$overlay_land_gis_gdb_message <- renderText({
 # Overlaying process outputs
 
 output$overlay_overlaid_models_message <- renderText({
-  if (length(vals$overlaid.models) > 0) "Overlaid models are created"
+  if (length(vals$overlaid.models) > 0) {
+    paste(
+      "Overlaid models are created using the geometry of the",
+      paste0("'", vals$models.names[vals$overlay.base.idx], "'"),
+      "SDM as the base grid"
+    )
+  }
 })
 
 #######################################

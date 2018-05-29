@@ -85,7 +85,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
     # Get specs of base.sfc
     base.specs <- vals$models.specs[[base.idx]]
-    base.specs[2] <- length(base.sfc)
+    base.specs[2] <- length(base.sfc) #length() for sfc object
     base.specs[3:4] <- NA
     if (identical(st_crs(base.sfc), crs.ll)) {
       base.sfc.ll <- base.sfc
@@ -97,7 +97,6 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
     # Store data
     vals$overlay.base.sfc <- base.sfc
-    vals$overlay.base.specs <- base.specs
 
     # print("Creating/processing base grid took:"); print(Sys.time() - t.1)
 
@@ -157,7 +156,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       } else {
         n.abund <- "N/A"
       }
-      list(c(base.specs[1], length(n), sum(!is.na(n$Pred.overlaid)),
+      list(c(base.specs[1], nrow(n), sum(!is.na(n$Pred.overlaid)),
              n.abund, base.specs[5]))
     }, models.overlaid.all, vals$models.pred.type)
 
@@ -198,7 +197,6 @@ overlay_reset <- reactive({
   vals$overlay.crs           <- NULL
   vals$overlay.base.idx      <- NULL
   vals$overlay.base.sfc      <- NULL
-  vals$overlay.base.specs    <- NULL
   vals$overlaid.models       <- list()
   vals$overlaid.models.specs <- NULL
 

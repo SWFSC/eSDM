@@ -145,7 +145,7 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
 
     # Get specs of base.sfc
     base.specs <- vals$models.specs[[base.idx]]
-    base.specs[2] <- length(base.sfc)
+    base.specs[2] <- nrow(base.sfc)
     base.specs[3:4] <- NA
     if (identical(st_crs(base.sfc), crs.ll)) {
       base.sfc.ll <- base.sfc
@@ -160,7 +160,6 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
     #----------------------------------
     # Store data
     vals$overlay.base.sfc <- base.sfc
-    vals$overlay.base.specs <- base.specs
 
 
     #########################################################
@@ -195,7 +194,7 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
       } else {
         n.abund <- "N/A"
       }
-      list(c(base.specs[1], length(n), sum(!is.na(n$Pred.overlaid)),
+      list(c(base.specs[1], nrow(n), sum(!is.na(n$Pred.overlaid)),
              n.abund, base.specs[5]))
     }, models.overlaid, vals$models.pred.type)
     incProgress(0.1)

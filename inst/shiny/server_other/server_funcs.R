@@ -20,7 +20,7 @@ read.shp.shiny <- function(file.in.list) {
                           quiet = TRUE),
                   silent = TRUE)
 
-  return(gis.file)
+  gis.file
 }
 
 
