@@ -21,18 +21,18 @@ read_model_gis_raster <- reactive({
   ### Ensure file extension is .tif
   if (input$model_gis_raster_file$type != "image/tiff") return()
 
-  withProgress(message = "Loading GIS raster", value = 0.3, {
+  withProgress(message = "Loading GIS raster", value = 0.4, {
     gis.file.raster <- try(raster(input$model_gis_raster_file$datapath,
                                   band = input$model_gis_raster_band),
                            silent = TRUE)
-    gis.file.success <- isTruthy(gis.file.raster)
+    gis.file.success <- inherits(gis.file.raster, "RasterLayer")
 
     ### If specified file could be loaded as a raster, process raster
     if (gis.file.success) {
       incProgress(0.2)
       sf.load.raster <- st_as_sf(as(gis.file.raster, "SpatialPolygonsDataFrame"))
       stopifnot(ncol(sf.load.raster) == 2)
-      incProgress(0.1)
+      incProgress(0.4)
 
       ### Determine resolution of raster cells
       crs.orig <- st_crs(sf.load.raster)$proj4string
@@ -59,25 +59,14 @@ read_model_gis_raster <- reactive({
       } else {
         model.res <- NA
       }
-
-      ### QA/QC, ensure that sf.load.orig longitude extent is -180 to 180
-      sf.load.raster <- check_dateline(sf.load.raster)
-
-      ### QA/QC, ensure that sf.load.raster is valid
-      incProgress(detail = "Checking if model polygons are valid")
-      sf.load.raster <- check_valid(sf.load.raster, progress.detail = TRUE)
-
-      ### QA/QC, if necessary create crs.ll projection
-      sf.list <- gis_model_check(sf.load.raster)
-      incProgress(0.2, detail = "")
     }
   })
 
   # Return appropriate objects
-  if (!gis.file.success) {
-    NULL
+  if (gis.file.success) {
+    list(sf.load.raster, model.res)
   } else {
-    c(sf.list, model.res)
+    NULL
   }
 })
 
@@ -93,21 +82,28 @@ outputOptions(output, "read_model_gis_raster_flag", suspendWhenHidden = FALSE)
 #######################################
 ### Process data and add it to vals
 create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
-  data.list <- read_model_gis_raster()
+  sf.load.raster <- read_model_gis_raster()[[1]]
+
   withProgress(message = "Adding model predictions to app", value = 0.3, {
-    sf.load.ll   <- data.list[[1]]
-    sf.load.orig <- data.list[[2]]
-    model.res    <- data.list[[3]]
-
-    sf.load.ll <- sf.load.ll %>%
-      mutate(Error = NA, Weight = NA, Pixels = 1:nrow(sf.load.ll))
-    sf.load.orig <- sf.load.orig %>%
-      mutate(Error = NA, Weight = NA, Pixels = 1:nrow(sf.load.orig))
-
-    incProgress(0.5)
+    # Check long extent, polygon validity, and generate crs.ll version if nec
+    sf.load.raster <- check_dateline(sf.load.raster, progress.detail = TRUE)
+    incProgress(0.1)
+    sf.load.raster <- check_valid(sf.load.raster, progress.detail = TRUE)
+    incProgress(0.2)
+    sf.list <- gis_model_check(sf.load.raster)
+    incProgress(0.3)
 
     # Prepare for 'local' code
-    pred.type <- input$model_gis_raster_pred_type
+    sf.load.ll   <- sf.list[[1]]
+    sf.load.orig <- sf.list[[2]]
+    model.res    <- read_model_gis_raster()[[2]]
+
+    sf.load.ll <- sf.load.ll %>%
+      dplyr::mutate(Error = NA, Weight = NA, Pixels = 1:nrow(sf.load.ll))
+    sf.load.orig <- sf.load.orig %>%
+      dplyr::mutate(Error = NA, Weight = NA, Pixels = 1:nrow(sf.load.orig))
+
+    pred.type  <- input$model_gis_raster_pred_type
     model.name <- input$model_gis_raster_file$name
     data.names <- list(c(names(sf.load.ll)[1], NA, NA))
 

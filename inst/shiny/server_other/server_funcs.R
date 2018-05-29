@@ -187,25 +187,39 @@ create_sfc_csv_func <- function(x, crs.prov) {
 
 #------------------------------------------------------------------------------
 # Adjust sf object from 0 - 360 range to -180 to 180 range
-check_dateline <- function(x, wrap.offset = 10) {
+check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
   stopifnot(
     inherits(x, "sf") | inherits(x, "sfc"),
     inherits(wrap.offset, "numeric")
   )
 
+  if (progress.detail) {
+    on.exit(incProgress(0, detail = ""))
+    incProgress(0, detail = "Checking if SDM spans the dateline")
+  }
+
   x.crs.orig <- st_crs(x)
   if (is.na(x.crs.orig$proj4string))
-    stop("Error: Poly does not have defined projection")
+    stop("Error: SDM does not have a defined coordinate system")
 
-  if (!grepl("proj=longlat", x.crs.orig$proj4string)) x <- st_transform(x, crs.ll)
+  if (!grepl("proj=longlat", x.crs.orig$proj4string)) {
+    x <- st_transform(x, crs.ll)
+  }
 
   if (st_bbox(x)[3] > 180) {
+    incProgress(0, detail = "SDM does span the dateline; processing now")
     x <- st_wrap_dateline(
-      x, options = c("WRAPDATELINE=YES", paste0("DATELINEOFFSET=", wrap.offset))
+      x,
+      options = c("WRAPDATELINE=YES", paste0("DATELINEOFFSET=", wrap.offset))
     )
 
     if (st_bbox(x)[3] > 180) {
-      validate(need(FALSE, "Unable to correct poly longitude range"))
+      validate(
+        need(FALSE,
+             paste("Error: Unable to correct SDM polygon longitude range;",
+                   "please ensure that the longitude range of the SDM is",
+                   "[-180, 180] and then reload the SDM into the eSDM"))
+      )
     }
   }
 
@@ -222,10 +236,13 @@ check_valid <- function(x, progress.detail = FALSE) {
     is.logical(progress.detail)
   )
 
-  if (progress.detail) incProgress(detail = "Checking if polygons are valid")
+  if (progress.detail) {
+    on.exit(incProgress(0, detail = ""))
+    incProgress(0, detail = "Checking if polygons are valid")
+  }
 
   if (!isTruthy(all(st_is_valid(x)))) { #isTruthy() is for NA cases
-    if (progress.detail) incProgress(detail = "Making polygons valid")
+    if (progress.detail) incProgress(0, detail = "Making polygons valid")
     poly_valid_check(x)
 
   } else {

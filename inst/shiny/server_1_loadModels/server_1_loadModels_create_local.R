@@ -23,6 +23,7 @@ validate(
   need(length(sf.load.ll) == 5 & length(sf.load.orig) == 5,
        "Error 2 in create_local prep")
 )
+# incProgress(0.1)
 
 
 ### Set names for sf.load.ll and sf.load.orig, both for data and sfc columns

@@ -26,6 +26,7 @@ gdb_names_choice_input <- reactive({
   choice.input
 })
 
+
 ### Identify NA predictions
 model_gis_shp_NA_idx <- reactive({
   req(input$model_gis_shp_names_pred)
@@ -53,25 +54,17 @@ model_gis_gdb_NA_idx <- reactive({
 read_model_gis_shp <- reactive({
   req(input$model_gis_shp_files)
 
-  withProgress(message = "Loading GIS shapefile", value = 0.3, {
+  withProgress(message = "Loading GIS shapefile", value = 0.4, {
     gis.file.shp <- read.shp.shiny(input$model_gis_shp_files)
-    incProgress(0.4)
-
-    gis.file.success <- isTruthy(gis.file.shp)
-    if (gis.file.success) {
-      gis.file.shp <- check_dateline(gis.file.shp)
-
-      gis.file.shp <- check_valid(gis.file.shp, progress.detail = TRUE)
-
-      sf.list <- gis_model_check(gis.file.shp)
-    }
-    incProgress(0.15, detail = "")
+    incProgress(0.6)
   })
 
-  if(!gis.file.success) {
-    NULL
+  if(isTruthy(gis.file.shp)) {
+    list(
+      gis.file.shp, strsplit(input$model_gis_shp_files$name[1], "\\.")[[1]][1]
+    )
   } else {
-    sf.list
+    NULL
   }
 })
 
@@ -85,19 +78,20 @@ outputOptions(output, "read_model_gis_shp_flag", suspendWhenHidden = FALSE)
 #######################################
 ### Process data and add it to list.all
 create_sf_gis_shp <- eventReactive(input$model_create_gis_shp, {
-  sf.list <- read_model_gis_shp()
+  # Prep for create_local code
+  gis.file <- read_model_gis_shp()[[1]]
 
   pred.idx <- as.numeric(input$model_gis_shp_names_pred)
   error.idx <- NA #as.numeric(input$model_gis_shp_names_error)
   weight.idx <- as.numeric(input$model_gis_shp_names_weight)
 
-  model.name <- strsplit(input$model_gis_shp_files$name[1], "\\.")[[1]][1]
+  model.name <-read_model_gis_shp()[[2]]
   pred.type <- input$model_gis_shp_pred_type
 
   #### The code from this file is the same as in create_spdf_gis_gdb() ####
-  source(file.path("server_1_loadModels",
-                   "server_1_loadModels_shpgdb_create_local.R"),
-         local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path(
+    "server_1_loadModels", "server_1_loadModels_shpgdb_create_local.R"
+  ), local = TRUE, echo = FALSE, chdir = TRUE)
 
   "Model predictions loaded from GIS shapefile"
 })
@@ -111,28 +105,16 @@ read_model_gis_gdb <- eventReactive(input$model_gis_gdb_load, {
   gdb.path <- input$model_gis_gdb_path
   gdb.name <- input$model_gis_gdb_name
 
-  withProgress(message = "Loading GIS .gdb file", value = 0.3, {
+  withProgress(message = "Loading GIS .gdb file", value = 0.4, {
     gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),
                         silent = TRUE)
-    incProgress(0.4)
-
-    gis.file.success <- isTruthy(gis.file.gdb)
-    if (gis.file.success) {
-      gis.file.gdb <- check_dateline(gis.file.gdb)
-
-      gis.file.gdb <- check_valid(gis.file.gdb, progress.detail = TRUE)
-
-      sf.list <- c(gis_model_check(gis.file.gdb), gdb.name)
-      # gdb.name is included in list in case user types something else before
-      #   actually importing the SDM into the app
-    }
-    incProgress(0.2, detail = "")
+    incProgress(0.6)
   })
 
-  if (!gis.file.success) {
-    NULL
+  if (isTruthy(gis.file.gdb)) {
+    list(gis.file.gdb, gdb.name)
   } else {
-    sf.list
+    NULL
   }
 })
 
@@ -144,19 +126,20 @@ outputOptions(output, "read_model_gis_gdb_flag", suspendWhenHidden = FALSE)
 #######################################
 ### Process data and add it to list.all
 create_sf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
-  sf.list <- read_model_gis_gdb()[1:2]
+  # Prep for create_local code
+  gis.file <- read_model_gis_gdb()[[1]]
 
   pred.idx <- as.numeric(input$model_gis_gdb_names_pred)
   error.idx <- NA #as.numeric(input$model_gis_gdb_names_error)
   weight.idx <- as.numeric(input$model_gis_gdb_names_weight)
 
-  model.name <- read_model_gis_gdb()[[3]]
+  model.name <- read_model_gis_gdb()[[2]]
   pred.type <- input$model_gis_gdb_pred_type
 
   #### The code from this file is the same as in create_spdf_gis_shp() ####
-  source(file.path("server_1_loadModels",
-                   "server_1_loadModels_shpgdb_create_local.R"),
-         local = TRUE, echo = FALSE, chdir = TRUE)
+  source(file.path(
+    "server_1_loadModels", "server_1_loadModels_shpgdb_create_local.R"
+  ), local = TRUE, echo = FALSE, chdir = TRUE)
 
   "Model predictions loaded from GIS .gdb"
 })
