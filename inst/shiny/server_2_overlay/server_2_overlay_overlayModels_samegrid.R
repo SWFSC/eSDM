@@ -2,83 +2,6 @@
 
 
 ###############################################################################
-# Perform checks to ensure that preds are actually on the same grid
-
-#################################################
-### Warning messages for checks that should be TRUE to use functionality
-overlay_samegrid_warning <- reactive({
-  req(length(vals$models.orig) > 0)
-
-  # Quick error check that each has same number of predictions
-  validate(
-    need(zero_range(sapply(vals$models.orig, length)),
-         paste("Error: Loaded model predictions have different cell counts.",
-               "You cannot perform a same-grid overlay with predictions",
-               "that have different cell counts."))
-  )
-
-  # Perform warning checks
-  warning.check.1 <- all(sapply(vals$models.names, identical,
-                                vals$models.names[[1]]))
-  warning.check.2 <- all(sapply(vals$models.pred.type, identical,
-                                vals$models.pred.type[[1]]))
-  warning.check.3.list <- lapply(vals$models.specs, function(i) i[c(1, 5)])
-  warning.check.3 <- all(sapply(warning.check.3.list, identical,
-                                warning.check.3.list[[1]]))
-  warning.check.all <- c(warning.check.1, warning.check.2, warning.check.3)
-
-  # Warning messages for checks
-  warning.messages <- c(
-    "Warning: The predictions come from different files",
-    "Warning: The predicitons have different prediction types",
-    paste("Warning: The predictions have different resolutions and/or",
-          "longitude and latitude ranges")
-  )
-
-
-  # Return warning messages for checks that were FALSE
-  if (any(!warning.check.all)) {
-    paste(warning.messages[!warning.check.all], collapse = "<br/>")
-  } else {
-    NULL
-  }
-})
-
-
-#################################################
-### Validate messages for checks that must be TRUE to use functionality
-# Some checks are redundant, but done in this order for sake of time
-overlay_samegrid_validate <- reactive({
-  req(length(vals$models.orig) > 0)
-
-  # Check that each has same number of predictions
-  validate(
-    need(zero_range(sapply(vals$models.orig, length)),
-         "Error: Loaded model predictions have different cell counts")
-  )
-
-  # Check that crs codes are the same
-  models.orig.crs <- lapply(vals$models.orig, st_crs)
-  validate(
-    need(all(sapply(models.orig.crs, identical, models.orig.crs[[1]])),
-         paste("Error: The coordinate system is not the same",
-               "for all loaded model predictions"))
-  )
-
-  # Check that sfc structure is the same for all models
-  # This checks for equal: area, order of polygons
-  models.orig.sfc <- lapply(vals$models.orig, st_geometry)
-  validate(
-    need(all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]])),
-         paste("Error: The grid structure is not the same",
-               "for all loaded model predictions"))
-  )
-
-  TRUE
-})
-
-
-###############################################################################
 # Overlay of predictions that are already on the same grid
 overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
   #########################################################
@@ -215,5 +138,83 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
   #########################################################
   "Same-grid overlay performed successfully"
 })
+
+
+###############################################################################
+# Perform checks to ensure that preds are actually on the same grid
+
+#------------------------------------------------
+### Warning messages for checks that should be TRUE to use functionality
+overlay_samegrid_warning <- reactive({
+  req(length(vals$models.orig) > 0)
+
+  # Quick error check that each has same number of predictions
+  validate(
+    need(zero_range(sapply(vals$models.orig, length)),
+         paste("Error: Loaded model predictions have different cell counts.",
+               "You cannot perform a same-grid overlay with predictions",
+               "that have different cell counts."))
+  )
+
+  # Perform warning checks
+  warning.check.3.list <- lapply(vals$models.specs, function(i) i[c(1, 5)])
+
+  warning.check <- !c(
+    all(sapply(vals$models.names, identical, vals$models.names[[1]])),
+    all(sapply(vals$models.pred.type, identical, vals$models.pred.type[[1]])),
+    all(sapply(warning.check.3.list, identical, warning.check.3.list[[1]]))
+  )
+
+  # Warning messages for checks
+  warning.messages <- c(
+    "Warning: The predictions come from different files",
+    "Warning: The predicitons have different prediction types",
+    paste("Warning: The predictions have different resolutions and/or",
+          "longitude and latitude ranges")
+  )
+
+  # Return warning messages for checks that were FALSE
+  if (any(warning.check)) {
+    paste(warning.messages[warning.check], collapse = "<br/>")
+  } else {
+    NULL
+  }
+})
+
+
+#------------------------------------------------
+### Validate messages for checks that must be TRUE to use functionality
+# Some checks are redundant, but done in this order for sake of time
+overlay_samegrid_validate <- reactive({
+  req(length(vals$models.orig) > 0)
+
+  # Check that each has same number of predictions
+  validate(
+    need(zero_range(sapply(vals$models.orig, length)),
+         "Error: Loaded model predictions have different cell counts")
+  )
+
+  # Check that crs codes are the same
+  models.orig.crs <- lapply(vals$models.orig, st_crs)
+  validate(
+    need(all(sapply(models.orig.crs, identical, models.orig.crs[[1]])),
+         paste("Error: The coordinate system is not the same",
+               "for all loaded model predictions"))
+  )
+
+  # Check that sfc structure is the same for all models
+  # This checks for equal: area, order of polygons
+  models.orig.sfc <- lapply(vals$models.orig, st_geometry)
+  validate(
+    need(all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]])),
+         paste("Error: The grid structure is not the same",
+               "for all loaded model predictions"))
+  )
+
+  TRUE
+})
+
+
+
 
 ###############################################################################

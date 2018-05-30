@@ -132,6 +132,9 @@ output$overlay_samegrid_all_text <- renderText({
 })
 
 ### Standard overlay
+output$overlay_overlay_samegrid_message_text <- renderText({
+  overlay_overlay_samegrid_message()
+})
 output$overlay_overlay_all_text <- renderText({
   overlay_all()
 })

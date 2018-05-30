@@ -283,4 +283,21 @@ overlay_base_idx <- reactive({
   base.idx
 })
 
+
+###############################################################################
+### Message for if same-grid overlay should be used
+overlay_overlay_samegrid_message <- reactive({
+  req(length(vals$models.orig) > 0)
+
+  models.orig.sfc <- lapply(vals$models.orig, st_geometry)
+
+  if (all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]]))) {
+    paste("The loaded predictions all have the same geometry, and thus",
+          "it is recommended that you use the same-grid overlay")
+  } else {
+    NULL
+  }
+})
+
+
 ###############################################################################

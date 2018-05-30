@@ -264,6 +264,7 @@ ui.overlay <- function() {
                                                 "the overlay process. This process may take several minutes.")),
                            conditionalPanel(
                              condition = "input.overlay_samegrid_indicator == 1",
+                             tags$span(textOutput("overlay_overlay_samegrid_message_text"), style = "color: red"),
                              actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"),
                              textOutput("overlay_overlay_all_text")
                            ),
