@@ -6,7 +6,7 @@
 output$overlay_proj_which_uiOut_select <- renderUI({
   req(!input$overlay_proj_ll)
 
-  choices.list.names <- vals$models.names
+  choices.list.names <- as.list(vals$models.names)
   choices.list <- seq_along(choices.list.names)
   names(choices.list) <- choices.list.names
 
@@ -31,4 +31,5 @@ output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
                  choices = choices.list, selected = NULL,
                  multiple = TRUE)
 })
+
 ###############################################################################

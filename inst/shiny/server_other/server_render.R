@@ -150,7 +150,7 @@ output$overlay_overlaid_models_message <- renderText({
         "Overlaid models have been created using the geometry of the",
         paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
         "SDM as the base grid and with a percent overlap of",
-        vals$overlay.info[[2]]
+        paste0(vals$overlay.info[[2]] * 100, "%")
       )
     }
   }

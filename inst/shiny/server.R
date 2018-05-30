@@ -13,7 +13,6 @@
 
 
 ###############################################################################
-### Load packages specific to shiny app rather than eSDM package
 library(colorRamps)
 library(colourpicker)
 library(dichromat)
