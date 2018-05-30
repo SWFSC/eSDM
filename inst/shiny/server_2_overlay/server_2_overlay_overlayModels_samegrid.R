@@ -99,9 +99,10 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
     )
 
     #----------------------------------
-    ### Model overlay prep. ***Same code as in overlay_all() for this section
-    # Get index of model predictions to be base grid
-    base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
+    ### Model overlay prep
+    # Get index of model predictions to be base grid; if user doesn't select
+    #   anything than use first sdm
+    base.idx <- overlay_base_idx()
     models.num <- length(vals$models.ll)
 
     validate(
@@ -122,7 +123,7 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
       }
     )
 
-    vals$overlay.base.idx <- base.idx
+    vals$overlay.info <- list(base.idx, NA)
 
     #----------------------------------
     # Get crs of projection to be used in overlay process
@@ -145,7 +146,7 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
 
     # Get specs of base.sfc
     base.specs <- vals$models.specs[[base.idx]]
-    base.specs[2] <- nrow(base.sfc)
+    base.specs[2] <- length(base.sfc) #length() for sfc object
     base.specs[3:4] <- NA
     if (identical(st_crs(base.sfc), crs.ll)) {
       base.sfc.ll <- base.sfc
@@ -209,7 +210,6 @@ overlay_samegrid_all <- eventReactive(input$overlay_samegrid_overlay_execute, {
     vals$ens.over.wpoly.sf       <- list.null
     vals$ens.over.wpoly.filename <- list.null
     vals$ens.over.wpoly.coverage <- list.null
-    # incProgress(0.2)
   })
 
   #########################################################

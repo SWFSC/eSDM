@@ -25,7 +25,7 @@ vals <- reactiveValues(
   overlay.bound         = NULL,   # Boundary sfc object; crs is crs.ll; always of length 1
   overlay.land          = NULL,   # Coastline/land SpatialPolygons; crs is crs.ll
   overlay.crs           = NULL,   # Class crs object of projection for overlay process
-  overlay.base.idx      = NULL,   # Index of model used as base grid
+  overlay.info          = NULL,   # List of index of model used as base grid and overlap percentage
   overlay.base.sfc      = NULL,   # sfc object that is base grid
   overlaid.models       = list(), # List of overlaid models
   overlaid.models.specs = NULL,   # models.spec info about overlaid models
@@ -91,7 +91,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$overlay.bound         <- vals.save[["overlay.bound"]]
     vals$overlay.land          <- vals.save[["overlay.land"]]
     vals$overlay.crs           <- vals.save[["overlay.crs"]]
-    vals$overlay.base.idx      <- vals.save[["overlay.base.idx"]]
+    vals$overlay.info          <- vals.save[["overlay.info"]]
     vals$overlay.base.sfc      <- vals.save[["overlay.base.sfc"]]
     vals$overlaid.models       <- vals.save[["overlaid.models"]]
     vals$overlaid.models.specs <- vals.save[["overlaid.models.specs"]]
@@ -172,7 +172,7 @@ observe({
   vals$overlay.bound
   vals$overlay.land
   vals$overlay.crs
-  vals$overlay.base.idx
+  vals$overlay.info
   vals$overlay.base.sfc
   vals$overlaid.models
   vals$overlaid.models.specs

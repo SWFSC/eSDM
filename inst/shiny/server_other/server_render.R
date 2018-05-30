@@ -8,13 +8,13 @@
 ###############################################################################
 ##### Load Models tab #####
 
-###########################################################
+#----------------------------------------------------------
 ### Load saved environment output
 output$load_envir_text <- renderText({
   load_envir()
 })
 
-###########################################################
+#----------------------------------------------------------
 # Created spdf messages
 
 ### Created spdf message for csv
@@ -41,7 +41,7 @@ output$create_sf_gis_gdb_text <- renderText({
   create_sf_gis_gdb()
 })
 
-###########################################################
+#----------------------------------------------------------
 # Tables
 
 ### Table of loaded original model preds
@@ -54,7 +54,7 @@ output$models_loaded_table_stats <- DT::renderDataTable({
   table_orig_stats()
 }, options = list(dom = 't'), selection = "none")
 
-###########################################################
+#----------------------------------------------------------
 ### Plot/preview of loaded, original model(s)
 output$model_preview_plot <- renderPlot({
   model_preview_event()
@@ -68,7 +68,7 @@ output$model_preview_interactive_plot <- renderLeaflet({
 ###############################################################################
 ##### Overlay tab #####
 
-###########################################################
+#----------------------------------------------------------
 # Tables
 
 ### Table of loaded model predictions
@@ -81,7 +81,7 @@ output$overlay_loaded_stats_table <- DT::renderDataTable({
   table_orig_stats()
 }, options = list(dom = 't'), selection = "none")
 
-###########################################################
+#----------------------------------------------------------
 # Polygon error outputs and loaded messages
 
 ### Boundary (study area) polygon error outputs
@@ -120,20 +120,9 @@ output$overlay_land_gis_gdb_message <- renderText({
   if (!is.null(vals$overlay.land)) "A land polygon is loaded"
 })
 
-###########################################################
+#----------------------------------------------------------
 # Overlaying process outputs
 
-output$overlay_overlaid_models_message <- renderText({
-  if (length(vals$overlaid.models) > 0) {
-    paste(
-      "Overlaid models are created using the geometry of the",
-      paste0("'", vals$models.names[vals$overlay.base.idx], "'"),
-      "SDM as the base grid"
-    )
-  }
-})
-
-#######################################
 ### Samegrid overlay
 output$overlay_samegrid_warning_text <- renderUI({
   HTML(overlay_samegrid_warning())
@@ -142,13 +131,30 @@ output$overlay_samegrid_all_text <- renderText({
   overlay_samegrid_all()
 })
 
-#######################################
 ### Standard overlay
 output$overlay_overlay_all_text <- renderText({
   overlay_all()
 })
 
-###########################################################
+### Both overlays
+output$overlay_overlaid_models_message <- renderText({
+  if (length(vals$overlaid.models) > 0) {
+    if (is.na(vals$overlay.info[[2]])) {
+      "Overlaid models are created using the same-grid overlay"
+
+    } else {
+      paste(
+        "Overlaid models have been created using the geometry of the",
+        paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
+        "SDM as the base grid and with a percent overlap of",
+        vals$overlay.info[[2]]
+      )
+    }
+  }
+})
+
+
+#----------------------------------------------------------
 # Previews
 
 ### Preview of base grid
@@ -167,7 +173,7 @@ output$overlay_preview_overlaid <- renderPlot({
 ###############################################################################
 ##### Create Ensembles tab #####
 
-###########################################################
+#----------------------------------------------------------
 # Tables
 
 ### Display table of overlaid predictions and info
@@ -180,7 +186,7 @@ output$create_ens_datatable <- DT::renderDataTable({
   table_overlaid()[, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'))
 
-###########################################################
+#----------------------------------------------------------
 # Weights outputs
 
 ### Table of metric values to be used as weights
@@ -214,13 +220,13 @@ output$create_ens_weights_poly_add_text <- renderText({
   create_ens_weights_poly_add()
 })
 
-###########################################################
+#----------------------------------------------------------
 ### Create ensemble error/completion output
 output$ens_create_ensemble_text <- renderUI({
   HTML(create_ensemble())
 })
 
-###########################################################
+#----------------------------------------------------------
 # Created ensemble things
 
 ### Table of created ensemble predictions
@@ -248,7 +254,7 @@ output$ens_abund_table_out <- renderTable({
 ###############################################################################
 ##### Model Evaluation Metrics tab #####
 
-###########################################################
+#----------------------------------------------------------
 # Tables
 
 ### Table of orig model predictions
@@ -266,7 +272,7 @@ output$eval_models_table_ens_out <- DT::renderDataTable({
   table_ensembles()
 }, options = list(dom = 't'))
 
-###########################################################
+#----------------------------------------------------------
 # Presence/absence loaded message, error outputs, and table
 
 # Presence and absence points
@@ -299,7 +305,7 @@ output$table_eval_pts_out <- renderTable({
   table_eval_pts()
 }, colnames = FALSE)
 
-###########################################################
+#----------------------------------------------------------
 ### Metrics table
 output$table_eval_metrics_out <- renderTable({
   table_eval_metrics()
@@ -309,7 +315,7 @@ output$table_eval_metrics_out <- renderTable({
 ###############################################################################
 ##### High Quality Maps #####
 
-###########################################################
+#----------------------------------------------------------
 # Tables
 
 ### Table of orig model predictions
@@ -327,7 +333,7 @@ output$pretty_table_ens_out <- DT::renderDataTable({
   table_ensembles()
 }, options = list(dom = 't'))
 
-###########################################################
+#----------------------------------------------------------
 # Outputs
 
 ### Color wheel for preview of color palette
@@ -350,7 +356,7 @@ output$pretty_plot_values_event_text <- renderText({
 ###############################################################################
 ##### Export Model Predictions #####
 
-###########################################################
+#----------------------------------------------------------
 # Tables
 
 ### Table of orig model predictions

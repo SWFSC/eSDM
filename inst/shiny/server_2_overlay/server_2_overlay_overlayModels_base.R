@@ -287,7 +287,8 @@ overlay_clip_land_llpre <- reactive({
 
 ### Return a list with the crs.ll and orig crs versions of the base
 overlay_base_pre <- reactive({
-  base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
+  base.idx <- overlay_base_idx()
+
   validate(
     need(length(base.idx) == 1,
          paste("Error: Please select exactly one model from the table",

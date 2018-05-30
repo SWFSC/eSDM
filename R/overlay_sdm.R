@@ -16,7 +16,7 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
     stop("'base.poly' object must be of class 'sfc'")
   }
   if (!inherits(sdm, "sf")) stop("'sdm' object must be of class 'sf'")
-  if (!(is.numeric(overlap.perc) & 0 < overlap.perc & overlap.perc <= 100)) {
+  if (!(is.numeric(overlap.perc) & 0 <= overlap.perc & overlap.perc <= 100)) {
     stop("'overlap.perc' object must be a number greater than 0 and ",
          "less than or equal to 100")
   }

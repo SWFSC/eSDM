@@ -182,19 +182,20 @@ ui.overlay <- function() {
                        width = 6,
                        box(
                          width = 12,
+                         tags$strong("Overlay options: overlay version to perform"),
                          fluidRow(
-                           column(6, radioButtons("overlay_samegrid_indicator", tags$h5("Overlay version to perform"),
-                                                  choices = list("Perform standard overlay" = 1, "Perform same-grid overlay" = 2),
+                           column(4, radioButtons("overlay_samegrid_indicator", NULL,
+                                                  choices = list("Standard overlay" = 1, "Same-grid overlay" = 2),
                                                   selected = 1)),
-                           column(6, helpText("Perform the same-grid overlay, which is much faster than the standard overlay,",
+                           column(8, helpText("Perform the same-grid overlay, which is much faster than the standard overlay,",
                                               "if all of the loaded model predictions were made on the same grid."))
                          )
                        ),
-                       conditionalPanel(
-                         condition = "input.overlay_samegrid_indicator == 1",
-                         box(
-                           width = 12,
-                           tags$strong("Overlay options: coordinate system"),
+                       box(
+                         width = 12,
+                         tags$strong("Overlay options: coordinate system"),
+                         conditionalPanel(
+                           condition = "input.overlay_samegrid_indicator == 1",
                            helpText("A major element of the overlay process is calculating the area of polygons and their overlap.",
                                     "Thus, the coordinate system of the model predictions during the overlay process",
                                     "can have an effect on the overlay results."),
@@ -227,47 +228,53 @@ ui.overlay <- function() {
                                )
                              )
                            )
+                         ),
+                         conditionalPanel(
+                           condition = "input.overlay_samegrid_indicator == 2",
+                           helpText("The coordinate system of the overlaid models will be the current",
+                                    "coordinate system of the model predictions")
                          )
                        )
                      ),
                      column(
                        width = 6,
-                       conditionalPanel(
-                         condition = "input.overlay_samegrid_indicator == 2",
+                       fluidRow(
                          box(
                            width = 12,
-                           tags$span(uiOutput("overlay_samegrid_warning_text"), style = "color: red"),
-                           helpText("The coordinate system of the overlaid models will be the current",
-                                    "coordinate system of the model predictions"),
-                           helpText("Percent overlap is not applicable for the same-grid overlay because",
-                                    "all of the predictions are on the same grid and thus overlay on each other exactly"),
-                           actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay"),
-                           tags$span(textOutput("overlay_samegrid_all_text"), style = "color: blue")
-                         )
-                       ),
-                       conditionalPanel(
-                         condition = "input.overlay_samegrid_indicator == 1",
-
-                         fluidRow(
-                           box(
-                             width = 12,
-                             tags$h5("Overlay options: percent overlap"),
+                           tags$strong("Overlay options: percent overlap"),
+                           conditionalPanel(
+                             condition = "input.overlay_samegrid_indicator == 1",
                              helpText("The slider bar specifies the percent that the original model prediction(s) must overlap",
                                       "a base grid cell for that cell to have a non-NA overlaid prediction value.",
                                       "A slider bar value of \"0\" means that cell will have a non-NA overlaid prediction value",
                                       "if there is any overlap with any original model prediction."),
                              sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 50)
                            ),
-                           box(
-                             width = 12,
-                             helpText(tags$strong("It is strongly recommended to save the app environment before overlaying",
-                                                  "in case you are disconnected from the server during the process.")),
-                             helpText(tags$strong("Reminder: loaded study area and land polygons will be used during",
-                                                  "the overlay process. This process may take several minutes.")),
-                             actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"),
-                             textOutput("overlay_overlay_all_text"),
-                             tags$span(textOutput("overlay_overlaid_models_message"), style = "color: blue")
+                           conditionalPanel(
+                             condition = "input.overlay_samegrid_indicator == 2",
+                             helpText("Percent overlap is not applicable for the same-grid overlay because",
+                                      "all of the predictions are on the same grid and thus overlay on each other exactly")
                            )
+                         ),
+                         box(
+                           width = 12,
+                           helpText(tags$strong("It is strongly recommended to save the app environment before overlaying",
+                                                "in case you are disconnected from the server during the process.")),
+                           helpText(tags$strong("Reminder: loaded study area and land polygons will be used during",
+                                                "the overlay process. This process may take several minutes.")),
+                           conditionalPanel(
+                             condition = "input.overlay_samegrid_indicator == 1",
+                             actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"),
+                             textOutput("overlay_overlay_all_text")
+                           ),
+                           conditionalPanel(
+                             condition = "input.overlay_samegrid_indicator == 2",
+                             tags$span(uiOutput("overlay_samegrid_warning_text"), style = "color: red"),
+                             actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay"),
+                             textOutput("overlay_samegrid_all_text")
+                           ),
+                           tags$br(),
+                           tags$span(textOutput("overlay_overlaid_models_message"), style = "color: blue")
                          )
                        )
                      )
