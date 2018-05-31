@@ -10,7 +10,6 @@
 ### Where the overlay magic aka science happens
 
 overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
-  # t.1 <- Sys.time() # For testing purposes
   #########################################################
   ### Reset/hide reactive values, preview plots, and eval metrics
   validate(
@@ -49,6 +48,15 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   # Get and store crs of coord system to be used in overlay process
   vals$overlay.crs <- overlay_crs()
 
+  # Set flag for if all of the sdms have the same sfc geometry list column
+  models.orig.sfc <- lapply(vals$models.orig, st_geometry)
+  if (all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]]))) {
+    samegrid.flag <- TRUE
+  } else {
+    samegrid.flag <- FALSE
+  }
+  rm(models.orig.sfc)
+
 
   #########################################################
   ### Model overlay process
@@ -81,7 +89,6 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
                                "overlaying original model", base.idx))
 
     base.sf <- overlay_create_base_sf()
-    # browser()
     names(base.sf)[1:4] <- c("Pred.overlaid", "Error.overlaid",
                              "Weight.overlaid", "Pixels")
     base.sfc <- st_geometry(base.sf)
@@ -99,42 +106,64 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       as.character(round(st_bbox(base.sfc.ll)[c(1, 3, 2, 4)], 0)),
       collapse = ", "
     )
+    rm(base.sfc.ll)
 
     # Store data
     vals$overlay.base.sfc <- base.sfc
 
-    # print("Creating/processing base grid took:"); print(Sys.time() - t.1)
-
 
     #--------------------------------------------
     ### Create overlaid models
-    # t.2 <- Sys.time()
-    models.overlaid <- mapply(function(sdm, prog.num, sdm.num) {
-      incProgress(0.9 / prog.total,
-                  detail = paste("Overlaying original model", sdm.num))
-      # overlay.sdm() crops 'sdm' to bbox of 'base.sfc'
-      temp <- try(
-        eSDM::overlay_sdm(base.sfc, sdm, overlap.perc, c("Pred", "Weight")),
-        silent = TRUE
-      )
+    if (samegrid.flag) {
+      # Same-grid overlay
+      models.overlaid <- lapply(models.preoverlay, function(i, j) {
+        incProgress(
+          0.9 / prog.total,
+          detail = "Overlaying original models using same-grid method"
+        )
+        sf.temp <- j %>%
+          dplyr::left_join(st_set_geometry(i, NULL), by = "Pixels") %>%
+          dplyr::select(Pred.overlaid = Pred, Error.overlaid = Error,
+                        Weight.overlaid = Weight, Pixels) %>%
+          st_set_agr("constant")
+      }, dplyr::select(base.sf, Pixels))
 
+      temp.test <- sapply(models.overlaid, function(i) {
+        identical(base.sfc, st_geometry(i))
+      })
       validate(
-        need(isTruthy(temp),
-             paste("Error: the eSDM was unable to overlay original model",
-                   sdm.num))
+        need(all(temp.test),
+             "Error: the eSDM was unable to overlay the original models")
       )
 
-      df.toadd <- data.frame(Error.overlaid = NA, Pixels = 1:nrow(temp))
-      temp %>%
-        dplyr::bind_cols(df.toadd) %>%
-        dplyr::select(c(1, 4, 2, 5, 3)) %>%
-        st_set_agr("constant")
-    },
-    models.preoverlay, 2:(prog.total - 1),
-    seq(1, length(vals$models.ll))[-base.idx], SIMPLIFY = FALSE)
+    } else {
+      # Standard overlay
+      models.overlaid <- mapply(function(sdm, prog.num, sdm.num) {
+        incProgress(
+          0.9 / prog.total,
+          detail = paste("Overlaying original model", sdm.num)
+        )
+        temp <- try( #overlay.sdm() crops 'sdm' to bbox of 'base.sfc'
+          eSDM::overlay_sdm(base.sfc, sdm, overlap.perc, c("Pred", "Weight")),
+          silent = TRUE
+        )
+        validate(
+          need(isTruthy(temp),
+               paste("Error: the eSDM was unable to overlay original model",
+                     sdm.num))
+        )
+
+        df.toadd <- data.frame(Error.overlaid = NA, Pixels = 1:nrow(temp))
+        temp %>%
+          dplyr::bind_cols(df.toadd) %>%
+          dplyr::select(c(1, 4, 2, 5, 3)) %>%
+          st_set_agr("constant")
+      },
+      models.preoverlay, 2:(prog.total - 1),
+      seq(1, length(vals$models.ll))[-base.idx], SIMPLIFY = FALSE)
+    }
 
     incProgress(0.9 / prog.total, detail = "Finishing overlay process")
-    # print("Overlaying of models took:"); print(Sys.time() - t.2)
 
 
     #--------------------------------------------
@@ -173,7 +202,6 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
     #--------------------------------------------
     ### Ensemble prep
-    # overlay_ensemble_prep()
     list.null <- lapply(seq_along(vals$overlaid.models), function(d) NULL)
     vals$ens.over.wpoly.sf       <- list.null
     vals$ens.over.wpoly.filename <- list.null
@@ -184,7 +212,6 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   # Do not need to test validity of any polygons because base polygon was
   # already checked and overlaid were made directly from base poly
-  # print("The entire overlay process took"); print(Sys.time() - t.1)
   "Standard overlay performed successfully"
 })
 
@@ -246,44 +273,45 @@ overlay_reset <- reactive({
 ###############################################################################
 ### Get crs object with projection to be used in overlay process
 overlay_crs <- reactive({
-  if (input$overlay_samegrid_indicator == 2) {
-    # Same-grid overlay, use native crs, all loaded sdms have the same crs
+  # if (input$overlay_samegrid_indicator == 2) {
+  #   # Same-grid overlay, use native crs, all loaded sdms have the same crs
+  #   st_crs(vals$models.orig[[overlay_base_idx()]])
+  #
+  # } else {
+  # Standard overlay
+  if (input$overlay_proj_native) {
     st_crs(vals$models.orig[[overlay_base_idx()]])
 
   } else {
-    # Standard overlay
-    if (input$overlay_proj_native) {
-      st_crs(vals$models.orig[[overlay_base_idx()]])
+    if (input$overlay_proj_opt == 1) {
+      st_crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
 
+    } else if (input$overlay_proj_opt == 2) {
+      x <- suppressWarnings(st_crs(input$overlay_proj_epsg))
+      validate(
+        need(isTruthy(x$epsg),
+             paste("Error: The entered EPSG code was not recognized,",
+                   "please enter a valid EPSG code"))
+      )
+      x
     } else {
-      if (input$overlay_proj_opt == 1) {
-        st_crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
-
-      } else if (input$overlay_proj_opt == 2) {
-        x <- suppressWarnings(st_crs(input$overlay_proj_epsg))
-        validate(
-          need(isTruthy(x$epsg),
-               paste("Error: The entered EPSG code was not recognized,",
-                     "please enter a valid EPSG code"))
-        )
-        x
-      } else {
-        crs.ll
-      }
+      crs.ll
     }
   }
+  # }
 })
 
 
 ###############################################################################
 ### Get index of sdm to be used as base
 overlay_base_idx <- reactive({
-  base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
-  if (input$overlay_samegrid_indicator == 2 & length(base.idx) != 1) {
-    base.idx <- 1
-  }
-
-  base.idx
+  # base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
+  # if (input$overlay_samegrid_indicator == 2 & length(base.idx) != 1) {
+  #   base.idx <- 1
+  # }
+  #
+  # base.idx
+  as.numeric(input$overlay_loaded_table_rows_selected)
 })
 
 

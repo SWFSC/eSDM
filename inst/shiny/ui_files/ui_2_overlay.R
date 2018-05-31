@@ -182,57 +182,34 @@ ui.overlay <- function() {
                        width = 6,
                        box(
                          width = 12,
-                         tags$strong("Overlay options: overlay version to perform"),
-                         fluidRow(
-                           column(4, radioButtons("overlay_samegrid_indicator", NULL,
-                                                  choices = list("Standard overlay" = 1, "Same-grid overlay" = 2),
-                                                  selected = 1)),
-                           column(8, helpText("Perform the same-grid overlay, which is much faster than the standard overlay,",
-                                              "if all of the loaded model predictions were made on the same grid."))
-                         )
-                       ),
-                       box(
-                         width = 12,
                          tags$strong("Overlay options: coordinate system"),
+                         # helpText("A major element of the overlay process is calculating the area of polygons and their overlap.",
+                         #          "Thus, the coordinate system of the model predictions during the overlay process",
+                         #          "can have an effect on the overlay results."),
+                         # helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
+                         #          "1) 'Equatorial axis of ellipsoid' = 6378137 and",
+                         #          "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
+                         #          "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
+                         #          "for more details about assumptions that must be made when calculating the area",
+                         #          "using WGS 84 geographic coordinates."),
+                         checkboxInput("overlay_proj_native",
+                                       "Perform the overlay in the native coordinate system of the specified base grid",
+                                       value = TRUE),
                          conditionalPanel(
-                           condition = "input.overlay_samegrid_indicator == 1",
-                           # helpText("A major element of the overlay process is calculating the area of polygons and their overlap.",
-                           #          "Thus, the coordinate system of the model predictions during the overlay process",
-                           #          "can have an effect on the overlay results."),
-                           # helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
-                           #          "1) 'Equatorial axis of ellipsoid' = 6378137 and",
-                           #          "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
-                           #          "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
-                           #          "for more details about assumptions that must be made when calculating the area",
-                           #          "using WGS 84 geographic coordinates."),
-                           checkboxInput("overlay_proj_native",
-                                         "Perform the overlay in the native coordinate system of the specified base grid",
-                                         value = TRUE),
-                           # conditionalPanel(
-                           #   condition = "input.overlay_proj_native",
-                           #   helpText("Area calculations will be performed in WGS 84 geographic coordinates")
-                           # ),
-                           conditionalPanel(
-                             condition = "input.overlay_proj_native == false",
-                             box(
-                               width = 12,
-                               radioButtons("overlay_proj_opt", NULL, #tags$h5("Overlay coordinate system"),
-                                            choices = list("Select model with desired coordinate system" = 1,
-                                                           "Enter numeric EPSG code" = 2,
-                                                           "Perform overlay in WGS 84 geographic coordinates" = 3),
-                                            selected = 1),
-                               conditionalPanel("input.overlay_proj_opt == 1", uiOutput("overlay_proj_which_uiOut_select")),
-                               conditionalPanel(
-                                 condition = "input.overlay_proj_opt == 2",
-                                 numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)
-                               )
+                           condition = "input.overlay_proj_native == false",
+                           box(
+                             width = 12,
+                             radioButtons("overlay_proj_opt", NULL, #tags$h5("Overlay coordinate system"),
+                                          choices = list("Select model with desired coordinate system" = 1,
+                                                         "Enter numeric EPSG code" = 2,
+                                                         "Perform overlay in WGS 84 geographic coordinates" = 3),
+                                          selected = 1),
+                             conditionalPanel("input.overlay_proj_opt == 1", uiOutput("overlay_proj_which_uiOut_select")),
+                             conditionalPanel(
+                               condition = "input.overlay_proj_opt == 2",
+                               numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)
                              )
                            )
-                         ),
-                         conditionalPanel(
-                           condition = "input.overlay_samegrid_indicator == 2",
-                           helpText("The coordinate system of the overlaid models will be the native",
-                                    "coordinate system of the loaded model predictions")
                          )
                        )
                      ),
@@ -242,19 +219,11 @@ ui.overlay <- function() {
                          box(
                            width = 12,
                            tags$strong("Overlay options: percent overlap"),
-                           conditionalPanel(
-                             condition = "input.overlay_samegrid_indicator == 1",
-                             helpText("The slider bar specifies the percent that the original model prediction(s) must overlap",
-                                      "a base grid cell for that cell to have a non-NA overlaid prediction value.",
-                                      "A slider bar value of \"0\" means that cell will have a non-NA overlaid prediction value",
-                                      "if there is any overlap with any original model prediction."),
-                             sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 50)
-                           ),
-                           conditionalPanel(
-                             condition = "input.overlay_samegrid_indicator == 2",
-                             helpText("Percent overlap is not applicable for the same-grid overlay because",
-                                      "all of the predictions are on the same grid and thus overlay on each other exactly")
-                           )
+                           helpText("The slider bar specifies the percent that the original model prediction(s) must overlap",
+                                    "a base grid cell for that cell to have a non-NA overlaid prediction value.",
+                                    "A slider bar value of \"0\" means that cell will have a non-NA overlaid prediction value",
+                                    "if there is any overlap with any original model prediction."),
+                           sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 50)
                          ),
                          box(
                            width = 12,
@@ -262,18 +231,9 @@ ui.overlay <- function() {
                                                 "in case you are disconnected from the server during the process.")),
                            helpText(tags$strong("Reminder: loaded study area and land polygons will be used during",
                                                 "the overlay process. This process may take several minutes.")),
-                           conditionalPanel(
-                             condition = "input.overlay_samegrid_indicator == 1",
-                             tags$span(textOutput("overlay_overlay_samegrid_message_text"), style = "color: red"),
-                             actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"),
-                             textOutput("overlay_overlay_all_text")
-                           ),
-                           conditionalPanel(
-                             condition = "input.overlay_samegrid_indicator == 2",
-                             tags$span(uiOutput("overlay_samegrid_warning_text"), style = "color: red"),
-                             actionButton("overlay_samegrid_overlay_execute", "Perform same-grid overlay"),
-                             textOutput("overlay_samegrid_all_text")
-                           ),
+                           tags$span(textOutput("overlay_overlay_samegrid_message_text"), style = "color: red"),
+                           actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"),
+                           textOutput("overlay_overlay_all_text"),
                            tags$br(),
                            tags$span(textOutput("overlay_overlaid_models_message"), style = "color: blue")
                          )
