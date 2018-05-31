@@ -33,15 +33,13 @@ library(viridis)
 ###############################################################################
 # Pre-server work
 
-# Max file upload size is now 150MB
+### Max file upload size is now 150MB
 options(shiny.maxRequestSize = 150 * 1024^2)
 
-
-# Use to perform sequential rather than concurrent validate checks
+### Use to perform sequential rather than concurrent validate checks
 `%then%` <- shiny:::`%OR%`
 
-
-# Server-wide CRS code(s)
+### Server-wide CRS code(s)
 crs.ll <- st_crs(4326) # WGS 84
 # crs.cea <- st_crs(
 #   paste("+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m",
@@ -50,8 +48,7 @@ crs.ll <- st_crs(4326) # WGS 84
 # # crs.cea is proj4string from st_crs(boundary.proj.poly), which had
 # #   Projected Coordinate System 'World_Cylindrical_Equal_Area'in GIS
 
-
-# For plotting
+### For plotting
 pal.esdm <- c(
   "#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0", "#fee090",
   "#fdae61", "#f46d43", "#d73027", "#a50026"

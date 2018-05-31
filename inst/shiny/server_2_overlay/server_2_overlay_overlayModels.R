@@ -247,18 +247,19 @@ overlay_reset <- reactive({
 ### Get crs object with projection to be used in overlay process
 overlay_crs <- reactive({
   if (input$overlay_samegrid_indicator == 2) {
-    # Same-grid overlay, all loaded sdms have the same crs
+    # Same-grid overlay, use native crs, all loaded sdms have the same crs
     st_crs(vals$models.orig[[overlay_base_idx()]])
 
   } else {
     # Standard overlay
-    if (input$overlay_proj_ll) {
-      crs.ll
+    if (input$overlay_proj_native) {
+      st_crs(vals$models.orig[[overlay_base_idx()]])
+
     } else {
       if (input$overlay_proj_opt == 1) {
         st_crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
 
-      } else {
+      } else if (input$overlay_proj_opt == 2) {
         x <- suppressWarnings(st_crs(input$overlay_proj_epsg))
         validate(
           need(isTruthy(x$epsg),
@@ -266,6 +267,8 @@ overlay_crs <- reactive({
                      "please enter a valid EPSG code"))
         )
         x
+      } else {
+        crs.ll
       }
     }
   }

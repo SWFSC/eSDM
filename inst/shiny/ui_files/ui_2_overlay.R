@@ -196,31 +196,31 @@ ui.overlay <- function() {
                          tags$strong("Overlay options: coordinate system"),
                          conditionalPanel(
                            condition = "input.overlay_samegrid_indicator == 1",
-                           helpText("A major element of the overlay process is calculating the area of polygons and their overlap.",
-                                    "Thus, the coordinate system of the model predictions during the overlay process",
-                                    "can have an effect on the overlay results."),
-                           helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
-                                    "1) 'Equatorial axis of ellipsoid' = 6378137 and",
-                                    "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
-                                    "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
-                                    "for more details about assumptions that must be made when calculating the area",
-                                    "using WGS 84 geographic coordinates."),
-                           checkboxInput("overlay_proj_ll", "Perform overlay in WGS 84 geographic coordinates", value = TRUE),
+                           # helpText("A major element of the overlay process is calculating the area of polygons and their overlap.",
+                           #          "Thus, the coordinate system of the model predictions during the overlay process",
+                           #          "can have an effect on the overlay results."),
+                           # helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
+                           #          "1) 'Equatorial axis of ellipsoid' = 6378137 and",
+                           #          "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
+                           #          "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
+                           #          "for more details about assumptions that must be made when calculating the area",
+                           #          "using WGS 84 geographic coordinates."),
+                           checkboxInput("overlay_proj_native",
+                                         "Perform the overlay in the native coordinate system of the specified base grid",
+                                         value = TRUE),
+                           # conditionalPanel(
+                           #   condition = "input.overlay_proj_native",
+                           #   helpText("Area calculations will be performed in WGS 84 geographic coordinates")
+                           # ),
                            conditionalPanel(
-                             condition = "input.overlay_proj_ll",
-                             helpText("Area calculations will be performed in WGS 84 geographic coordinates")
-                           ),
-                           conditionalPanel(
-                             condition = "input.overlay_proj_ll == false",
-                             column(
-                               width = 5,
-                               radioButtons("overlay_proj_opt", NULL,
+                             condition = "input.overlay_proj_native == false",
+                             box(
+                               width = 12,
+                               radioButtons("overlay_proj_opt", NULL, #tags$h5("Overlay coordinate system"),
                                             choices = list("Select model with desired coordinate system" = 1,
-                                                           "Enter numeric EPSG code" = 2),
-                                            selected = 1)
-                             ),
-                             column(
-                               width = 7,
+                                                           "Enter numeric EPSG code" = 2,
+                                                           "Perform overlay in WGS 84 geographic coordinates" = 3),
+                                            selected = 1),
                                conditionalPanel("input.overlay_proj_opt == 1", uiOutput("overlay_proj_which_uiOut_select")),
                                conditionalPanel(
                                  condition = "input.overlay_proj_opt == 2",
@@ -231,8 +231,8 @@ ui.overlay <- function() {
                          ),
                          conditionalPanel(
                            condition = "input.overlay_samegrid_indicator == 2",
-                           helpText("The coordinate system of the overlaid models will be the current",
-                                    "coordinate system of the model predictions")
+                           helpText("The coordinate system of the overlaid models will be the native",
+                                    "coordinate system of the loaded model predictions")
                          )
                        )
                      ),

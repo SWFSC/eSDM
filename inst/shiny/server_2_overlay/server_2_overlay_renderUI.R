@@ -4,7 +4,7 @@
 ###############################################################################
 ### Widget for user to select file with projection to use in overlay
 output$overlay_proj_which_uiOut_select <- renderUI({
-  req(!input$overlay_proj_ll)
+  req(!input$overlay_proj_native)
 
   choices.list.names <- as.list(vals$models.names)
   choices.list <- seq_along(choices.list.names)
