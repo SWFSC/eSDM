@@ -4,7 +4,7 @@
 \alias{eval_rmse}
 \title{RMSE}
 \usage{
-eval_rmse(pres.pts, abs.pts, model.data, model.dens.idx, prediction.out = NA)
+eval_rmse(x, y, abund.idx, count.idx, overlap.out = NA, dens.idx = NA)
 }
 \value{
 RMSE for given presence numbers and model predictions

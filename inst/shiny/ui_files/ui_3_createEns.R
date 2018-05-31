@@ -6,8 +6,8 @@ ui.createEns <- function() {
     conditionalPanel("output.ens_display_flag == false", ui.notice.no.pred.overlaid()),
     conditionalPanel(
       condition = "output.ens_display_flag",
+      ######################################################################### Choose overlaid models to be used in ensemble
       fluidRow(
-        ##################################################################### Choose overlaid models to be udes in ensemble
         box(
           title = "Overlaid Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
           conditionalPanel(
@@ -28,8 +28,8 @@ ui.createEns <- function() {
         )
       ),
 
+      ######################################################################### Create Ensemble Predictions
       fluidRow(
-        ##################################################################### Ensembling method box
         box(
           title = "Create Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
           fluidRow(
@@ -56,7 +56,8 @@ ui.createEns <- function() {
                   tags$br(),
                   conditionalPanel(
                     condition = "output.ens_overlaid_selected_flag == false",
-                    tags$strong("Please select at least two sets of overlaid model predictions to ensemble")
+                    tags$span(tags$h5("Select at least two sets of overlaid model predictions to create an ensemble"),
+                              style = "color: red")
                   ),
 
                   fluidRow(
@@ -100,18 +101,16 @@ ui.createEns <- function() {
                                    "The relative weights are the metric values rescalued so that the maximum value is one."),
                           conditionalPanel(
                             condition = "output.create_ens_weights_metric_flag == false",
-                            helpText(tags$strong("Metrics have not been calculated for all of",
-                                                 "the selected overlaid model predictions"),
-                                     tags$br(),
-                                     "To use this weighting method, please go to the 'Evaluation Metrics' tab and, ",
-                                     "for all of the overlaid predictions specified in the table above, calculate",
-                                     "the metric you wish to use as a weight.")
+                            tags$span(tags$h5("You must calculate at least one metric for all selected overlaid model predictions",
+                                              "to use this weighting method;",
+                                              "calculate metric(s) in the 'Evaluation Metrics' tab"),
+                                      style = "color: red")
                           ),
                           conditionalPanel(
                             condition = "output.create_ens_weights_metric_flag",
                             fluidRow(
-                              column(width = 4, uiOutput("create_ens_weights_metric_uiOut_radio")),
-                              column(width = 8, tableOutput("create_ens_weights_metric_table_out"))
+                              column(4, uiOutput("create_ens_weights_metric_uiOut_radio")),
+                              column(8, tableOutput("create_ens_weights_metric_table_out"))
                             )
                           )
                         )
@@ -132,8 +131,9 @@ ui.createEns <- function() {
                                    "those predictions will have a weight of one when the enseble is created"),
                           conditionalPanel(
                             condition = "output.create_ens_weights_pix_flag == false",
-                            helpText(tags$strong("At least one of the selected overlaid predictions",
-                                                 "must have pixel-level spatial weights"))
+                            tags$span(tags$h5("At least one of the selected overlaid predictions must have",
+                                              "pixel-level spatial weights to use this weighting method"),
+                                      style = "color: red")
                           ),
                           conditionalPanel(
                             condition = "output.create_ens_weights_pix_flag",
@@ -180,11 +180,6 @@ ui.createEns <- function() {
                                   ),
                                   numericInput("create_ens_weights_poly_csv_weight", tags$h5("Weight for csv polygon(s)"),
                                                min = 0, value = 1, step = 0.1)
-                                  # conditionalPanel(
-                                  #   condition = "output.create_ens_weights_poly_csv_flag",
-                                  #   numericInput("create_ens_weights_poly_csv_weight", tags$h5("Weight for csv polygon(s)"),
-                                  #                min = 0, value = 1, step = 0.1)
-                                  # )
                                 )
                               )
                             ),
@@ -299,93 +294,105 @@ ui.createEns <- function() {
                 )
               )
             ),
-
             ##################################################################### Rescale predictions box
-            column(
-              width = 3,
-              box(
-                width = 12,
-                tags$strong("Rescaling method"),
-                conditionalPanel(
-                  condition = "output.ens_rescale_none_flag == false",
-                  helpText(tags$strong("Note: All prediction types are not \"Absolute density\", ",
-                                       "and thus the model predictions must be rescaled"))
-                ),
-                uiOutput("create_ens_rescale_type_uiOut_radio"),
-                column(
-                  width = 12,
-                  conditionalPanel(
-                    condition = "input.create_ens_rescale_type == 1",
-                    helpText(tags$u("Description:"), "Model predictions will not be changed")
-                  ),
-                  conditionalPanel(
-                    condition = "input.create_ens_rescale_type == 2",
-                    numericInput("create_ens_rescale_abund", tags$h5("Abundance to which to rescale predictions"),
-                                 value = 0, min = 0, step = 1),
-                    helpText(tags$u("Description:"),
-                             "For each model, rescale predictions so that the predicted",
-                             "abundance is the value entered above")
-                  ),
-                  conditionalPanel(
-                    condition = "input.create_ens_rescale_type == 3",
-                    helpText(tags$u("Description:"),
-                             "For each model, rescale predictions (X) into a range of [0, 1]",
-                             "using the following formula:"),
-                    column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -",
-                                             paste0("X", tags$sub("min"), ")"), "/",
-                                             paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")"))))
-                  ),
-                  conditionalPanel(
-                    condition = "input.create_ens_rescale_type == 4",
-                    helpText(tags$u("Description:"),
-                             "For each model, rescale predictions (X) to have a mean", HTML("(&mu;)"),
-                             "of 0 and", "standard deviation", HTML("(&sigma;)"),
-                             "of 1 (unit variance) using the following formula:"),
-                    column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
-                  ),
-                  conditionalPanel(
-                    condition = "input.create_ens_rescale_type == 5",
-                    helpText(tags$u("Description:"), "For each model, rescale the predictions so that they sum to one")
-                  )
-                )
-              ),
-              ################################################### Weight polygon preview
-              conditionalPanel(
-                condition = "input.create_ens_type == 2 && input.create_ens_weight_type == 4",
-                box(
-                  width = 12,
-                  helpText(tags$strong("Polygon(s) with weights method (cont)")),
-                  conditionalPanel(
-                    condition = "output.create_ens_weighted_poly_flag == false",
-                    helpText("No weight polygons have been loaded")
-                  ),
-                  conditionalPanel(
-                    condition = "output.create_ens_weighted_poly_flag",
-                    helpText("Preview weighted polygons for selected overlaid predictions.",
-                             "The overlaid predictions will be black and the weight polygon(s) will have a red border"),
-                    fluidRow(
-                      column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")),
-                      column(4, tags$br(), tags$br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))
+            conditionalPanel(
+              condition = "output.ens_overlaid_selected_flag",
+              column(
+                width = 3,
+                fluidRow(
+                  box(
+                    width = 12,
+                    tags$strong("Rescaling method"),
+                    conditionalPanel(
+                      condition = "output.ens_rescale_none_flag == false",
+                      helpText(tags$strong("Note: All prediction types are not \"Absolute density\", ",
+                                           "and thus the model predictions must be rescaled"))
                     ),
-                    shinycssloaders::withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
+                    uiOutput("create_ens_rescale_type_uiOut_radio"),
+                    column(
+                      width = 12,
+                      conditionalPanel(
+                        condition = "input.create_ens_rescale_type == 1",
+                        helpText(tags$u("Description:"), "Model predictions will not be changed")
+                      ),
+                      conditionalPanel(
+                        condition = "input.create_ens_rescale_type == 2",
+                        numericInput("create_ens_rescale_abund", tags$h5("Abundance to which to rescale predictions"),
+                                     value = 0, min = 0, step = 1),
+                        helpText(tags$u("Description:"),
+                                 "For each model, rescale predictions so that the predicted",
+                                 "abundance is the value entered above")
+                      ),
+                      conditionalPanel(
+                        condition = "input.create_ens_rescale_type == 3",
+                        helpText(tags$u("Description:"),
+                                 "For each model, rescale predictions (X) into a range of [0, 1]",
+                                 "using the following formula:"),
+                        column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -",
+                                                 paste0("X", tags$sub("min"), ")"), "/",
+                                                 paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")"))))
+                      ),
+                      conditionalPanel(
+                        condition = "input.create_ens_rescale_type == 4",
+                        helpText(tags$u("Description:"),
+                                 "For each model, rescale predictions (X) to have a mean", HTML("(&mu;)"),
+                                 "of 0 and", "standard deviation", HTML("(&sigma;)"),
+                                 "of 1 (unit variance) using the following formula:"),
+                        column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
+                      ),
+                      conditionalPanel(
+                        condition = "input.create_ens_rescale_type == 5",
+                        helpText(tags$u("Description:"), "For each model, rescale the predictions so that they sum to one")
+                      )
+                    )
+                  ),
+                  ################################################### Weight polygon preview
+                  conditionalPanel(
+                    condition = "input.create_ens_type == 2 && input.create_ens_weight_type == 4",
+                    box(
+                      width = 12, status = "warning", solidHeader = FALSE, collapsible = TRUE,
+                      helpText(tags$strong("Polygon(s) with weights preview")),
+                      conditionalPanel(
+                        condition = "output.create_ens_weighted_poly_flag == false",
+                        helpText("No weight polygons have been loaded")
+                      ),
+                      conditionalPanel(
+                        condition = "output.create_ens_weighted_poly_flag",
+                        helpText("Preview weighted polygons for selected overlaid predictions.",
+                                 "The overlaid predictions will be black and the weight polygon(s) will have a red border"),
+                        fluidRow(
+                          column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")),
+                          column(4, tags$br(), tags$br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))
+                        ),
+                        shinycssloaders::withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
+                      )
+                    )
                   )
                 )
               )
             ),
             ##################################################################### Create ensemble button
-            box(
-              width = 2,
-              actionButton("create_ens_create_action", "Create ensemble"),
-              ui.new.line(),
-              tags$span(uiOutput("ens_create_ensemble_text"), style = "color: blue")
+            conditionalPanel(
+              condition = "output.ens_overlaid_selected_flag",
+              column(
+                width = 2,
+                fluidRow(
+                  box(
+                    width = 12,
+                    uiOutput("create_ens_create_action_uiOut_button"),
+                    ui.new.line(),
+                    tags$span(uiOutput("ens_create_ensemble_text"), style = "color: blue")
+                  )
+                )
+              )
             )
           )
         )
       ),
 
-      ############################################################################### Created ensemble models
+      ######################################################################### Created ensemble models
       conditionalPanel(
-        condition = "output.ens_display_ens_flag",  # This flag also checks if any ensemble predictions have been created
+        condition = "output.ens_display_ens_flag",  # This flag checks if any ensemble predictions have been created
         fluidRow(
           box(
             title = "Created Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,

@@ -6,7 +6,7 @@
 Assumes that all cols.data have NAs at same place
 Abundance depends on crs code of provided spdf}
 \usage{
-model_abundance(sdm, cols.data)
+model_abundance(x, dens.idx, sum.abund = TRUE)
 }
 \description{
 Calculate abundances for each of cols.data

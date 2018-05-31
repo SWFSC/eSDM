@@ -20,8 +20,7 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
                        "1" = create_ens_weighted_manual(),
                        "2" = create_ens_weighted_metric(),
                        "3" = create_ens_weighted_pix(),
-                       "4" = create_ens_weighted_poly(),
-                       "5" = create_ens_weighted_spatial_manual())
+                       "4" = create_ens_weighted_poly())
     }
     incProgress(0.3)
 
@@ -55,13 +54,13 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
 # Create unweighted ensemble
 create_ens_unweighted <- reactive({
-  overlaid.data <- create_ens_data()
+  overlaid.data <- create_ens_data_rescale()
   base.sfc <- vals$overlay.base.sfc
 
   data.ens <- data.frame(apply(overlaid.data, 1, mean, na.rm = TRUE))
   names(data.ens) <- "Pred.ens"
 
-  st_sf(data.ens, base.sfc)
+  st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
 
 ####################################################################
@@ -73,7 +72,7 @@ create_ens_unweighted <- reactive({
 # 'Level 2' functions
 
 ### Get predictions to be used in ensemble
-create_ens_data <- reactive({
+create_ens_data_rescale <- reactive({
   switch(input$create_ens_rescale_type,
          "1" = create_ens_data_extract(),        # No rescaling
          "2" = create_ens_data_rescale_abund(),  # Rescale densities to given abundance
@@ -101,13 +100,15 @@ create_ens_data_rescale_abund <- reactive({
   )
 
   if (input$create_ens_table_subset) {
-    models.which <- input$create_ens_datatable_rows_selected
-    models.which <- models.which[order(models.which)]
-    sf.list <- sf.list[models.which]
+    sf.list <- sf.list[sort(input$create_ens_datatable_rows_selected)]
   }
 
-  sf.list.rescaled <- models_rescale(sf.list, abund)
-  as.data.frame(lapply(sf.list.rescaled, function(i) i$Pred.overlaid))
+  x <- as.data.frame(lapply(sf.list, function(s) {
+    a = s$Pred.overlaid / (eSDM::model_abundance(s, "Pred.overlaid") / abund)
+  }))
+  names(x) <- letters[ncol(x)]
+
+  x
 })
 
 ### Normalize model predictions (densities)

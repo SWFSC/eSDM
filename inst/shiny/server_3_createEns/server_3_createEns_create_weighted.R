@@ -25,21 +25,21 @@ create_ens_weights_num <- reactive({
 
 ### Create weighted ensemble from manually entered weights
 create_ens_weighted_manual <- reactive({
-  overlaid.data <- create_ens_data()
+  data.rescaled <- create_ens_data_rescale()
   base.sfc <- vals$overlay.base.sfc
-  weights <- create_ens_weights_num()
+  data.weights <- create_ens_weights_num()
 
   # Check that length of weights == length of overlaid models to ensemble
   validate(
-    need(length(weights) == ncol(overlaid.data),
+    need(length(data.weights) == ncol(data.rescaled),
          "Weighted ens 1: number of weights != number of overlaid models")
   )
 
-  data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, function(p) {
-    weighted.mean(p, weights, na.rm = TRUE)
+  data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p) {
+    weighted.mean(p, data.weights, na.rm = TRUE)
   }))
 
-  st_sf(data.ens, base.sfc)
+  st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
 
 
@@ -79,20 +79,27 @@ create_ens_weights_metric_table <- reactive({
 
 ### Create weighted ensemble using some evaluation metric as weights
 create_ens_weighted_metric <- reactive({
-  overlaid.data <- create_ens_data()
+  data.rescaled <- create_ens_data_rescale()
   base.sfc <- vals$overlay.base.sfc
-  weights <- create_ens_weights_metric_table()[, 2]
+
+  # Check that any predictions have been calculated
+  validate(
+    need(isTruthy(vals$eval.metrics),
+         paste("Error: You must calculate at least one metric for all",
+               "selected overlaid model predictions"))
+  )
+  data.weights <- create_ens_weights_metric_table()[, 2]
 
   # Check that length of weights == length of overlaid models to ensemble
   validate(
-    need(length(weights) == ncol(overlaid.data),
-         "Weighted ens by metrics: number of weights != number of o model")
+    need(length(weights) == ncol(data.rescaled),
+         "Weighted ens by metrics: number of weights != number of of model")
   )
 
-  data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, function(p)
-    weighted.mean(p, weights, na.rm = TRUE)))
+  data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p)
+    weighted.mean(p, data.weights, na.rm = TRUE)))
 
-  st_sf(data.ens, base.sfc)
+  st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
 
 
@@ -135,10 +142,14 @@ create_ens_weights_pix_table <- reactive({
 create_ens_weights_pix_weights <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.spatial <- create_ens_weights_pix_which()
+  validate(
+    need(any(ens.which.spatial %in% ens.which),
+         paste("Error: At least one of the selected overlaid predictions",
+               "must have pixel-level spatial weights"))
+  )
 
   df.out <- as.data.frame(lapply(ens.which, function(idx) {
     overlaid.curr <- vals$overlaid.models[[idx]]
-    print(idx)
 
     if (idx %in% ens.which.spatial) {
       validate(
@@ -149,6 +160,7 @@ create_ens_weights_pix_weights <- reactive({
                    idx))
       )
       overlaid.curr$Weight.overlaid
+
     } else {
       rep(1, nrow(overlaid.curr))
     }
@@ -160,21 +172,21 @@ create_ens_weights_pix_weights <- reactive({
 
 ### Create weighted ensemble using pixel-level spatial weights
 create_ens_weighted_pix <- reactive({
-  overlaid.data <- create_ens_data()
+  data.rescaled <- create_ens_data_rescale()
   base.sfc <- vals$overlay.base.sfc
-  weights <- create_ens_weights_pix_weights()
+  data.weights <- create_ens_weights_pix_weights()
 
-  # Check that length of weights == length of overlaid models to ensemble
   validate(
-    need(length(weights) == ncol(overlaid.data),
+    need(length(data.weights) == ncol(data.rescaled),
          "Weighted ens 3: number of weights != number of overlaid models")
   )
 
-  overlaid.data.w <- overlaid.data * weights
-  data.ens <- data.frame(apply(overlaid.data.w, 1, mean, na.rm = TRUE))
-  names(data.ens) <- "Pred.ens"
+  data.reweighted <- data.rescaled * data.weights
+  data.ens <- data.frame(
+    Pred.ens = apply(data.reweighted, 1, mean, na.rm = TRUE)
+  )
 
-  st_sf(data.ens, base.sfc)
+  st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
 
 

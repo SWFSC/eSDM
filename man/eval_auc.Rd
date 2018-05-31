@@ -4,8 +4,7 @@
 \alias{eval_auc}
 \title{Functions for calculating metric values}
 \usage{
-eval_auc(pres.pts, abs.pts, model.data, model.dens.idx, plot.name = "",
-  prediction.out = NA)
+eval_auc(x, y, dens.idx, sight.idx, prediction.out = NA, plot.name = NA)
 }
 \value{
 AUC for given p/a points and model predictions

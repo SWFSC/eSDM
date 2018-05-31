@@ -5,7 +5,7 @@
 \title{Calculates TSS for given presence and absence points and model predictions
 Also calculates cutoff value for predictions that maximizes sens + spec}
 \usage{
-eval_tss(pres.pts, abs.pts, model.data, model.dens.idx, prediction.out = NA)
+eval_tss(x, y, dens.idx, sight.idx, prediction.out = NA)
 }
 \value{
 Returns TSS value (can return vector also with cutoff value)

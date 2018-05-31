@@ -82,23 +82,6 @@ normalize <- function(x) {
 }
 
 
-#' Rescale prediction data
-#'
-#' Rescale prediction data...
-#'
-#' @export
-
-models_rescale <- function(sf.list, abund.new) {
-  # TODO: Input checks, make col.name input a thing
-  # col.name <- enquo(col.name)
-  lapply(sf.list, function(s) {
-    abund.orig <- eSDM::model_abundance(s, cols.data = "Pred.overlaid")
-    # s %>% dplyr::mutate(x / 500)#(abund.orig / abund.new))
-    s$Pred.overlaid <- s$Pred.overlaid / (abund.orig / abund.new)
-    s
-  })
-}
-
 #------------------------------------------------------------------------------
 #' ## Round 'x' to nearest 'base' value
 #' @export
@@ -147,14 +130,13 @@ breaks_calc <- function(x) {
 
 #' Calculate abundances for each of cols.data
 #' Assumes that all cols.data have NAs at same place
-#' Abundance depends on crs code of provided spdf
 #' @export
 
 model_abundance <- function(x, dens.idx, sum.abund = TRUE) {
   # Calculate areas of polygons with no NAs
   x.area.m2 <- st_area(x)
   if (!all(units(x.area.m2)[[1]] == c("m", "m"))) {
-    stop("Units error")
+    stop("Units of st_area(x) must be m^2")
   }
   x.area <- as.numeric(x.area.m2) / 1e+06
 

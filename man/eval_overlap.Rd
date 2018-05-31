@@ -4,7 +4,7 @@
 \alias{eval_overlap}
 \title{Helper functions for calculating model evaluation metrics}
 \usage{
-eval_overlap(pres.pts, abs.pts, model.data, model.dens.idx)
+eval_overlap(x, y, dens.idx = NA)
 }
 \description{
 Return df with overlap of presence/absence data and model

@@ -18,49 +18,61 @@ create_ens_weighted_poly <- reactive({
                "use this weighted ensembling method"))
   )
 
-  overlaid.data <- create_ens_weights_poly_preds() #Already weighted
+  data.rescaled <- create_ens_data_rescale()
   base.sfc <- vals$overlay.base.sfc
+  data.weights <- create_ens_weights_poly_weights()
 
-  data.ens <- data.frame(Pred.ens = apply(overlaid.data, 1, mean, na.rm = TRUE))
+  data.reweighted <- data.rescaled * data.weights
+  data.ens <- data.frame(
+    Pred.ens = apply(data.reweighted, 1, mean, na.rm = TRUE)
+  )
 
   st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
 
 ### Get weights based on loaded polygons
-create_ens_weights_poly_preds <- reactive({
-  as.data.frame(
+create_ens_weights_poly_weights <- reactive({
+  idx <- create_ens_overlaid_idx()
+
+  x <- as.data.frame(
     mapply(function(pred.sf, wpoly.sf.list, wpoly.coverage.vec) {
       if (is.null(wpoly.sf.list)) {
-        pred.sf$Pred.overlaid
+        # If overlaid model has no weight polys, predictions have weight of 1
+        rep(1, nrow(pred.sf))
 
       } else {
-        pred.w.list <- mapply(function(wpoly.sf, wpoly.coverage) {
-          if (nrow(wpoly.sf) == 1) {
-            poly_weight(pred.sf, wpoly.sf, wpoly.coverage)
-          } else {
-            stop("Weight poly eSDM error")
-          }
+        # Else, return vector with weights
+        w.list <- mapply(function(wpoly.sf, wpoly.coverage) {
+          poly_weight(pred.sf, wpoly.sf, wpoly.coverage)
         }, wpoly.sf.list, wpoly.coverage.vec, SIMPLIFY = FALSE)
 
-        pred.out <- pred.sf$Pred.overlaid
-        for(i in pred.w.list) {
-          i.idx <- i[[2]]
-          i.vals <- i[[1]][i.idx]
-          pred.out[i.idx] <- i.vals
+        w <- rep(1, nrow(pred.sf))
+        for(i in w.list) {
+          i.idx <- i[[1]]
+          i.weight <- i[[2]]
+          w[i.idx] <- i.weight
         }
-        pred.out
+        w
       }
     },
-    vals$overlaid.models, vals$ens.over.wpoly.sf, vals$ens.over.wpoly.coverage,
+    vals$overlaid.models[idx], vals$ens.over.wpoly.sf[idx],
+    vals$ens.over.wpoly.coverage[idx],
     SIMPLIFY = FALSE)
   )
+  names(x) <- letters[1:length(x)]
+
+  x
 })
 
 
 ### Function for weighting overlapping areas by weight in weight poly
-# Returns list of *only new weighted predictions and idx of those preds
+# Returns list of indices of preds to be weighted and weight for those preds
 poly_weight <- function(poly.pred, poly.w, coverage) {
-  stopifnot(length(unique(poly.w$Weight)) == 1)
+  stopifnot(
+    inherits(poly.pred, "sf") & inherits(poly.w, "sf"),
+    length(unique(poly.w$Weight)) == 1
+  )
+
   poly.w.union <- st_sf(
     Weight = unique(poly.w$Weight), geometry = st_union(poly.w),
     agr = "constant"
@@ -69,9 +81,8 @@ poly_weight <- function(poly.pred, poly.w, coverage) {
 
   area.ratio <- as.numeric(st_area(y) / st_area(poly.pred)[y$Pixels])
   idx.toweight <- y$Pixels[area.ratio >= (coverage / 100)]
-  pred.out <- poly.pred$Pred.overlaid[idx.toweight] * poly.w$Weight
 
-  list(pred.out, idx.toweight)
+  list(idx.toweight, unique(poly.w$Weight))
 }
 
 

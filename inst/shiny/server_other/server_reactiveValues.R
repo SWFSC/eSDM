@@ -119,27 +119,29 @@ load_envir <- eventReactive(input$load_app_envir_file, {
 
     incProgress(0.1)
 
-    # Update variable defaults
-    if(!is.null(vals$overlay.bound)) {
+    # Update variable defaults if necessary
+    if (isTruthy(vals$overlay.bound)) {
       updateCheckboxInput(session, "overlay_bound", value = TRUE)
     }
-    if(!is.null(vals$overlay.land)) {
+    if (isTruthy(vals$overlay.land)) {
       updateCheckboxInput(session, "overlay_land", value = TRUE)
     }
+
+    # Reset inputs as necessary
+    # TODO
+    # shiny js::reset()
 
     incProgress(0.1)
   })
 
   Sys.sleep(0.5)
 
-  return(paste("App data loaded from", file.load$name))
+  paste("App data loaded from", file.load$name)
 })
 
 ### This is here so that the selected saved app environment loads
 ###   even if user isn't on first page
-observe({
-  load_envir()
-})
+observe(load_envir())
 
 
 ### Save data
@@ -194,14 +196,11 @@ observe({
   vals$pretty.params.list
   vals$pretty.plotted.idx
 
-
   if (length(reactiveValuesToList(vals)) != 31) {
     text.message <-
-      shinyjs::alert(paste0(
-        "There was an error in eSDM data storage and processing.",
-        "\n",
-        "Please restart the app and report this error via ",
-        "the 'Submit Feedback' tab."
+      shinyjs::alert(paste(
+        "There was an error in eSDM data storage and processing,",
+        "please restart the app."
       ))
   }
 })

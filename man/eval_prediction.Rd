@@ -5,8 +5,7 @@
 \title{Returns ROCR::prediction() output of density and sightings columns
 Helper function 2 for AUC and TSS calcs}
 \usage{
-eval_prediction(pres.pts, abs.pts, model.data, model.dens.idx,
-  overlap.out = NA)
+eval_prediction(x, y, dens.idx, sight.idx, overlap.out = NA)
 }
 \description{
 Returns ROCR::prediction() output of density and sightings columns
