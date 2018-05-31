@@ -27,23 +27,33 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
     warning("'base.poly' and 'sdm' have the same geometry and thus ",
             "you shouldn't need to use the full overlay procedure")
   }
+  base.area.m2 <- st_area(base.poly)
+  if (!all(units(base.area.m2)$numerator == c("m", "m"))) {
+    stop("Units of st_area(base.poly) must be m^2")
+  }
+  sdm.area.m2 <- st_area(sdm)
+  if (!all(units(sdm.area.m2)$numerator == c("m", "m"))) {
+    stop("Units of st_area(sdm.area.m2) must be m^2")
+  }
 
 
   #--------------------------------------------------------
   # 1) Get intersection of sdm (sdm being overlaid) and base.poly (base)
   sdm <- sdm %>% dplyr::select(!!quo(data.names))
-  st_agr(sdm) <- "constant" #dplyr::select() removes agr info
+  # st_agr(sdm) <- "constant"
   sdm <- suppressMessages(st_crop(sdm, st_bbox(base.poly)))
   st_agr(sdm) <- "constant" #st_crop() removes agr info
   int <- try(suppressMessages(st_intersection(sdm, base.poly)))
 
   if (inherits(int, "try-error")) {
     stop("Unable to run 'st_intersection(sdm, base.poly)'; make sure that ",
-         "'base.poly' and 'sdm' are both valid")
+         "'base.poly' and 'sdm' are both valid sfc and sf objects, ",
+         "respectively")
   }
   if (length(int) == 0) stop("'sdm' and 'base.poly' do not overlap")
-  if (any(as.numeric(st_area(int)) == 0)) {
-    int <- int[as.numeric(st_area(int)) != 0, ]
+  int.area <- as.numeric(st_area(int))
+  if (any(int.area == 0)) {
+    int <- int[int.area > 1, ]
   }
   # TODO Check if nrow(int) == 0 to see if base.poly and sdm are identical? Or use identical()?
 
@@ -61,7 +71,7 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
 
   int.baseidx <- suppressMessages(st_intersects(int.cent, base.bbox.each))
   if (!all(sapply(int.baseidx, length) == 1)) {
-    stop("There was an error determing polygon overlap")
+    stop("There was an error determining polygon overlap")
   }
   rm(int.cent, base.bbox.each)
 
@@ -98,7 +108,7 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
   stopifnot(identical(as.numeric(unique(int.df$base.which)), base.which.nona))
   # ^ unique(int.df$base.which) output is of class integer
   int.area.by.base.km <- as.numeric(with(int.df, by(int.area.km, base.which, sum)))
-  base.area.km <- as.numeric(st_area(base.poly)) / 1e+06
+  base.area.km <- as.numeric(base.area.m2) / 1e+06
 
   if (length(base.which.nona) == 0) {
     stop("There was an error determining overlap percentage")
