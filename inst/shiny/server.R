@@ -110,7 +110,7 @@ server <- function(input, output, session) {
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_provided.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels_base.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_overlayModels_samegrid.R"), local = TRUE, chdir = TRUE)
+  # source(file.path("server_2_overlay", "server_2_overlay_overlayModels_samegrid.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_renderUI.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, chdir = TRUE)
 
