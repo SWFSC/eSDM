@@ -24,7 +24,7 @@ ui.evalMetrics <- function() {
             column(6, radioButtons("eval_load_type", tags$h5("Validation data file type"),
                                    choices = file.type.list1, selected = 1)),
             column(6, radioButtons("eval_data_type", tags$h5("Validation data type"),
-                                   choices = list("Count (numerical)" = 1, "Presence or absence" = 2),
+                                   choices = list("Count (numerical)" = 1, "Presence/absence" = 2),
                                    selected = 1))
           ),
           #########################################################  Excel csv file
@@ -140,7 +140,12 @@ ui.evalMetrics <- function() {
                     tags$style(type="text/css", "#table_pa_pts_out td:first-child {font-weight:bold;}")
                     #tr:first-child for first row
                   ),
-                  column(3, offset = 1, uiOutput("eval_metrics_which_uiOut_check")),
+                  column(
+                    width = 3, offset = 1,
+                    uiOutput("eval_metrics_which_uiOut_check"),
+                    tags$br(),
+                    helpText("See 'Metrics Descriptions and References' section below for metric information")
+                  ),
                   column(
                     width = 3,
                     tags$br(),

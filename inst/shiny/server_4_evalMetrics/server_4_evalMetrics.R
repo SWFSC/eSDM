@@ -78,19 +78,16 @@ eval_models_idx <- reactive({
   })
 })
 
-### Generate list of crs.ll models with which to calculate metrics
+### Generate list of sdms in native projections with which to calculate metrics
 # Validating done in eval_metrics()
 eval_models <- reactive({
   eval.models.idx <- eval_models_idx()
 
-  models.list.orig <- vals$models.ll[eval.models.idx[[1]]]
+  models.list.orig <- vals$models.orig[eval.models.idx[[1]]]
   models.list.over <- vals$overlaid.models[eval.models.idx[[2]]]
   models.list.ens  <- vals$ensemble.models[eval.models.idx[[3]]]
 
-  models.all <- c(models.list.orig, models.list.over, models.list.ens)
-  lapply(models.all, function(j) {
-    if (identical(st_crs(j), crs.ll)) j else st_transform(j, crs.ll)
-  })
+  c(models.list.orig, models.list.over, models.list.ens)
 })
 
 
@@ -126,6 +123,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 
     eval.results <- lapply(models.toeval, function(m) {
       # TODO calculate abundance here instead of in eval_overlap()?
+      data.sf <- st_transform(data.sf, st_crs(m))
       m <- m[!is.na(m[, 1]), ]
       overlap.out <- eSDM::eval_overlap(data.sf, m, names(m)[1])
       prediction.out <- eSDM::eval_prediction(
@@ -159,7 +157,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 
 
 ###############################################################################
-# Evaluation metrics table: generate/download
+# Evaluation metrics table
 
 ###########################################################
 ### Generate table of calculated metrics

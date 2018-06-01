@@ -51,12 +51,12 @@ eval_proc_df <- function(x, y, p.codes, a.codes) {
       dplyr::select(1, 2, 5, 4)
   }
 
-  return(eval_proc_sf(x))
+  eval_proc_sf(x)
 }
 
 
 #----------------------------------------------------------
-### Convert data.frame (x) with long, lat, sight, and count cols to sf object
+### Convert data.frame, x,  with long, lat, sight, and count cols to sf object
 eval_proc_sf <- function(x) {
   stopifnot(
     ncol(x) == 4,
@@ -65,7 +65,7 @@ eval_proc_sf <- function(x) {
 
   # Sort by lat (primary) then long for bottom up sort and then create sf obj
   pts <- st_as_sf(data_sort(x, 2, 1), coords = c(1, 2),
-                  agr = "constant", crs = 4326)
+                  agr = "constant", crs = crs.ll)
 
   # Perform checks
   pts <- check_dateline(pts)
@@ -74,7 +74,7 @@ eval_proc_sf <- function(x) {
   )
   # Don't need check_valid() for pts
 
-  return(pts)
+  pts
 }
 
 ###############################################################################

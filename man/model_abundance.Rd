@@ -3,13 +3,11 @@
 \name{model_abundance}
 \alias{model_abundance}
 \title{Calculate abundances for each of cols.data
-Assumes that all cols.data have NAs at same place
-Abundance depends on crs code of provided spdf}
+Assumes that all cols.data have NAs at same place}
 \usage{
 model_abundance(x, dens.idx, sum.abund = TRUE)
 }
 \description{
 Calculate abundances for each of cols.data
 Assumes that all cols.data have NAs at same place
-Abundance depends on crs code of provided spdf
 }
