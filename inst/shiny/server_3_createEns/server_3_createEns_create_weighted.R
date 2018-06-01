@@ -148,6 +148,7 @@ create_ens_weights_pix_weights <- reactive({
                "must have pixel-level spatial weights"))
   )
 
+  # browser()
   df.out <- as.data.frame(lapply(ens.which, function(idx) {
     overlaid.curr <- vals$overlaid.models[[idx]]
 
@@ -155,9 +156,8 @@ create_ens_weights_pix_weights <- reactive({
       validate(
         need(identical(is.na(overlaid.curr$Pred.overlaid),
                        is.na(overlaid.curr$Weight.overlaid)),
-             paste("Error: number of in for Pred is different from",
-                   "number in Weight for overlaid #",
-                   idx))
+             paste("Error: number of NAs in for Pred is different from",
+                   "number in Weight for overlaid #", idx))
       )
       overlaid.curr$Weight.overlaid
 

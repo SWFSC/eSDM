@@ -72,9 +72,12 @@ ui.createEns <- function() {
                         helpText(tags$u("Description:"),
                                  "For each model, rescale predictions (X) into a range of [0, 1]",
                                  "using the following formula:"),
-                        column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X -",
-                                                 paste0("X", tags$sub("min"), ")"), "/",
-                                                 paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")"))))
+                        column(
+                          width = 12,
+                          helpText(HTML(paste0("X", tags$sub("new")), "= (X -",
+                                        paste0("X", tags$sub("min"), ")"), "/",
+                                        paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")")))
+                        )
                       ),
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 4",
