@@ -26,15 +26,15 @@ outputOptions(output, "eval_display_calc_metrics_flag",
 ###############################################################################
 ### Generate table with validation data stats
 table_eval_pts <- reactive({
-  data.sf <- vals$eval.data
+  eval.data <- vals$eval.data
   data.type <- vals$eval.data.specs[2]
-  req(inherits(data.sf, "sf"), data.type)
+  req(inherits(eval.data, "sf"), data.type)
 
-  pres.num <- sum(data.sf$sight == 1)
-  abs.num <- sum(data.sf$sight == 0)
+  pres.num <- sum(eval.data$sight == 1)
+  abs.num <- sum(eval.data$sight == 0)
 
   if (data.type == 1) {
-    pres.data <- data.sf %>% dplyr::filter(sight == 1)
+    pres.data <- eval.data %>% dplyr::filter(sight == 1)
     count.range <- paste(range(round(pres.data$count, 2)), collapse = " to ")
 
     data.frame(
@@ -100,13 +100,13 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   vals$eval.models.idx <- NULL
 
   # Set necessary variables
-  data.sf <- vals$eval.data
+  eval.data <- vals$eval.data
   models.idx.any <- any(!sapply(eval_models_idx(), is.null))
   which.metrics <- input$eval_metrics_which
 
   # All validating done here so all messages are displayed at same time
   validate(
-    need(inherits(data.sf, "sf"),
+    need(inherits(eval.data, "sf"),
          paste("Error: Please load validation data in order",
                "to calculate model evaluation metrics")),
     need(models.idx.any,
@@ -123,9 +123,9 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 
     eval.results <- lapply(models.toeval, function(m) {
       # TODO calculate abundance here instead of in eval_overlap()?
-      data.sf <- st_transform(data.sf, st_crs(m))
+      eval.data <- st_transform(eval.data, st_crs(m))
       m <- m[!is.na(m[, 1]), ]
-      overlap.out <- eSDM::eval_overlap(data.sf, m, names(m)[1])
+      overlap.out <- eSDM::eval_overlap(eval.data, m, names(m)[1])
       prediction.out <- eSDM::eval_prediction(
         NA, NA, names(m)[1], "sight", overlap.out
       )
@@ -181,6 +181,21 @@ table_eval_metrics <- reactive({
   row.names(metrics.table) <- 1:nrow(metrics.table)
 
   metrics.table
+})
+
+
+###
+eval_metrics_overlap <- eventReactive(input$eval_metrics_execute, {
+  eval.data <- vals$eval.data
+  models.toeval <- eval_models()
+
+  sapply(
+    lapply(models.toeval, function(m) {
+      eval.data <- st_transform(eval.data, st_crs(m))
+      which(sapply(suppressMessages(st_intersects(eval.data, m)), length) > 1)
+    }),
+    length
+  )
 })
 
 

@@ -218,9 +218,14 @@ ui.evalMetrics <- function() {
             box(
               title = "Metrics", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               fluidRow(
-                column(6, tableOutput("table_eval_metrics_out")),
                 column(
-                  width = 5,
+                  width = 6,
+                  tableOutput("table_eval_metrics_out"),
+                  tags$br(),
+                  column(10, textOutput("eval_metrics_overlap_text"))
+                ),
+                column(
+                  width = 6,
                   conditionalPanel(
                     condition = "output.table_eval_metrics_out != null",
                     downloadButton("eval_metrics_table_save", "Download metrics"),
@@ -231,7 +236,7 @@ ui.evalMetrics <- function() {
                              "for each set of predictions.",
                              "Because ensemble predictions have different information than original and overlaid predictions,",
                              "if evaluation metrics have been calculated for both ensemble predictions and at least",
-                             " one of original and overlaid predictions, then some column headers will be formatted as",
+                             "one of original and overlaid predictions, then some column headers will be formatted as",
                              "'Original+Overlaid info name/Ensemble info name'.")
                   )
                 )

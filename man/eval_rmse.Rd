@@ -13,7 +13,11 @@ eval_rmse(x, y, abund.idx, count.idx, overlap.out = NA, dens.idx = NA)
 
 \item{abund.idx}{name or index of column in \code{y} with abundance data}
 
-\item{dens.idx}{}
+\item{count.idx}{thing 1}
+
+\item{overlap.out}{thing 2}
+
+\item{dens.idx}{thing 3}
 }
 \value{
 RMSE for given presence numbers and model predictions

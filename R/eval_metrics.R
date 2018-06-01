@@ -64,9 +64,9 @@ eval_auc <- function(x, y, dens.idx, sight.idx, prediction.out = NA,
 #' @param x an object of class sf; validation data
 #' @param y an object of class sf; SDM predictions
 #' @param abund.idx name or index of column in \code{y} with abundance data
-#' @param count.idx
-#' @param overlap.out
-#' @param dens.idx
+#' @param count.idx thing 1
+#' @param overlap.out thing 2
+#' @param dens.idx thing 3
 #'
 #' @return RMSE for given presence numbers and model predictions
 #'
