@@ -212,7 +212,14 @@ output$create_ens_weights_poly_table_out <- renderTable({
 
 ### Preview plot of weight polygons
 output$create_ens_weights_poly_preview_plot <- renderPlot({
-  create_ens_weights_poly_preview()
+  req(vals$ens.over.wpoly.plot)
+  x <- vals$ens.over.wpoly.plot
+
+  plot(x[[1]], axes = TRUE, col = "black", border = NA)
+
+  for(sf.toplot in vals$ens.over.wpoly.sf[[x[[2]]]]) {
+    plot(st_geometry(sf.toplot), add = TRUE, col = NA, border = "red")
+  }
 })
 
 
@@ -248,7 +255,14 @@ output$ens_remove_text <- renderUI({
 
 ### Plot preview of ensemble predictions
 output$ens_preview_plot <- renderPlot({
-  ens_preview_event()
+  req(vals$ensemble.plot)
+  x <- vals$ensemble.plot
+
+  eSDM::multiplot_layout(
+    x$models.toplot, x$data.name, x$plot.titles, x$perc.num, pal.esdm,
+    leg.perc.esdm,
+    x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4]
+  )
 })
 
 ### Table of abundances of created ensemble predictions

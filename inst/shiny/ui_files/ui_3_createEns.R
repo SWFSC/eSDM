@@ -106,11 +106,12 @@ ui.createEns <- function() {
                       ),
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag",
-                        helpText("The overlaid predictions will be black and the weight polygon(s) will have a red border"),
+                        tags$h5("Select overlaid predictions to preview with their weight polygons"),
                         fluidRow(
-                          column(8, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")),
-                          column(4, tags$br(), tags$br(), actionButton("create_ens_weights_poly_preview_execute", "Plot preview"))
+                          column(6, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")),
+                          column(6, uiOutput("create_ens_weights_poly_preview_execute_uiOut_button"))
                         ),
+                        helpText("The overlaid predictions will be black and the weight polygon(s) will have a red border"),
                         shinycssloaders::withSpinner(plotOutput("create_ens_weights_poly_preview_plot"), type = 1)
                       )
                     )
@@ -454,7 +455,7 @@ ui.createEns <- function() {
                       tags$br(),
                       tags$br(),
                       tableOutput("ens_abund_table_out"),
-                      tags$style(type="text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
+                      tags$style(type = "text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
                       #tr:first-child for first row
                     )
                   )

@@ -232,17 +232,20 @@ overlay_reset <- reactive({
   vals$overlay.base.sfc      <- NULL
   vals$overlaid.models       <- list()
   vals$overlaid.models.specs <- NULL
+  vals$overlaid.plot         <- NULL
 
   vals$ens.over.wpoly.filename <- NULL
   vals$ens.over.wpoly.sf       <- NULL
   vals$ens.over.wpoly.coverage <- NULL
+  vals$ens.over.wpoly.plot     <- NULL
 
   vals$ensemble.models       <- list()
   vals$ensemble.method       <- NULL
   vals$ensemble.weights      <- NULL
   vals$ensemble.rescaling    <- NULL
   vals$ensemble.overlaid.idx <- NULL
-  vals$ensemble.plotted.idx  <- NULL
+  vals$ensemble.plot         <- NULL
+  vals$ensemble.plot.idx  <- NULL
 
   # Could make this so it only removes overlaid metrics
   # TODO: make smarter
@@ -256,15 +259,14 @@ overlay_reset <- reactive({
 
   # Reset pretty vals if an overlaid or ensemble model was plotted
   if (!is.null(vals$pretty.plotted.idx)) {
+    browser()
     if (any(idx %in% vals$pretty.plotted.idx[[2]]) |
         any(idx %in% vals$pretty.plotted.idx[[3]])) {
-      shinyjs::hide("pretty_plot_plot", time = 0)
+      # shinyjs::hide("pretty_plot_plot", time = 0)
       vals$pretty.params.list <- NULL
       vals$pretty.plotted.idx <- NULL
     }
   }
-
-  # Hide plot windows: this is done in server_hide_show.R
 
   TRUE
 })
@@ -273,12 +275,6 @@ overlay_reset <- reactive({
 ###############################################################################
 ### Get crs object with projection to be used in overlay process
 overlay_crs <- reactive({
-  # if (input$overlay_samegrid_indicator == 2) {
-  #   # Same-grid overlay, use native crs, all loaded sdms have the same crs
-  #   st_crs(vals$models.orig[[overlay_base_idx()]])
-  #
-  # } else {
-  # Standard overlay
   if (input$overlay_proj_native) {
     st_crs(vals$models.orig[[overlay_base_idx()]])
 
@@ -294,40 +290,18 @@ overlay_crs <- reactive({
                    "please enter a valid EPSG code"))
       )
       x
+
     } else {
       crs.ll
     }
   }
-  # }
 })
 
 
 ###############################################################################
 ### Get index of sdm to be used as base
 overlay_base_idx <- reactive({
-  # base.idx <- as.numeric(input$overlay_loaded_table_rows_selected)
-  # if (input$overlay_samegrid_indicator == 2 & length(base.idx) != 1) {
-  #   base.idx <- 1
-  # }
-  #
-  # base.idx
   as.numeric(input$overlay_loaded_table_rows_selected)
-})
-
-
-###############################################################################
-### Message for if same-grid overlay should be used
-overlay_overlay_samegrid_message <- reactive({
-  req(length(vals$models.orig) > 0)
-
-  models.orig.sfc <- lapply(vals$models.orig, st_geometry)
-
-  if (all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]]))) {
-    paste("The loaded predictions all have the same geometry, and thus",
-          "it is recommended that you use the same-grid overlay")
-  } else {
-    NULL
-  }
 })
 
 

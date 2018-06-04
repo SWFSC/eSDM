@@ -60,47 +60,6 @@ output$create_ens_weights_poly_model_uiOut_selectize <- renderUI({
 
 
 #######################################
-### Widget to select overlaid predictions for which to plot preds and wpolys
-output$create_ens_weights_poly_preview_model_uiOut_select <- renderUI({
-  models.which <- seq_along(vals$overlaid.models)
-
-  if (input$create_ens_table_subset) {
-    ens.selected <- input$create_ens_datatable_rows_selected
-    req(any(models.which %in% ens.selected))
-    models.which <- models.which[models.which %in% ens.selected]
-  }
-
-  input.val <- as.list(paste("Overlaid", models.which))
-  choices.list <- as.list(models.which)
-  names(choices.list) <- input.val
-
-  selectInput("create_ens_weights_poly_preview_model",
-              tags$h5("Overlaid predictions to preview"),
-              choices = choices.list, selected = NULL)
-})
-
-
-#######################################
-# Select name of column that has weight data
-
-### shp
-output$create_ens_weights_poly_shp_field_uiOut_select <- renderUI({
-  selectInput("create_ens_weights_poly_shp_field",
-              tags$h5("Name of column with weight(s)"),
-              choices = names(create_ens_weights_poly_shp_read()[[1]]),
-              selected = NULL)
-})
-
-### gdb
-output$create_ens_weights_poly_gdb_field_uiOut_select <- renderUI({
-  selectInput("create_ens_weights_poly_gdb_field",
-              tags$h5("Name of column with weight(s)"),
-              choices = names(create_ens_weights_poly_gdb_read()[[1]]),
-              selected = NULL)
-})
-
-
-#######################################
 ### Select loaded polygons to delete
 output$create_ens_weights_poly_remove_choices_uiOut_select <- renderUI({
   req(!all(sapply(vals$ens.over.wpoly.filename, is.null)))
@@ -131,6 +90,45 @@ output$create_ens_weights_poly_remove_choices_uiOut_select <- renderUI({
   selectizeInput("create_ens_weights_poly_remove_choices",
                  tags$h5("Select loaded weight polygon(s) to remove"),
                  choices = choices.list, selected = NULL, multiple = TRUE)
+})
+
+
+#######################################
+### Widget to select overlaid predictions for which to plot preds and wpolys
+output$create_ens_weights_poly_preview_model_uiOut_select <- renderUI({
+  models.which <- seq_along(vals$overlaid.models)
+
+  if (input$create_ens_table_subset) {
+    ens.selected <- input$create_ens_datatable_rows_selected
+    req(any(models.which %in% ens.selected))
+    models.which <- models.which[models.which %in% ens.selected]
+  }
+
+  input.val <- as.list(paste("Overlaid", models.which))
+  choices.list <- as.list(models.which)
+  names(choices.list) <- input.val
+
+  selectInput("create_ens_weights_poly_preview_model", NULL,
+              choices = choices.list, selected = NULL)
+})
+
+
+#######################################
+### Button to plot overlaid predictions and their weight polys
+output$create_ens_weights_poly_preview_execute_uiOut_button <- renderUI({
+  req(
+    vals$ens.over.wpoly.filename, input$create_ens_weights_poly_preview_model
+  )
+
+  # browser()
+  overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
+  validate(
+    need(isTruthy(vals$ens.over.wpoly.sf[[overlaid.which]]),
+         paste("This overlaid model does not have any",
+               "assigned weight polygons to preview"))
+  )
+
+  actionButton("create_ens_weights_poly_preview_execute", "Plot preview")
 })
 
 

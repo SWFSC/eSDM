@@ -88,25 +88,7 @@ poly_weight <- function(poly.pred, poly.w, coverage) {
 
 ###############################################################################
 ### Plot preview of weight polygons
-create_ens_weights_poly_preview <- eventReactive(
-  input$create_ens_weights_poly_preview_execute, {
-    req(vals$ens.over.wpoly.filename)
-    overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
-
-    validate(
-      need(isTruthy(vals$ens.over.wpoly.sf[[overlaid.which]]),
-           paste("Error: This overlaid model does not have any",
-                 "assigned weight polygons to preview"))
-    )
-
-    plot(st_geometry(vals$overlaid.models[[overlaid.which]]), axes = TRUE,
-         col = "black", border = NA)
-
-    for(sf.toplot in vals$ens.over.wpoly.sf[[overlaid.which]]) {
-      plot(st_geometry(sf.toplot), add = TRUE, col = NA, border = "red")
-    }
-  }
-)
+# Code located in 'server_other.R'
 
 
 ###############################################################################
@@ -123,11 +105,13 @@ create_ens_weights_poly_remove <- eventReactive(
     poly.toremove.idx <- lapply(strsplit(poly.toremove.idx, ", "), as.numeric)
     poly.toremove.df  <- data.frame(t(data.frame(poly.toremove.idx)))
 
-    poly.toremove.df.list <- by(poly.toremove.df, poly.toremove.df[, 1],
-                                function(j) c(j[, 2]))
+    poly.toremove.df.list <- by(
+      poly.toremove.df, poly.toremove.df[, 1], function(j) c(j[, 2])
+    )
 
     # Generate 3 element list of vectors of wpoly objects to remove
-    poly.toremove.list <- lapply(1:3, function(i) {
+    x <- seq_along(vals$ens.over.wpoly.filename)
+    poly.toremove.list <- lapply(x, function(i) {
       if (i %in% names(poly.toremove.df.list)) {
         poly.toremove.df.list[[as.character(i)]]
       } else {

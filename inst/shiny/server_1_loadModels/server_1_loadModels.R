@@ -96,24 +96,25 @@ observeEvent(input$model_remove_execute, {
     }
   }
 
-  # ### If these predictions were pretty-plotted, reset and hide pretty plot
-  # ### Else, adjust vals idx
-  # if (!is.null(vals$pretty.plotted.idx)) {
-  #   if (any(idx %in% vals$pretty.plotted.idx[[1]])) {
-  #     shinyjs::hide("pretty_plot_plot", time = 0)
-  #     vals$pretty.params.list <- NULL
-  #     vals$pretty.plotted.idx <- NULL
-  #   } else {
-  #     idx.adjust <- sapply(vals$pretty.plotted.idx[[1]], function(i) {
-  #       sum(idx < i)
-  #     })
-  #     vals$pretty.plotted.idx[[1]] <- vals$pretty.plotted.idx[[1]] - idx.adjust
-  #     validate(
-  #       need(all(vals$pretty.plotted.idx[[1]] > 0),
-  #            "Error: While deleting 1+ original model(s), error 2")
-  #     )
-  #   }
-  # }
+  ### If these predictions were pretty-plotted, reset and hide pretty plot
+  ### Else, adjust vals idx
+  if (!is.null(vals$pretty.plotted.idx)) {
+    browser()
+    if (any(idx %in% vals$pretty.plotted.idx[[1]])) {
+      shinyjs::hide("pretty_plot_plot", time = 0)
+      vals$pretty.params.list <- NULL
+      vals$pretty.plotted.idx <- NULL
+    } else {
+      idx.adjust <- sapply(vals$pretty.plotted.idx[[1]], function(i) {
+        sum(idx < i)
+      })
+      vals$pretty.plotted.idx[[1]] <- vals$pretty.plotted.idx[[1]] - idx.adjust
+      validate(
+        need(all(vals$pretty.plotted.idx[[1]] > 0),
+             "Error: While deleting 1+ original model(s), error 2")
+      )
+    }
+  }
 })
 
 

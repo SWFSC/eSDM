@@ -64,36 +64,7 @@ outputOptions(output, "ens_models_selected_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
-# Process/plot created ensembles
-
-###########################################################
-### Generate preview of selected ensemble predictions
-create_ens_preview_model <- reactive({
-  ensemble.which <- as.numeric(input$ens_datatable_ensembles_rows_selected)
-
-  validate(
-    need(length(ensemble.which) > 0,
-         paste("Error: Please select at least one set of",
-               "ensemble predictions from the table"))
-  )
-  ensemble.spdf <- vals$ensemble.models[ensemble.which]
-
-  # Get SPixDF object with data being rasterized pixel indices
-  ens.pix <- vals$ens.over.pix
-  names(ens.pix) <- "Pred.ens.pix"
-  ens.pix.idx <- vals$ens.over.pix$pix
-
-  ens.pix.list <- lapply(ensemble.spdf, function(i) {
-    ens.pix.curr <- ens.pix
-    ens.pix.curr$Pred.ens.pix <- i$Pred.ens[ens.pix.idx]
-    names(ens.pix.curr) <- "Pred.ens"
-
-    ens.pix.curr
-  })
-
-  ens.pix.list
-})
-
+# Process created ensembles
 
 ###########################################################
 ### Remove selected ensemble(s)
@@ -124,38 +95,35 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   # Handle other places this data was used
 
   ### If these predictions were previewed, hide preview
+  browser()
   ### Else, adjust vals idx
-  if (!is.null(vals$ensemble.plotted.idx)) {
-    if (any(idx %in% vals$ensemble.plotted.idx)) {
-      shinyjs::hide("ens_pix_preview_plot", time = 0)
-      vals$ensemble.plotted.idx <- NULL
-    } else {
-      idx.adjust <- sapply(vals$ensemble.plotted.idx, function(i) {
-        sum(idx < i)
-      })
-      vals$ensemble.plotted.idx <- vals$ensemble.plotted.idx - idx.adjust
-      validate(
-        need(all(vals$ensemble.plotted.idx > 0),
-             "Error: While deleting ensemble model(s), error 1")
-      )
-    }
+  if (isTruthy(any(idx %in% vals$ensemble.plot.idx))) {
+    vals$ensemble.plot <- NULL
+    vals$ensemble.plot.idx <- NULL
+
+  } else {
+    idx.adjust <- sapply(vals$ensemble.plot.idx, function(i) sum(idx < i))
+    vals$ensemble.plot.idx <- vals$ensemble.plot.idx - idx.adjust
+    validate(
+      need(all(vals$ensemble.plot.idx > 0),
+           "Error: While deleting ensemble model(s), error 1")
+    )
   }
 
   #------------------------------------
   ### Remove evaluation metrics if they're calculated for ensemble model preds
   # TODO: make this so it only removes the metrics of models being removed
-  if (!is.null(vals$eval.models.idx)) {
-    if (!is.null(vals$eval.models.idx[[3]])) {
-      vals$eval.models.idx <- NULL
-      vals$eval.metrics <- NULL
-      vals$eval.metrics.names <- NULL
-    }
+  if (isTruthy(vals$eval.models.idx[[3]])) {
+    vals$eval.models.idx <- NULL
+    vals$eval.metrics <- NULL
+    vals$eval.metrics.names <- NULL
   }
 
   #------------------------------------
   ### If these predictions were pretty-plotted, reset and hide pretty plot
   ### Else, adjust vals idx
   if (!is.null(vals$pretty.plotted.idx)) {
+    browser()
     if (any(idx %in% vals$pretty.plotted.idx[[3]])) {
       shinyjs::hide("pretty_plot_plot", time = 0)
       vals$pretty.params.list <- NULL
@@ -198,14 +166,10 @@ ens_abund_values <- reactive({
 table_ens_abund <- eventReactive(input$ens_calc_abund_execute, {
   ens.abund <- ens_abund_values()
 
-  # data.frame(Predictions = names(ens.abund), Abundance = unname(ens.abund),
-  #            stringsAsFactors = FALSE)
-  ens.abund.table <- as.data.frame(t(data.frame(names(ens.abund),
-                                                unname(ens.abund),
-                                                stringsAsFactors = FALSE)))
-  row.names(ens.abund.table) <- c("Predictions", "Abundance")
-
-  ens.abund.table
+  as.data.frame(t(
+    data.frame(names(ens.abund), unname(ens.abund), stringsAsFactors = FALSE,
+               row.names = c("Predictions", "Abundance"))
+  ))
 })
 
 ###############################################################################

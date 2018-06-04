@@ -159,7 +159,6 @@ server <- function(input, output, session) {
   # server_reactiveValues.R is sourced at the top of the server code in order to initialize reactiveValues
   source(file.path("server_other", "server_render.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_render_tables.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_other", "server_hide+show.R"), local = TRUE, chdir = TRUE)
 }
 
 ###############################################################################

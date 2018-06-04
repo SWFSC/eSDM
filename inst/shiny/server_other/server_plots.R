@@ -126,21 +126,26 @@ observeEvent(input$overlay_preview_overlaid_execute, {
 # Create Ensembles tab
 
 #################################################
+### Preview overlaid model predictions with assigned weight polygons
+observeEvent(input$create_ens_weights_poly_preview_execute, {
+  req(vals$ens.over.wpoly.filename)
+  overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
+
+  vals$ens.over.wpoly.plot <- list(
+    st_geometry(vals$overlaid.models[[overlaid.which]]), overlaid.which
+  )
+})
+
+#################################################
 ### Get preview of ensemble predictions to plot in-app
 #
-ens_preview_event <- eventReactive(input$ens_preview_execute, {
+observeEvent(input$ens_preview_execute, {
   req(length(vals$ensemble.models) > 0)
 
   perc.num <- as.numeric(input$ens_preview_perc)
 
-  #----------------------------------------------
   models.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
   models.num <- length(models.idx)
-
-  validate(
-    need(models.num > 0,
-         "Error: Please select at least one model from table to preview")
-  )
 
   models.toplot <- vals$ensemble.models[models.idx]
   stopifnot(models.num == length(models.toplot))
@@ -150,16 +155,11 @@ ens_preview_event <- eventReactive(input$ens_preview_execute, {
           "|", vals$ensemble.overlaid.idx[i])
   })
 
-  #----------------------------------------------
-
-
-  vals$ensemble.plotted.idx <- models.idx
-  plot.dims <- multiplot_inapp(models.num)
-
-  eSDM::multiplot_layout(
-    models.toplot, rep("Pred.ens", models.num), plot.titles,
-    perc.num, pal.esdm, leg.perc.esdm,
-    plot.dims[1], plot.dims[2], plot.dims[3], plot.dims[4], plot.dims[5]
+  vals$ensemble.plot.idx <- models.idx
+  vals$ensemble.plot <- list(
+    models.toplot = models.toplot, data.name = rep("Pred.ens", models.num),
+    plot.titles = plot.titles, perc.num = perc.num,
+    plot.dims = multiplot_inapp(models.num)
   )
 })
 
