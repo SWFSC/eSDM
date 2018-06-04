@@ -9,31 +9,37 @@
 val.pretty.color.num <- reactiveVal(value = NULL)
 
 ###############################################################################
-# 'Initialize' all 31 elements of vals
+# 'Initialize' all 38 elements of vals
 
 vals <- reactiveValues(
   # Objects that store loaded models and related info
-  models.ll          = list(),    # List of models; crs is crs.ll
-  models.orig        = list(),    # List of models; crs is crs of predictions when loaded
-  models.names       = NULL,      # Vector of model names
-  models.data.names  = NULL,      # List of vectors of model, error, and weights names
-  models.pred.type   = NULL,      # Vector of prediction type (absolute vs relative)
-  models.specs       = NULL,      # List of vectors of res, num of cells/preds, abund, and extent
-  models.plotted.idx = NULL,      # Vector of the indicies of currently previewed original models
+  models.ll             = list(), # List of models; crs is crs.ll
+  models.orig           = list(), #List of models; crs is crs of predictions when loaded
+  models.names          = NULL,   # Vector of model names
+  models.data.names     = NULL,   # List of vectors of model, error, and weights names
+  models.pred.type      = NULL,   # Vector of prediction type (absolute vs relative)
+  models.specs          = NULL,   # List of vectors of res, num of cells/preds, abund, and extent
+  models.plot           = NULL,   # Plot info of currently static-previewed original models
+  models.plot.idx       = NULL,   # Plot index of currently static-previewed original models
+  models.plot.leaf      = NULL,   # Plot info of currently interactive-previewed original models
+  models.plot.leaf.idx  = NULL,   # Plot index of currently interactive-previewed original models
 
   # Objects that store data for and from overlay section
   overlay.bound         = NULL,   # Boundary sfc object; crs is crs.ll; always of length 1
-  overlay.land          = NULL,   # Coastline/land SpatialPolygons; crs is crs.ll
+  overlay.land          = NULL,   # Coastline/land sfc object; crs is crs.ll
+  overlay.plot          = NULL,   # Plot info for overlay base preview
   overlay.crs           = NULL,   # Class crs object of projection for overlay process
   overlay.info          = NULL,   # List of index of model used as base grid and overlap percentage
   overlay.base.sfc      = NULL,   # sfc object that is base grid
   overlaid.models       = list(), # List of overlaid models
   overlaid.models.specs = NULL,   # models.spec info about overlaid models
+  overlaid.plot         = NULL,   # Plot info of currently previewed overlaid models
 
   # Objects that store elements used by ensemble and overlaid models
   ens.over.wpoly.filename = NULL, # List of filenames of polygons with weights; index corresponds to overlaid pred index
   ens.over.wpoly.sf       = NULL, # List of polygons with weights; index corresponds to overlaid pred index
   ens.over.wpoly.coverage = NULL, # List of overlap perc for weight to be applied; index corresponds to overlaid pred index
+  ens.over.wpoly.plot     = NULL, # Plot info of currently previewed weighted polygons
 
   # Objects that store spdfs of and data on created ensembles
   ensemble.models       = list(), # Ensemble model predictions
@@ -41,7 +47,8 @@ vals <- reactiveValues(
   ensemble.weights      = NULL,   # Strings of weights used (if any)
   ensemble.rescaling    = NULL,   # Vector of rescaling methods used
   ensemble.overlaid.idx = NULL,   # Strings of indices of overlaid model predictions used
-  ensemble.plotted.idx  = NULL,   # Vector of the indicies of currently previewed ensemble models
+  ensemble.plot         = NULL,   # Plot info of currently previewed ensemble models
+  ensemble.plot.idx     = NULL,   # Plot index of currently previewed ensemble models
 
   # Objects that store data for evaluation metrics section
   eval.data          = NULL,      # Validation data (sf obj) with 'count' and 'sight' columns
@@ -80,32 +87,39 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     )
     incProgress(0.4)
 
-    vals$models.ll          <- vals.save[["models.ll"]]
-    vals$models.orig        <- vals.save[["models.orig"]]
-    vals$models.names       <- vals.save[["models.names"]]
-    vals$models.data.names  <- vals.save[["models.data.names"]]
-    vals$models.pred.type   <- vals.save[["models.pred.type"]]
-    vals$models.specs       <- vals.save[["models.specs"]]
-    vals$models.plotted.idx <- vals.save[["models.plotted.idx"]]
+    vals$models.ll             <- vals.save[["models.ll"]]
+    vals$models.orig           <- vals.save[["models.orig"]]
+    vals$models.names          <- vals.save[["models.names"]]
+    vals$models.data.names     <- vals.save[["models.data.names"]]
+    vals$models.pred.type      <- vals.save[["models.pred.type"]]
+    vals$models.specs          <- vals.save[["models.specs"]]
+    vals$models.plot           <- vals.save[["models.plot"]]
+    vals$models.plot.idx       <- vals.save[["models.plot.idx"]]
+    vals$models.plot.leaf      <- vals.save[["models.plot.leaf"]]
+    vals$models.plot.leaf.idx  <- vals.save[["models.plot.leaf.idx"]]
 
     vals$overlay.bound         <- vals.save[["overlay.bound"]]
     vals$overlay.land          <- vals.save[["overlay.land"]]
+    vals$overlay.plot          <- vals.save[["overlay.plot"]]
     vals$overlay.crs           <- vals.save[["overlay.crs"]]
     vals$overlay.info          <- vals.save[["overlay.info"]]
     vals$overlay.base.sfc      <- vals.save[["overlay.base.sfc"]]
     vals$overlaid.models       <- vals.save[["overlaid.models"]]
     vals$overlaid.models.specs <- vals.save[["overlaid.models.specs"]]
+    vals$overlaid.plot         <- vals.save[["overlaid.plot"]]
 
     vals$ens.over.wpoly.filename <- vals.save[["ens.over.wpoly.filename"]]
     vals$ens.over.wpoly.sf       <- vals.save[["ens.over.wpoly.sf"]]
     vals$ens.over.wpoly.coverage <- vals.save[["ens.over.wpoly.coverage"]]
+    vals$ens.over.wpoly.plot     <- vals.save[["ens.over.wpoly.plot"]]
 
     vals$ensemble.models       <- vals.save[["ensemble.models"]]
     vals$ensemble.method       <- vals.save[["ensemble.method"]]
     vals$ensemble.weights      <- vals.save[["ensemble.weights"]]
     vals$ensemble.rescaling    <- vals.save[["ensemble.rescaling"]]
     vals$ensemble.overlaid.idx <- vals.save[["ensemble.overlaid.idx"]]
-    vals$ensemble.plotted.idx  <- vals.save[["ensemble.plotted.idx"]]
+    vals$ensemble.plot         <- vals.save[["ensemble.plot"]]
+    vals$ensemble.plot.idx     <- vals.save[["ensemble.plot.idx"]]
 
     vals$eval.data          <- vals.save[["eval.data"]]
     vals$eval.data.specs    <- vals.save[["eval.data.specs"]]
@@ -122,12 +136,16 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     # Update variable defaults if necessary
     if (isTruthy(vals$overlay.bound)) {
       updateCheckboxInput(session, "overlay_bound", value = TRUE)
+    } else {
+      updateCheckboxInput(session, "overlay_bound", value = FALSE)
     }
     if (isTruthy(vals$overlay.land)) {
       updateCheckboxInput(session, "overlay_land", value = TRUE)
+    } else {
+      updateCheckboxInput(session, "overlay_land", value = FALSE)
     }
 
-    # Reset inputs as necessary
+    # Reset other inputs as necessary
     # TODO
     # shiny js::reset()
 
@@ -170,23 +188,30 @@ observe({
   vals$models.data.name
   vals$models.pred.type
   vals$models.specs
-  vals$models.plotted.idx
+  vals$models.plot
+  vals$models.plot.idx
+  vals$models.plot.leaf
+  vals$models.plot.leaf.idx
   vals$overlay.bound
   vals$overlay.land
+  vals$overlay.plot
   vals$overlay.crs
   vals$overlay.info
   vals$overlay.base.sfc
   vals$overlaid.models
   vals$overlaid.models.specs
+  vals$overlaid.plot
   vals$ens.over.wpoly.filename
   vals$ens.over.wpoly.sf
   vals$ens.over.wpoly.coverage
+  vals$ens.over.wpoly.plot
   vals$ensemble.models
   vals$ensemble.method
   vals$ensemble.weights
   vals$ensemble.rescaling
   vals$ensemble.overlaid.idx
-  vals$ensemble.plotted.idx
+  vals$ensemble.plot
+  vals$ensemble.plot.idx
   vals$eval.models.idx
   vals$eval.data
   vals$eval.data.specs
@@ -196,7 +221,7 @@ observe({
   vals$pretty.params.list
   vals$pretty.plotted.idx
 
-  if (length(reactiveValuesToList(vals)) != 31) {
+  if (length(reactiveValuesToList(vals)) != 38) {
     text.message <-
       shinyjs::alert(paste(
         "There was an error in eSDM data storage and processing,",

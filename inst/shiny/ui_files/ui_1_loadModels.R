@@ -290,10 +290,19 @@ ui.loadModels <- function() {
                    )
                  ),
 
-                 box(
-                   title = "Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
-                   shinycssloaders::withSpinner(plotOutput("model_preview_plot"), type = 1),
-                   shinycssloaders::withSpinner(leafletOutput("model_preview_interactive_plot"), type = 1)
+                 conditionalPanel(
+                   condition = "input.model_select_action == 1",
+                   box(
+                     title = "Interactive Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
+                     shinycssloaders::withSpinner(leafletOutput("model_preview_interactive_plot"), type = 1)
+                   )
+                 ),
+                 conditionalPanel(
+                   condition = "input.model_select_action == 2",
+                   box(
+                     title = "Static Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
+                     shinycssloaders::withSpinner(plotOutput("model_preview_plot"), type = 1)
+                   )
                  )
                )
              )

@@ -247,9 +247,13 @@ ui.overlay <- function() {
                      box(
                        width = 12,
                        fluidRow(
-                         column(9, helpText("Note: If model predictions were made at a high resolution, ",
-                                            "then preview may appear to be completely black")),
-                         column(3, tags$br(), actionButton("overlay_preview_base_execute", "Preview"))
+                         column(
+                           width = 6,
+                           tags$h5("To preview the base grid, select a set of loaded model predictions"),
+                           uiOutput("overlay_preview_base_execute_uiOut_button")
+                         ),
+                         column(6, helpText("Note: If model predictions were made at a high resolution,",
+                                            "then preview may appear to be completely black when zoomed out"))
                        )
                      )
                    ),

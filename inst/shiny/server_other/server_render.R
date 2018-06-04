@@ -56,12 +56,24 @@ output$models_loaded_table_stats <- DT::renderDataTable({
 
 #----------------------------------------------------------
 ### Plot/preview of loaded, original model(s)
-output$model_preview_plot <- renderPlot({
-  model_preview_event()
+output$model_preview_interactive_plot <- renderLeaflet({
+  req(vals$models.plot.leaf)
+  x <- vals$models.plot.leaf
+
+  eSDM::preview_interactive(
+    x$model.toplot, "Pred", x$perc.num, pal.esdm, leg.perc.esdm
+  )
 })
 
-output$model_preview_interactive_plot <- renderLeaflet({
-  model_preview_interactive_event()
+output$model_preview_plot <- renderPlot({
+  req(vals$models.plot)
+  x <- vals$models.plot
+
+  eSDM::multiplot_layout(
+    x$models.toplot, x$data.name, x$plot.titles, x$perc.num, pal.esdm,
+    leg.perc.esdm,
+    x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4]
+  )
 })
 
 
@@ -123,36 +135,20 @@ output$overlay_land_gis_gdb_message <- renderText({
 #----------------------------------------------------------
 # Overlaying process outputs
 
-### Samegrid overlay
-output$overlay_samegrid_warning_text <- renderUI({
-  HTML(overlay_samegrid_warning())
-})
-output$overlay_samegrid_all_text <- renderText({
-  overlay_samegrid_all()
-})
-
-### Standard overlay
-output$overlay_overlay_samegrid_message_text <- renderText({
-  overlay_overlay_samegrid_message()
-})
+### Error output for overlay process
 output$overlay_overlay_all_text <- renderText({
   overlay_all()
 })
 
-### Both overlays
+### Message detailing that overlaid models are created
 output$overlay_overlaid_models_message <- renderText({
   if (length(vals$overlaid.models) > 0) {
-    if (is.na(vals$overlay.info[[2]])) {
-      "Overlaid models are created using the same-grid overlay"
-
-    } else {
-      paste(
-        "Overlaid models have been created using the geometry of the",
-        paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
-        "SDM as the base grid and with a percent overlap of",
-        paste0(vals$overlay.info[[2]] * 100, "%")
-      )
-    }
+    paste(
+      "Overlaid models have been created using the geometry of the",
+      paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
+      "SDM as the base grid and with a percent overlap of",
+      paste0(vals$overlay.info[[2]] * 100, "%")
+    )
   }
 })
 
@@ -163,13 +159,20 @@ output$overlay_overlaid_models_message <- renderText({
 ### Preview of base grid
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$overlay_preview_base <- renderLeaflet({
-  overlay_preview_base_event()
+  req(vals$overlay.plot)
 })
 
 ### Preview of overlaid model predictions
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$overlay_preview_overlaid <- renderPlot({
-  overlay_preview_overlaid_event()
+  req(vals$overlaid.plot)
+  x <- vals$overlaid.plot
+
+  eSDM::multiplot_layout(
+    x$models.toplot, x$data.names, x$plot.titles, 1, pal.esdm, leg.perc.esdm,
+    x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
+    x$plot.dims[5]
+  )
 })
 
 
