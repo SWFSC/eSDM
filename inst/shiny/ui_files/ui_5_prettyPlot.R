@@ -8,9 +8,8 @@ ui.prettyPlot <- function() {
       condition = "output.pretty_display_flag",
       fluidRow(
         box(
-          solidHeader = FALSE, status = "primary", width = 6, height = 500,
-          helpText("todo")
-          # shinycssloaders::withSpinner(plotOutput("pretty_plot_plot"), type = 1)
+          solidHeader = FALSE, status = "primary", height = 550, width = 6, align = "center",
+          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot", height = 400), type = 1)
         ),
         box(
           title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE,
@@ -29,7 +28,7 @@ ui.prettyPlot <- function() {
           box(
             width = 12,
             helpText(tags$strong("Please select exactly one set of model predictions to plot.",
-                            "The app can only generate one high quality map at a time for now."))
+                                 "The app can only generate one high quality map at a time for now."))
           )
         )
       ),
@@ -141,9 +140,9 @@ ui.prettyPlot <- function() {
                     helpText("Size values are relative to 1, which is the default size"),
                     fluidRow(
                       column(6, numericInput("pretty_plot_title_cex", tags$h5("Title size (value is relative to 1)"),
-                                             value = 1.4, step = 0.1)),
+                                             value = 1, step = 0.1)),
                       column(6, numericInput("pretty_plot_lab_cex", tags$h5("Axis label size (value is relative to 1)"),
-                                             value = 1, step = 0.1))
+                                             value = 0.8, step = 0.1))
                     )
                   )
                 )
@@ -167,10 +166,10 @@ ui.prettyPlot <- function() {
                       condition = "input.pretty_plot_tick",
                       fluidRow(
                         column(6, radioButtons("pretty_plot_tick_manual", tags$h5("Tick location options"),
-                                       choices = list("Use default tick locations" = 1, "Enter tick locations manually" = 2),
-                                       selected = 1)),
+                                               choices = list("Use default tick locations" = 1, "Enter tick locations manually" = 2),
+                                               selected = 1)),
                         column(6, numericInput("pretty_plot_tick_length", tags$h5("Tick length"),
-                                       value = 1.0, min = 0, step = 0.1))
+                                               value = 1.0, min = 0, step = 0.1))
                       )
                     ),
                     fluidRow(
@@ -178,7 +177,8 @@ ui.prettyPlot <- function() {
                         condition = "input.pretty_plot_tick && input.pretty_plot_tick_manual == 2",
                         column(12, helpText("Enter locations as '#, #, ..., #'.",
                                             "Tick location values must have the same units as the specified coordinate system.",
-                                            "If the specified coordinate system is WGS 84 geographic coordinates, then the values must be",
+                                            "If the specified coordinate system is WGS 84 geographic coordinates,",
+                                            "then the values must be",
                                             "decimal degrees with a range of [-180, 180] for longitudes and [-90, 90] for latitudes")),
                         column(6, textInput("pretty_plot_tick_manual_lon", tags$h5("Longitude tick locations"), value = "")),
                         column(6, textInput("pretty_plot_tick_manual_lat", tags$h5("Latitude tick locations"), value = ""))
@@ -333,7 +333,8 @@ ui.prettyPlot <- function() {
                             condition = "input.pretty_plot_other_obj_which != null && input.pretty_plot_other_obj_which.includes('1')",
                             numericInput("pretty_plot_bound_poly_lwd", tags$h5("Line width of study area border"),
                                          value = 1.5, min = 0, step = 0.1),
-                            checkboxInput("pretty_plot_bound_poly_first", "Draw study area polygon before model predictions", value = FALSE)
+                            checkboxInput("pretty_plot_bound_poly_first", "Draw study area polygon before model predictions",
+                                          value = FALSE)
                           )
                         ),
                         column(
