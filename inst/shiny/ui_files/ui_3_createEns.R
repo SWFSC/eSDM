@@ -46,7 +46,7 @@ ui.createEns <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    tags$strong("1) Rescaling method"),
+                    tags$strong("1) Ensemble options: rescaling method"),
                     conditionalPanel(
                       condition = "output.ens_rescale_none_flag == false",
                       helpText(tags$strong("Note: All prediction types are not \"Absolute density\", ",
@@ -124,7 +124,7 @@ ui.createEns <- function() {
                 fluidRow(
                   column(
                     width = 4,
-                    tags$strong("2) Ensembling method"),
+                    tags$strong("2) Ensemble options: ensembling method"),
                     radioButtons("create_ens_type", NULL, choices = list("Unweighted" = 1, "Weighted" = 2), selected = 1),
                     column(
                       width = 12,

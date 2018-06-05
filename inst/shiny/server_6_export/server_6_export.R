@@ -67,22 +67,11 @@ output$export_tables_oneselected_flag <- reactive({
 outputOptions(output, "export_tables_oneselected_flag",
               suspendWhenHidden = FALSE)
 
-### Flag for if filename extension is correct
-output$export_filename_flag <- reactive({
-  export.format <- input$export_format
-  ext.text <- switch(as.numeric(input$export_format),
-                     ".csv", ".shp",
-                     ifelse(input$export_format_kml == 1, ".kml", ".kmz"))
-
-  substr_right(input$export_filename, 4) == ext.text
-})
-outputOptions(output, "export_filename_flag", suspendWhenHidden = FALSE)
-
 
 ###############################################################################
 ### Export model predictions as csv, shp, or kml
-# Download shapefile code is modeled after
-# https://gist.github.com/RCura/b6b1759ddb8ab4035f30
+# Download shapefile code is adapted from
+#   https://gist.github.com/RCura/b6b1759ddb8ab4035f30
 output$export_out <- downloadHandler(
   filename = function() {
     if (input$export_format == 2) {
@@ -108,17 +97,13 @@ output$export_out <- downloadHandler(
         name.shp <- paste0(name.base, ".shp")
         name.zip <- paste0(name.base, ".zip")
 
-        if (length(Sys.glob(name.glob)) > 0) {
-          file.remove(Sys.glob(name.glob))
-        }
+        if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
         st_write(data.out, dsn = name.shp, layer = "shpExport",
                  driver = "ESRI Shapefile", quiet = TRUE)
         zip(zipfile = name.zip, files = Sys.glob(name.glob))
         file.copy(name.zip, file)
 
-        if (length(Sys.glob(name.glob)) > 0) {
-          file.remove(Sys.glob(name.glob))
-        }
+        if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
 
       } else if (export.format == 3) {
         st_write(data.out, dsn = file, layer = "Pred_kml", driver = "KML",
@@ -139,24 +124,23 @@ output$export_out <- downloadHandler(
 
 ### Get selected predictions
 export_model_selected <- reactive({
-  req(vals$models.ll)
+  req(vals$models.orig)
 
   x <- input$export_table_orig_out_rows_selected
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
   req(!sum(sapply(list(x, y, z), is.null)) == 1)
 
-  if(!is.null(x)) {
-    model.selected <- vals$models.ll[[x]]
+  if (!is.null(x)) {
+    model.selected <- vals$models.orig[[x]]
+
   } else if (!is.null(y)) {
     model.selected <- vals$overlaid.models[[y]]
-  } else if (!is.null(z)) {
+
+  } else { #!is.null(z)
     model.selected <- vals$ensemble.models[[z]]
-  } else {
-    validate(need(FALSE, "Error: export get predictions error"))
   }
 
-  ### Return Pred and Weight data
   # TODO include pixels?
   st_sf(
     st_set_geometry(model.selected, NULL) %>% dplyr::select(Density = 1, 3),
@@ -164,44 +148,53 @@ export_model_selected <- reactive({
   )
 })
 
-### Return selected predictions in specified crs
-export_model_selected_proj <- reactive({
-  model.selected <- export_model_selected() # handles req()
-  model.selected.crs <- st_crs(model.selected)
 
-  if (input$export_proj_ll) {
-    crs.selected <- crs.ll
+### Get crs in which to export model predictions
+export_crs <- reactive({
+  if (input$export_proj_native) {
+    crs.selected <- st_crs(export_model_selected()) #handles req()
 
   } else {
     if (input$export_proj_method == 1) {
-      crs.selected <- st_crs(vals$models.orig[[as.numeric(input$export_proj)]])
+      crs.selected <- st_crs(
+        vals$models.orig[[as.numeric(req(input$export_proj_sdm))]]
+      )
 
     } else if (input$export_proj_method == 2) {
       crs.selected <- suppressWarnings(st_crs(input$export_proj_epsg))
 
-    } else{
-      stop("Error in export crs")
+    } else { #input$export_proj_method == 3
+      crs.selected <- crs.ll
     }
   }
 
   # Use [[2]] in case of custom crs w/out epsg code
   validate(
     need(isTruthy(crs.selected[[2]]),
-         paste("Error: The entered EPSG code was not recognized,",
-               "please enter a valid EPSG code"))
+         paste("Error: The provided coordinate system was not recognized,",
+               "please specify a valid coordinate system"))
   )
 
-  if (!identical(model.selected.crs, crs.selected)) {
-    model.selected <- st_transform(model.selected, crs.selected)
-  }
+  crs.selected
+})
 
-  model.selected
+
+### Return selected predictions in specified crs
+export_model_selected_proj <- reactive({
+  model.selected <- export_model_selected() #handles req()
+  crs.selected <- export_crs()
+
+  if (!identical(st_crs(model.selected), crs.selected)) {
+    st_transform(model.selected, crs.selected)
+  } else {
+    model.selected
+  }
 })
 
 
 ### Return selected predictions in specified projection in desired format
 export_model_selected_proj_format <- reactive({
-  model.selected <- export_model_selected_proj()
+  model.selected <- export_model_selected_proj() #handles req()
 
   if (input$export_format == 1) {
     # Exporting data as .csv requires data.frame with centroids

@@ -182,7 +182,7 @@ ui.overlay <- function() {
                        width = 6,
                        box(
                          width = 12,
-                         tags$strong("Overlay options: coordinate system"),
+                         tags$strong("1) Overlay options: coordinate system"),
                          # helpText("A major element of the overlay process is calculating the area of polygons and their overlap.",
                          #          "Thus, the coordinate system of the model predictions during the overlay process",
                          #          "can have an effect on the overlay results."),
@@ -218,7 +218,7 @@ ui.overlay <- function() {
                        fluidRow(
                          box(
                            width = 12,
-                           tags$strong("Overlay options: percent overlap"),
+                           tags$strong("2) Overlay options: percent overlap"),
                            helpText("The slider bar specifies the percent that the original model prediction(s) must overlap",
                                     "a base grid cell for that cell to have a non-NA overlaid prediction value.",
                                     "A slider bar value of \"0\" means that cell will have a non-NA overlaid prediction value",
@@ -227,6 +227,7 @@ ui.overlay <- function() {
                          ),
                          box(
                            width = 12,
+                           tags$strong("3) Perform overlay"),
                            helpText(tags$strong("It is strongly recommended to save the app environment before overlaying",
                                                 "in case you are disconnected from the server during the process.")),
                            helpText(tags$strong("Reminder: loaded study area and land polygons will be used during",

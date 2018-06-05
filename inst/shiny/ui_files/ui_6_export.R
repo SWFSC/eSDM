@@ -28,19 +28,19 @@ ui.export <- function() {
             condition = "output.export_tables_oneselected_flag",
             fluidRow(
               ########################################## Exported file format
-              column(
+              box(
                 width = 6,
+                tags$strong("1) Export options: file format"),
                 selectInput("export_format", tags$h5("Format in which to export predictions"),
                             choices = list("Excel .csv file" = 1, "GIS shapefile" = 2, "KML or KMZ file" = 3),
                             selected = 1),
-                box(
+                column(
                   width = 12,
                   conditionalPanel(
                     condition = "input.export_format == 1",
                     helpText(tags$u("Description:"),
-                             "For predictions to be exported as an Excel .csv file, the centroid is determined for",
-                             "each prediction polygon. The exported .csv file consists of",
-                             "columns with the COORDIANTES of these centroids,",
+                             "The centroid is determined for each prediction polygon, and thus the exported .csv file consists of",
+                             "columns with the coordinates of these centroids,",
                              "as well as the prediction (density), and weight values for each of those points.",
                              tags$br(), tags$br(),
                              tags$u("Filename:"), "Extension must be '.csv'.")
@@ -66,67 +66,48 @@ ui.export <- function() {
                              "prediction (density) and weight values as decriptions.",
                              tags$br(), tags$br(),
                              tags$u("Filename:"), "Extension must be '.kml' or '.kmz', depending on the",
-                             tags$em("File type"), "selection.")
+                             tags$em("File format"), "selection.")
                   )
                 )
               ),
               ########################################## Coordinate system
-              column(
-                width = 6, offset = 0,
-                checkboxInput("export_proj_ll", "Export predictions in WGS 84 geographic coordinates", value = TRUE),
+              box(
+                width = 6,
+                tags$strong("2) Export options: coordinate system"),
+                helpText("Note that if you export predictions to an Excel .csv file in a longitude/latitude",
+                         "coordinate system the eSDM calculates the centroids using the lat/long coordinates",
+                         "and thus the centroids may not be geographically accurate."),
+                checkboxInput("export_proj_native", "Export predictions in the native coordinate system of the selected SDM",
+                              value = TRUE),
                 conditionalPanel(
-                  condition = "input.export_proj_ll",
-                  helpText("Predictions will be exported in WGS 84 geographic coordinates")
-                ),
-                conditionalPanel(
-                  condition = "input.export_proj_ll == false",
-                  radioButtons("export_proj_method", NULL,
-                               choices = list("Select predictions with desired coordinate system" = 1,
-                                              "Enter EPSG code of desired coordinate system" = 2),
-                               selected = 1),
-                  column(
+                  condition = "input.export_proj_native == false",
+                  box(
                     width = 12,
-                    conditionalPanel(
-                      condition = "input.export_proj_method == 1",
-                      uiOutput("export_proj_uiOut_select")
-                    ),
+                    radioButtons("export_proj_method", NULL, #tags$h5("Overlay coordinate system"),
+                                 choices = list("Select SDM with desired coordinate system" = 1,
+                                                "Enter numeric EPSG code" = 2,
+                                                "Export predictions in WGS 84 geographic coordinates" = 3),
+                                 selected = 1),
+                    conditionalPanel("input.export_proj_method == 1", uiOutput("export_proj_sdm_uiOut_select")),
                     conditionalPanel(
                       condition = "input.export_proj_method == 2",
-                      numericInput("export_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)
-                    )
+                      numericInput("export_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)                    )
                   )
-                ),
-                box(
-                  width = 12,
-                  helpText(tags$u("Description:"),
-                           "Predictions can be exported in WGS 84 geographic coordinates (lat/long, default), ",
-                           "in the coordinate system of one of the loaded sets of model predictions, ",
-                           "or in the coordinate system of a given EPSG code.",
-                           tags$br(), tags$br(),
-                           "Please note that if you export predictions to an Excel .csv file in a longitude/latitude",
-                           "coordinate system the eSDM calculates the centroids using said coordinates",
-                           "and thus the centroids may not be geographically accurate.")
                 )
               )
             ),
             ########################################## Filename and export
             fluidRow(
-              column(6, uiOutput("export_filename_uiOut_text")),
-              column(
-                width = 6, offset = 0,
-                tags$br(),
-                tags$br(),
-                conditionalPanel(
-                  condition = "output.export_filename_flag == false",
-                  tags$span(tags$strong("Error: The file extension in", tags$em("Filename"),
-                                        "must match the file extension specified in",
-                                        tags$em("Format in which to export predictions"), "to download the predictions"),
-                            style = "color: red")
-                ),
-                conditionalPanel(
-                  condition = "output.export_filename_flag",
-                  downloadButton("export_out", "Export predictions")
-                )
+              box(
+                width = 6,
+                tags$strong("3) Export options: filename"),
+                uiOutput("export_filename_uiOut_text")
+              ),
+              box(
+                width = 6,
+                tags$strong("4) Export predictions"),
+                tags$br(), tags$br(),
+                uiOutput("export_out_uiOut_download")
               )
             )
           )
