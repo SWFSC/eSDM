@@ -14,6 +14,8 @@ read_model_csv <- reactive({
   return(list(file.in$name, read.csv(file.in$datapath)))
 })
 
+# observe(print(create_sf_csv()))
+
 output$read_model_csv_flag <- reactive({
   !is.null(read_model_csv())
 })
@@ -228,14 +230,27 @@ create_sf_csv_sfc <- reactive({
 
 ###############################################################################
 create_sf_csv <- eventReactive(input$model_create_csv, {
+  # This check is here so that it occurs before creation of sfc object
+  weight.idx <- as.numeric(input$model_csv_names_weight) - 1
+  if (weight.idx != 0) {
+    data.all <- read_model_csv()[[2]]
+    data.weight <- data.all[, weight.idx]
+    validate(
+      need((max(data.weight, na.rm = TRUE) <= 1) &
+             (min(data.weight, na.rm = TRUE) >= 0),
+           "Error: Values in 'Weight' column must be between 0 and 1")
+    )
+  }
+
   # Combine data df and sfc object
   csv.sf.temp <- create_sf_csv_sfc()[[1]]
 
   withProgress(message = "Combining .csv file data and polygons", value = 0.6, {
     csv.data <- create_sf_csv_data()
     if (nrow(csv.data) == nrow(csv.sf.temp)) {
-      sf.load.ll <- st_sf(csv.data[, 3:6], geometry = st_geometry(csv.sf.temp),
-                          agr = "constant")
+      sf.load.ll <- st_sf(
+        csv.data[, 3:6], geometry = st_geometry(csv.sf.temp), agr = "constant"
+      )
 
     } else {
       validate(need(FALSE, "Error in creating sf object from .csv file"))
@@ -252,9 +267,10 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
 
 
     #### Code common to csv, raster, and gis_shp/gis_gdb functions ####
-    source(file.path("server_1_loadModels",
-                     "server_1_loadModels_create_local.R"),
-           local = TRUE, echo = FALSE, chdir = TRUE)
+    source(
+      file.path("server_1_loadModels", "server_1_loadModels_create_local.R"),
+      local = TRUE, echo = FALSE, chdir = TRUE
+    )
 
 
     "Model predictions loaded from csv"

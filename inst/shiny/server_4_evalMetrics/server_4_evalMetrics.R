@@ -175,8 +175,9 @@ table_eval_metrics <- reactive({
   })
 
   metrics.table <- data.frame(
-    "Model" = c(row.names(table.orig), row.names(table.over),
-                row.names(table.ensembles)),
+    "Model" = c(
+      row.names(table.orig), row.names(table.over), row.names(table.ensembles)
+    ),
     metrics.table, stringsAsFactors = FALSE)
   row.names(metrics.table) <- 1:nrow(metrics.table)
 
@@ -184,7 +185,7 @@ table_eval_metrics <- reactive({
 })
 
 
-###
+### Generate message detailing number of pointsd that landed on poly boundaries
 eval_metrics_overlap <- eventReactive(input$eval_metrics_execute, {
   eval.data <- vals$eval.data
   models.toeval <- eval_models()

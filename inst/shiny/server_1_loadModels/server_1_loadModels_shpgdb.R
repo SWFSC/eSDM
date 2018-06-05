@@ -85,6 +85,18 @@ create_sf_gis_shp <- eventReactive(input$model_create_gis_shp, {
   error.idx <- NA #as.numeric(input$model_gis_shp_names_error)
   weight.idx <- as.numeric(input$model_gis_shp_names_weight)
 
+  # Ensure that weight values are between 0 and 1
+  if (weight.idx != 1) {
+    data.all <- st_set_geometry(read_model_gis_shp()[[1]], NULL)
+    data.weight <- data.all[, (weight.idx - 1)]
+    validate(
+      need((max(data.weight, na.rm = TRUE) <= 1) &
+             (min(data.weight, na.rm = TRUE) >= 0),
+           "Error: Values in 'Weight' column must be between 0 and 1")
+    )
+  }
+
+  # Continue create_local code prep
   model.name <-read_model_gis_shp()[[2]]
   pred.type <- input$model_gis_shp_pred_type
 
@@ -133,6 +145,18 @@ create_sf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
   error.idx <- NA #as.numeric(input$model_gis_gdb_names_error)
   weight.idx <- as.numeric(input$model_gis_gdb_names_weight)
 
+  # Ensure that weight values are between 0 and 1
+  if (weight.idx != 1) {
+    data.all <- st_set_geometry(read_model_gis_gdb()[[1]], NULL)
+    data.weight <- data.all[, (weight.idx - 1)]
+    validate(
+      need((max(data.weight, na.rm = TRUE) <= 1) &
+             (min(data.weight, na.rm = TRUE) >= 0),
+           "Error: Values in 'Weight' column must be between 0 and 1")
+    )
+  }
+
+  # Continue create_local code prep
   model.name <- read_model_gis_gdb()[[2]]
   pred.type <- input$model_gis_gdb_pred_type
 
