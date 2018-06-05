@@ -39,16 +39,10 @@ options(shiny.maxRequestSize = 150 * 1024^2)
 ### Use to perform sequential rather than concurrent validate checks
 `%then%` <- shiny:::`%OR%`
 
-### Server-wide CRS code(s)
+### Server-wide CRS code
 crs.ll <- st_crs(4326) # WGS 84
-# crs.cea <- st_crs(
-#   paste("+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m",
-#         "+no_defs +ellps=WGS84 +towgs84=0,0,0")
-# )
-# # crs.cea is proj4string from st_crs(boundary.proj.poly), which had
-# #   Projected Coordinate System 'World_Cylindrical_Equal_Area'in GIS
 
-### For plotting
+### Plotting variables
 pal.esdm <- c(
   "#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0", "#fee090",
   "#fdae61", "#f46d43", "#d73027", "#a50026"
@@ -84,8 +78,8 @@ server <- function(input, output, session) {
                           silent = TRUE)
         validate(
           need(isTruthy(sample.try),
-               paste("Sample data could not be downloaded; please check your",
-                     "internet connection. If this problem persists,",
+               paste("The sample data could not be downloaded; please check",
+                     "your internet connection. If this problem persists,",
                      "email Sam Woodman (sam.woodman@noaa.gov) or",
                      "Karin Forney (karin.forney@noaa.gov)."))
         )
@@ -110,7 +104,6 @@ server <- function(input, output, session) {
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_provided.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels_base.R"), local = TRUE, chdir = TRUE)
-  # source(file.path("server_2_overlay", "server_2_overlay_overlayModels_samegrid.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_renderUI.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, chdir = TRUE)
 

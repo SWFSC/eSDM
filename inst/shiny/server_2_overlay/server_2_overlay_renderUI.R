@@ -2,20 +2,20 @@
 
 
 ### Widget for user to select file with projection to use in overlay
-output$overlay_proj_which_uiOut_select <- renderUI({
+output$overlay_proj_sdm_uiOut_select <- renderUI({
   req(!input$overlay_proj_native)
 
   choices.list.names <- as.list(vals$models.names)
   choices.list <- seq_along(choices.list.names)
   names(choices.list) <- choices.list.names
 
-  selectInput("overlay_proj_which",
-              tags$h5("Use the coordinate system of the selected model",
-                      "predictions during the overlay process"),
+  selectInput("overlay_proj_sdm",
+              tags$h5("Perform the overlay in the coordinate system of the",
+                      "selected model predictions"),
               choices = choices.list, selected = 1)
 })
 
-###
+### Widget (button) to preview base grid with land and study area polygons
 output$overlay_preview_base_execute_uiOut_button <- renderUI({
   req(isTruthy(input$overlay_loaded_table_rows_selected))
 

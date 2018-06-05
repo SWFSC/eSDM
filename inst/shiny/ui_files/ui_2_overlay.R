@@ -199,14 +199,14 @@ ui.overlay <- function() {
                            condition = "input.overlay_proj_native == false",
                            box(
                              width = 12,
-                             radioButtons("overlay_proj_opt", NULL, #tags$h5("Overlay coordinate system"),
+                             radioButtons("overlay_proj_method", NULL, #tags$h5("Overlay coordinate system"),
                                           choices = list("Select model with desired coordinate system" = 1,
                                                          "Enter numeric EPSG code" = 2,
                                                          "Perform overlay in WGS 84 geographic coordinates" = 3),
                                           selected = 1),
-                             conditionalPanel("input.overlay_proj_opt == 1", uiOutput("overlay_proj_which_uiOut_select")),
+                             conditionalPanel("input.overlay_proj_method == 1", uiOutput("overlay_proj_sdm_uiOut_select")),
                              conditionalPanel(
-                               condition = "input.overlay_proj_opt == 2",
+                               condition = "input.overlay_proj_method == 2",
                                numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)
                              )
                            )

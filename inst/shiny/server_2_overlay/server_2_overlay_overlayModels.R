@@ -276,25 +276,30 @@ overlay_reset <- reactive({
 ### Get crs object with projection to be used in overlay process
 overlay_crs <- reactive({
   if (input$overlay_proj_native) {
-    st_crs(vals$models.orig[[overlay_base_idx()]])
+    crs.selected <- st_crs(vals$models.orig[[overlay_base_idx()]])
 
   } else {
-    if (input$overlay_proj_opt == 1) {
-      st_crs(vals$models.orig[[as.numeric(input$overlay_proj_which)]])
-
-    } else if (input$overlay_proj_opt == 2) {
-      x <- suppressWarnings(st_crs(input$overlay_proj_epsg))
-      validate(
-        need(isTruthy(x$epsg),
-             paste("Error: The entered EPSG code was not recognized,",
-                   "please enter a valid EPSG code"))
+    if (input$overlay_proj_method == 1) {
+      crs.selected <- st_crs(
+        vals$models.orig[[as.numeric(input$overlay_proj_sdm)]]
       )
-      x
 
-    } else {
-      crs.ll
+    } else if (input$overlay_proj_method == 2) {
+      crs.selected <- suppressWarnings(st_crs(input$overlay_proj_epsg))
+
+    } else { #input$overlay_proj_method == 3
+      crs.selected <- crs.ll
     }
   }
+
+  # Use [[2]] in case of custom crs w/out epsg code
+  validate(
+    need(isTruthy(crs.selected[[2]]),
+         paste("Error: The entered EPSG code was not recognized,",
+               "please enter a valid EPSG code"))
+  )
+
+  crs.selected
 })
 
 
