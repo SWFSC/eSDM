@@ -123,6 +123,7 @@ observeEvent(input$model_remove_execute, {
 observe({
   input$model_csv_file
   updateSelectInput(session, "model_csv_pred_type", selected = 2)
+  updateSelectInput(session, "model_csv_pt_loc", selected = 1)
 })
 observe({
   input$model_gis_raster_file

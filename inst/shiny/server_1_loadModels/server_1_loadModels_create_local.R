@@ -51,7 +51,7 @@ specs.curr <- c(
          unname(round(model_abundance(sf.load.orig, "Pred"), 0)),
          "N/A"),
   paste0("(", paste(round(st_bbox(sf.load.ll), 0)[c(1, 3)], collapse = ", "),
-         "); (",
+         "), (",
          paste(round(st_bbox(sf.load.ll), 0)[c(2, 4)], collapse = ", "), ")")
 )
 
