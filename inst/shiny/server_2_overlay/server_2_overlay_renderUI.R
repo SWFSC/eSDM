@@ -3,7 +3,7 @@
 
 ### Widget for user to select file with projection to use in overlay
 output$overlay_proj_sdm_uiOut_select <- renderUI({
-  req(!input$overlay_proj_native)
+  req(!input$overlay_proj_native, input$overlay_proj_method == 2)
 
   choices.list.names <- as.list(vals$models.names)
   choices.list <- seq_along(choices.list.names)

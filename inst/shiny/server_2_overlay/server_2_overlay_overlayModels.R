@@ -280,15 +280,15 @@ overlay_crs <- reactive({
 
   } else {
     if (input$overlay_proj_method == 1) {
+      crs.selected <- crs.ll
+
+    } else if (input$overlay_proj_method == 2) {
       crs.selected <- st_crs(
         vals$models.orig[[as.numeric(input$overlay_proj_sdm)]]
       )
 
-    } else if (input$overlay_proj_method == 2) {
-      crs.selected <- suppressWarnings(st_crs(input$overlay_proj_epsg))
-
     } else { #input$overlay_proj_method == 3
-      crs.selected <- crs.ll
+      crs.selected <- suppressWarnings(st_crs(input$overlay_proj_epsg))
     }
   }
 
