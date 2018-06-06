@@ -143,12 +143,13 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
           0.9 / prog.total,
           detail = paste("Overlaying original model", sdm.num)
         )
+
         temp <- try( #overlay.sdm() crops 'sdm' to bbox of 'base.sfc'
           eSDM::overlay_sdm(base.sfc, sdm, overlap.perc, c("Pred", "Weight")),
           silent = TRUE
         )
         validate(
-          need(isTruthy(temp),
+          need(temp,
                paste("Error: the eSDM was unable to overlay original model",
                      sdm.num))
         )
@@ -212,7 +213,9 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   # Do not need to test validity of any polygons because base polygon was
   # already checked and overlaid were made directly from base poly
-  "Standard overlay performed successfully"
+
+  # TODO change message depending on if 'same-grid overlay' was performed?
+  "Overlay performed successfully"
 })
 
 
