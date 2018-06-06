@@ -44,7 +44,6 @@ ui.export <- function() {
                              "as well as the prediction (density), and weight values for each of those points.",
                              tags$br(), tags$br(),
                              tags$u("Filename:"), "Extension must be '.csv'.")
-
                   ),
                   conditionalPanel(
                     condition = "input.export_format == 2",
@@ -91,9 +90,12 @@ ui.export <- function() {
                     conditionalPanel("input.export_proj_method == 1", uiOutput("export_proj_sdm_uiOut_select")),
                     conditionalPanel(
                       condition = "input.export_proj_method == 2",
-                      numericInput("export_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)                    )
+                      numericInput("export_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)
+                    )
                   )
-                )
+                ),
+                helpText("hi"),
+                uiOutput("export_csv_ll_uiOut_check")
               )
             ),
             ########################################## Filename and export

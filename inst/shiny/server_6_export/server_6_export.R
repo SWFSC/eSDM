@@ -129,7 +129,7 @@ export_model_selected <- reactive({
   x <- input$export_table_orig_out_rows_selected
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
-  req(!sum(sapply(list(x, y, z), is.null)) == 1)
+  req(sum(!sapply(list(x, y, z), is.null)) == 1)
 
   if (!is.null(x)) {
     model.selected <- vals$models.orig[[x]]
@@ -150,32 +150,22 @@ export_model_selected <- reactive({
 
 
 ### Get crs in which to export model predictions
+# No validate() or req() in this function so nothing is passed to export_csv_ll
 export_crs <- reactive({
   if (input$export_proj_native) {
-    crs.selected <- st_crs(export_model_selected()) #handles req()
+    st_crs(export_model_selected()) #handles req()
 
   } else {
     if (input$export_proj_method == 1) {
-      crs.selected <- st_crs(
-        vals$models.orig[[as.numeric(req(input$export_proj_sdm))]]
-      )
+      st_crs(vals$models.orig[[as.numeric(req(input$export_proj_sdm))]])
 
     } else if (input$export_proj_method == 2) {
-      crs.selected <- suppressWarnings(st_crs(input$export_proj_epsg))
+      suppressWarnings(st_crs(input$export_proj_epsg))
 
     } else { #input$export_proj_method == 3
-      crs.selected <- crs.ll
+      crs.ll
     }
   }
-
-  # Use [[2]] in case of custom crs w/out epsg code
-  validate(
-    need(isTruthy(crs.selected[[2]]),
-         paste("Error: The provided coordinate system was not recognized,",
-               "please specify a valid coordinate system"))
-  )
-
-  crs.selected
 })
 
 
@@ -183,6 +173,7 @@ export_crs <- reactive({
 export_model_selected_proj <- reactive({
   model.selected <- export_model_selected() #handles req()
   crs.selected <- export_crs()
+  req(crs.selected[[2]])
 
   if (!identical(st_crs(model.selected), crs.selected)) {
     st_transform(model.selected, crs.selected)
@@ -202,8 +193,22 @@ export_model_selected_proj_format <- reactive({
       st_centroid(model.selected)
     ))
     data.out.coords <- do.call(rbind, st_geometry(model.selected.centroid))
-    data.frame(Long = data.out.coords[, 1], Lat = data.out.coords[, 2],
-               st_set_geometry(model.selected, NULL))
+
+    data.out <- data.frame(
+      Long = data.out.coords[, 1], Lat = data.out.coords[, 2],
+      st_set_geometry(model.selected, NULL)
+    )
+
+    if (input$export_csv_ll) {
+      # Add centroid coordinates in crs.ll if desired
+      x.cent.ll <- st_transform(model.selected.centroid, 4326)
+      data.out.coords.ll <- do.call(rbind, st_geometry(x.cent.ll))
+
+      data.out <- cbind(data.out, Long_ll = data.out.coords.ll[, 1],
+                        Lat_ll = data.out.coords.ll[, 2])
+    }
+
+    data.out
 
   } else {
     # Exporting data as either .shp and .kml requires sf object
