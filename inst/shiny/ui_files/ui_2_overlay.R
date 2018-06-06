@@ -210,9 +210,9 @@ ui.overlay <- function() {
                       conditionalPanel(
                         condition = "input.overlay_proj_method == 3",
                         numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1),
-                        helpText("See", tags$a("epsg.io", href = "http://epsg.io/"), "or",
-                                 tags$a("EPSG home", href = "http://www.epsg.org/"),
-                                 "for more information and EPSG codes")
+                        helpText("See", tags$a("epsg.io", href = "http://epsg.io/"), "or the",
+                                 tags$a("EPSG home page", href = "http://www.epsg.org/"),
+                                 "for more information about EPSG codes")
                       )
                     )
                   )
