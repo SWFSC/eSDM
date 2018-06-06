@@ -279,17 +279,12 @@ overlay_crs <- reactive({
     crs.selected <- st_crs(vals$models.orig[[overlay_base_idx()]])
 
   } else {
-    if (input$overlay_proj_method == 1) {
-      crs.selected <- crs.ll
-
-    } else if (input$overlay_proj_method == 2) {
-      crs.selected <- st_crs(
-        vals$models.orig[[as.numeric(input$overlay_proj_sdm)]]
-      )
-
-    } else { #input$overlay_proj_method == 3
-      crs.selected <- suppressWarnings(st_crs(input$overlay_proj_epsg))
-    }
+    crs.selected <- switch(
+      as.numeric(input$overlay_proj_method),
+      crs.ll,
+      st_crs(vals$models.orig[[as.numeric(req(input$overlay_proj_sdm))]]),
+      suppressWarnings(st_crs(input$overlay_proj_epsg))
+    )
   }
 
   # Use [[2]] in case of custom crs w/out epsg code
