@@ -83,19 +83,26 @@ ui.export <- function() {
                   box(
                     width = 12,
                     radioButtons("export_proj_method", NULL, #tags$h5("Overlay coordinate system"),
-                                 choices = list("Select SDM with desired coordinate system" = 1,
-                                                "Enter numeric EPSG code" = 2,
-                                                "Export predictions in WGS 84 geographic coordinates" = 3),
+                                 choices = list("Export predictions in WGS 84 geographic coordinates" = 1,
+                                                "Select SDM with desired coordinate system" = 2,
+                                                "Enter numeric EPSG code" = 3),
                                  selected = 1),
-                    conditionalPanel("input.export_proj_method == 1", uiOutput("export_proj_sdm_uiOut_select")),
+                    uiOutput("export_proj_sdm_uiOut_select"),
                     conditionalPanel(
-                      condition = "input.export_proj_method == 2",
+                      condition = "input.export_proj_method == 3",
                       numericInput("export_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)
                     )
                   )
                 ),
-                helpText("hi"),
-                uiOutput("export_csv_ll_uiOut_check")
+                conditionalPanel(
+                  condition = "output.export_nonll_flag",
+                  helpText("The selected predictions are set to be exported in a coordinate system where the units are",
+                           "not degrees"),
+                  checkboxInput("export_csv_ll",
+                                paste("Include the longitudes and latitudes of the centroids in decimal degrees",
+                                      "(WGS 84 geographic coordinates) in additional columns in the .csv file"),
+                                value = TRUE)
+                )
               )
             ),
             ########################################## Filename and export

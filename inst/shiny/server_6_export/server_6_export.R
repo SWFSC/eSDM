@@ -67,6 +67,13 @@ output$export_tables_oneselected_flag <- reactive({
 outputOptions(output, "export_tables_oneselected_flag",
               suspendWhenHidden = FALSE)
 
+### Flag for if sdm will be exported in non-long/lat crs
+output$export_nonll_flag <- reactive({
+  req(export_crs()[[2]])
+  (input$export_format == 1) & !grepl("proj=longlat", export_crs()[[2]])
+})
+outputOptions(output, "export_nonll_flag", suspendWhenHidden = FALSE)
+
 
 ###############################################################################
 ### Export model predictions as csv, shp, or kml
@@ -129,6 +136,7 @@ export_model_selected <- reactive({
   x <- input$export_table_orig_out_rows_selected
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
+  browser()
   req(sum(!sapply(list(x, y, z), is.null)) == 1)
 
   if (!is.null(x)) {
@@ -153,19 +161,24 @@ export_model_selected <- reactive({
 # No validate() or req() in this function so nothing is passed to export_csv_ll
 export_crs <- reactive({
   if (input$export_proj_native) {
-    st_crs(export_model_selected()) #handles req()
+    crs.selected <- st_crs(export_model_selected()) #handles req()
 
   } else {
-    if (input$export_proj_method == 1) {
-      st_crs(vals$models.orig[[as.numeric(req(input$export_proj_sdm))]])
-
-    } else if (input$export_proj_method == 2) {
+    crs.selected <- switch(
+      as.numeric(input$export_proj_method),
+      crs.ll,
+      st_crs(vals$models.orig[[as.numeric(req(input$export_proj_sdm))]]),
       suppressWarnings(st_crs(input$export_proj_epsg))
-
-    } else { #input$export_proj_method == 3
-      crs.ll
-    }
+    )
   }
+
+  validate(
+    need(crs.selected[[2]],
+         paste("Error: The provided coordinate system was not recognized,",
+               "please specify a valid coordinate system"))
+  )
+
+  crs.selected
 })
 
 
@@ -173,7 +186,6 @@ export_crs <- reactive({
 export_model_selected_proj <- reactive({
   model.selected <- export_model_selected() #handles req()
   crs.selected <- export_crs()
-  req(crs.selected[[2]])
 
   if (!identical(st_crs(model.selected), crs.selected)) {
     st_transform(model.selected, crs.selected)

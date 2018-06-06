@@ -4,7 +4,7 @@
 ###############################################################################
 ### Model with coord system in which to export selected model predictions
 output$export_proj_sdm_uiOut_select <- renderUI({
-  req(vals$models.names)
+  req(!input$export_proj_native, input$export_proj_method == 2)
 
   choices.list.names <- vals$models.names
   choices.list <- seq_along(choices.list.names)
@@ -14,20 +14,6 @@ output$export_proj_sdm_uiOut_select <- renderUI({
               tags$h5("Export predictions in the coordinate system of the",
                       "selected SDM predictions"),
               choices = choices.list, selected = 1)
-})
-
-
-###########################################################
-### Checkbox for including lat/long coordinates in exported centroid
-output$export_csv_ll_uiOut_check <- renderUI({
-  req(input$export_format == 1, export_crs()[[2]])
-  req(!grepl("proj=longlat", export_crs()[[2]]))
-
-  label.txt <- paste(
-    "Include the longitudes and latitudes of the centroids in decimal degrees",
-    "(WGS 84 geographic coordinates) in additional columns in the .csv file"
-  )
-  checkboxInput("export_csv_ll", label.txt, value = TRUE)
 })
 
 
@@ -114,12 +100,14 @@ output$export_out_uiOut_download <- renderUI({
                "file extension required by the specified file format"))
   )
 
+  export_crs()
   # Use [[2]] in case of custom crs w/out epsg code
-  validate(
-    need(isTruthy(export_crs()[[2]]),
-         paste("Error: The provided coordinate system was not recognized,",
-               "please specify a valid coordinate system"))
-  )
+  #   validate() is here rather than export_crs()
+  # validate(
+  #   need(isTruthy(export_crs()[[2]]),
+  #        paste("Error: The provided coordinate system was not recognized,",
+  #              "please specify a valid coordinate system"))
+  # )
 
   downloadButton("export_out", "Export predictions")
 })
