@@ -111,6 +111,7 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
   # new.dens.df <- new.dens.df %>%
   #   dplyr::mutate(Pixel = 1:nrow(new.dens.df))
   # new.dens.df <- new.dens.df[, c(1, 3, 2, 4)]
+  rm(new.abund.df, int.area.by.base.km)
 
 
   #########################################################
