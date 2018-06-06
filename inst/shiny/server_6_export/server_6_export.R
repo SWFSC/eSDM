@@ -131,12 +131,11 @@ output$export_out <- downloadHandler(
 
 ### Get selected predictions
 export_model_selected <- reactive({
-  req(vals$models.orig)
+  req(length(vals$models.orig) > 0)
 
   x <- input$export_table_orig_out_rows_selected
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
-  browser()
   req(sum(!sapply(list(x, y, z), is.null)) == 1)
 
   if (!is.null(x)) {

@@ -4,7 +4,8 @@
 ###############################################################################
 ### Model with coord system in which to export selected model predictions
 output$export_proj_sdm_uiOut_select <- renderUI({
-  req(!input$export_proj_native, input$export_proj_method == 2)
+  req(vals$models.names, !input$export_proj_native,
+      input$export_proj_method == 2)
 
   choices.list.names <- vals$models.names
   choices.list <- seq_along(choices.list.names)
@@ -20,7 +21,7 @@ output$export_proj_sdm_uiOut_select <- renderUI({
 ###############################################################################
 ### Default filename of exported object
 output$export_filename_uiOut_text <- renderUI({
-  req(vals$models.ll)
+  req(length(vals$models.ll) > 0)
   x <- input$export_table_orig_out_rows_selected
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
@@ -100,14 +101,7 @@ output$export_out_uiOut_download <- renderUI({
                "file extension required by the specified file format"))
   )
 
-  export_crs()
-  # Use [[2]] in case of custom crs w/out epsg code
-  #   validate() is here rather than export_crs()
-  # validate(
-  #   need(isTruthy(export_crs()[[2]]),
-  #        paste("Error: The provided coordinate system was not recognized,",
-  #              "please specify a valid coordinate system"))
-  # )
+  export_crs() #to get validate()
 
   downloadButton("export_out", "Export predictions")
 })

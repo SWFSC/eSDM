@@ -50,7 +50,8 @@ ui.export <- function() {
                     helpText(tags$u("Description:"),
                              "Predictions will be exported as polygons with the prediction (density),",
                              "and weight value for each polygon. The eSDM will produce a zip file with the name",
-                             "'eSDM_shp_Export.zip' that will contain the various shapefile files.",
+                             "'eSDM_shp_Export.zip' that will contain the various shapefile files representing a shapefile",
+                             "with the name specified in 'filename'.",
                              tags$br(), tags$br(),
                              tags$u("Filename:"), "Extension must be '.shp'.")
 
@@ -60,12 +61,12 @@ ui.export <- function() {
                     radioButtons("export_format_kml", NULL, choices = list("Export as KML" = 1, "Export as KMZ" = 2),
                                  selected = 2),
                     helpText(tags$u("Description:"),
-                             "Within the kml or kmz file, predictions will be represented as polygons with a red outline.",
+                             "Within the KML or KMZ file, predictions will be represented as polygons with a red outline.",
                              "Currently you cannot color-code the polygons by density value. The polygons will have their respective",
                              "prediction (density) and weight values as decriptions.",
                              tags$br(), tags$br(),
-                             tags$u("Filename:"), "Extension must be '.kml' or '.kmz', depending on the",
-                             tags$em("File format"), "selection.")
+                             tags$u("Filename:"), "Extension must be '.kml' if \"Export as KML\" is selected and",
+                             "'.kmz' if \"Export as KMZ\" is selected.")
                   )
                 )
               ),
@@ -74,8 +75,8 @@ ui.export <- function() {
                 width = 6,
                 tags$strong("2) Export options: coordinate system"),
                 helpText("Note that if you export predictions to an Excel .csv file in a longitude/latitude",
-                         "coordinate system the eSDM calculates the centroids using the lat/long coordinates",
-                         "and thus the centroids may not be geographically accurate."),
+                         "coordinate system, the eSDM assumes the longitude/latitude coordinates are planar",
+                         "and thus the centroids may not be geographically accurate. See ... for more information"),
                 checkboxInput("export_proj_native", "Export predictions in the native coordinate system of the selected SDM",
                               value = TRUE),
                 conditionalPanel(
