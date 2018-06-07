@@ -32,7 +32,8 @@ ui.evalMetrics <- function() {
             condition = "input.eval_load_type == 1",
             ui.instructions.upload.csv(),
             helpText("The Excel .csv file must have columns with the longitude and latitude coordinates of the data, ",
-                     "in addition to the column with validation data"),
+                     "in addition to the column with validation data.",
+                     "The longitude and latitude coordinates are assumed to be WGS 84 geographic coordinates."),
             fileInput("eval_csv", label.csv.upload, accept = ".csv"),
             conditionalPanel("output.eval_csv_flag == false", ui.error.upload.csv),
             conditionalPanel(
@@ -150,6 +151,7 @@ ui.evalMetrics <- function() {
                     width = 3,
                     tags$br(),
                     actionButton("eval_metrics_execute", "Calculate metrics"),
+                    tags$br(), tags$br(),
                     textOutput("eval_metrics_text")
                   )
                 )
@@ -212,34 +214,29 @@ ui.evalMetrics <- function() {
         ),
 
         ############################################################################### Calculated metrics
-        column(
-          width = 5,
+        box(
+          title = "Metrics", status = "warning", solidHeader = FALSE, width = 5, collapsible = TRUE,
           fluidRow(
-            box(
-              title = "Metrics", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              fluidRow(
-                column(
-                  width = 6,
-                  tableOutput("table_eval_metrics_out"),
-                  tags$br(),
-                  column(10, textOutput("eval_metrics_overlap_text"))
-                ),
-                column(
-                  width = 6,
-                  conditionalPanel(
-                    condition = "output.table_eval_metrics_out != null",
-                    downloadButton("eval_metrics_table_save", "Download metrics"),
-                    tags$br(),
-                    tags$br(),
-                    helpText(tags$strong("Note:"),
-                             "The downloaded Excel csv file will have both metric values and model information",
-                             "for each set of predictions.",
-                             "Because ensemble predictions have different information than original and overlaid predictions,",
-                             "if evaluation metrics have been calculated for both ensemble predictions and at least",
-                             "one of original and overlaid predictions, then some column headers will be formatted as",
-                             "'Original+Overlaid info name/Ensemble info name'.")
-                  )
-                )
+            column(
+              width = 6,
+              tableOutput("table_eval_metrics_out"),
+              tags$br(),
+              column(10, textOutput("eval_metrics_overlap_text"))
+            ),
+            column(
+              width = 6,
+              conditionalPanel(
+                condition = "output.table_eval_metrics_out != null",
+                downloadButton("eval_metrics_table_save", "Download metrics"),
+                tags$br(),
+                tags$br(),
+                helpText(tags$strong("Note:"),
+                         "The downloaded Excel csv file will have both metric values and model information",
+                         "for each set of predictions.",
+                         "Ensemble predictions have different information than original and overlaid predictions,",
+                         "and thus if evaluation metrics have been calculated for both ensemble predictions and",
+                         "original and/or overlaid predictions then some column headers will be formatted as",
+                         "'Original+Overlaid info name/Ensemble info name'.")
               )
             )
           )

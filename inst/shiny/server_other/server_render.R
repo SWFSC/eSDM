@@ -334,12 +334,7 @@ output$table_eval_metrics_out <- renderTable({
 
 output$eval_metrics_overlap_text <- renderText({
   req(table_eval_metrics())
-  paste(
-    "The models being evaluated had",
-    paste0(paste(head(eval_metrics_overlap(), -1), collapse = ", "), ","),
-    "and", tail(eval_metrics_overlap(), 1), "validation points, respectively,",
-    "that fell on the boundary between two or more prediction polygons"
-  )
+  eval_metrics_overlap()
 })
 
 ###############################################################################

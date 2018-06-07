@@ -185,18 +185,49 @@ table_eval_metrics <- reactive({
 })
 
 
-### Generate message detailing number of pointsd that landed on poly boundaries
+### Generate message detailing number of points that landed on poly boundaries
 eval_metrics_overlap <- eventReactive(input$eval_metrics_execute, {
-  eval.data <- vals$eval.data
+  req(vals$eval.data)
   models.toeval <- eval_models()
 
-  sapply(
+  pt.over.len <- sapply(
     lapply(models.toeval, function(m) {
-      eval.data <- st_transform(eval.data, st_crs(m))
+      eval.data <- st_transform(vals$eval.data, st_crs(m))
       which(sapply(suppressMessages(st_intersects(eval.data, m)), length) > 1)
     }),
     length
   )
+
+  # Make text pretty
+  if (length(pt.over.len) == 1) {
+    paste(
+      "The model being evaluated had", pt.over.len, "validation points",
+      "that fell on the boundary between two or more prediction polygons"
+    )
+
+  } else {
+    if (zero_range(pt.over.len)) {
+      paste(
+        "Each model being evaluated had", unique(pt.over.len), "validation points",
+        "that fell on the boundary between two or more prediction polygons"
+      )
+
+    } else if (length(pt.over.len) == 2) {
+      paste(
+        "The models being evaluated had",
+        paste(pt.over.len, collapse = " and "), "validation points, respectively,",
+        "that fell on the boundary between two or more prediction polygons"
+      )
+
+    } else {
+      paste(
+        "The models being evaluated had",
+        paste0(paste(head(pt.over.len, -1), collapse = ", "), ","),
+        "and", tail(pt.over.len, 1), "validation points, respectively,",
+        "that fell on the boundary between two or more prediction polygons"
+      )
+    }
+  }
 })
 
 
