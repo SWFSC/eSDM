@@ -1,14 +1,7 @@
 #-----------------------------------------------------------------------------
-# @title Read GIS shpaefile from Shiny fileInput
-# @description Read in a GIS shapefile from a fileInput ouptput in a Shiny app
-#
-# @param file.in.list The list returned by shiny::fileInput()
-#
-# @return A sf object
-#
-# @source \url{https://github.com/leonawicz/nwtapp/blob/master/mod_shpPoly.R}
-#
-# @export
+# Reads in a GIS shapefile from a fileInput ouptput in a Shiny app and
+#   returns a sf object
+# From \url{https://github.com/leonawicz/nwtapp/blob/master/mod_shpPoly.R}
 
 read.shp.shiny <- function(file.in.list) {
   infiles <- file.in.list$datapath
@@ -20,7 +13,11 @@ read.shp.shiny <- function(file.in.list) {
                           quiet = TRUE),
                   silent = TRUE)
 
-  gis.file
+  if (inherits(gis.file, "sf")) {
+    gis.file
+  } else {
+    try(stopifnot(inherits(gis.file, "sf")), silent = TRUE)
+  }
 }
 
 

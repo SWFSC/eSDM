@@ -49,7 +49,7 @@ output$eval_csv_execute_uiOut_button <- renderUI({
     req(!any(c("error1", "error2") %in% eval_data_csv_pacodes()))
   }
 
-  actionButton("eval_csv_execute", "Load specified validation data into app")
+  actionButton("eval_csv_execute", "Load specified validation data")
 })
 
 

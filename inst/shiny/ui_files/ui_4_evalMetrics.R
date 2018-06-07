@@ -31,7 +31,7 @@ ui.evalMetrics <- function() {
           conditionalPanel(
             condition = "input.eval_load_type == 1",
             ui.instructions.upload.csv(),
-            helpText("The Excel .csv file must have columns with the longitude and latitude coordinates of the data, ",
+            helpText("The Excel .csv file must have columns with the longitude and latitude coordinates of the data,",
                      "in addition to the column with validation data.",
                      "The longitude and latitude coordinates are assumed to be WGS 84 geographic coordinates."),
             fileInput("eval_csv", label.csv.upload, accept = ".csv"),
@@ -60,10 +60,8 @@ ui.evalMetrics <- function() {
                              "Please select a different column or select \"Counts (numerical)\" for",
                              tags$em("Validation data type"), ".")
                   ),
-                  fluidRow(
-                    column(6, uiOutput("eval_csv_codes_p_uiOut_select")),
-                    column(6, uiOutput("eval_csv_codes_a_uiOut_select"))
-                  )
+                  column(6, uiOutput("eval_csv_codes_p_uiOut_select")),
+                  column(6, uiOutput("eval_csv_codes_a_uiOut_select"))
                 ),
                 fluidRow(
                   column(6, uiOutput("eval_csv_execute_uiOut_button")),
@@ -106,10 +104,8 @@ ui.evalMetrics <- function() {
                            "Please select a different column or select \"Counts (numerical)\" for",
                            tags$em("Validation data type"), ".")
                 ),
-                fluidRow(
-                  column(6, uiOutput("eval_gis_codes_p_uiOut_select")),
-                  column(6, uiOutput("eval_gis_codes_a_uiOut_select"))
-                )
+                column(6, uiOutput("eval_gis_codes_p_uiOut_select")),
+                column(6, uiOutput("eval_gis_codes_a_uiOut_select"))
               ),
               fluidRow(
                 column(6, uiOutput("eval_gis_execute_uiOut_button")),
