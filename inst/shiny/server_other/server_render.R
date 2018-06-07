@@ -61,7 +61,8 @@ output$model_preview_interactive_plot <- renderLeaflet({
   x <- vals$models.plot.leaf
 
   eSDM::preview_interactive(
-    x$model.toplot, "Pred", x$perc.num, pal.esdm, leg.perc.esdm
+    x$model.toplot, "Pred", x$perc.num, pal.esdm, leg.perc.esdm,
+    x$plot.title, x$leg.title
   )
 })
 
@@ -72,7 +73,8 @@ output$model_preview_plot <- renderPlot({
   eSDM::multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num, pal.esdm,
     leg.perc.esdm,
-    x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4]
+    x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
+    x$plot.dims[5], x$plot.dims[6]
   )
 })
 
@@ -171,7 +173,7 @@ output$overlay_preview_overlaid <- renderPlot({
   eSDM::multiplot_layout(
     x$models.toplot, x$data.names, x$plot.titles, 1, pal.esdm, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
-    x$plot.dims[5]
+    x$plot.dims[5], x$plot.dims[6]
   )
 })
 
@@ -261,7 +263,8 @@ output$ens_preview_plot <- renderPlot({
   eSDM::multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num, pal.esdm,
     leg.perc.esdm,
-    x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4]
+    x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
+    x$plot.dims[5], x$plot.dims[6]
   )
 })
 

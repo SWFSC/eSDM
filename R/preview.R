@@ -8,7 +8,8 @@
 
 multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
                              col.pal, leg.labels, plot.ncol, plot.nrow,
-                             axis.cex.curr, main.cex.curr, leg.width = 3) {
+                             axis.cex.curr, main.cex.curr, leg.width = 3,
+                             leg.txt.cex = 1) {
 
   # -------------------------------------------------------
   # TODO long-term: make more flexible for use as stand-alone function
@@ -19,20 +20,29 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
     length(col.pal) == length(leg.labels),
     perc.num %in% c(1, 2)
   )
+  on.exit(layout(1))
 
   # -------------------------------------------------------
   models.num <- length(models.toplot)
   col.num <- length(col.pal)
+  layout.num <- plot.nrow * plot.ncol
+  models.layout.diff <- layout.num - models.num
 
   if (perc.num == 1) {
-    mat.num <- c(1:models.num, rep(1 + models.num, plot.nrow))
-    layout(matrix(mat.num, nrow = plot.nrow, ncol = plot.ncol + 1),
-           width = c(rep(1, plot.ncol), lcm(leg.width)))
+    mat.num <- do.call(c, lapply(0:(plot.nrow - 1), function(i) {
+      c((plot.ncol * i) + 1:plot.ncol, layout.num + 1)
+    }))
+    layout(
+      matrix(mat.num, nrow = plot.nrow, ncol = plot.ncol + 1, byrow = TRUE),
+      width = c(rep(1, plot.ncol), lcm(leg.width))
+    )
 
   } else {
-    layout(matrix(1:(models.num * 2), nrow = plot.nrow, ncol = plot.ncol * 2,
-                  byrow = TRUE),
-           widths = rep(c(1, lcm(leg.width)), models.num))
+    layout(
+      matrix(1:(layout.num * 2), nrow = plot.nrow, ncol = plot.ncol * 2,
+             byrow = TRUE),
+      widths = rep(c(1, lcm(leg.width)), layout.num)
+    )
   }
 
   # -------------------------------------------------------
@@ -46,9 +56,10 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
     # Add a legend for each value plot
     if (perc.num == 2) {
       data.vec <- st_set_geometry(models.toplot[[i]], NULL)[, data.names[[i]]]
-      b.model <- seq(from = min(data.vec, na.rm = TRUE),
-                     to = max(data.vec, na.rm = TRUE),
-                     length.out = 11)
+      b.model <- seq(
+        from = min(data.vec, na.rm = TRUE), to = max(data.vec, na.rm = TRUE),
+        length.out = 11
+      )
 
       opar <- par(mai = c(0.3, 0, 0.2, 1))
       on.exit(par(opar), add = TRUE)
@@ -56,28 +67,29 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
       graphics::image(1, 1:col.num, t(as.matrix(1:col.num)), col = col.pal,
                       axes = FALSE, xlab = "", ylab = "")
       graphics::box(col = "black")
-      temp <- ifelse(models.num == 1, 0.8, 1.3) # not sure why this is necessary
+      # temp <- ifelse(models.num == 1, 0.8, 1.3) # not sure why this is necessary
       graphics::axis(4, at = (0:col.num) + 0.5, labels = round(b.model, 5),
-                     tick = FALSE, las = 1, cex.axis = temp)
+                     tick = FALSE, las = 1, cex.axis = leg.txt.cex)
     }
   }
 
   # Add single legend for percentages
   if (perc.num == 1) {
+    # Fill in empty plots if necessary
+    if (models.layout.diff != 0) {
+      for (j in 1:models.layout.diff) plot.new()
+    }
+
     opar <- par(mai = c(0.3, 0, 0.2, 1))
     on.exit(par(opar), add = TRUE)
 
     graphics::image(0.6, 1:col.num, t(as.matrix(1:col.num)), col = col.pal,
                     axes = FALSE, xlab = "", ylab = "")
     graphics::box(col = "black")
-    temp <- ifelse(models.num == 1, 0.8, 1.3) # not sure why this is necessary
+    # temp <- ifelse(models.num == 1, 0.8, 1.3) # not sure why this is necessary
     graphics::axis(4, at = 1:col.num, labels = leg.labels, tick = FALSE,
-                   las = 1, cex.axis = temp)
+                   las = 1, cex.axis = leg.txt.cex)
   }
-
-  # -------------------------------------------------------
-  # Reset layout
-  layout(1)
 }
 
 
@@ -85,34 +97,37 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 #'
 #' General function for plotting sf object
 #'
-#' @param sf.ll sf object in crs.ll
+#' @param sdm.ll sf object in crs.ll
 #'
 #' @export
 
-preview_ll <- function(sf.ll, data.name, title.ll, perc, col.pal,
+preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
                        axis.cex, main.cex) {
   ### Prep:
-  data.vec <- st_set_geometry(sf.ll, NULL)[, data.name]
+  data.vec <- st_set_geometry(sdm.ll, NULL)[, data.name]
 
   ### Generate plot with densities color-coded by percentages or values
   if (perc == 1) {
     b.model <- breaks_calc(data.vec)
 
-    plot(sf.ll[data.name], axes = TRUE, border = NA,
-         breaks = b.model, pal = col.pal,
-         main = title.ll, cex.main = main.cex, cex.axis = axis.cex,
-         key.pos = NULL, reset = FALSE)
-    #graticule = st_crs(sf.ll),
+    plot(
+      sdm.ll[data.name], axes = TRUE, border = NA,
+      breaks = b.model, pal = col.pal, key.pos = NULL, reset = FALSE,
+      main = title.ll, cex.main = main.cex, cex.axis = axis.cex
+    )
+    #graticule = st_crs(sdm.ll),
 
   } else {
-    b.model <- seq(from = min(data.vec, na.rm = TRUE),
-                   to = max(data.vec, na.rm = TRUE),
-                   length.out = 11)
+    b.model <- seq(
+      from = min(data.vec, na.rm = TRUE), to = max(data.vec, na.rm = TRUE),
+      length.out = 11
+    )
 
-    plot(sf.ll[data.name], axes = TRUE, border = NA,
-         breaks = b.model, pal = col.pal,
-         main = title.ll, cex.main = main.cex, cex.axis = axis.cex,
-         key.pos = NULL, reset = FALSE)
+    plot(
+      sdm.ll[data.name], axes = TRUE, border = NA,
+      breaks = b.model, pal = col.pal, key.pos = NULL, reset = FALSE,
+      main = title.ll, cex.main = main.cex, cex.axis = axis.cex
+    )
   }
 }
 
@@ -121,15 +136,16 @@ preview_ll <- function(sf.ll, data.name, title.ll, perc, col.pal,
 #'
 #' General function for plotting sf object
 #'
-#' @param sf.ll sf object in crs.ll
+#' @param sdm.ll sf object in crs.ll
 #'
 #' @export
 
-preview_interactive <- function(sf.ll, data.name, perc, col.pal,
-                                leg.labels = NULL, title.ll = NULL, leg.title = NULL) {
+preview_interactive <- function(sdm.ll, data.name, perc, col.pal,
+                                leg.labels = NULL, title.ll = NULL,
+                                leg.title = NULL) {
   stopifnot(
-    inherits(sf.ll, "sf"),
-    !is.null(sf.ll[data.name]),
+    inherits(sdm.ll, "sf"),
+    !is.null(sdm.ll[data.name]),
     perc %in% c(1, 2)
   )
   if (!is.null(leg.labels) & length(col.pal) != length(leg.labels)) {
@@ -137,40 +153,50 @@ preview_interactive <- function(sf.ll, data.name, perc, col.pal,
          "must be the same length")
   }
 
-  data.vec <- st_set_geometry(sf.ll[data.name], NULL)[, 1]
+  data.vec <- st_set_geometry(sdm.ll[data.name], NULL)[, 1]
   stopifnot(is.numeric(data.vec))
+  sdm.cent <- suppressWarnings(st_centroid(st_combine(sdm.ll))[[1]])
 
+  #--------------------------------------------------------
+  # Common parts of leaflet map
+  leaf.all <- leaflet(sdm.ll) %>%
+    addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
+    addTiles(group = "OpenStreetMap") %>%
+    addProviderTiles(providers$Esri.WorldImagery, group = "ESRI Topo") %>%
+    addControl(
+      tags$h5(title.ll), layerId = "SDM name", position = "bottomleft") %>%
+    addLayersControl(
+      baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
+      # overlayGroups = c("SDM name"),
+      position = "bottomright",
+      options = layersControlOptions(collapsed = FALSE)) %>%
+    # addGraticule(interval = 5) %>%
+    setView(
+      lng = sdm.cent[1], lat = sdm.cent[2], zoom = 5) %>%
+    mapview::addMouseCoordinates(style = "basic")
+
+  #--------------------------------------------------------
+  # perc-specific parts of leaflet map
   if (perc == 1) {
     b.model <- eSDM::breaks_calc(data.vec)
     binpal <- colorBin(col.pal, data.vec, bins = b.model, na.color = "grey")
 
-    leaflet(sf.ll) %>%
-      addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
-      # addTiles(group = "OpenStreetMap") %>%
-      # addProviderTiles(providers$Esri.WorldImagery, group = "ESRI Topo") %>%
+    leaf.all %>%
       addPolygons(
-        stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 1) %>%
+        stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8) %>%
       addLegend(
-        "bottomright", title = "Relative prediction value",
-        colors = c(col.pal, "grey"), labels = c(leg.labels, "NA"),
-        opacity = 1) %>%
-      # addGraticule(interval = 5) %>%
-      # setView(lat = st_centroid(st_combine(nc))[[1]][2], ..., zoom = 4) %>%
-      mapview::addMouseCoordinates()
+        "topright", title = leg.title, colors = c(col.pal, "grey"),
+        labels = c(leg.labels, "NA"), opacity = 1)
 
   } else {
     binpal <- colorBin(col.pal, data.vec, bins = 10, pretty = FALSE,
-                       na.color = NA)
+                       na.color = "grey")
 
-    leaflet(sf.ll) %>%
-      addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
-      # addTiles(group = "OpenStreetMap") %>%
-      # addProviderTiles(providers$Esri.WorldImagery, group = "ESRI Topo") %>%
+    leaf.all %>%
       addPolygons(
-        stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 1) %>%
+        stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8) %>%
       addLegend(
-        "bottomright", title = "Absolute prediction value", pal = binpal,
-        values = ~data.vec, opacity = 1) %>%
-      mapview::addMouseCoordinates()
+        "bottomright", title = leg.title, pal = binpal, values = ~data.vec,
+        opacity = 1)
   }
 }

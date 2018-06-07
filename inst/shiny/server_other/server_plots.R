@@ -14,7 +14,11 @@ observeEvent(input$model_preview_interactive_execute, {
 
   vals$models.plot.leaf.idx <- model.idx
   vals$models.plot.leaf <- list(
-    model.toplot = vals$models.ll[[model.idx]], perc.num = perc.num
+    model.toplot = vals$models.ll[[model.idx]], perc.num = perc.num,
+    plot.title = paste(vals$models.names[model.idx], "|",
+                       vals$models.data.names[[model.idx]][1]),
+    leg.title = ifelse(perc.num, "Relative prediction value",
+                       "Absolute prediction value")
   )
 })
 

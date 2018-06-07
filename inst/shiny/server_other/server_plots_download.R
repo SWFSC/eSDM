@@ -42,7 +42,7 @@ output$model_download_preview_execute <- downloadHandler(
         eSDM::multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
-          plot.dims[3], plot.dims[4], plot.dims[5]
+          plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
         )
         dev.off()
 
@@ -51,7 +51,7 @@ output$model_download_preview_execute <- downloadHandler(
         eSDM::multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
-          plot.dims[3], plot.dims[4], plot.dims[5]
+          plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
         )
         dev.off()
 
@@ -62,7 +62,7 @@ output$model_download_preview_execute <- downloadHandler(
         eSDM::multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
-          plot.dims[3], plot.dims[4], plot.dims[5]
+          plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
         )
         dev.off()
       }
