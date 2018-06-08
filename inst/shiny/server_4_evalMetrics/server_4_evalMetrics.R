@@ -38,19 +38,15 @@ table_eval_pts <- reactive({
     count.range <- paste(range(round(pres.data$count, 2)), collapse = " to ")
 
     data.frame(
-      x = c("Filename",
-            "Number of points with non-zero counts",
-            "Number of points with counts of 0",
-            "Range of non-zero counts"),
-      y = c(vals$eval.data.specs[1], pres.num, abs.num, count.range)
+      c("Filename", "Number of points with non-zero counts",
+        "Number of points with counts of 0", "Range of non-zero counts"),
+      c(vals$eval.data.specs[1], pres.num, abs.num, count.range)
     )
 
   } else if (data.type == 2) {
     data.frame(
-      x = c(
-        "Filename", "Number of presence points", "Number of absence points"
-      ),
-      y = c(vals$eval.data.specs[1], pres.num, abs.num)
+      c("Filename", "Number of presence points", "Number of absence points"),
+      c(vals$eval.data.specs[1], pres.num, abs.num)
     )
 
   } else {
@@ -174,14 +170,11 @@ table_eval_metrics <- reactive({
     table.ensembles <- table_ensembles()[models.idx[[3]], ]
   })
 
-  metrics.table <- data.frame(
-    "Model" = c(
-      row.names(table.orig), row.names(table.over), row.names(table.ensembles)
-    ),
-    metrics.table, stringsAsFactors = FALSE)
-  row.names(metrics.table) <- 1:nrow(metrics.table)
-
-  metrics.table
+  data.frame(
+    "Model" = c(row.names(table.orig), row.names(table.over),
+                row.names(table.ensembles)),
+    metrics.table, stringsAsFactors = FALSE
+  )
 })
 
 

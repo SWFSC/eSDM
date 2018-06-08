@@ -181,12 +181,9 @@ create_ens_weights_poly_table <- reactive({
     )[models.which]
   }
 
-  table.out <- data.frame(overlaid.names, overlaid.filenames,
-                          overlaid.weights, overlaid.coverage,
-                          stringsAsFactors = FALSE)
-  names(table.out) <- c("Predictions", "File(s)", "Weight(s)", "Coverage(s)")
-
-  table.out
+  data.frame(overlaid.names, overlaid.filenames, overlaid.weights,
+             overlaid.coverage, stringsAsFactors = FALSE) %>%
+    purrr::set_names(c("Predictions", "File(s)", "Weight(s)", "Coverage(s)"))
 })
 
 

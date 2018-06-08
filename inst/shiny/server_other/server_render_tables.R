@@ -8,20 +8,14 @@
 table_orig <- reactive({
   if (length(vals$models.ll) == 0) return()
 
-  table.out <- data.frame(x = vals$models.names,
-                          t(as.data.frame(vals$models.data.names)),
-                          vals$models.pred.type,
-                          stringsAsFactors = FALSE)
-
-  table.out[,5] <- sapply(table.out[,5], function(i) {
-    switch(as.character(i), "1" = "Absolute", "2" = "Relative")}
-  )
-
-  names(table.out) <- c("SDM filename", "Predictions", "Errors",
-                        "Weights", "Prediction type")
-  row.names(table.out) <- paste("Original", 1:nrow(table.out))
-
-  table.out
+  # [, -2] is to remove now-defunct error column
+  data.frame(vals$models.names, t(as.data.frame(vals$models.data.names))[, -2],
+             ifelse(vals$models.pred.type == "1", "Absolute", "Relative"),
+             stringsAsFactors = FALSE,
+             row.names = paste("Original", 1:length(vals$models.names))) %>%
+    purrr::set_names(
+      c("SDM filename", "Predictions", "Weights", "Prediction type")
+    )
 })
 
 
@@ -29,16 +23,14 @@ table_orig <- reactive({
 ### Table of original models with stats
 table_orig_stats <- reactive({
   req(table_orig())
-  table.out <- data.frame(x = vals$models.names,
-                          t(as.data.frame(vals$models.specs)),
-                          stringsAsFactors = FALSE)
 
-  names(table.out) <- c("SDM filename", "Resolution", "Cell count",
-                        "Non-NA prediction count", "Abundance",
-                        "Long, lat range")
-  row.names(table.out) <- paste("Original", 1:nrow(table.out))
-
-  table.out
+  data.frame(vals$models.names, t(as.data.frame(vals$models.specs)),
+             stringsAsFactors = FALSE,
+             row.names = paste("Original", 1:length(vals$models.names))) %>%
+    purrr::set_names(
+      c("SDM filename", "Resolution", "Cell count", "Non-NA prediction count",
+        "Abundance", "Long, lat range")
+    )
 })
 
 
@@ -46,9 +38,6 @@ table_orig_stats <- reactive({
 ### Table of overlaid models
 table_overlaid <- reactive({
   if (length(vals$overlaid.models) == 0) return()
-
-  base.idx <- vals$overlay.base.idx
-  base.name <- vals$models.names[base.idx]
 
   table.out1 <- table_orig()
   overlaid.models.specs <- t(as.data.frame(vals$overlaid.models.specs))
@@ -60,18 +49,13 @@ table_overlaid <- reactive({
                "Please overaly the models again to use this section"))
   )
 
-
-  table.out <- data.frame(table.out1, overlaid.models.specs,
-                          stringsAsFactors = FALSE)
-
-  names(table.out) <- c("SDM filename", "Predictions", "Errors", "Weights",
-                        "Prediction type", "Resolution", "Cell count",
-                        "Non-NA prediction count", "Abundance", "Long, lat range")
-  row.names(table.out) <- paste("Overlaid", 1:nrow(table.out))
-
-  table.out[is.na(table.out)] <- ""
-
-  table.out
+  data.frame(table.out1, overlaid.models.specs, stringsAsFactors = FALSE,
+             row.names = paste("Overlaid", 1:nrow(table.out1))) %>%
+    purrr::set_names(
+      c("SDM filename", "Predictions", "Weights", "Prediction type",
+        "Resolution", "Cell count", "Non-NA prediction count", "Abundance",
+        "Long, lat range")
+    )
 })
 
 
@@ -80,27 +64,18 @@ table_overlaid <- reactive({
 table_ensembles <- reactive({
   if (length(vals$ensemble.models) == 0) return()
 
-  ens.overlaid.idx <- vals$ensemble.overlaid.idx
-  ens.method <- vals$ensemble.method
-  ens.weights <- vals$ensemble.weights
-  ens.rescaling <- vals$ensemble.rescaling
-
-  table.out <- data.frame(ens.method, ens.weights,
-                          ens.rescaling, ens.overlaid.idx,
-                          stringsAsFactors = FALSE)
-
-  names(table.out) <- c("Ensembling method", "Weights",
-                        "Rescaling method", "Overlaid models used")
-  row.names(table.out) <- paste("Ensemble", 1:nrow(table.out))
-
-  table.out
+  data.frame(vals$ensemble.overlaid.idx, vals$ensemble.rescaling,
+             vals$ensemble.method, vals$ensemble.weights,
+             stringsAsFactors = FALSE,
+             row.names = paste("Ensemble", 1:length(vals$ensemble.method))) %>%
+    purrr::set_names(
+      c("Overlaid models used", "Rescaling method", "Ensembling method",
+        "Weights")
+    )
 })
 
 
 ###############################################################################
-# Other tables
-
-### Table of model metrics is made in 'ensEvalMetrics.R'
-### Table of presence/absence points is made in 'ensEvalMetrics_loadData.R'
+# Smaller tables are rendered in their pertinent files
 
 ###############################################################################

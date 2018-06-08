@@ -46,7 +46,7 @@ output$create_sf_gis_gdb_text <- renderText({
 
 ### Table of loaded original model preds
 output$models_loaded_table <- renderDT({
-  table_orig()[, -3] #'[, -3]' is to remove Error column
+  table_orig()
 }, options = list(dom = 't'), selection = "multiple")
 
 ### Table of stats of loaded original model preds
@@ -85,7 +85,7 @@ output$model_preview_plot <- renderPlot({
 
 ### Table of loaded model predictions
 output$overlay_loaded_table <- renderDT({
-  table_orig()[, -3] #'[, -3]' is to remove Error column
+  table_orig()
 }, options = list(dom = 't'), selection = "single")
 
 ### Table of stats of loaded model predictions
@@ -183,12 +183,12 @@ output$overlay_preview_overlaid <- renderPlot({
 
 ### Display table of overlaid predictions and info
 output$create_ens_table <- renderTable({
-  table_overlaid()[, -3] #'[, -3]' is to remove Error column
+  table_overlaid()
 }, rownames = TRUE)
 
 ### Datatable of overlaid predictions and info
 output$create_ens_datatable <- renderDT({
-  table_overlaid()[, -3] #'[, -3]' is to remove Error column
+  table_overlaid()
 }, options = list(dom = 't'))
 
 #----------------------------------------------------------
@@ -286,12 +286,12 @@ output$ens_abund_table_out <- renderTable({
 
 ### Table of orig model predictions
 output$eval_models_table_orig_out <- renderDT({
-  table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
+  table_orig()[, 1:3]
 }, options = list(dom = 't'))
 
 ### Table of overlaid model predictions
 output$eval_models_table_over_out <- renderDT({
-  table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
+  table_overlaid()[, 1:3]
 }, options = list(dom = 't'))
 
 ### Table of ensemble models
@@ -351,12 +351,12 @@ output$eval_metrics_overlap_text <- renderText({
 
 ### Table of orig model predictions
 output$pretty_table_orig_out <- renderDT({
-  table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
+  table_orig()[, 1:3]
 }, options = list(dom = 't'))
 
 ### Table of overlaid model predictions
 output$pretty_table_over_out <- renderDT({
-  table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
+  table_overlaid()[, 1:3]
 }, options = list(dom = 't'))
 
 ### Table of ensemble model predictions
@@ -415,12 +415,12 @@ pretty_plot_plot_width <- reactive({
 
 ### Table of orig model predictions
 output$export_table_orig_out <- renderDT({
-  table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
+  table_orig()[, 1:3]
 }, options = list(dom = 't'), selection = "single")
 
 ### Table of overlaid model predictions
 output$export_table_over_out <- renderDT({
-  table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
+  table_overlaid()[, 1:3]
 }, options = list(dom = 't'), selection = "single")
 
 ### Table of ensemble models
