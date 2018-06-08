@@ -220,39 +220,21 @@ ui.loadModels <- function() {
                            fluidRow(
                              box(
                                width = 12,
+                               ###################################### Plot interactive model preview(s)
                                conditionalPanel(
                                  condition = "input.model_select_action == 1",
                                  fluidRow(
-                                   column(
-                                     width = 3,
-                                     radioButtons("model_preview_interactive_perc", tags$h5("Units"),
-                                                  choices = list("Percentages" = 1, "Values" = 2), selected = 1)
-                                   ),
-                                   column(
-                                     width = 9,
-                                     tags$br(), tags$br(),
-                                     conditionalPanel(
-                                       condition = "output.loaded_models_selected_1_flag == false",
-                                       tags$span(tags$h5(
-                                         "You can only interactively preview one set of model predictions at a time"
-                                       ), style = "color: red")
-                                     ),
-                                     conditionalPanel(
-                                       condition = "output.loaded_models_selected_1_flag",
-                                       actionButton("model_preview_interactive_execute",
-                                                    "Preview selected model predictions interactively")
-                                     )
-                                   )
+                                   column(3, radioButtons("model_preview_interactive_perc", tags$h5("Units"),
+                                                          choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
+                                   column(9, tags$br(), tags$br(), uiOutput("model_preview_interactive_execute_uiOut_button"))
                                  )
                                ),
+                               ###################################### Plot static model preview(s)
                                conditionalPanel(
                                  condition = "input.model_select_action == 2",
                                  fluidRow(
-                                   column(
-                                     width = 3,
-                                     radioButtons("model_preview_perc", tags$h5("Units"),
-                                                  choices = list("Percentages" = 1, "Values" = 2), selected = 1)
-                                   ),
+                                   column(3, radioButtons("model_preview_perc", tags$h5("Units"),
+                                                          choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
                                    column(
                                      width = 9,
                                      tags$br(), tags$br(),
@@ -260,6 +242,7 @@ ui.loadModels <- function() {
                                    )
                                  )
                                ),
+                               ###################################### Download static model preview(s)
                                conditionalPanel(
                                  condition = "input.model_select_action == 3",
                                  fluidRow(
@@ -278,6 +261,7 @@ ui.loadModels <- function() {
                                    column(3, tags$br(), tags$br(), downloadButton("model_download_preview_execute", "Download"))
                                  )
                                ),
+                               ###################################### Remove model(s)
                                conditionalPanel(
                                  condition = "input.model_select_action == 4",
                                  actionButton("model_remove_execute", "Remove selected model predictions")

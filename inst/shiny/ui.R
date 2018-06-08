@@ -51,34 +51,18 @@ ui <- dashboardPage(
                   titleWidth = "540px"),
 
   dashboardSidebar(
-    sidebarMenu(id = "tabs",
-                menuItem(HTML(paste0("eSDM Roadmap and", "<br/>", "Load or Save Environment")),
-                         tabName = "roadmap",
-                         icon = icon("road")), #icon("sitemap")
-                menuItem("Load Model Predictions",
-                         tabName = "loadModels",
-                         icon = icon("cloud-upload")),
-                menuItem("Overlay Model Predictions",
-                         tabName = "overlay",
-                         icon = icon("cogs")),
-                menuItem("Create Ensemble Predictions",
-                         tabName = "createEns",
-                         icon = icon("cog")),
-                menuItem("Evaluation Metrics",
-                         tabName = "evalMetrics",
-                         icon = icon("check")),
-                menuItem("High Quality Maps",
-                         tabName = "prettyPlot",
-                         icon = icon("file-image-o")),
-                menuItem("Export Predictions",
-                         tabName = "export",
-                         icon = icon("cloud-download")),
-                menuItem("Manual",
-                         tabName = "manual",
-                         icon = icon("book"))
-                # menuItem("Submit Feedback",
-                #          tabName = "feedbackForm",
-                #          icon = icon("commenting"))
+    sidebarMenu(
+      id = "tabs",
+      menuItem(HTML(paste0("eSDM Roadmap and", "<br/>", "Load or Save Environment")),
+               tabName = "roadmap", icon = icon("road")), #icon("sitemap")
+      menuItem("Load Model Predictions", tabName = "loadModels", icon = icon("cloud-upload")),
+      menuItem("Overlay Model Predictions", tabName = "overlay", icon = icon("cogs")),
+      menuItem("Create Ensemble Predictions", tabName = "createEns", icon = icon("cog")),
+      menuItem("Evaluation Metrics", tabName = "evalMetrics", icon = icon("check")),
+      menuItem("High Quality Maps", tabName = "prettyPlot", icon = icon("file-image-o")),
+      menuItem("Export Predictions", tabName = "export", icon = icon("cloud-download")),
+      menuItem("Manual", tabName = "manual", icon = icon("book"))
+      # menuItem("Submit Feedback", tabName = "feedbackForm", icon = icon("commenting"))
     ),
     br(),
     actionButton("close_app", label = "Close App")
@@ -90,9 +74,16 @@ ui <- dashboardPage(
 
     ### Control validate text output
     tags$head(
-      tags$style(HTML(".shiny-output-error-validation {
-                      color: red; font-weight: bold;
-                      }"))
+      tags$style(HTML("
+        .shiny-output-error-validation {
+        color: red; font-weight: bold;
+        }
+      ")),
+      tags$style(HTML("
+        .shiny-output-error-validation2 {
+        color: red; font-weight: normal;
+        }
+      "))
     ),
 
     ### UI code separated by tabs

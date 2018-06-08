@@ -212,6 +212,23 @@ output$model_create_gis_gdb_uiOut_button <- renderUI ({
 
 
 ###############################################################################
+# Loaded Model Predicitons section
+
+### actionButton for interactive preview
+output$model_preview_interactive_execute_uiOut_button <- renderUI({
+  req(input$model_select_action == 1)
+
+  validate(
+    need(length(input$models_loaded_table_rows_selected) == 1,
+         paste("You can only interactively preview one set of",
+               "model predictions at a time")),
+    errorClass = "validation2"
+  )
+
+  actionButton("model_preview_interactive_execute",
+               "Preview selected model predictions interactively")
+})
+
 ### Generate default filename for download of model preditcions preview
 output$model_download_preview_name_uiOut_text <- renderUI({
   req(input$models_loaded_table_rows_selected)

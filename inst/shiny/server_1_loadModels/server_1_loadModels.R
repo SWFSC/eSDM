@@ -14,13 +14,6 @@ output$loaded_models_selected_flag <- reactive({
 })
 outputOptions(output, "loaded_models_selected_flag", suspendWhenHidden = FALSE)
 
-### Flag for if any model predictions are selected in the table
-output$loaded_models_selected_1_flag <- reactive({
-  length(input$models_loaded_table_rows_selected) == 1
-})
-outputOptions(output, "loaded_models_selected_1_flag",
-              suspendWhenHidden = FALSE)
-
 
 ###############################################################################
 ### Show/hide interactive/static plot outputs is in 'server_hide+show.R'
@@ -30,12 +23,7 @@ outputOptions(output, "loaded_models_selected_1_flag",
 ### Delete selected model
 observeEvent(input$model_remove_execute, {
   idx <- as.numeric(input$models_loaded_table_rows_selected)
-
-  validate(
-    need(length(idx) > 0,
-         paste("Error: Please select one or more sets",
-               "of model predictions to remove"))
-  )
+  req(length(idx) > 0)
 
   #########################################################
   ### Remove the reactiveValue info for selected set(s) of model predicitons
