@@ -452,6 +452,7 @@ ui.createEns <- function() {
                     ####################################### Calculate abundance of ensemble(s)
                     conditionalPanel(
                       condition = "input.ens_select_action == 5",
+                      uiOutput("ens_calc_abund_execute_uiOut_text"),
                       fluidRow(
                         column(6, uiOutput("ens_calc_abund_execute_uiOut_button")),
                         column(6, tableOutput("ens_abund_table_out"))

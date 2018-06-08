@@ -232,8 +232,8 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
 })
 
 
-### actionButton to calculate abundances
-output$ens_calc_abund_execute_uiOut_button <- renderUI({
+### Relating to calculating abundance
+output$ens_calc_abund_execute_uiOut_text <- renderUI({
   ens.rows <- input$ens_datatable_ensembles_rows_selected
   req(input$ens_select_action == 5, ens.rows)
 
@@ -248,6 +248,18 @@ output$ens_calc_abund_execute_uiOut_button <- renderUI({
     errorClass = "validation2"
   )
 
+  NULL
+})
+
+### actionButton to calculate abundances
+output$ens_calc_abund_execute_uiOut_button <- renderUI({
+  ens.rows <- input$ens_datatable_ensembles_rows_selected
+  req(input$ens_select_action == 5, ens.rows)
+
+  ens.rescalings <- vals$ensemble.rescaling[ens.rows]
+  rescaling.abund.bad <- c("Normalization", "Standardization", "Sum to 1")
+
+  req(all(!(ens.rescalings %in% rescaling.abund.bad)))
   actionButton("ens_calc_abund_execute", "Calculate abundance(s)")
 })
 
