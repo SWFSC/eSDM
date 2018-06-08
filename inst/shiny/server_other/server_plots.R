@@ -110,7 +110,6 @@ observeEvent(input$overlay_preview_base_execute, {
 
 #################################################
 ### Generate preview of overlaid model predictions to plot in-app
-#
 observeEvent(input$overlay_preview_overlaid_execute, {
   overlaid.idx <- as.numeric(input$overlay_preview_overlaid_models)
   models.toplot <- vals$overlaid.models[overlaid.idx]
@@ -124,6 +123,10 @@ observeEvent(input$overlay_preview_overlaid_execute, {
     plot.titles = plot.titles, plot.dims = multiplot_inapp(models.num)
   )
 })
+
+
+#################################################
+### Download model preview is in 'server_plots_download.R'
 
 
 ###############################################################################
@@ -141,6 +144,26 @@ observeEvent(input$create_ens_weights_poly_preview_execute, {
 })
 
 #################################################
+### Generate interactive preview of ensemble predictions to display in-app
+observeEvent(input$ens_preview_interactive_execute, {
+  req(length(vals$ensemble.models) > 0)
+
+  perc.num <- as.numeric(input$ens_preview_interactive_perc)
+  model.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
+
+  vals$ensemble.plot.leaf.idx <- model.idx
+  vals$ensemble.plot.leaf <- list(
+    model.toplot = vals$ensemble.models[[model.idx]], perc.num = perc.num,
+    plot.title = paste(
+      vals$ensemble.method[model.idx], "|", vals$ensemble.rescaling[model.idx],
+      "|", vals$ensemble.overlaid.idx[model.idx]
+    ),
+    leg.title = ifelse(
+      perc.num, "Relative prediction value", "Absolute prediction value"
+    )
+  )
+})
+
 ### Get preview of ensemble predictions to plot in-app
 #
 observeEvent(input$ens_preview_execute, {
@@ -169,32 +192,6 @@ observeEvent(input$ens_preview_execute, {
 
 
 #################################################
-### Get preview of ensemble predictions to download
-ens_preview_download <- reactive({
-  perc.num <- input$ens_download_preview_perc
-
-  # #----------------------------------------------
-  # # Same code as in ens_pix_preview_event()
-  # ensemble.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
-  # validate(
-  #   need(length(ensemble.idx) > 0,
-  #        "Error: Please select at least one model from table to preview")
-  # )
-  #
-  # models.toplot <- create_ens_preview_model()
-  #
-  # plot.titles <- sapply(ensemble.idx, function(i) {
-  #   # paste0("Ensembling method: ", vals$ensemble.method[i], "\n",
-  #   #        "Rescaling method: ", vals$ensemble.rescaling[i])
-  #   paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
-  #         "|", vals$ensemble.overlaid.idx[i])
-  # })
-  #
-  # ens.pix.list <- list(models.toplot = models.toplot, data.name = "Pred.ens",
-  #                      plot.titles = plot.titles, perc.num = perc.num)
-  # #----------------------------------------------
-  #
-  # plot.multi.download(ens.pix.list)
-})
+### Download ensemble preview is in 'server_plots_download.R'
 
 ###############################################################################

@@ -353,11 +353,7 @@ ui.createEns <- function() {
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag",
                         fluidRow(
-                          column(
-                            width = 7,
-                            tableOutput("create_ens_weights_poly_table_out")
-                            # tags$style(type="text/css", "#create_ens_weights_poly_table_out td:first-child {font-weight:bold;}")
-                          ),
+                          column(7, tableOutput("create_ens_weights_poly_table_out")),
                           column(
                             width = 5,
                             uiOutput("create_ens_weights_poly_remove_choices_uiOut_select"),
@@ -371,18 +367,13 @@ ui.createEns <- function() {
                 )
               ),
               ####################################################### Create ensemble button
-              column(
+              box(
                 width = 2,
-                fluidRow(
-                  box(
-                    width = 12,
-                    tags$strong("3) Create ensemble"),
-                    tags$br(), tags$br(),
-                    uiOutput("create_ens_create_action_uiOut_button"),
-                    ui.new.line(),
-                    tags$span(uiOutput("ens_create_ensemble_text"), style = "color: blue")
-                  )
-                )
+                tags$strong("3) Create ensemble"),
+                tags$br(), tags$br(),
+                uiOutput("create_ens_create_action_uiOut_button"),
+                ui.new.line(),
+                tags$span(uiOutput("ens_create_ensemble_text"), style = "color: blue")
               )
             )
           )
@@ -399,11 +390,12 @@ ui.createEns <- function() {
             DT::dataTableOutput("ens_datatable_ensembles"),
             tags$br(),
             column(4, radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"),
-                                   choices = list("Plot preview" = 1, "Download preview" = 2, "Remove from app" = 3,
-                                                  "Calculate predicted abundance" = 4),
+                                   choices = list("Plot interactive preview" = 1, "Plot static preview(s)" = 2,
+                                                  "Download static preview(s)" = 3, "Remove from app" = 4,
+                                                  "Calculate predicted abundance" = 5),
                                    selected = 1)),
             column(
-              width = 8, #offset = 1,
+              width = 8,
               conditionalPanel(
                 condition = "output.ens_models_selected_flag == false",
                 tags$span(tags$h5("Select at least one set of ensemble model predictions to perform an action"), style = "color: red")
@@ -414,25 +406,34 @@ ui.createEns <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    ####################################### Preview ensemble(s)
+                    ####################################### Plot interactive ensemble preview(s)
                     conditionalPanel(
                       condition = "input.ens_select_action == 1",
                       fluidRow(
-                        column(3, radioButtons("ens_preview_perc", tags$h5("Units"), choices = list("Percentages" = 1, "Values" = 2),
-                                               selected = 1)),
-                        column(3, ui.new.line(), actionButton("ens_preview_execute", "Preview selected ensemble predictions"))
+                        column(3, radioButtons("ens_preview_interactive_perc", tags$h5("Units"),
+                                               choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
+                        column(9, tags$br(), tags$br(), uiOutput("ens_preview_interactive_execute_uiOut_button"))
                       )
                     ),
-                    ####################################### Download preview of ensemble(s)
+                    ####################################### Plot static ensemble preview(s)
                     conditionalPanel(
                       condition = "input.ens_select_action == 2",
+                      fluidRow(
+                        column(3, radioButtons("ens_preview_perc", tags$h5("Units"), choices = list("Percentages" = 1, "Values" = 2),
+                                               selected = 1)),
+                        column(9, tags$br(), tags$br(), actionButton("ens_preview_execute", "Preview selected ensemble predictions"))
+                      )
+                    ),
+                    ####################################### Download static ensemble preview(s)
+                    conditionalPanel(
+                      condition = "input.ens_select_action == 3",
                       fluidRow(
                         column(4, radioButtons("ens_download_preview_perc", tags$h5("Units"),
                                                choices = list("Percentages" = 1, "Values" = 2),
                                                selected = 1)),
                         column(4, radioButtons("ens_download_preview_res", tags$h5("Resolution"),
                                                choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-                                               selected = 2)),
+                                               selected = 1)),
                         column(4, radioButtons("ens_download_preview_format", tags$h5("Image file format"),
                                                choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
                                                selected = 3))
@@ -444,19 +445,19 @@ ui.createEns <- function() {
                     ),
                     ####################################### Remove ensemble(s)
                     conditionalPanel(
-                      condition = "input.ens_select_action == 3",
+                      condition = "input.ens_select_action == 4",
                       actionButton("ens_remove_execute", "Remove selected ensemble predictions"),
                       uiOutput("ens_remove_text")
                     ),
                     ####################################### Calculate abundance of ensemble(s)
                     conditionalPanel(
-                      condition = "input.ens_select_action == 4",
-                      uiOutput("ens_calc_abund_execute_uiOut_button"),
-                      tags$br(),
-                      tags$br(),
-                      tableOutput("ens_abund_table_out"),
-                      tags$style(type = "text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
-                      #tr:first-child for first row
+                      condition = "input.ens_select_action == 5",
+                      fluidRow(
+                        column(6, uiOutput("ens_calc_abund_execute_uiOut_button")),
+                        column(6, tableOutput("ens_abund_table_out"))
+                        # tags$style(type = "text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
+                        # #tr:first-child for first row
+                      )
                     )
                   )
                 )
@@ -466,7 +467,14 @@ ui.createEns <- function() {
           ################################################# Preview of ensemble(s)
           box(
             title = "Ensemble Preview", status = "primary", solidHeader = TRUE, width = 6, collapsible = TRUE,
-            shinycssloaders::withSpinner(plotOutput("ens_preview_plot"), type = 1)
+            conditionalPanel(
+              condition = "input.ens_select_action == 1",
+              shinycssloaders::withSpinner(leafletOutput("ens_preview_interactive_plot", height = 500), type = 1)
+            ),
+            conditionalPanel(
+              condition = "input.ens_select_action == 2",
+              shinycssloaders::withSpinner(plotOutput("ens_preview_plot"), type = 1)
+            )
           )
         )
       )

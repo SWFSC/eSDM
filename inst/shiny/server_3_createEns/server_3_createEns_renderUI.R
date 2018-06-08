@@ -171,28 +171,27 @@ output$create_ens_create_action_uiOut_button <- renderUI({
 ###############################################################################
 # 'Created Ensemble Predictions' box
 
-### actionButton to calculate abundances
-output$ens_calc_abund_execute_uiOut_button <- renderUI({
-  ens.rows <- input$ens_datatable_ensembles_rows_selected
-  req(ens.rows)
-
-  ens.rescalings <- vals$ensemble.rescaling[ens.rows]
-  rescaling.abund.bad <- c("Normalization", "Standardization", "Sum to 1")
+### actionButton for interactive preview
+output$ens_preview_interactive_execute_uiOut_button <- renderUI({
+  req(input$ens_select_action == 1)
 
   validate(
-    need(all(!(ens.rescalings %in% rescaling.abund.bad)),
-         paste("Abundance cannot be reasonably calculated for ensembles",
-               "made with predictions rescaled using the 'Normalization',",
-               "'Standardization', or 'Sum to 1' methods"))
+    need(length(input$ens_datatable_ensembles_rows_selected) == 1,
+         paste("You can only interactively preview one set of ensemble",
+               "model predictions at a time")),
+    errorClass = "validation2"
   )
 
-  actionButton("ens_calc_abund_execute",
-               "Calculate abundance for selected ensembles")
+  actionButton("ens_preview_interactive_execute",
+               "Preview selected model predictions interactively")
 })
+
 
 ### textInput with default filename for download of ensemble preview
 output$ens_download_preview_name_uiOut_text <- renderUI({
-  req(input$ens_datatable_ensembles_rows_selected)
+  req(
+    input$ens_select_action == 3, input$ens_datatable_ensembles_rows_selected
+  )
 
   # Same for multi- and single- preview
   perc.txt <- ifelse(input$ens_download_preview_perc == 1, "perc_", "values_")
@@ -210,27 +209,46 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
     ens.method.txt <- switch(vals$ensemble.method[idx.selected],
                              "Unweighted" = "UnW_", "Weighted" = "W_")
     ens.weights.txt <- vals$ensemble.weights[idx.selected]
-    ens.weights.txt <- ifelse(is.na(ens.weights.txt),
-                              "",
-                              paste0(gsub(", ", "+", ens.weights.txt), "_"))
+    ens.weights.txt <- ifelse(
+      is.na(ens.weights.txt), "", paste0(gsub(", ", "+", ens.weights.txt), "_")
+    )
     ens.rescale.txt <- vals$ensemble.rescaling[idx.selected]
-    ens.rescale.txt <- ifelse(grepl("Abund", ens.rescale.txt),
-                              paste0("Abund",
-                                     strsplit(ens.rescale.txt, ": ")[[1]][2],
-                                     "_"),
-                              switch(ens.rescale.txt,
-                                     "None" = "None_",
-                                     "Normalization" = "Norm_",
-                                     "Standardization" = "Stand_",
-                                     "Sum to 1" = "Sumto1_"))
+    ens.rescale.txt <- ifelse(
+      grepl("Abund", ens.rescale.txt),
+      paste0("Abund", strsplit(ens.rescale.txt, ": ")[[1]][2], "_"),
+      switch(ens.rescale.txt, "None" = "None_", "Normalization" = "Norm_",
+             "Standardization" = "Stand_", "Sum to 1" = "Sumto1_")
+    )
     ens.idx.txt <- vals$ensemble.overlaid.idx[idx.selected]
     ens.idx.txt <- paste0(gsub(", ", "+", ens.idx.txt), "_")
 
-    f.val <- paste0("eSDM_", ens.method.txt, ens.weights.txt, ens.rescale.txt,
-                    ens.idx.txt, perc.txt, res.txt, file.ext)
+    f.val <- paste0(
+      "eSDM_", ens.method.txt, ens.weights.txt, ens.rescale.txt, ens.idx.txt,
+      perc.txt, res.txt, file.ext
+    )
   }
 
   textInput("ens_download_preview_name", tags$h5("File name"), value = f.val)
+})
+
+
+### actionButton to calculate abundances
+output$ens_calc_abund_execute_uiOut_button <- renderUI({
+  ens.rows <- input$ens_datatable_ensembles_rows_selected
+  req(input$ens_select_action == 5, ens.rows)
+
+  ens.rescalings <- vals$ensemble.rescaling[ens.rows]
+  rescaling.abund.bad <- c("Normalization", "Standardization", "Sum to 1")
+
+  validate(
+    need(all(!(ens.rescalings %in% rescaling.abund.bad)),
+         paste("Abundance cannot be reasonably calculated for ensembles",
+               "made with predictions rescaled using the 'Normalization',",
+               "'Standardization', or 'Sum to 1' methods")),
+    errorClass = "validation2"
+  )
+
+  actionButton("ens_calc_abund_execute", "Calculate abundance(s)")
 })
 
 ###############################################################################

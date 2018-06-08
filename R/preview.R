@@ -196,7 +196,7 @@ preview_interactive <- function(sdm.ll, data.name, perc, col.pal,
       addPolygons(
         stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8) %>%
       addLegend(
-        "bottomright", title = leg.title, pal = binpal, values = ~data.vec,
+        "topright", title = leg.title, pal = binpal, values = ~data.vec,
         opacity = 1)
   }
 }

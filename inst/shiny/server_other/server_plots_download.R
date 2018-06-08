@@ -1,15 +1,7 @@
-### Code for downloading previews of predictions
-
-
 ###############################################################################
-# Save preview of model predictions
-# print()'s are needed to actually display spplots stored in reac funcs
-
-### Load Models tab preview
+### Load Models tab preview download
 output$model_download_preview_execute <- downloadHandler(
-  filename = function() {
-    input$model_download_preview_name
-  },
+  filename = function() input$model_download_preview_name,
 
   content = function(file) {
     withProgress(message = "Downloading preview", value = 0.6, {
@@ -32,7 +24,7 @@ output$model_download_preview_execute <- downloadHandler(
       #-------------------------------------------------------------
       plot.res <- ifelse(input$model_download_preview_res == "1", 300, 72)
       pdf.res  <- ifelse(input$model_download_preview_res == "1", 15, 7)
-      plot.format <- input$model_download_preview_format
+      plot.format <- as.numeric(input$model_download_preview_format)
 
 
       #-------------------------------------------------------------
@@ -58,7 +50,6 @@ output$model_download_preview_execute <- downloadHandler(
       } else if (plot.format == 3) {
         # browser()
         png(file, width = 4, height = 4, units = "in", res = plot.res)
-        # model_pix_download()
         eSDM::multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
@@ -72,37 +63,65 @@ output$model_download_preview_execute <- downloadHandler(
 )
 
 
-###########################################################
-### Create Ensemble Predictions tab preview
+###############################################################################
+### Create Ensemble Predictions tab preview download
 output$ens_download_preview_execute <- downloadHandler(
-  filename = function() {
-    input$ens_download_preview_name
-  },
+  filename = function() input$ens_download_preview_name,
 
   content = function(file) {
     withProgress(message = "Downloading preview", value = 0.6, {
-      Sys.sleep(0.5)
-      plot.toprint <- ens_pix_download()
+      #-------------------------------------------------------------
+      perc.num <- as.numeric(input$ens_download_preview_perc)
+      models.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
+      models.num <- length(models.idx)
+
+      req(length(vals$ensemble.models) > 0, length(models.idx) > 0)
+
+      models.toplot <- vals$ensemble.models[models.idx]
+      stopifnot(models.num == length(models.toplot))
+      plot.titles <- sapply(models.idx, function(i) {
+        paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
+              "|", vals$ensemble.overlaid.idx[i])
+      })
+      plot.dims <- multiplot_download(models.num)
+
+
+      #-------------------------------------------------------------
       plot.res <- ifelse(input$ens_download_preview_res == "1", 300, 72)
       pdf.res  <- ifelse(input$ens_download_preview_res == "1", 15, 7)
-      plot.format <- input$ens_download_preview_format
+      plot.format <- as.numeric(input$ens_download_preview_format)
 
-      if(plot.format == 1) {
+
+      #-------------------------------------------------------------
+      if (plot.format == 1) {
         jpeg(file, width = 4, height = 4, units = 'in', res = plot.res,
              quality = 150)
-        grid.arrange(plot.toprint)
+        eSDM::multiplot_layout(
+          models.toplot, rep("Pred.ens", models.num), plot.titles,
+          perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
+          plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
+        )
         dev.off()
-      }
-      if(plot.format == 2) {
+
+      } else if (plot.format == 2) {
         pdf(file, width = pdf.res, height = pdf.res)
-        grid.arrange(plot.toprint)
+        eSDM::multiplot_layout(
+          models.toplot, rep("Pred.ens", models.num), plot.titles,
+          perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
+          plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
+        )
         dev.off()
-      }
-      if(plot.format == 3) {
+
+      } else if (plot.format == 3) {
         png(file, width = 4, height = 4, units = "in", res = plot.res)
-        grid.arrange(plot.toprint)
+        eSDM::multiplot_layout(
+          models.toplot, rep("Pred.ens", models.num), plot.titles,
+          perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
+          plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
+        )
         dev.off()
       }
+      incProgress(0.4)
     })
   }
 )

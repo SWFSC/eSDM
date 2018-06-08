@@ -9,58 +9,60 @@
 val.pretty.color.num <- reactiveVal(value = NULL)
 
 ###############################################################################
-# 'Initialize' all 38 elements of vals
+# 'Initialize' all 40 elements of vals
 
 vals <- reactiveValues(
   # Objects that store loaded models and related info
-  models.ll             = list(), # List of models; crs is crs.ll
-  models.orig           = list(), #List of models; crs is crs of predictions when loaded
-  models.names          = NULL,   # Vector of model names
-  models.data.names     = NULL,   # List of vectors of model, error, and weights names
-  models.pred.type      = NULL,   # Vector of prediction type (absolute vs relative)
-  models.specs          = NULL,   # List of vectors of res, num of cells/preds, abund, and extent
-  models.plot           = NULL,   # Plot info of currently static-previewed original models
-  models.plot.idx       = NULL,   # Plot index of currently static-previewed original models
-  models.plot.leaf      = NULL,   # Plot info of currently interactive-previewed original models
-  models.plot.leaf.idx  = NULL,   # Plot index of currently interactive-previewed original models
+  models.ll             = list(),  # List of models; crs is crs.ll
+  models.orig           = list(),  #List of models; crs is crs of predictions when loaded
+  models.names          = NULL,    # Vector of model names
+  models.data.names     = NULL,    # List of vectors of model, error, and weights names
+  models.pred.type      = NULL,    # Vector of prediction type (absolute vs relative)
+  models.specs          = NULL,    # List of vectors of res, num of cells/preds, abund, and extent
+  models.plot           = NULL,    # Plot info of currently static-previewed original models
+  models.plot.idx       = NULL,    # Plot index of currently static-previewed original models
+  models.plot.leaf      = NULL,    # Plot info of currently interactively previewed original models
+  models.plot.leaf.idx  = NULL,    # Plot index of currently interactively previewed original models
 
   # Objects that store data for and from overlay section
-  overlay.bound         = NULL,   # Boundary sfc object; crs is crs.ll; always of length 1
-  overlay.land          = NULL,   # Coastline/land sfc object; crs is crs.ll
-  overlay.plot          = NULL,   # Plot info for overlay base preview
-  overlay.crs           = NULL,   # Class crs object of projection for overlay process
-  overlay.info          = NULL,   # List of index of model used as base grid and overlap percentage
-  overlay.base.sfc      = NULL,   # sfc object that is base grid
-  overlaid.models       = list(), # List of overlaid models
-  overlaid.models.specs = NULL,   # models.spec info about overlaid models
-  overlaid.plot         = NULL,   # Plot info of currently previewed overlaid models
+  overlay.bound         = NULL,    # Boundary sfc object; crs is crs.ll; always of length 1
+  overlay.land          = NULL,    # Coastline/land sfc object; crs is crs.ll
+  overlay.plot          = NULL,    # Plot info for overlay base preview
+  overlay.crs           = NULL,    # Class crs object of projection for overlay process
+  overlay.info          = NULL,    # List of index of model used as base grid and overlap percentage
+  overlay.base.sfc      = NULL,    # sfc object that is base grid
+  overlaid.models       = list(),  # List of overlaid models
+  overlaid.models.specs = NULL,    # models.spec info about overlaid models
+  overlaid.plot         = NULL,    # Plot info of currently previewed overlaid models
 
   # Objects that store elements used by ensemble and overlaid models
-  ens.over.wpoly.filename = NULL, # List of filenames of polygons with weights; index corresponds to overlaid pred index
-  ens.over.wpoly.sf       = NULL, # List of polygons with weights; index corresponds to overlaid pred index
-  ens.over.wpoly.coverage = NULL, # List of overlap perc for weight to be applied; index corresponds to overlaid pred index
-  ens.over.wpoly.plot     = NULL, # Plot info of currently previewed weighted polygons
+  ens.over.wpoly.filename = NULL,  # List of filenames of polygons with weights; index corresponds to overlaid pred index
+  ens.over.wpoly.sf       = NULL,  # List of polygons with weights; index corresponds to overlaid pred index
+  ens.over.wpoly.coverage = NULL,  # List of overlap perc for weight to be applied; index corresponds to overlaid pred index
+  ens.over.wpoly.plot     = NULL,  # Plot info of currently previewed weighted polygons
 
   # Objects that store spdfs of and data on created ensembles
-  ensemble.models       = list(), # Ensemble model predictions
-  ensemble.method       = NULL,   # Vector of ensembling methods used
-  ensemble.weights      = NULL,   # Strings of weights used (if any)
-  ensemble.rescaling    = NULL,   # Vector of rescaling methods used
-  ensemble.overlaid.idx = NULL,   # Strings of indices of overlaid model predictions used
-  ensemble.plot         = NULL,   # Plot info of currently previewed ensemble models
-  ensemble.plot.idx     = NULL,   # Plot index of currently previewed ensemble models
+  ensemble.models        = list(), # Ensemble model predictions
+  ensemble.method        = NULL,   # Vector of ensembling methods used
+  ensemble.weights       = NULL,   # Strings of weights used (if any)
+  ensemble.rescaling     = NULL,   # Vector of rescaling methods used
+  ensemble.overlaid.idx  = NULL,   # Strings of indices of overlaid model predictions used
+  ensemble.plot          = NULL,   # Plot info of currently previewed ensemble models
+  ensemble.plot.idx      = NULL,   # Plot index of currently previewed ensemble models
+  ensemble.plot.leaf     = NULL,   # Plot info of currently interactively previewed ensemble models
+  ensemble.plot.leaf.idx = NULL,   # Plot index of currently interactively previewed ensemble models
 
   # Objects that store data for evaluation metrics section
-  eval.data          = NULL,      # Validation data (sf obj) with 'count' and 'sight' columns
-  eval.data.specs    = NULL,      # Data type (1 = counts, 2 = p/a)
-  eval.data.gis.info = NULL,      # List with loaded gis validation data (sf obj) and shp/gdb indicator (num 2 or 3)
-  eval.models.idx    = NULL,      # List of indices of evaluated models
-  eval.metrics       = NULL,      # Metric values
-  eval.metrics.names = NULL,      # Names of metrics calculated
+  eval.data          = NULL,       # Validation data (sf obj) with 'count' and 'sight' columns
+  eval.data.specs    = NULL,       # Data type (1 = counts, 2 = p/a)
+  eval.data.gis.info = NULL,       # List with loaded gis validation data (sf obj) and shp/gdb indicator (num 2 or 3)
+  eval.models.idx    = NULL,       # List of indices of evaluated models
+  eval.metrics       = NULL,       # Metric values
+  eval.metrics.names = NULL,       # Names of metrics calculated
 
   # Objects that store data for high quality (pretty) plots
-  pretty.params.list = NULL,      # List of parameters to use in high quality plots
-  pretty.plotted.idx = NULL       # List of vectors of the indicies of currently pretty-plotted models
+  pretty.params.list = NULL,       # List of parameters to use in high quality plots
+  pretty.plotted.idx = NULL        # List of vectors of the indicies of currently pretty-plotted models
 )
 
 
@@ -113,13 +115,15 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$ens.over.wpoly.coverage <- vals.save[["ens.over.wpoly.coverage"]]
     vals$ens.over.wpoly.plot     <- vals.save[["ens.over.wpoly.plot"]]
 
-    vals$ensemble.models       <- vals.save[["ensemble.models"]]
-    vals$ensemble.method       <- vals.save[["ensemble.method"]]
-    vals$ensemble.weights      <- vals.save[["ensemble.weights"]]
-    vals$ensemble.rescaling    <- vals.save[["ensemble.rescaling"]]
-    vals$ensemble.overlaid.idx <- vals.save[["ensemble.overlaid.idx"]]
-    vals$ensemble.plot         <- vals.save[["ensemble.plot"]]
-    vals$ensemble.plot.idx     <- vals.save[["ensemble.plot.idx"]]
+    vals$ensemble.models        <- vals.save[["ensemble.models"]]
+    vals$ensemble.method        <- vals.save[["ensemble.method"]]
+    vals$ensemble.weights       <- vals.save[["ensemble.weights"]]
+    vals$ensemble.rescaling     <- vals.save[["ensemble.rescaling"]]
+    vals$ensemble.overlaid.idx  <- vals.save[["ensemble.overlaid.idx"]]
+    vals$ensemble.plot          <- vals.save[["ensemble.plot"]]
+    vals$ensemble.plot.idx      <- vals.save[["ensemble.plot.idx"]]
+    vals$ensemble.plot.leaf     <- vals.save[["ensemble.plot.leaf"]]
+    vals$ensemble.plot.leaf.idx <- vals.save[["ensemble.plot.leaf.idx"]]
 
     vals$eval.data          <- vals.save[["eval.data"]]
     vals$eval.data.specs    <- vals.save[["eval.data.specs"]]
@@ -180,7 +184,7 @@ output$save_app_envir <- downloadHandler(
 )
 
 ###############################################################################
-### Make sure no extra reactive values get added and length(vals) == 32
+### Make sure no extra reactive values get added and length(vals) == 38
 observe({
   vals$models.ll
   vals$models.orig
@@ -212,6 +216,8 @@ observe({
   vals$ensemble.overlaid.idx
   vals$ensemble.plot
   vals$ensemble.plot.idx
+  vals$ensemble.plot.leaf
+  vals$ensemble.plot.leaf.idx
   vals$eval.models.idx
   vals$eval.data
   vals$eval.data.specs
@@ -221,7 +227,7 @@ observe({
   vals$pretty.params.list
   vals$pretty.plotted.idx
 
-  if (length(reactiveValuesToList(vals)) != 38) {
+  if (length(reactiveValuesToList(vals)) != 40) {
     text.message <-
       shinyjs::alert(paste(
         "There was an error in eSDM data storage and processing,",

@@ -208,14 +208,14 @@ ui.loadModels <- function() {
                                                              "Download static preview(s)" = 3, "Remove from app" = 4),
                                               selected = 1)
                        ),
-                       conditionalPanel(
-                         condition = "output.loaded_models_selected_flag == false",
-                         tags$span(tags$h5("Select at least one set of model predictions to perform an action"), style = "color: red")
-                       ),
-                       conditionalPanel(
-                         condition = "output.loaded_models_selected_flag",
-                         column(
-                           width = 8, offset = 1,
+                       column(
+                         width = 8, offset = 1,
+                         conditionalPanel(
+                           condition = "output.loaded_models_selected_flag == false",
+                           tags$span(tags$h5("Select at least one set of model predictions to perform an action"), style = "color: red")
+                         ),
+                         conditionalPanel(
+                           condition = "output.loaded_models_selected_flag",
                            tags$h5("Action option(s)"),
                            fluidRow(
                              box(

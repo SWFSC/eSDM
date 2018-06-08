@@ -255,6 +255,17 @@ output$ens_remove_text <- renderUI({
   HTML(ens_remove())
 })
 
+### Plot interactive preview of ensemble predictions
+output$ens_preview_interactive_plot <- renderLeaflet({
+  req(vals$ensemble.plot.leaf)
+  x <- vals$ensemble.plot.leaf
+
+  eSDM::preview_interactive(
+    x$model.toplot, "Pred.ens", x$perc.num, pal.esdm, leg.perc.esdm,
+    x$plot.title, x$leg.title
+  )
+})
+
 ### Plot preview of ensemble predictions
 output$ens_preview_plot <- renderPlot({
   req(vals$ensemble.plot)
@@ -271,7 +282,7 @@ output$ens_preview_plot <- renderPlot({
 ### Table of abundances of created ensemble predictions
 output$ens_abund_table_out <- renderTable({
   table_ens_abund()
-}, rownames = TRUE, colnames = FALSE, align = "r")
+}, rownames = FALSE, align = "r") #, rownames = TRUE, colnames = FALSE)
 
 
 ###############################################################################

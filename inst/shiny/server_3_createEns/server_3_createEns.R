@@ -58,7 +58,7 @@ outputOptions(output, "ens_display_ens_flag", suspendWhenHidden = FALSE)
 #------------------------------------------------
 ### Flag for if 1+ created ensemble models are selected to be used in action
 output$ens_models_selected_flag <- reactive({
-  length(input$ens_datatable_ensembles_rows_selected) > 0
+  isTruthy(input$ens_datatable_ensembles_rows_selected)
 })
 outputOptions(output, "ens_models_selected_flag", suspendWhenHidden = FALSE)
 
@@ -95,7 +95,6 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   # Handle other places this data was used
 
   ### If these predictions were previewed, hide preview
-  browser()
   ### Else, adjust vals idx
   if (isTruthy(any(idx %in% vals$ensemble.plot.idx))) {
     vals$ensemble.plot <- NULL
@@ -140,7 +139,7 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
     }
   }
 
-  return("")
+  ""
 })
 
 
@@ -164,12 +163,13 @@ ens_abund_values <- reactive({
 
 ### Generate table of calculated abundances
 table_ens_abund <- eventReactive(input$ens_calc_abund_execute, {
+  req(input$ens_select_action == 5)
   ens.abund <- ens_abund_values()
 
-  as.data.frame(t(
-    data.frame(names(ens.abund), unname(ens.abund), stringsAsFactors = FALSE,
-               row.names = c("Predictions", "Abundance"))
-  ))
+  data.frame(
+    "Predictions" = names(ens.abund), "Abundance" = unname(ens.abund),
+    stringsAsFactors = FALSE
+  )
 })
 
 ###############################################################################
