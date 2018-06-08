@@ -179,117 +179,118 @@ ui.loadModels <- function() {
         )
       ),
 
-      column(width = 7,
-             conditionalPanel(
-               condition = "output.loadModels_display_flag",
-               fluidRow(
-                 box(
-                   title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-                   ui.instructions.table.select(text.pre = "loaded", text.in = "with which to perform an action:", sel.num = 2,
-                                                text.other = TRUE),
-                   conditionalPanel("input.models_loaded_table_stats != true", DTOutput("models_loaded_table")),
-                   conditionalPanel("input.models_loaded_table_stats", DTOutput("models_loaded_table_stats")),
-                   column(
-                     width = 12,
-                     fluidRow(
-                       column(4, checkboxInput("models_loaded_table_stats", "Display additional information")),
-                       column(
-                         width = 8,
-                         conditionalPanel(
-                           condition = "input.models_loaded_table_stats",
-                           helpText("If 'Resolution' data begins with a '~', then the predictions are irregularly spaced in",
-                                    "their provided coordinate system and the provided value is an approximation")
-                         )
-                       )
-                     ),
-                     fluidRow(
-                       column(3, radioButtons("model_select_action", tags$h5("Action to perform with selected model predictions"),
-                                              choices = list("Plot interactive preview" = 1, "Plot static preview(s)" = 2,
-                                                             "Download static preview(s)" = 3, "Remove from app" = 4),
-                                              selected = 1)
-                       ),
-                       column(
-                         width = 8, offset = 1,
-                         conditionalPanel(
-                           condition = "output.loaded_models_selected_flag == false",
-                           tags$span(tags$h5("Select at least one set of model predictions to perform an action"), style = "color: red")
-                         ),
-                         conditionalPanel(
-                           condition = "output.loaded_models_selected_flag",
-                           tags$h5("Action option(s)"),
-                           fluidRow(
-                             box(
-                               width = 12,
-                               ###################################### Plot interactive model preview(s)
-                               conditionalPanel(
-                                 condition = "input.model_select_action == 1",
-                                 fluidRow(
-                                   column(3, radioButtons("model_preview_interactive_perc", tags$h5("Units"),
-                                                          choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
-                                   column(9, tags$br(), tags$br(), uiOutput("model_preview_interactive_execute_uiOut_button"))
-                                 )
-                               ),
-                               ###################################### Plot static model preview(s)
-                               conditionalPanel(
-                                 condition = "input.model_select_action == 2",
-                                 fluidRow(
-                                   column(3, radioButtons("model_preview_perc", tags$h5("Units"),
-                                                          choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
-                                   column(
-                                     width = 9,
-                                     tags$br(), tags$br(),
-                                     actionButton("model_preview_execute", "Preview selected model predictions")
-                                   )
-                                 )
-                               ),
-                               ###################################### Download static model preview(s)
-                               conditionalPanel(
-                                 condition = "input.model_select_action == 3",
-                                 fluidRow(
-                                   column(3, radioButtons("model_download_preview_perc", tags$h5("Units"),
-                                                          choices = list("Percentages" = 1, "Values" = 2),
-                                                          selected = 1)),
-                                   column(3, radioButtons("model_download_preview_res", tags$h5("Resolution"),
-                                                          choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-                                                          selected = 1)),
-                                   column(3, radioButtons("model_download_preview_format", tags$h5("Image file format"),
-                                                          choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
-                                                          selected = 3))
-                                 ),
-                                 fluidRow(
-                                   column(9, uiOutput("model_download_preview_name_uiOut_text")),
-                                   column(3, tags$br(), tags$br(), downloadButton("model_download_preview_execute", "Download"))
-                                 )
-                               ),
-                               ###################################### Remove model(s)
-                               conditionalPanel(
-                                 condition = "input.model_select_action == 4",
-                                 actionButton("model_remove_execute", "Remove selected model predictions")
-                               )
-                             )
-                           )
-                         )
-                       )
-                     )
-                   )
-                 ),
+      column(
+        width = 7,
+        conditionalPanel(
+          condition = "output.loadModels_display_flag",
+          fluidRow(
+            box(
+              title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              ui.instructions.table.select(text.pre = "loaded", text.in = "with which to perform an action:", sel.num = 2,
+                                           text.other = TRUE),
+              conditionalPanel("input.models_loaded_table_stats != true", DTOutput("models_loaded_table")),
+              conditionalPanel("input.models_loaded_table_stats", DTOutput("models_loaded_table_stats")),
+              column(
+                width = 12,
+                fluidRow(
+                  column(4, checkboxInput("models_loaded_table_stats", "Display additional information")),
+                  column(
+                    width = 8,
+                    conditionalPanel(
+                      condition = "input.models_loaded_table_stats",
+                      helpText("If 'Resolution' data begins with a '~', then the predictions are irregularly spaced in",
+                               "their provided coordinate system and the provided value is an approximation")
+                    )
+                  )
+                ),
+                fluidRow(
+                  column(3, radioButtons("model_select_action", tags$h5("Action to perform with selected model predictions"),
+                                         choices = list("Plot interactive preview" = 1, "Plot static preview(s)" = 2,
+                                                        "Download static preview(s)" = 3, "Remove from app" = 4),
+                                         selected = 1)
+                  ),
+                  column(
+                    width = 8, offset = 1,
+                    conditionalPanel(
+                      condition = "output.loaded_models_selected_flag == false",
+                      tags$span(tags$h5("Select at least one set of model predictions to perform an action"), style = "color: red")
+                    ),
+                    conditionalPanel(
+                      condition = "output.loaded_models_selected_flag",
+                      tags$h5("Action option(s)"),
+                      fluidRow(
+                        box(
+                          width = 12,
+                          ###################################### Plot interactive model preview(s)
+                          conditionalPanel(
+                            condition = "input.model_select_action == 1",
+                            fluidRow(
+                              column(3, radioButtons("model_preview_interactive_perc", tags$h5("Units"),
+                                                     choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
+                              column(9, tags$br(), tags$br(), uiOutput("model_preview_interactive_execute_uiOut_button"))
+                            )
+                          ),
+                          ###################################### Plot static model preview(s)
+                          conditionalPanel(
+                            condition = "input.model_select_action == 2",
+                            fluidRow(
+                              column(3, radioButtons("model_preview_perc", tags$h5("Units"),
+                                                     choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
+                              column(
+                                width = 9,
+                                tags$br(), tags$br(),
+                                actionButton("model_preview_execute", "Preview selected model predictions")
+                              )
+                            )
+                          ),
+                          ###################################### Download static model preview(s)
+                          conditionalPanel(
+                            condition = "input.model_select_action == 3",
+                            fluidRow(
+                              column(3, radioButtons("model_download_preview_perc", tags$h5("Units"),
+                                                     choices = list("Percentages" = 1, "Values" = 2),
+                                                     selected = 1)),
+                              column(3, radioButtons("model_download_preview_res", tags$h5("Resolution"),
+                                                     choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
+                                                     selected = 1)),
+                              column(3, radioButtons("model_download_preview_format", tags$h5("Image file format"),
+                                                     choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
+                                                     selected = 3))
+                            ),
+                            fluidRow(
+                              column(9, uiOutput("model_download_preview_name_uiOut_text")),
+                              column(3, tags$br(), tags$br(), downloadButton("model_download_preview_execute", "Download"))
+                            )
+                          ),
+                          ###################################### Remove model(s)
+                          conditionalPanel(
+                            condition = "input.model_select_action == 4",
+                            actionButton("model_remove_execute", "Remove selected model predictions")
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            ),
 
-                 conditionalPanel(
-                   condition = "input.model_select_action == 1",
-                   box(
-                     title = "Interactive Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
-                     shinycssloaders::withSpinner(leafletOutput("model_preview_interactive_plot", height = 500), type = 1)
-                   )
-                 ),
-                 conditionalPanel(
-                   condition = "input.model_select_action == 2",
-                   box(
-                     title = "Static Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
-                     shinycssloaders::withSpinner(plotOutput("model_preview_plot"), type = 1)
-                   )
-                 )
-               )
-             )
+            conditionalPanel(
+              condition = "input.model_select_action == 1",
+              box(
+                title = "Interactive Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
+                shinycssloaders::withSpinner(leafletOutput("model_preview_interactive_plot", height = 500), type = 1)
+              )
+            ),
+            conditionalPanel(
+              condition = "input.model_select_action == 2",
+              box(
+                title = "Static Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
+                shinycssloaders::withSpinner(plotOutput("model_preview_plot"), type = 1)
+              )
+            )
+          )
+        )
       )
     )
   )
