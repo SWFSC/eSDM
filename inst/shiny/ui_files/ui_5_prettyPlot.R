@@ -14,11 +14,11 @@ ui.prettyPlot <- function() {
         box(
           title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE,
           ui.instructions.multipletables.select(text.in = "map:"),
-          DT::dataTableOutput("pretty_table_orig_out"),
+          DTOutput("pretty_table_orig_out"),
           tags$br(),
-          DT::dataTableOutput("pretty_table_over_out"),
+          DTOutput("pretty_table_over_out"),
           tags$br(),
-          DT::dataTableOutput("pretty_table_ens_out")
+          DTOutput("pretty_table_ens_out")
         )
       ),
 

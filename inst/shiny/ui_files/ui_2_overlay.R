@@ -171,8 +171,8 @@ ui.overlay <- function() {
               title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               ui.instructions.table.select(text.pre = "loaded", text.in = "to use as the base grid:", sel.num = 1,
                                            text.other = TRUE),
-              conditionalPanel("input.overlay_loaded_table_stats != true", DT::dataTableOutput("overlay_loaded_table")),
-              conditionalPanel("input.overlay_loaded_table_stats", DT::dataTableOutput("overlay_loaded_stats_table")),
+              conditionalPanel("input.overlay_loaded_table_stats != true", DTOutput("overlay_loaded_table")),
+              conditionalPanel("input.overlay_loaded_table_stats", DTOutput("overlay_loaded_stats_table")),
               column(12, checkboxInput("overlay_loaded_table_stats", "Display additional information"))
             )
           ),
@@ -223,8 +223,8 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("2) Overlay options: percent overlap"),
-                      helpText("Specify what percentage of a base grid cell must be overlapped by",
-                               "the original model prediction(s) for that cell to have a non-NA overlaid prediction value.",
+                      helpText("Specify what percentage of a base grid cell the original model prediction(s) must overlap",
+                               "for that cell to have a non-NA overlaid prediction value.",
                                "A value of \"0\" means that cell will have a non-NA overlaid prediction value",
                                "if there is any overlap with any original model prediction."),
                       sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 50)

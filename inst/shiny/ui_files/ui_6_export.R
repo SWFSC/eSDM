@@ -11,11 +11,11 @@ ui.export <- function() {
         box(
           title = "Select Predictions to Export", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
           ui.instructions.multipletables.select(text.in = "export:", sel.num = 1),
-          DT::dataTableOutput("export_table_orig_out"),
+          DTOutput("export_table_orig_out"),
           tags$br(),
-          DT::dataTableOutput("export_table_over_out"),
+          DTOutput("export_table_over_out"),
           tags$br(),
-          DT::dataTableOutput("export_table_ens_out")
+          DTOutput("export_table_ens_out")
         ),
         #############################################################
         box(

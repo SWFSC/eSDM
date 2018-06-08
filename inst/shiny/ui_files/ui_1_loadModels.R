@@ -187,8 +187,8 @@ ui.loadModels <- function() {
                    title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
                    ui.instructions.table.select(text.pre = "loaded", text.in = "with which to perform an action:", sel.num = 2,
                                                 text.other = TRUE),
-                   conditionalPanel("input.models_loaded_table_stats != true", DT::dataTableOutput("models_loaded_table")),
-                   conditionalPanel("input.models_loaded_table_stats", DT::dataTableOutput("models_loaded_table_stats")),
+                   conditionalPanel("input.models_loaded_table_stats != true", DTOutput("models_loaded_table")),
+                   conditionalPanel("input.models_loaded_table_stats", DTOutput("models_loaded_table_stats")),
                    column(
                      width = 12,
                      fluidRow(
