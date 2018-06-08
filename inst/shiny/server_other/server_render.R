@@ -45,20 +45,19 @@ output$create_sf_gis_gdb_text <- renderText({
 # Tables
 
 ### Table of loaded original model preds
-output$models_loaded_table <- DT::renderDataTable({
+output$models_loaded_table <- renderDT({
   table_orig()[, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'), selection = "multiple")
 
 ### Table of stats of loaded original model preds
-output$models_loaded_table_stats <- DT::renderDataTable({
+output$models_loaded_table_stats <- renderDT({
   table_orig_stats()
 }, options = list(dom = 't'), selection = "none")
 
 #----------------------------------------------------------
 ### Plot/preview of loaded, original model(s)
 output$model_preview_interactive_plot <- renderLeaflet({
-  req(vals$models.plot.leaf)
-  x <- vals$models.plot.leaf
+  req(x <- vals$models.plot.leaf)
 
   eSDM::preview_interactive(
     x$model.toplot, "Pred", x$perc.num, pal.esdm, leg.perc.esdm,
@@ -67,8 +66,7 @@ output$model_preview_interactive_plot <- renderLeaflet({
 })
 
 output$model_preview_plot <- renderPlot({
-  req(vals$models.plot)
-  x <- vals$models.plot
+  req(x <- vals$models.plot)
 
   eSDM::multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num, pal.esdm,
@@ -86,12 +84,12 @@ output$model_preview_plot <- renderPlot({
 # Tables
 
 ### Table of loaded model predictions
-output$overlay_loaded_table <- DT::renderDataTable({
+output$overlay_loaded_table <- renderDT({
   table_orig()[, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'), selection = "single")
 
 ### Table of stats of loaded model predictions
-output$overlay_loaded_stats_table <- DT::renderDataTable({
+output$overlay_loaded_stats_table <- renderDT({
   table_orig_stats()
 }, options = list(dom = 't'), selection = "none")
 
@@ -167,8 +165,7 @@ output$overlay_preview_base <- renderLeaflet({
 ### Preview of overlaid model predictions
 # 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$overlay_preview_overlaid <- renderPlot({
-  req(vals$overlaid.plot)
-  x <- vals$overlaid.plot
+  req(x <- vals$overlaid.plot)
 
   eSDM::multiplot_layout(
     x$models.toplot, x$data.names, x$plot.titles, 1, pal.esdm, leg.perc.esdm,
@@ -190,7 +187,7 @@ output$create_ens_table <- renderTable({
 }, rownames = TRUE)
 
 ### Datatable of overlaid predictions and info
-output$create_ens_datatable <- DT::renderDataTable({
+output$create_ens_datatable <- renderDT({
   table_overlaid()[, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'))
 
@@ -214,11 +211,9 @@ output$create_ens_weights_poly_table_out <- renderTable({
 
 ### Preview plot of weight polygons
 output$create_ens_weights_poly_preview_plot <- renderPlot({
-  req(vals$ens.over.wpoly.plot)
-  x <- vals$ens.over.wpoly.plot
+  req(x <- vals$ens.over.wpoly.plot)
 
   plot(x[[1]], axes = TRUE, col = "black", border = NA)
-
   for(sf.toplot in vals$ens.over.wpoly.sf[[x[[2]]]]) {
     plot(st_geometry(sf.toplot), add = TRUE, col = NA, border = "red")
   }
@@ -245,7 +240,7 @@ output$ens_create_ensemble_text <- renderUI({
 # Created ensemble things
 
 ### Table of created ensemble predictions
-output$ens_datatable_ensembles <- DT::renderDataTable({
+output$ens_datatable_ensembles <- renderDT({
   table_ensembles()
 },
 options = list(dom = 't'))
@@ -257,8 +252,7 @@ output$ens_remove_text <- renderUI({
 
 ### Plot interactive preview of ensemble predictions
 output$ens_preview_interactive_plot <- renderLeaflet({
-  req(vals$ensemble.plot.leaf)
-  x <- vals$ensemble.plot.leaf
+  req(x <- vals$ensemble.plot.leaf)
 
   eSDM::preview_interactive(
     x$model.toplot, "Pred.ens", x$perc.num, pal.esdm, leg.perc.esdm,
@@ -268,8 +262,7 @@ output$ens_preview_interactive_plot <- renderLeaflet({
 
 ### Plot preview of ensemble predictions
 output$ens_preview_plot <- renderPlot({
-  req(vals$ensemble.plot)
-  x <- vals$ensemble.plot
+  req(x <- vals$ensemble.plot)
 
   eSDM::multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num, pal.esdm,
@@ -292,17 +285,17 @@ output$ens_abund_table_out <- renderTable({
 # Tables
 
 ### Table of orig model predictions
-output$eval_models_table_orig_out <- DT::renderDataTable({
+output$eval_models_table_orig_out <- renderDT({
   table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'))
 
 ### Table of overlaid model predictions
-output$eval_models_table_over_out <- DT::renderDataTable({
+output$eval_models_table_over_out <- renderDT({
   table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'))
 
 ### Table of ensemble models
-output$eval_models_table_ens_out <- DT::renderDataTable({
+output$eval_models_table_ens_out <- renderDT({
   table_ensembles()
 }, options = list(dom = 't'))
 
@@ -318,7 +311,6 @@ output$eval_data_message <- renderText({
 output$eval_csv_data_text <- renderText(eval_data_csv())
 
 output$eval_data_gis_text <- renderText({
-  req(vals$eval.data.gis.info)
   req(vals$eval.data.gis.info[[3]] == input$eval_load_type)
 
   eval_data_gis()
@@ -326,12 +318,12 @@ output$eval_data_gis_text <- renderText({
 
 output$eval_metrics_text <- renderText(eval_metrics())
 
-# Validatoin data title
+# Validation data title
 output$table_eval_pts_title <- renderText({
-  req(vals$eval.data.specs)
-  ifelse(vals$eval.data.specs[2] == 1,
-         "Validation data (count) info",
-         "Validation data (presence/absence) info")
+  req(ifelse(
+    vals$eval.data.specs[2] == 1, "Validation data (count) info",
+    "Validation data (presence/absence) info"
+  ))
 })
 
 # Validation data table
@@ -358,17 +350,17 @@ output$eval_metrics_overlap_text <- renderText({
 # Tables
 
 ### Table of orig model predictions
-output$pretty_table_orig_out <- DT::renderDataTable({
+output$pretty_table_orig_out <- renderDT({
   table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'))
 
 ### Table of overlaid model predictions
-output$pretty_table_over_out <- DT::renderDataTable({
+output$pretty_table_over_out <- renderDT({
   table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'))
 
 ### Table of ensemble model predictions
-output$pretty_table_ens_out <- DT::renderDataTable({
+output$pretty_table_ens_out <- renderDT({
   table_ensembles()
 }, options = list(dom = 't'))
 
@@ -422,17 +414,17 @@ pretty_plot_plot_width <- reactive({
 # Tables
 
 ### Table of orig model predictions
-output$export_table_orig_out <- DT::renderDataTable({
+output$export_table_orig_out <- renderDT({
   table_orig()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'), selection = "single")
 
 ### Table of overlaid model predictions
-output$export_table_over_out <- DT::renderDataTable({
+output$export_table_over_out <- renderDT({
   table_overlaid()[, 1:4][, -3] #'[, -3]' is to remove Error column
 }, options = list(dom = 't'), selection = "single")
 
 ### Table of ensemble models
-output$export_table_ens_out <- DT::renderDataTable({
+output$export_table_ens_out <- renderDT({
   table_ensembles()
 }, options = list(dom = 't'), selection = "single")
 

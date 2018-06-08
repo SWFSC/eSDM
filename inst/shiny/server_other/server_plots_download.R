@@ -48,7 +48,6 @@ output$model_download_preview_execute <- downloadHandler(
         dev.off()
 
       } else if (plot.format == 3) {
-        # browser()
         png(file, width = 4, height = 4, units = "in", res = plot.res)
         eSDM::multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,

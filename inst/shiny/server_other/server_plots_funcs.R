@@ -1,5 +1,5 @@
 ###############################################################################
-#
+# Get dimensions for eSDM preview within the app
 multiplot_inapp <- function(x) {
   plot.ncol <- case_when(
     x == 1 ~ 1,
@@ -26,7 +26,6 @@ multiplot_inapp <- function(x) {
   )
 
   leg.lcm <- 3.0
-
   leg.txt.cex <- ifelse(x == 1, 0.8, 1.3)
 
   c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex)
@@ -34,7 +33,7 @@ multiplot_inapp <- function(x) {
 
 
 ###############################################################################
-#
+# Get dimensions for eSDM preview being downloaded
 multiplot_download <- function(x) {
   plot.ncol <- case_when(
     x <= 2 ~ 1,
@@ -61,7 +60,6 @@ multiplot_download <- function(x) {
   )
 
   leg.lcm <- 2.9
-
   leg.txt.cex <- 0.7
 
   c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex)
