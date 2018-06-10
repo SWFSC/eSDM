@@ -12,27 +12,24 @@ withProgress(message = "Adding model predictions to app", value = 0.3, {
   sf.load.ll   <- sf.list[[1]]
   sf.load.orig <- sf.list[[2]]
 
-  error.idx <- NA #ifelse(error.idx == 1, NA, error.idx - 1)
-  weight.idx <- ifelse(weight.idx == 1, NA, weight.idx - 1)
 
-  toadd.e <- toadd.w <- NA
-  # if(!is.na(error.idx))  {
-  #   toadd.e  <- st_set_geometry(sf.load.ll, NULL)[, error.idx]
-  # }
+  weight.idx <- ifelse(weight.idx == 1, NA, weight.idx - 1)
   if(!is.na(weight.idx)) {
     toadd.w <- st_set_geometry(sf.load.ll, NULL)[, weight.idx]
+  } else {
+    toadd.w <- as.numeric(NA)
   }
 
 
   # Names of sf object columns set in ...create_local code
   sf.load.ll <- sf.load.ll %>% st_set_geometry(NULL) %>%
     dplyr::select(pred.idx) %>%
-    dplyr::mutate(toadd.e, toadd.w, 1:nrow(sf.load.ll)) %>%
+    dplyr::mutate(toadd.w, 1:nrow(sf.load.ll)) %>%
     st_sf(geometry = st_geometry(sf.load.ll), agr = "constant")
 
   sf.load.orig <- sf.load.orig %>% st_set_geometry(NULL) %>%
     dplyr::select(pred.idx) %>%
-    dplyr::mutate(toadd.e, toadd.w, 1:nrow(sf.load.orig)) %>%
+    dplyr::mutate(toadd.w, 1:nrow(sf.load.orig)) %>%
     st_sf(geometry = st_geometry(sf.load.orig), agr = "constant")
   incProgress(0.1)
 
@@ -41,7 +38,7 @@ withProgress(message = "Adding model predictions to app", value = 0.3, {
   incProgress(0.2)
 
   # Need names from sf.list[[1]] since sf.load.ll names will be different
-  data.names <- list(names(sf.list[[1]])[c(pred.idx, error.idx, weight.idx)])
+  data.names <- list(names(sf.list[[1]])[c(pred.idx, weight.idx)])
 
 
   ###### Code common to raster and gis_shp/gis_gdb functions ######

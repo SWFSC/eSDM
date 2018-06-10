@@ -25,29 +25,6 @@ outputOptions(output, "read_model_csv_flag", suspendWhenHidden = FALSE)
 ###############################################################################
 # Reactive function for csv renderUI's
 
-### Name of data and if(applicable) weight column selected by user
-model_csv_names_selected <- reactive({
-  data.names <- names(read_model_csv()[[2]])
-  data.selected <- c(data.names[as.numeric(input$model_csv_names_pred)], NA, NA)
-
-  # error.idx <- as.numeric(input$model_csv_names_error) - 1
-  weight.idx <- as.numeric(input$model_csv_names_weight) - 1
-  # if (error.idx != 0) data.selected[2] <- data.names[error.idx]
-  if (weight.idx != 0) data.selected[3] <- data.names[weight.idx]
-
-  list(data.selected)
-})
-
-### Identify row indices of NA values in given Prediction column
-model_csv_NA_idx <- reactive({
-  req(input$model_csv_names_pred)
-  data.csv <- read_model_csv()[[2]]
-
-  data.csv.pred <- data.csv[, as.numeric(input$model_csv_names_pred)]
-
-  na_which(data.csv[, as.numeric(input$model_csv_names_pred)])
-})
-
 ### Get column names of csv data
 csv_names_choice_input <- reactive({
   choice.input.names <- names(read_model_csv()[[2]])
@@ -55,6 +32,38 @@ csv_names_choice_input <- reactive({
   names(choice.input) <- choice.input.names
 
   choice.input
+})
+
+### Name of prediction and if(applicable) weight column selected by user
+model_csv_names_selected <- reactive({
+  data.names <- names(read_model_csv()[[2]])
+  weight.idx <- as.numeric(input$model_csv_names_weight) - 1
+
+  list(
+    c(data.names[as.numeric(input$model_csv_names_pred)],
+      ifelse(weight.idx == 0, NA, data.names[weight.idx]))
+  )
+})
+
+### Identify row indices of NA values in given prediction column
+model_csv_NA_idx_pred <- reactive({
+  req(input$model_csv_names_pred)
+  data.csv <- read_model_csv()[[2]]
+
+  na_which(data.csv[, as.numeric(input$model_csv_names_pred)])
+})
+
+### Identify row indices of NA values in given weight column
+model_csv_NA_idx_weight <- reactive({
+  req(input$model_csv_names_weight)
+  data.csv <- read_model_csv()[[2]]
+
+  weight.col <- as.numeric(input$model_csv_names_weight)
+  if (weight.col > 1) {
+    na_which(data.csv[, (weight.col - 1)])
+  } else {
+    NA
+  }
 })
 
 
@@ -68,31 +77,27 @@ create_sf_csv_data <- reactive({
   lon.idx <- as.numeric(input$model_csv_names_lon)
   lat.idx <- as.numeric(input$model_csv_names_lat)
   pred.idx <- as.numeric(input$model_csv_names_pred)
-  error.idx <- NA #as.numeric(input$model_csv_names_error)
-  weight.idx <- as.numeric(input$model_csv_names_weight)
+  weight.idx <- as.numeric(input$model_csv_names_weight) - 1
+  weight.idx <- ifelse(weight.idx == 0, NA, weight.idx)
 
-  error.idx <- NA #ifelse(error.idx == 1, NA, error.idx - 1)
-  weight.idx <- ifelse(weight.idx == 1, NA, weight.idx - 1)
-
-  csv.idx <- c(lon.idx, lat.idx, pred.idx, error.idx, weight.idx)
+  csv.idx <- c(lon.idx, lat.idx, pred.idx, weight.idx)
 
   csv.all <- read_model_csv()[[2]]
-  csv.data <- cbind(csv.all[, csv.idx[1:3]], NA, NA)
-  if (!is.na(csv.idx[4])) csv.data[, 4] <- csv.all[csv.idx[4]]
-  if (!is.na(csv.idx[5])) csv.data[, 5] <- csv.all[csv.idx[5]]
+  csv.data <- cbind(csv.all[, csv.idx[1:3]], as.numeric(NA))
+  if (!is.na(weight.idx)) csv.data[, 4] <- csv.all[, weight.idx]
 
-  # Change invalid densities to NA
-  na.idx <- model_csv_NA_idx()
-  if (!anyNA(na.idx)) csv.data[na.idx, 3:5] <- NA
+  # Check that pred and weight data are valid
+  csv.data <- check_pred_weight(
+    csv.data, 3, ifelse(weight.idx == 0, NA, 4), model_csv_NA_idx_pred(),
+    model_csv_NA_idx_weight()
+  )
 
   # Sort data by lat (primary) then long for bottom up sort
   csv.data <- data_sort(csv.data, 2, 1)
 
   # Remove lat/long; add 'Pixel' column to keep track of indices
-  csv.data <- cbind(csv.data, 1:nrow(csv.data))
-  names(csv.data) <- c("Lon", "Lat", "Pred", "Error", "Weight", "Pixels")
-
-  csv.data
+  cbind(csv.data, 1:nrow(csv.data)) %>%
+    purrr::set_names(c("Lon", "Lat", "Pred", "Weight", "Pixels"))
 })
 
 
@@ -104,8 +109,8 @@ create_sf_csv_sfc <- reactive({
     csv.data <- read_model_csv()[[2]][, c(lon.idx, lat.idx)]
 
     csv.data <- data_sort(csv.data, 2, 1)
-    csv.data <- cbind(csv.data, 1:nrow(csv.data))
-    names(csv.data) <- c("Lon", "Lat", "Pixels")
+    csv.data <- cbind(csv.data, 1:nrow(csv.data)) %>%
+      purrr::set_names(c("Lon", "Lat", "Pixels"))
 
 
     #######################################################
@@ -231,25 +236,16 @@ create_sf_csv_sfc <- reactive({
 ###############################################################################
 create_sf_csv <- eventReactive(input$model_create_csv, {
   # This check is here so that it occurs before creation of sfc object
-  weight.idx <- as.numeric(input$model_csv_names_weight) - 1
-  if (weight.idx != 0) {
-    data.all <- read_model_csv()[[2]]
-    data.weight <- data.all[, weight.idx]
-    validate(
-      need((max(data.weight, na.rm = TRUE) <= 1) &
-             (min(data.weight, na.rm = TRUE) >= 0),
-           "Error: Values in 'Weight' column must be between 0 and 1")
-    )
-  }
 
-  # Combine data df and sfc object
+
+  csv.data <- create_sf_csv_data()
   csv.sf.temp <- create_sf_csv_sfc()[[1]]
 
+  # Combine data df and sfc object
   withProgress(message = "Combining .csv file data and polygons", value = 0.6, {
-    csv.data <- create_sf_csv_data()
     if (nrow(csv.data) == nrow(csv.sf.temp)) {
       sf.load.ll <- st_sf(
-        csv.data[, 3:6], geometry = st_geometry(csv.sf.temp), agr = "constant"
+        csv.data[, 3:5], geometry = st_geometry(csv.sf.temp), agr = "constant"
       )
 
     } else {

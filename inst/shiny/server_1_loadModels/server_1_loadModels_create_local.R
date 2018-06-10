@@ -8,7 +8,7 @@
 # pred.type        # Prediction type
 # model.res        # Resolution of model grid
 # model.name       # File name of model predictions
-# data.names       # Names of data columns with predictions, errors, and weights
+# data.names       # Names of data columns with predictions and weights
 
 
 
@@ -20,15 +20,15 @@ validate(
        "Error 1 in create_local prep")
 )
 validate(
-  need(length(sf.load.ll) == 5 & length(sf.load.orig) == 5,
+  need(ncol(sf.load.ll) == 4 & ncol(sf.load.orig) == 4,
        "Error 2 in create_local prep")
 )
 # incProgress(0.1)
 
 
 ### Set names for sf.load.ll and sf.load.orig, both for data and sfc columns
-names(sf.load.ll)[1:4] <- c("Pred", "Error", "Weight", "Pixels")
-names(sf.load.orig)[1:4] <- c("Pred", "Error", "Weight", "Pixels")
+names(sf.load.ll)[1:3] <- c("Pred", "Weight", "Pixels")
+names(sf.load.orig)[1:3] <- c("Pred", "Weight", "Pixels")
 
 st_agr(sf.load.ll) <- "constant"
 st_agr(sf.load.orig) <- "constant"

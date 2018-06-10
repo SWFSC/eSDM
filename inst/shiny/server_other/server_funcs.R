@@ -246,3 +246,34 @@ check_valid <- function(x, progress.detail = FALSE) {
     x
   }
 }
+
+
+#------------------------------------------------------------------------------
+# TODO: change to S3 method
+check_pred_weight <- function(x, pred.idx, weight.idx, pred.na.idx,
+                                 weight.na.idx) {
+  stopifnot(inherits(pred.idx, c("numeric", "integer")))
+  if (inherits(x, "sf")) {
+    x.orig <- x
+    x <- st_set_geometry(x, NULL)
+  }
+
+  # browser()
+  if (!inherits(pred.na.idx, "logical")) x[pred.na.idx, pred.idx] <- NA
+  if (!inherits(weight.na.idx, "logical")) x[weight.na.idx, weight.idx] <- NA
+
+  validate(
+    need(inherits(x[, pred.idx], c("numeric", "integer")),
+         paste("Error: Unable to process the prediciton data, please...")),
+    if (!is.na(weight.idx)) {
+      need(inherits(x[, weight.idx], c("numeric", "integer")),
+           paste("Error: Unable to process the weight data, please..."))
+    }
+  )
+
+  if (exists("x.orig")) {
+    st_sf(x, st_geometry(x.orig), agr = "constant")
+  } else {
+    x
+  }
+}

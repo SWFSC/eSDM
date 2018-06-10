@@ -44,13 +44,10 @@ na_which <- function(x) {
   na.char <- c("N/A", "n/a", "na", "NaN", "")
 
   na.idx <- suppressWarnings(
-    c(which(is.na(x)), which(is.nan(x)),
-      which(x %in% na.char), which(x < 0))
+    c(which(is.na(x)), which(is.nan(x)), which(x %in% na.char), which(x < 0))
   )
-  na.idx <- sort(unique(na.idx))
-  if (length(na.idx) == 0) na.idx <- NA
 
-  na.idx
+  if (length(na.idx) == 0) NA else sort(unique(na.idx))
 }
 
 
@@ -58,7 +55,7 @@ na_which <- function(x) {
 #' This message was built to refer to prediction values
 #' @export
 
-na_which_message <- function(x) {
+na_pred_message <- function(x) {
   if (anyNA(x)) {
     "No prediction values were classified as NA"
 
@@ -67,6 +64,33 @@ na_which_message <- function(x) {
     ifelse(len.x == 1,
            paste(len.x, "prediction value was classified as NA"),
            paste(len.x, "prediction values were classified as NA"))
+  }
+}
+
+
+#' Generate message reporting length of x
+#' @export
+
+na_weight_message <- function(x, y) {
+  len.x <- length(x)
+  if (anyNA(x)) {
+    "No weight values were classified as NA"
+
+  } else if (!all(x %in% y)) {
+    paste0(
+      ifelse(len.x == 1,
+             paste(len.x, "weight value was classified as NA,"),
+             paste(len.x, "weight values were classified as NA")),
+      "<br/>Some non-NA prediction values have NA weight values"
+    )
+
+  } else {
+    paste0(
+      ifelse(len.x == 1,
+             paste(len.x, "weight value was classified as NA,"),
+             paste(len.x, "weight values were classified as NA")),
+      "<br/>No non-NA prediction values have NA weight values"
+    )
   }
 }
 

@@ -8,8 +8,7 @@
 table_orig <- reactive({
   if (length(vals$models.ll) == 0) return()
 
-  # [, -2] is to remove now-defunct error column
-  data.frame(vals$models.names, t(as.data.frame(vals$models.data.names))[, -2],
+  data.frame(vals$models.names, t(as.data.frame(vals$models.data.names)),
              ifelse(vals$models.pred.type == "1", "Absolute", "Relative"),
              stringsAsFactors = FALSE,
              row.names = paste("Original", 1:length(vals$models.names))) %>%

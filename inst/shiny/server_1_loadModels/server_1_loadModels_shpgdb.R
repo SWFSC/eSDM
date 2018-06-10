@@ -8,6 +8,7 @@
 ###############################################################################
 # Reactive functions for renderUIs
 
+###########################################################
 ### Get names of data columns
 shp_names_choice_input <- reactive({
   req(read_model_gis_shp())
@@ -27,8 +28,8 @@ gdb_names_choice_input <- reactive({
 })
 
 
-### Identify NA predictions
-model_gis_shp_NA_idx <- reactive({
+### Identify NA prediction values
+model_gis_shp_NA_idx_pred <- reactive({
   req(input$model_gis_shp_names_pred)
   data.shp <- st_set_geometry(read_model_gis_shp()[[1]], NULL)
 
@@ -37,13 +38,39 @@ model_gis_shp_NA_idx <- reactive({
   na_which(data.shp.pred)
 })
 
-model_gis_gdb_NA_idx <- reactive({
+model_gis_gdb_NA_idx_pred <- reactive({
   req(input$model_gis_gdb_names_pred)
   data.gdb <- st_set_geometry(read_model_gis_gdb()[[1]], NULL)
 
   data.gdb.pred <- data.gdb[, as.numeric(input$model_gis_gdb_names_pred)]
 
   na_which(data.gdb.pred)
+})
+
+
+### Identify NA weight values
+model_gis_shp_NA_idx_weight <- reactive({
+  req(input$model_gis_shp_names_pred)
+  data.shp <- st_set_geometry(read_model_gis_shp()[[1]], NULL)
+
+  weight.col <- as.numeric(input$model_gis_shp_names_weight)
+  if (weight.col > 1) {
+    na_which(data.shp[, weight.col - 1])
+  } else {
+    NA
+  }
+})
+
+model_gis_gdb_NA_idx_weight <- reactive({
+  req(input$model_gis_gdb_names_pred)
+  data.gdb <- st_set_geometry(read_model_gis_gdb()[[1]], NULL)
+
+  weight.col <- as.numeric(input$model_gis_gdb_names_weight)
+  if (weight.col > 1) {
+    na_which(data.gdb[, weight.col - 1])
+  } else {
+    NA
+  }
 })
 
 
@@ -82,19 +109,13 @@ create_sf_gis_shp <- eventReactive(input$model_create_gis_shp, {
   gis.file <- read_model_gis_shp()[[1]]
 
   pred.idx <- as.numeric(input$model_gis_shp_names_pred)
-  error.idx <- NA #as.numeric(input$model_gis_shp_names_error)
   weight.idx <- as.numeric(input$model_gis_shp_names_weight)
 
-  # Ensure that weight values are between 0 and 1
-  if (weight.idx != 1) {
-    data.all <- st_set_geometry(read_model_gis_shp()[[1]], NULL)
-    data.weight <- data.all[, (weight.idx - 1)]
-    validate(
-      need((max(data.weight, na.rm = TRUE) <= 1) &
-             (min(data.weight, na.rm = TRUE) >= 0),
-           "Error: Values in 'Weight' column must be between 0 and 1")
-    )
-  }
+  # Check that pred and weight data are valid
+  gis.file <- check_pred_weight(
+    gis.file, pred.idx, ifelse(weight.idx == 1, NA, weight.idx - 1),
+    model_gis_shp_NA_idx_pred(), model_gis_shp_NA_idx_weight()
+  )
 
   # Continue create_local code prep
   model.name <-read_model_gis_shp()[[2]]
@@ -142,19 +163,13 @@ create_sf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
   gis.file <- read_model_gis_gdb()[[1]]
 
   pred.idx <- as.numeric(input$model_gis_gdb_names_pred)
-  error.idx <- NA #as.numeric(input$model_gis_gdb_names_error)
   weight.idx <- as.numeric(input$model_gis_gdb_names_weight)
 
-  # Ensure that weight values are between 0 and 1
-  if (weight.idx != 1) {
-    data.all <- st_set_geometry(read_model_gis_gdb()[[1]], NULL)
-    data.weight <- data.all[, (weight.idx - 1)]
-    validate(
-      need((max(data.weight, na.rm = TRUE) <= 1) &
-             (min(data.weight, na.rm = TRUE) >= 0),
-           "Error: Values in 'Weight' column must be between 0 and 1")
-    )
-  }
+  # Check that pred and weight data are valid
+  gis.file <- check_pred_weight(
+    gis.file, pred.idx, ifelse(weight.idx == 1, NA, weight.idx - 1),
+    model_gis_gdb_NA_idx_pred(), model_gis_gdb_NA_idx_weight()
+  )
 
   # Continue create_local code prep
   model.name <- read_model_gis_gdb()[[2]]

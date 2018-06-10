@@ -3,7 +3,7 @@
 
 ###############################################################################
 ### Get indices of predictions that area NA's using na_which()
-model_gis_raster_NA_idx <- reactive({
+model_gis_raster_NA_idx_pred <- reactive({
   req(read_model_gis_raster())
   data.raster.pred <- read_model_gis_raster()[[1]]$Pred
 
@@ -34,7 +34,9 @@ read_model_gis_raster <- reactive({
       stopifnot(ncol(sf.load.raster) == 2)
       incProgress(0.4)
 
-      ### Determine resolution of raster cells
+      # sf.load.raster, model_gis_raster_NA_idx_pred()
+
+      # Determine resolution of raster cells
       crs.orig <- st_crs(sf.load.raster)$proj4string
       crs.orig.m  <- grepl("+units=m", crs.orig)
       crs.orig.ll <- grepl("+proj=longlat", crs.orig)
@@ -85,7 +87,12 @@ create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
   sf.load.raster <- read_model_gis_raster()[[1]]
 
   withProgress(message = "Adding model predictions to app", value = 0.3, {
-    # Check long extent, polygon validity, and generate crs.ll version if nec
+    # Check that pred and weight data are valid
+    sf.load.raster <- check_pred_weight(
+      sf.load.raster, 1, NA, model_gis_raster_NA_idx_pred(), NA
+    )
+
+    # Check long extent, polygon validity, and create crs.ll version if nec
     sf.load.raster <- check_dateline(sf.load.raster, progress.detail = TRUE)
     incProgress(0.1)
     sf.load.raster <- check_valid(sf.load.raster, progress.detail = TRUE)
@@ -99,13 +106,13 @@ create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
     model.res    <- read_model_gis_raster()[[2]]
 
     sf.load.ll <- sf.load.ll %>%
-      dplyr::mutate(Error = NA, Weight = NA, Pixels = 1:nrow(sf.load.ll))
+      dplyr::mutate(Weight = as.numeric(NA), Pixels = 1:nrow(sf.load.ll))
     sf.load.orig <- sf.load.orig %>%
-      dplyr::mutate(Error = NA, Weight = NA, Pixels = 1:nrow(sf.load.orig))
+      dplyr::mutate(Weight = as.numeric(NA), Pixels = 1:nrow(sf.load.orig))
 
     pred.type  <- input$model_gis_raster_pred_type
     model.name <- input$model_gis_raster_file$name
-    data.names <- list(c(names(sf.load.ll)[1], NA, NA))
+    data.names <- list(c(names(sf.load.ll)[1], NA))
 
     incProgress(0.1)
 

@@ -38,16 +38,6 @@ output$model_csv_pred_type_uiOut_select <- renderUI({
               selected = 2)
 })
 
-# ### Error
-# output$model_csv_names_error_uiOut_select <- renderUI({
-#   req(read_model_csv())
-#   choice.input <- csv_names_choice_input()
-#   choice.input <- c("N/A" = 1, choice.input + 1)
-#   selectInput("model_csv_names_error",
-#               tags$h5("Column with error data (optional)"),
-#               choices = choice.input, selected = NULL)
-# })
-
 ### Weight
 output$model_csv_names_weight_uiOut_select <- renderUI({
   req(read_model_csv())
@@ -58,11 +48,19 @@ output$model_csv_names_weight_uiOut_select <- renderUI({
               choices = choice.input, selected = NULL)
 })
 
-### Message with number of NA predictions
+### Message with number of NA predictions for preds and weights
 output$model_csv_NA_idx_uiOut_message <- renderUI({
   req(read_model_csv())
-  na.idx <- model_csv_NA_idx()
-  na_which_message(na.idx)
+  pred.na.idx <- model_csv_NA_idx_pred()
+
+  if (as.numeric(input$model_csv_names_weight) > 1) {
+    weight.na.idx <- model_csv_NA_idx_weight()
+    HTML(na_pred_message(pred.na.idx), "<br/>",
+         na_weight_message(weight.na.idx, pred.na.idx))
+
+  } else {
+    na_pred_message(pred.na.idx)
+  }
 })
 
 
@@ -82,8 +80,7 @@ output$model_gis_raster_pred_type_uiOut_select <- renderUI({
 ### Message with number of NA predictions
 output$model_gis_raster_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_raster())
-  na.idx <- model_gis_raster_NA_idx()
-  na_which_message(na.idx)
+  na_pred_message(model_gis_raster_NA_idx_pred())
 })
 
 
@@ -106,16 +103,6 @@ output$model_gis_shp_pred_type_uiOut_select <- renderUI({
               selected = 2)
 })
 
-# ### Error
-# output$model_gis_shp_names_error_uiOut_select <- renderUI({
-#   req(read_model_gis_shp())
-#   choice.input <- shp_names_choice_input()
-#   choice.input <- c("N/A" = 1, choice.input + 1)
-#   selectInput("model_gis_shp_names_error",
-#               tags$h5("Column with error data (optional)"),
-#               choices = choice.input, selected = 1)
-# })
-
 ### Weight
 output$model_gis_shp_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_shp())
@@ -129,8 +116,17 @@ output$model_gis_shp_names_weight_uiOut_select <- renderUI({
 ### Message with number of NA predictions
 output$model_gis_shp_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_shp())
-  na.idx <- model_gis_shp_NA_idx()
-  na_which_message(na.idx)
+  pred.na.idx <- model_gis_shp_NA_idx_pred()
+
+  weight.col <- as.numeric(input$model_gis_shp_names_weight)
+  if (weight.col > 1) {
+    weight.na.idx <- model_gis_shp_NA_idx_weight()
+    HTML(na_pred_message(pred.na.idx), "<br/>",
+         na_weight_message(weight.na.idx, pred.na.idx))
+
+  } else {
+    na_pred_message(pred.na.idx)
+  }
 })
 
 
@@ -153,16 +149,6 @@ output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
               selected = 2)
 })
 
-# ### Error
-# output$model_gis_gdb_names_error_uiOut_select <- renderUI({
-#   req(read_model_gis_gdb())
-#   choice.input <- gdb_names_choice_input()
-#   choice.input <- c("N/A" = 1, choice.input + 1)
-#   selectInput("model_gis_gdb_names_error",
-#               tags$h5("Column with error data (optional)"),
-#               choices = choice.input, selected = 1)
-# })
-
 ### Weight
 output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
@@ -176,8 +162,17 @@ output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
 ### Message with number of NA predictions
 output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_gdb())
-  na.idx <- model_gis_gdb_NA_idx()
-  na_which_message(na.idx)
+  pred.na.idx <- model_gis_gdb_NA_idx_pred()
+
+  weight.col <- as.numeric(input$model_gis_gdb_names_weight)
+  if (weight.col > 1) {
+    weight.na.idx <- model_gis_gdb_NA_idx_weight()
+    HTML(na_pred_message(pred.na.idx), "<br/>",
+         na_weight_message(weight.na.idx, pred.na.idx))
+
+  } else {
+    na_pred_message(pred.na.idx)
+  }
 })
 
 

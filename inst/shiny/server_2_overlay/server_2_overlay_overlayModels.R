@@ -83,14 +83,14 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
     #--------------------------------------------
-    ### Create base grid and spdf of model predictions used as grid
-    incProgress(0.9 / prog.total,
-                detail = paste("Making the base grid and thus also",
-                               "overlaying original model", base.idx))
+    ### Create base grid (sfc) and overlaid model predictions (sf)
+    incProgress(0.9 / prog.total, detail = paste(
+      "Making the base grid and thus also overlaying original model", base.idx
+    ))
 
-    base.sf <- overlay_create_base_sf()
-    names(base.sf)[1:4] <- c("Pred.overlaid", "Error.overlaid",
-                             "Weight.overlaid", "Pixels")
+    base.sf <- overlay_create_base_sf() %>%
+      purrr::set_names(c("Pred.overlaid", "Weight.overlaid", "Pixels", "geometry"))
+
     base.sfc <- st_geometry(base.sf)
 
     # Get specs of base.sfc
@@ -123,8 +123,8 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
         )
         sf.temp <- j %>%
           dplyr::left_join(st_set_geometry(i, NULL), by = "Pixels") %>%
-          dplyr::select(Pred.overlaid = Pred, Error.overlaid = Error,
-                        Weight.overlaid = Weight, Pixels) %>%
+          dplyr::select(Pred.overlaid = Pred, Weight.overlaid = Weight,
+                        Pixels) %>%
           st_set_agr("constant")
       }, dplyr::select(base.sf, Pixels))
 
