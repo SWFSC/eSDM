@@ -78,22 +78,41 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   if(length(vals$ensemble.overlaid.idx) == 0) vals$ensemble.overlaid.idx <- NULL
 
 
-  #------------------------------------
   # Handle other places this data was used
-
-  ### If these predictions were previewed, hide preview
+  #------------------------------------
+  ### If predictions being removed were interactively previewed, remove preview
   ### Else, adjust vals idx
-  if (isTruthy(any(idx %in% vals$ensemble.plot.idx))) {
-    vals$ensemble.plot <- NULL
-    vals$ensemble.plot.idx <- NULL
+  if (isTruthy(vals$ensemble.plot.leaf.idx)) {
+    if (isTruthy(any(idx %in% vals$ensemble.plot.leaf.idx))) {
+      vals$ensemble.plot.leaf <- NULL
+      vals$ensemble.plot.leaf.idx <- NULL
 
-  } else {
-    idx.adjust <- sapply(vals$ensemble.plot.idx, function(i) sum(idx < i))
-    vals$ensemble.plot.idx <- vals$ensemble.plot.idx - idx.adjust
-    validate(
-      need(all(vals$ensemble.plot.idx > 0),
-           "Error: While deleting ensemble model(s), error 1")
-    )
+    } else {
+      idx.adjust <- sapply(vals$ensemble.plot.leaf.idx, function(i) sum(idx < i))
+      vals$ensemble.plot.leaf.idx <- vals$ensemble.plot.leaf.idx - idx.adjust
+      validate(
+        need(all(vals$ensemble.plot.leaf.idx > 0),
+             "Error: While deleting ensemble model(s), error 1")
+      )
+    }
+  }
+
+  #------------------------------------
+  ### If predictions being removed were staticly previewed, remove preview
+  ### Else, adjust vals idx
+  if (isTruthy(vals$ensemble.plot.idx)) {
+    if (isTruthy(any(idx %in% vals$ensemble.plot.idx))) {
+      vals$ensemble.plot <- NULL
+      vals$ensemble.plot.idx <- NULL
+
+    } else {
+      idx.adjust <- sapply(vals$ensemble.plot.idx, function(i) sum(idx < i))
+      vals$ensemble.plot.idx <- vals$ensemble.plot.idx - idx.adjust
+      validate(
+        need(all(vals$ensemble.plot.idx > 0),
+             "Error: While deleting ensemble model(s), error 1b")
+      )
+    }
   }
 
   #------------------------------------

@@ -45,38 +45,41 @@ observeEvent(input$model_remove_execute, {
 
   ### If these predictions were interactively previewed, remove preview
   ###   Else, adjust vals idx
-  if (isTruthy(any(idx %in% vals$models.plot.leaf.idx))) {
-    vals$models.plot.leaf <- NULL
-    vals$models.plot.leaf.idx <- NULL
+  if (isTruthy(vals$models.plot.leaf.idx)) {
+    if (isTruthy(any(idx %in% vals$models.plot.leaf.idx))) {
+      vals$models.plot.leaf <- NULL
+      vals$models.plot.leaf.idx <- NULL
 
-  } else {
-    idx.adjust <- sapply(vals$models.plot.leaf.idx, function(i) sum(idx < i))
-    vals$models.plot.leaf.idx <- vals$models.plot.leaf.idx - idx.adjust
-    validate(
-      need(all(vals$models.plot.leaf.idx > 0),
-           "Error: While deleting original model(s), error 1")
-    )
+    } else {
+      idx.adjust <- sapply(vals$models.plot.leaf.idx, function(i) sum(idx < i))
+      vals$models.plot.leaf.idx <- vals$models.plot.leaf.idx - idx.adjust
+      validate(
+        need(all(vals$models.plot.leaf.idx > 0),
+             "Error: While deleting original model(s), error 1")
+      )
+    }
   }
 
   ### If these predictions were staticly previewed, remove preview
   ###   Else, adjust vals idx
-  if (isTruthy(any(idx %in% vals$models.plot.idx))) {
-    vals$models.plot <- NULL
-    vals$models.plot.idx <- NULL
+  if (isTruthy(vals$models.plot.idx)) {
+    if (isTruthy(any(idx %in% vals$models.plot.idx))) {
+      vals$models.plot <- NULL
+      vals$models.plot.idx <- NULL
 
-  } else {
-    browser()
-    idx.adjust <- sapply(vals$models.plot.idx, function(i) sum(idx < i))
-    vals$models.plot.idx <- vals$models.plot.idx - idx.adjust
-    validate(
-      need(all(vals$models.plot.idx > 0),
-           "Error: While deleting original model(s), error 1")
-    )
+    } else {
+      idx.adjust <- sapply(vals$models.plot.idx, function(i) sum(idx < i))
+      vals$models.plot.idx <- vals$models.plot.idx - idx.adjust
+      validate(
+        need(all(vals$models.plot.idx > 0),
+             "Error: While deleting original model(s), error 1b")
+      )
+    }
   }
 
   ### Remove evaluation metrics if they're calculated for original model preds
   # TODO: make this so it only removes the metrics of models being removed
-  if (!is.null(vals$eval.models.idx)) {
+  if (isTruthy(vals$eval.models.idx)) {
     if (!is.null(vals$eval.models.idx[[1]])){
       vals$eval.models.idx <- NULL
       vals$eval.metrics <- NULL
@@ -86,7 +89,7 @@ observeEvent(input$model_remove_execute, {
 
   ### If these predictions were pretty-plotted, reset and hide pretty plot
   ### Else, adjust vals idx
-  if (!is.null(vals$pretty.plotted.idx)) {
+  if (isTruthy(vals$pretty.plotted.idx)) {
     browser()
     if (any(idx %in% vals$pretty.plotted.idx[[1]])) {
       shinyjs::hide("pretty_plot_plot", time = 0)
