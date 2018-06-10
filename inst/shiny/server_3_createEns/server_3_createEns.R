@@ -35,19 +35,6 @@ outputOptions(output, "ens_rescale_none_flag", suspendWhenHidden = FALSE)
 
 
 #------------------------------------------------
-# Flags in other files
-
-### Flag for if evaluation metrics have been calculated
-# This flag is in 'server_3_createEns_create_weighted.R'
-
-### Flag for if metrics have been calculated for selected overlaid model preds
-# This flag is in 'server_3_createEns_create_weighted.R'
-
-### Flag for if at least 1 of the selected overlaid models have spatial weights
-# This flag is in 'server_3_createEns_create_weighted.R'
-
-
-#------------------------------------------------
 ### Flag for if 1+ ensemble predictions have been created
 output$ens_display_ens_flag <- reactive({
   length(vals$ensemble.models) > 0

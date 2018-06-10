@@ -4,11 +4,11 @@
 \alias{preview_interactive}
 \title{title}
 \usage{
-preview_interactive(sf.ll, data.name, perc, col.pal, leg.labels = NULL,
+preview_interactive(sdm.ll, data.name, perc, col.pal, leg.labels = NULL,
   title.ll = NULL, leg.title = NULL)
 }
 \arguments{
-\item{sf.ll}{sf object in crs.ll}
+\item{sdm.ll}{sf object in crs.ll}
 }
 \description{
 General function for plotting sf object

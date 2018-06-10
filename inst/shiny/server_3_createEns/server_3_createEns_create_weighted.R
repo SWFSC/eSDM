@@ -2,6 +2,7 @@
 
 
 ###############################################################################
+###############################################################################
 # Weighted ensembling method 1: 'Weight all model predictions by manual entry'
 
 ### Process text inputs for model weights
@@ -44,21 +45,20 @@ create_ens_weighted_manual <- reactive({
 
 
 ###############################################################################
+###############################################################################
 # Weighted ensembling method 2: 'Weight all model predictions by metric'
 
 ### Flag for if metrics have been calculated for selected overlaid model preds
-output$create_ens_weights_metric_flag <- reactive({
-  ens.overlaid.which <- create_ens_overlaid_idx()
-  eval.overlaid.which <- vals$eval.models.idx[[2]]
-
-  all(ens.overlaid.which %in% eval.overlaid.which)
-})
-outputOptions(output, "create_ens_weights_metric_flag",
-              suspendWhenHidden = FALSE)
+# output$create_ens_weights_metric_flag <- reactive({
+#   all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]])
+# })
+# outputOptions(output, "create_ens_weights_metric_flag",
+#               suspendWhenHidden = FALSE)
 
 ### Table of selected metrics
 create_ens_weights_metric_table <- reactive({
-  req(input$create_ens_weights_metric)
+  req(input$create_ens_weights_metric,
+      all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]]))
 
   # Get desired metric for desired overlaid models from eval metrics table
   eval.metrics <- table_eval_metrics()
@@ -104,6 +104,7 @@ create_ens_weighted_metric <- reactive({
 
 
 ###############################################################################
+###############################################################################
 # Weighted ensembling method 3: 'Use loaded spatial weights'
 
 ### Vector of idx of selected overlaid models that have spatial weights
@@ -117,57 +118,46 @@ create_ens_weights_pix_which <- reactive({
   ens.which[ens.which.spatial]
 })
 
-### Flag for if at least 1 of the selected overlaid models have spatial weights
-output$create_ens_weights_pix_flag <- reactive({
-  length(create_ens_weights_pix_which()) >= 1
-})
-outputOptions(output, "create_ens_weights_pix_flag",
-              suspendWhenHidden = FALSE)
-
 ### Table of selected overlaid models and if they have any spatial weights
 create_ens_weights_pix_table <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.spatial <- create_ens_weights_pix_which()
 
-  ens.which.spatial.text <- ifelse(ens.which %in% ens.which.spatial,
-                                   "Yes", "No")
+  validate(
+    need(any(ens.which.spatial %in% ens.which),
+         paste("At least one of the selected overlaid predictions must have",
+               "pixel-level spatial weights to use this weighting method")),
+    errorClass = "validation2"
+  )
 
-  table.out <- data.frame(paste("Overlaid", ens.which), ens.which.spatial.text)
-  names(table.out) <- c("Model", "Has spatial weights")
+  ens.which.spatial.text <- ifelse(
+    ens.which %in% ens.which.spatial, "Yes", "No"
+  )
 
-  table.out
+  data.frame(paste("Overlaid", ens.which), ens.which.spatial.text) %>%
+    purrr::set_names(c("Model", "Has spatial weights"))
 })
 
 ### Generate data frame of pixel weights
 create_ens_weights_pix_weights <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.spatial <- create_ens_weights_pix_which()
-  validate(
+  validate( #need validate() here too for ensembling function
     need(any(ens.which.spatial %in% ens.which),
          paste("Error: At least one of the selected overlaid predictions",
                "must have pixel-level spatial weights"))
   )
 
-  # browser()
-  df.out <- as.data.frame(lapply(ens.which, function(idx) {
+  w.list <- lapply(ens.which, function(idx) {
     overlaid.curr <- vals$overlaid.models[[idx]]
 
     if (idx %in% ens.which.spatial) {
-      validate(
-        need(identical(is.na(overlaid.curr$Pred.overlaid),
-                       is.na(overlaid.curr$Weight.overlaid)),
-             paste("Error: number of NAs in for Pred is different from",
-                   "number in Weight for overlaid #", idx))
-      )
       overlaid.curr$Weight.overlaid
-
     } else {
       rep(1, nrow(overlaid.curr))
     }
-  }))
-  names(df.out) <- letters[1:ncol(df.out)]
-
-  df.out
+  })
+  purrr::set_names(data.frame(w.list), letters[1:length(ens.which)])
 })
 
 ### Create weighted ensemble using pixel-level spatial weights
@@ -177,8 +167,10 @@ create_ens_weighted_pix <- reactive({
   data.weights <- create_ens_weights_pix_weights()
 
   validate(
-    need(length(data.weights) == ncol(data.rescaled),
-         "Weighted ens 3: number of weights != number of overlaid models")
+    need(ncol(data.weights) == ncol(data.rescaled),
+         "Weighted ens 3: number of weights != number of overlaid models"),
+    need(nrow(data.weights) == nrow(data.rescaled),
+         "Weighted ens 3: len of weights != len of overlaid models")
   )
 
   data.reweighted <- data.rescaled * data.weights
@@ -190,6 +182,7 @@ create_ens_weighted_pix <- reactive({
 })
 
 
+###############################################################################
 ###############################################################################
 # Weighted ensembling method 4: 'Load GIS polygon(s) with weights'
 

@@ -6,7 +6,7 @@
 \usage{
 multiplot_layout(models.toplot, data.names, plot.titles, perc.num, col.pal,
   leg.labels, plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr,
-  leg.width = 3)
+  leg.width = 3, leg.txt.cex = 1)
 }
 \arguments{
 \item{models.toplot}{list of sf objects}

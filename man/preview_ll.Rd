@@ -4,10 +4,10 @@
 \alias{preview_ll}
 \title{title}
 \usage{
-preview_ll(sf.ll, data.name, title.ll, perc, col.pal, axis.cex, main.cex)
+preview_ll(sdm.ll, data.name, title.ll, perc, col.pal, axis.cex, main.cex)
 }
 \arguments{
-\item{sf.ll}{sf object in crs.ll}
+\item{sdm.ll}{sf object in crs.ll}
 }
 \description{
 General function for plotting sf object

@@ -19,10 +19,10 @@ vals <- reactiveValues(
   models.data.names     = NULL,    # List of vectors of model, error, and weights names
   models.pred.type      = NULL,    # Vector of prediction type (absolute vs relative)
   models.specs          = NULL,    # List of vectors of res, num of cells/preds, abund, and extent
-  models.plot           = NULL,    # Plot info of currently static-previewed original models
-  models.plot.idx       = NULL,    # Plot index of currently static-previewed original models
   models.plot.leaf      = NULL,    # Plot info of currently interactively previewed original models
   models.plot.leaf.idx  = NULL,    # Plot index of currently interactively previewed original models
+  models.plot           = NULL,    # Plot info of currently static-previewed original models
+  models.plot.idx       = NULL,    # Plot index of currently static-previewed original models
 
   # Objects that store data for and from overlay section
   overlay.bound         = NULL,    # Boundary sfc object; crs is crs.ll; always of length 1
@@ -47,10 +47,10 @@ vals <- reactiveValues(
   ensemble.weights       = NULL,   # Strings of weights used (if any)
   ensemble.rescaling     = NULL,   # Vector of rescaling methods used
   ensemble.overlaid.idx  = NULL,   # Strings of indices of overlaid model predictions used
-  ensemble.plot          = NULL,   # Plot info of currently previewed ensemble models
-  ensemble.plot.idx      = NULL,   # Plot index of currently previewed ensemble models
   ensemble.plot.leaf     = NULL,   # Plot info of currently interactively previewed ensemble models
   ensemble.plot.leaf.idx = NULL,   # Plot index of currently interactively previewed ensemble models
+  ensemble.plot          = NULL,   # Plot info of currently previewed ensemble models
+  ensemble.plot.idx      = NULL,   # Plot index of currently previewed ensemble models
 
   # Objects that store data for evaluation metrics section
   eval.data          = NULL,       # Validation data (sf obj) with 'count' and 'sight' columns
@@ -95,10 +95,10 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$models.data.names     <- vals.save[["models.data.names"]]
     vals$models.pred.type      <- vals.save[["models.pred.type"]]
     vals$models.specs          <- vals.save[["models.specs"]]
-    vals$models.plot           <- vals.save[["models.plot"]]
-    vals$models.plot.idx       <- vals.save[["models.plot.idx"]]
     vals$models.plot.leaf      <- vals.save[["models.plot.leaf"]]
     vals$models.plot.leaf.idx  <- vals.save[["models.plot.leaf.idx"]]
+    vals$models.plot           <- vals.save[["models.plot"]]
+    vals$models.plot.idx       <- vals.save[["models.plot.idx"]]
 
     vals$overlay.bound         <- vals.save[["overlay.bound"]]
     vals$overlay.land          <- vals.save[["overlay.land"]]
@@ -120,10 +120,10 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$ensemble.weights       <- vals.save[["ensemble.weights"]]
     vals$ensemble.rescaling     <- vals.save[["ensemble.rescaling"]]
     vals$ensemble.overlaid.idx  <- vals.save[["ensemble.overlaid.idx"]]
-    vals$ensemble.plot          <- vals.save[["ensemble.plot"]]
-    vals$ensemble.plot.idx      <- vals.save[["ensemble.plot.idx"]]
     vals$ensemble.plot.leaf     <- vals.save[["ensemble.plot.leaf"]]
     vals$ensemble.plot.leaf.idx <- vals.save[["ensemble.plot.leaf.idx"]]
+    vals$ensemble.plot          <- vals.save[["ensemble.plot"]]
+    vals$ensemble.plot.idx      <- vals.save[["ensemble.plot.idx"]]
 
     vals$eval.data          <- vals.save[["eval.data"]]
     vals$eval.data.specs    <- vals.save[["eval.data.specs"]]
@@ -174,6 +174,19 @@ output$save_app_envir <- downloadHandler(
   },
   content = function(file) {
     withProgress(message = "Saving app data", value = 0.3, {
+      # Reset plot info
+      vals$models.plot.leaf <- NULL
+      vals$models.plot.leaf.idx <- NULL
+      vals$models.plot <- NULL
+      vals$models.plot.idx <- NULL
+      vals$overlaid.plot <- NULL
+      vals$ens.over.wpoly.plot <- NULL
+      vals$ensemble.plot.leaf <- NULL
+      vals$ensemble.plot.leaf.idx <- NULL
+      vals$ensemble.plot <- NULL
+      vals$ensemble.plot.idx <- NULL
+
+      # Convert to list and save
       vals.save <- reactiveValuesToList(vals)
       incProgress(0.5)
 
@@ -184,7 +197,7 @@ output$save_app_envir <- downloadHandler(
 )
 
 ###############################################################################
-### Make sure no extra reactive values get added and length(vals) == 38
+### Make sure no extra reactive values get added and length(vals) == 40
 observe({
   vals$models.ll
   vals$models.orig
@@ -192,10 +205,10 @@ observe({
   vals$models.data.name
   vals$models.pred.type
   vals$models.specs
-  vals$models.plot
-  vals$models.plot.idx
   vals$models.plot.leaf
   vals$models.plot.leaf.idx
+  vals$models.plot
+  vals$models.plot.idx
   vals$overlay.bound
   vals$overlay.land
   vals$overlay.plot
@@ -214,10 +227,10 @@ observe({
   vals$ensemble.weights
   vals$ensemble.rescaling
   vals$ensemble.overlaid.idx
-  vals$ensemble.plot
-  vals$ensemble.plot.idx
   vals$ensemble.plot.leaf
   vals$ensemble.plot.leaf.idx
+  vals$ensemble.plot
+  vals$ensemble.plot.idx
   vals$eval.models.idx
   vals$eval.data
   vals$eval.data.specs

@@ -24,8 +24,22 @@ output$create_ens_weight_manual_uiOut_text <- renderUI ({
 #----------------------------------------------------------
 # Method 2
 
-### Checkboxes with metrics that have been calculated and thus can be weights
+### Text for if metrics cannot be used as ensemble weights
+output$create_ens_weights_metric_uiOut_text <- renderUI({
+  validate(
+    need(all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]]),
+         paste("You must calculate at least one metric for all selected",
+                 "overlaid model predictions to use this weighting method.",
+                 "Calculate metric(s) in the 'Evaluation Metrics' tab")),
+    errorClass = "validation2"
+  )
+
+  NULL
+})
+
+### Checkboxes which metrics that have been calculated and thus can be weights
 output$create_ens_weights_metric_uiOut_radio <- renderUI({
+  req(all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]]))
   choice.input <- vals$eval.metrics.names
 
   radioButtons("create_ens_weights_metric",
@@ -120,7 +134,6 @@ output$create_ens_weights_poly_preview_execute_uiOut_button <- renderUI({
     vals$ens.over.wpoly.filename, input$create_ens_weights_poly_preview_model
   )
 
-  # browser()
   overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
   validate(
     need(isTruthy(vals$ens.over.wpoly.sf[[overlaid.which]]),

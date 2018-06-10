@@ -178,19 +178,10 @@ ui.createEns <- function() {
                             helpText(tags$strong("Evaluation metric method:"),
                                      "The table displays both the evaluation metric values and the relative weights for the models.",
                                      "The relative weights are the metric values rescalued so that the maximum value is one."),
-                            conditionalPanel(
-                              condition = "output.create_ens_weights_metric_flag == false",
-                              tags$span(tags$h5("You must calculate at least one metric for all selected overlaid model predictions",
-                                                "to use this weighting method;",
-                                                "calculate metric(s) in the 'Evaluation Metrics' tab"),
-                                        style = "color: red")
-                            ),
-                            conditionalPanel(
-                              condition = "output.create_ens_weights_metric_flag",
-                              fluidRow(
-                                column(4, uiOutput("create_ens_weights_metric_uiOut_radio")),
-                                column(8, tableOutput("create_ens_weights_metric_table_out"))
-                              )
+                            uiOutput("create_ens_weights_metric_uiOut_text"),
+                            fluidRow(
+                              column(4, uiOutput("create_ens_weights_metric_uiOut_radio")),
+                              column(8, tableOutput("create_ens_weights_metric_table_out"))
                             )
                           )
                         ),
@@ -208,16 +199,7 @@ ui.createEns <- function() {
                                      "If a set of overlaid model predictions does not have pixel-level spatial weights, ",
                                      "then the row corresponding to that set will say \"No\" in the table below and",
                                      "those predictions will have a weight of one when the enseble is created"),
-                            conditionalPanel(
-                              condition = "output.create_ens_weights_pix_flag == false",
-                              tags$span(tags$h5("At least one of the selected overlaid predictions must have",
-                                                "pixel-level spatial weights to use this weighting method"),
-                                        style = "color: red")
-                            ),
-                            conditionalPanel(
-                              condition = "output.create_ens_weights_pix_flag",
-                              tableOutput("create_ens_weights_pix_table_out")
-                            )
+                            tableOutput("create_ens_weights_pix_table_out")
                           )
                         ),
                         ######################### Weighting by polygon spatial weights
@@ -322,6 +304,7 @@ ui.createEns <- function() {
                                                          value = 1, min = 0, step = 0.1))
                                 )
                               ),
+                              ############## General
                               sliderInput("create_ens_weights_poly_coverage",
                                           tags$h5("Percentage of prediction polygon that must be covered by the weight polygon(s)",
                                                   "for the prediction polygon to be weighted.",
@@ -372,7 +355,7 @@ ui.createEns <- function() {
                 tags$strong("3) Create ensemble"),
                 tags$br(), tags$br(),
                 uiOutput("create_ens_create_action_uiOut_button"),
-                ui.new.line(),
+                tags$br(), tags$br(),
                 tags$span(uiOutput("ens_create_ensemble_text"), style = "color: blue")
               )
             )

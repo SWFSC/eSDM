@@ -37,7 +37,6 @@ ui.loadModels <- function() {
                       width = 6,
                       uiOutput("model_csv_names_lon_uiOut_select"),
                       uiOutput("model_csv_names_pred_uiOut_select"),
-                      # uiOutput("model_csv_names_error_uiOut_select"),
                       uiOutput("model_csv_names_weight_uiOut_select"),
                       tags$br(),
                       uiOutput("model_create_csv_uiOut_button"),
@@ -88,7 +87,7 @@ ui.loadModels <- function() {
                     ),
                     column(
                       width = 6,
-                      ui.new.line(),
+                      tags$br(), tags$br(),
                       uiOutput("model_gis_raster_NA_idx_uiOut_message"),
                       tags$br()
                     ),
@@ -114,7 +113,6 @@ ui.loadModels <- function() {
                     column(
                       width = 6,
                       uiOutput("model_gis_shp_names_pred_uiOut_select"),
-                      # uiOutput("model_gis_shp_names_error_uiOut_select"),
                       uiOutput("model_gis_shp_names_weight_uiOut_select"),
                       tags$br(),
                       uiOutput("model_create_gis_shp_uiOut_button"),
@@ -157,7 +155,6 @@ ui.loadModels <- function() {
                     column(
                       width = 6,
                       uiOutput("model_gis_gdb_names_pred_uiOut_select"),
-                      # uiOutput("model_gis_gdb_names_error_uiOut_select"),
                       uiOutput("model_gis_gdb_names_weight_uiOut_select"),
                       tags$br(),
                       uiOutput("model_create_gis_gdb_uiOut_button"),
