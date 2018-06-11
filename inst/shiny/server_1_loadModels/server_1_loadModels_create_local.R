@@ -27,10 +27,10 @@ validate(
 
 ### Set names and agr for sf.load.ll and sf.load.orig
 sf.load.ll <- st_set_geometry(sf.load.ll, NULL) %>%
-  purrr::set_names(sf.load.ll, c("Pred", "Weight", "Pixels")) %>%
+  purrr::set_names(c("Pred", "Weight", "Pixels")) %>%
   st_sf(geometry = st_geometry(sf.load.ll), agr = "constant")
 sf.load.orig <- st_set_geometry(sf.load.orig, NULL) %>%
-  purrr::set_names(sf.load.orig, c("Pred", "Weight", "Pixels")) %>%
+  purrr::set_names(c("Pred", "Weight", "Pixels")) %>%
   st_sf(geometry = st_geometry(sf.load.orig), agr = "constant")
 
 

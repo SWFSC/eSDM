@@ -64,7 +64,7 @@ ui <- dashboardPage(
       menuItem("Manual", tabName = "manual", icon = icon("book"))
       # menuItem("Submit Feedback", tabName = "feedbackForm", icon = icon("commenting"))
     ),
-    br(),
+    tags$br(),
     actionButton("close_app", label = "Close App")
   ),
 
@@ -88,7 +88,7 @@ ui <- dashboardPage(
 
     ### UI code separated by tabs
     tabItems(
-      ui.roadmap(),      # etSDM Roadmap and Load or Save Session
+      ui.roadmap(),      # eSDM Roadmap and Load or Save Session
       ui.loadModels(),   # Load Model Predictions
       ui.overlay(),      # Overlay Model Predictions
       ui.createEns(),    # Create Ensemble
