@@ -23,15 +23,15 @@ validate(
   need(ncol(sf.load.ll) == 4 & ncol(sf.load.orig) == 4,
        "Error 2 in create_local prep")
 )
-# incProgress(0.1)
 
 
-### Set names for sf.load.ll and sf.load.orig, both for data and sfc columns
-names(sf.load.ll)[1:3] <- c("Pred", "Weight", "Pixels")
-names(sf.load.orig)[1:3] <- c("Pred", "Weight", "Pixels")
-
-st_agr(sf.load.ll) <- "constant"
-st_agr(sf.load.orig) <- "constant"
+### Set names and agr for sf.load.ll and sf.load.orig
+sf.load.ll <- st_set_geometry(sf.load.ll, NULL) %>%
+  purrr::set_names(sf.load.ll, c("Pred", "Weight", "Pixels")) %>%
+  st_sf(geometry = st_geometry(sf.load.ll), agr = "constant")
+sf.load.orig <- st_set_geometry(sf.load.orig, NULL) %>%
+  purrr::set_names(sf.load.orig, c("Pred", "Weight", "Pixels")) %>%
+  st_sf(geometry = st_geometry(sf.load.orig), agr = "constant")
 
 
 ### Calculate predicted abundance if 'Absolute abundance' is selected
@@ -43,8 +43,8 @@ st_agr(sf.load.orig) <- "constant"
 
 
 ### Create vector of specs about the predictions, added to list of vectors
-### Specs are: resolution, cell count, non-NA prediction count, abundance,
-###   and lat/long extent
+# Specs are: resolution, cell count, non-NA prediction count, abundance,
+#   and lat/long extent
 specs.curr <- c(
   model.res, nrow(sf.load.ll), sum(!is.na(sf.load.ll$Pred)),
   ifelse(pred.type == 1,

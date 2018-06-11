@@ -129,4 +129,61 @@ observe({
   updateSelectInput(session, "model_gis_gdb_pred_type", selected = 2)
 })
 
+
+###############################################################################
+### Ensure all original model reactive values are correctly formatted
+observe({
+  vals$models.ll
+  vals$models.orig
+  vals$models.names
+  vals$models.data.names
+  vals$models.pred.type
+  vals$models.specs
+
+  check.all <- eSDM::zero_range(
+    sapply(list(vals$models.ll, vals$models.orig, vals$models.names,
+                vals$models.data.names, vals$models.pred.type,
+                vals$models.specs),
+           length)
+  )
+  if (!(check.all)) shinyjs::alert(
+    "eSDM error 1: Improper formatting of 'original' objects, please contact Sam"
+  )
+
+  if (length(vals$models.ll) != 0) {
+    check.all <- c(
+      all(sapply(vals$models.ll, inherits, "sf")),
+      all(sapply(vals$models.orig, inherits, "sf")),
+
+      all(sapply(lapply(vals$models.ll, names), function(i) identical(i, c("Pred", "Weight", "Pixels", "geometry")))),
+      all(sapply(lapply(vals$models.orig, names), function(i) identical(i, c("Pred", "Weight", "Pixels", "geometry")))),
+
+      all(sapply(lapply(vals$models.ll, function(i) names(st_agr(i))), function(j) identical(j, c("Pred", "Weight", "Pixels")))),
+      all(sapply(lapply(vals$models.orig, function(i) names(st_agr(i))), function(j) identical(j, c("Pred", "Weight", "Pixels")))),
+
+      all(sapply(vals$models.ll, function(i) identical(st_crs(i), st_crs(4326)))),
+
+      all(sapply(vals$models.ll, st_agr) == "constant"),
+      all(sapply(vals$models.orig, st_agr) == "constant"),
+
+      all(sapply(vals$models.ll, attr, "sf_column") == "geometry"),
+      all(sapply(vals$models.orig, attr, "sf_column") == "geometry"),
+
+      sapply(lapply(vals$models.ll, function(i) i$Pred), inherits, c("numeric", "integer")),
+      sapply(lapply(vals$models.ll, function(i) i$Weight), inherits, c("numeric", "integer")),
+      sapply(lapply(vals$models.ll, function(i) i$Pixels), inherits, c("numeric", "integer")),
+
+      all(sapply(vals$models.names, inherits, "character")),
+      all(sapply(vals$models.data.names, function(i) all(sapply(i, inherits, "character"))))
+    )
+
+    if (!all(check.all)) {
+      browser()
+      shinyjs::alert(
+        "eSDM error 2: Improper formatting of 'original' objects, please contact Sam"
+      )
+    }
+  }
+})
+
 ###############################################################################

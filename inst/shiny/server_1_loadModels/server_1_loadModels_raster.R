@@ -105,10 +105,13 @@ create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
     sf.load.orig <- sf.list[[2]]
     model.res    <- read_model_gis_raster()[[2]]
 
-    sf.load.ll <- sf.load.ll %>%
-      dplyr::mutate(Weight = as.numeric(NA), Pixels = 1:nrow(sf.load.ll))
-    sf.load.orig <- sf.load.orig %>%
-      dplyr::mutate(Weight = as.numeric(NA), Pixels = 1:nrow(sf.load.orig))
+    sf.load.ll <- sf.load.ll %>% st_set_geometry(NULL) %>%
+      dplyr::mutate(as.numeric(NA), 1:nrow(sf.load.ll)) %>%
+      st_sf(geometry = st_geometry(sf.load.ll), agr = "constant")
+    sf.load.orig <- sf.load.orig %>% st_set_geometry(NULL) %>%
+      dplyr::mutate(as.numeric(NA), 1:nrow(sf.load.orig)) %>%
+      st_sf(geometry = st_geometry(sf.load.orig), agr = "constant")
+
 
     pred.type  <- input$model_gis_raster_pred_type
     model.name <- input$model_gis_raster_file$name
