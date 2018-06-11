@@ -84,6 +84,13 @@ pretty_plot_range_poly <- reactive({
 
 
 ###############################################################################
+# Background color
+pretty_plot_background <- reactive({
+  input$pretty_plot_background_color
+})
+
+
+###############################################################################
 # Color scheme of predictions
 
 ### Process inputs and return list with num of colors and color palette to use
@@ -138,13 +145,7 @@ pretty_plot_colorscheme_palette_num <- reactive({
 })
 
 
-### Generate 'colorscheme' list, aka list of vars that control color scheme
-### Including list for 'colorkey' argument of spplot
-### Argument in spplot:
-# colorkey = list(space = "right", col = col.ramp, at = breaks,
-#                 labels = list(labels = labels.lab, at = labels.at),
-#                 width = 1, axis.text = list(cex = 1.4))
-
+# Generate 'colorscheme' list, aka list of vars that control color scheme
 pretty_plot_colorscheme_list <- reactive({
   ### Get reactive elements
   perc <- input$pretty_plot_color_perc == 1
@@ -165,11 +166,8 @@ pretty_plot_colorscheme_list <- reactive({
     # Percentages
     leg.breaks.pretty <- seq(1, 0, length.out = 11)
     data.breaks <- eSDM::breaks_calc(x.df)
-    labels.lab.pretty <- rev(
-      c("Lowest 60%", "35 - 40%", "30 - 35%", "25 - 30%", "20 - 25%",
-        "15 - 20%", "10 - 15%", "5 - 10%", "2 - 5%", "Highest 2%")
-    )
-    labels.at.pretty <- seq(0.95, 0.05, length.out = 10)
+    labels.lab.pretty <- leg.perc.esdm
+    # labels.at.pretty <- seq(0.95, 0.05, length.out = 10)
 
   } else {
     # Values
@@ -177,31 +175,12 @@ pretty_plot_colorscheme_list <- reactive({
     data.breaks <- seq(min(x.df, na.rm = TRUE), max(x.df, na.rm = TRUE),
                        length.out = (color.num))
     labels.lab.pretty <- as.character(
-      round(rev(data.breaks), input$pretty_plot_legend_round)
-    )
-
-    labels.at.pretty.fr <- mean(head(leg.breaks.pretty, 2))
-    labels.at.pretty.to <- mean(tail(leg.breaks.pretty, 2))
-    labels.at.pretty <- seq(
-      labels.at.pretty.fr, labels.at.pretty.to, length.out = color.num
+      round(data.breaks, input$pretty_plot_legend_round)
     )
   }
 
-  ### Argument for 'colorkey' in spplot
-  if (leg.include) {
-    leg.pos.pretty <- switch(leg.pos, "right", "bottom", "left", "top")
-    list.colorkey <- list(
-      space = leg.pos.pretty, col = color.palette,
-      at = leg.breaks.pretty,
-      labels = list(labels = labels.lab.pretty, at = labels.at.pretty)
-    )
-  } else {
-    list.colorkey <- FALSE
-  }
-
-  ### Return list
   list(data.breaks = data.breaks, color.palette = color.palette,
-       list.colorkey = list.colorkey)
+       leg.inc = leg.include, labels = labels.lab.pretty)
 })
 
 
@@ -213,139 +192,83 @@ pretty_plot_colorscheme_list <- reactive({
 #               y = list(at = c(), labels = c()))
 # labels degree symbol: labels = parse(text = paste0(c(), "*degree*W"))
 
-pretty_plot_scales_list <- reactive({
-  ### If ticks are not plotted, we're done
-  ### Else, process inputs and store results in 'scales' list
-  if (!input$pretty_plot_tick) {
-    list.scales <- list(draw = FALSE)
-
-  } else {
-    scales.tck <- c(input$pretty_plot_tick_length, 0) # tick length
-    list.scales <- list(draw = TRUE, tck = scales.tck)
-
-    ## If applicable: get manually entered tick locations
-    ## Else: use defaults by not providing any x.at or y.at arguments
-    if (input$pretty_plot_tick_manual == 2) {
-      # Read in tick locations
-      x.at <- unlist(strsplit(input$pretty_plot_tick_manual_lon, ", "))
-      y.at <- unlist(strsplit(input$pretty_plot_tick_manual_lat, ", "))
-      validate(
-        need(isTruthy(x.at),
-             paste("Error: Please either enter 'Longitude tick locations'" ,
-                   "values or select \"Use default tick locations\"")),
-        need(isTruthy(y.at),
-             paste("Error: Please either enter 'Latitude tick locations'" ,
-                   "values or select \"Use default tick locations\""))
-      )
-
-      # Convert tick locations to numbers
-      x.at <- suppressWarnings(as.numeric(x.at))
-      y.at <- suppressWarnings(as.numeric(y.at))
-      validate(
-        need(!anyNA(x.at),
-             paste("Error: Please ensure that the 'Longitude tick",
-                   "locations' entry is valid")),
-        need(!anyNA(y.at),
-             paste("Error: Please ensure that the 'Latitude tick",
-                   "locations' entry is valid"))
-      )
-
-      # Sort tick locations and check that tick locations ∈ [map limits]
-      x.at <- sort(x.at)
-      y.at <- sort(y.at)
-      plot.lim <- pretty_plot_range_poly()[[1]]
-
-      x.intervals <- findInterval(x.at, plot.lim[1:2], rightmost.closed = TRUE)
-      y.intervals <- findInterval(y.at, plot.lim[3:4], rightmost.closed = TRUE)
-
-      validate(
-        need(all(x.intervals == 1),
-             paste("Error: Not all 'Longitude tick location' entries",
-                   "are within the provided map range")),
-        need(all(y.intervals == 1),
-             paste("Error: Not all 'Latitude tick location' entries",
-                   "are within the provided map range"))
-      )
-
-      list.scales <- c(list.scales, list(x = list(at = x.at),
-                                         y = list(at = y.at)))
-    }
-
-    ## Store tick label details or lack thereof (no labels)
-    if (input$pretty_plot_tick_label) {
-      tick.lab.size <- c(input$pretty_plot_tick_label_size, 0)
-      list.scales <- c(list.scales, list(alternating = 1, cex = tick.lab.size))
-
-    } else {
-      list.scales <- c(list.scales, list(alternating = 0))
-
-    }
-  }
-
-  list.scales
-})
+# pretty_plot_scales_list <- reactive({
+#   ### If ticks are not plotted, we're done
+#   ### Else, process inputs and store results in 'scales' list
+#   if (!input$pretty_plot_tick) {
+#     list.scales <- list(draw = FALSE)
+#
+#   } else {
+#     scales.tck <- c(input$pretty_plot_tick_length, 0) # tick length
+#     list.scales <- list(draw = TRUE, tck = scales.tck)
+#
+#     ## If applicable: get manually entered tick locations
+#     ## Else: use defaults by not providing any x.at or y.at arguments
+#     if (input$pretty_plot_tick_manual == 2) {
+#       # Read in tick locations
+#       x.at <- unlist(strsplit(input$pretty_plot_tick_manual_lon, ", "))
+#       y.at <- unlist(strsplit(input$pretty_plot_tick_manual_lat, ", "))
+#       validate(
+#         need(isTruthy(x.at),
+#              paste("Error: Please either enter 'Longitude tick locations'" ,
+#                    "values or select \"Use default tick locations\"")),
+#         need(isTruthy(y.at),
+#              paste("Error: Please either enter 'Latitude tick locations'" ,
+#                    "values or select \"Use default tick locations\""))
+#       )
+#
+#       # Convert tick locations to numbers
+#       x.at <- suppressWarnings(as.numeric(x.at))
+#       y.at <- suppressWarnings(as.numeric(y.at))
+#       validate(
+#         need(!anyNA(x.at),
+#              paste("Error: Please ensure that the 'Longitude tick",
+#                    "locations' entry is valid")),
+#         need(!anyNA(y.at),
+#              paste("Error: Please ensure that the 'Latitude tick",
+#                    "locations' entry is valid"))
+#       )
+#
+#       # Sort tick locations and check that tick locations ∈ [map limits]
+#       x.at <- sort(x.at)
+#       y.at <- sort(y.at)
+#       plot.lim <- pretty_plot_range_poly()[[1]]
+#
+#       x.intervals <- findInterval(x.at, plot.lim[1:2], rightmost.closed = TRUE)
+#       y.intervals <- findInterval(y.at, plot.lim[3:4], rightmost.closed = TRUE)
+#
+#       validate(
+#         need(all(x.intervals == 1),
+#              paste("Error: Not all 'Longitude tick location' entries",
+#                    "are within the provided map range")),
+#         need(all(y.intervals == 1),
+#              paste("Error: Not all 'Latitude tick location' entries",
+#                    "are within the provided map range"))
+#       )
+#
+#       list.scales <- c(list.scales, list(x = list(at = x.at),
+#                                          y = list(at = y.at)))
+#     }
+#
+#     ## Store tick label details or lack thereof (no labels)
+#     if (input$pretty_plot_tick_label) {
+#       tick.lab.size <- c(input$pretty_plot_tick_label_size, 0)
+#       list.scales <- c(list.scales, list(alternating = 1, cex = tick.lab.size))
+#
+#     } else {
+#       list.scales <- c(list.scales, list(alternating = 0))
+#
+#     }
+#   }
+#
+#   list.scales
+# })
 
 
 ###############################################################################
-### Generate 'sp.layout' list for spplot, aka list of other objects to plot
-# For this beta version: hardcoded for only study area and land polys
-### Argument in spplot:
-# world.layer <- list("sp.polygons", world.trim, col = "black",
-#                     fill = "grey", lwd = 0.3)
-# states.layer <- list("sp.polygons", states.trim, col = "black", lwd = 0.3)
-# states.lab.layer <- list("sp.text", coordinates(sp.states.wc),
-#                          sp.states.wc$STATE_NAME, cex = 0.7, col = "black")
-# sp.layout = list(world.layer, states.layer, states.lab.layer)
+### Generate list of additional polygons to plot
+pretty_plot_addpolys_list <- reactive({
 
-pretty_plot_splayout_list <- reactive({
-  ### Set background color of the panel ###
-  panel.layer <- list("panel.fill", input$pretty_plot_background_color,
-                      first = TRUE)
-
-  polys.which <- as.numeric(input$pretty_plot_other_obj_which)
-  if (length(polys.which) == 0) return(list(panel.layer))
-
-  polys.list.all <- list(vals$overlay.bound, vals$overlay.land)
-  prettyplot.crs <- pretty_plot_models_crs()
-  ## Allow labels from land poly???
-
-
-  #########################################
-  sp.layout2 <- lapply(polys.which, function(poly.idx) {
-    poly.curr <- polys.list.all[[poly.idx]]
-
-    # Project if necessary
-    if (!identical(crs(poly.curr), prettyplot.crs)) {
-      poly.curr <- spTransform(poly.curr, prettyplot.crs)
-    }
-
-    # Clip by map extent is only needed for land polygon
-    # Don't want to clip study area polygon and change area limits
-
-    # Generate list for sp.layout
-    if (poly.idx == 1) { #Study area polygon
-      s.col <- input$pretty_plot_bound_poly_col
-      s.lwd <- input$pretty_plot_bound_poly_lwd
-      s.first <- input$pretty_plot_bound_poly_first
-
-      list("sp.polygons", poly.curr, col = s.col, fill = NA, lwd = s.lwd,
-           first = s.first)
-
-    } else if (poly.idx == 2) { #Land polygon
-      poly.curr <- intersect(poly.curr, pretty_plot_range_poly()[[2]])
-      l.fill <- input$pretty_plot_land_poly_fill
-      l.lwd <- input$pretty_plot_land_poly_lwd
-      l.first <- input$pretty_plot_land_poly_first
-
-      list("sp.polygons", poly.curr, col = "black", fill = l.fill,
-           lwd = l.lwd, first = l.first)
-
-    } else { #Uh-oh
-      validate(need(FALSE, "Error: Pretty plot sp.layout failed"))
-    }
-  })
-
-  c(list(panel.layer), sp.layout2)
 })
 
 ###############################################################################

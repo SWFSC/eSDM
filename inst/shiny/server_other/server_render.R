@@ -378,33 +378,33 @@ output$pretty_plot_values_event_text <- renderText({
 })
 
 ### Pretty plot
-# output$pretty_plot_plot <- renderPlot({
-#   nc <- st_read(system.file("shape/nc.shp", package = "sf"))
-#   library(tmap)
-#   tm_shape(nc, bbox = matrix(c(-82, -80, 35, 37), ncol = 2, byrow = TRUE)) +
-#     tm_fill(col = "AREA", style = "equal", n = 10, palette = topo.colors(10, alpha = NULL), labels = letters[1:10],
-#             title = "Dens", legend.is.portrait = F, auto.palette.mapping = FALSE) +
-#     tm_borders(col = "pink") +
-#     tmap_mode("plot")
-#   # plot(st_crop(nc, xmin = -82, xmax = -78, ymin = 33, ymax = 37)[1], axes = T)#, xlim = c(78, 80))
-#   # plot(nc[1], axes = T, xlim = c(-80, -78))
+# observe({
+#   output$pretty_plot_plot <- renderPlot({
+#     pretty_plot_generate()
+#   }, height = 500, width = pretty_plot_plot_width())
 # })
-observe({
-  output$pretty_plot_plot <- renderPlot({
-    pretty_plot_generate()
-  }, height = 500, width = pretty_plot_plot_width())
-})
+output$pretty_plot_plot <- renderPlot({
+  req(p.list <- vals$pretty.params.list)
+  plot_pretty(
+    p.list$model.toplot, p.list$data.name, p.list$plot.lim,
+    p.list$title.ll, p.list$lab.x, p.list$lab.y,
+    p.list$title.cex, p.list$lab.cex, p.list$axis.cex, p.list$axis.tcl,
+    p.list$list.background, p.list$list.colorscheme, p.list$list.sp.layout
+  )
+}, height = 500)
 
-pretty_plot_plot_width <- reactive({
-  if (isTruthy(vals$pretty.params.list)) {
-    500 * unname(
-      diff(vals$pretty.params.list$plot.lim[1:2]) /
-        diff(vals$pretty.params.list$plot.lim[3:4])
-    )
-  } else {
-    500
-  }
-})
+# pretty_plot_plot_width <- reactive({
+#   if (isTruthy(vals$pretty.params.list)) {
+#     xy.ratio <- unname(
+#       diff(vals$pretty.params.list$plot.lim[1:2]) /
+#         diff(vals$pretty.params.list$plot.lim[3:4])
+#     )
+#     min(500, 500 * xy.ratio)
+#
+#   } else {
+#     500
+#   }
+# })
 
 
 ###############################################################################

@@ -150,68 +150,89 @@ ui.prettyPlot <- function() {
               ################################################## Tick marks and tick labels
               column(
                 width = 4,
-                tags$strong("Tick marks and tick labels"),
+                tags$strong("Tick marks and labels"),
                 fluidRow(
                   box(
                     width = 12,
-                    fluidRow(
-                      column(6, checkboxInput("pretty_plot_tick", "Include tick marks in the map", value = TRUE)),
-                      column(
-                        width = 6,
-                        tags$br(),
-                        conditionalPanel("input.pretty_plot_tick", helpText("Length and size values are relative to 1"))
-                      )
-                    ),
+                    checkboxInput("pretty_plot_tick", "Include tick marks and labels on the map", value = TRUE),
                     conditionalPanel(
                       condition = "input.pretty_plot_tick",
+                      helpText("Length and size values are relative to 1"),
                       fluidRow(
-                        column(6, radioButtons("pretty_plot_tick_manual", tags$h5("Tick location options"),
-                                               choices = list("Use default tick locations" = 1, "Enter tick locations manually" = 2),
-                                               selected = 1)),
                         column(6, numericInput("pretty_plot_tick_length", tags$h5("Tick length"),
-                                               value = 1.0, min = 0, step = 0.1))
-                      )
-                    ),
-                    fluidRow(
-                      conditionalPanel(
-                        condition = "input.pretty_plot_tick && input.pretty_plot_tick_manual == 2",
-                        column(12, helpText("Enter locations as '#, #, ..., #'.",
-                                            "Tick location values must have the same units as the specified coordinate system.",
-                                            "If the specified coordinate system is WGS 84 geographic coordinates,",
-                                            "then the values must be",
-                                            "decimal degrees with a range of [-180, 180] for longitudes and [-90, 90] for latitudes")),
-                        column(6, textInput("pretty_plot_tick_manual_lon", tags$h5("Longitude tick locations"), value = "")),
-                        column(6, textInput("pretty_plot_tick_manual_lat", tags$h5("Latitude tick locations"), value = ""))
-                      )
-                    ),
-                    fluidRow(
-                      conditionalPanel(
-                        condition = "input.pretty_plot_tick == false",
-                        column(12, helpText("The map must include tick marks to include tick labels"))
-                      ),
-                      conditionalPanel(
-                        condition = "input.pretty_plot_tick",
-                        column(
-                          width = 6,
-                          checkboxInput("pretty_plot_tick_label", "Include tick labels in the map", value = TRUE),
-                          conditionalPanel(
-                            condition = "input.pretty_plot_tick_label",
-                            helpText("Tick labels will be generated at all tick marks")
-                          )
-                        ),
-                        column(
-                          width = 6,
-                          conditionalPanel(
-                            condition = "input.pretty_plot_tick_label",
-                            numericInput("pretty_plot_tick_label_size", tags$h5("Tick label size"),
-                                         value = 1.0, min = 0.1, max = 3, step = 0.1)
-                          )
+                                               value = 1.0, min = 0, step = 0.1)),
+                        column(6, numericInput("pretty_plot_tick_label_size", tags$h5("Tick label size"),
+                                               value = 1.0, min = 0.1, max = 3, step = 0.1)
                         )
                       )
                     )
                   )
                 )
               )
+              # column(
+              #   width = 4,
+              #   tags$strong("Tick marks and tick labels"),
+              #   fluidRow(
+              #     box(
+              #       width = 12,
+              #       fluidRow(
+              #         column(6, checkboxInput("pretty_plot_tick", "Include tick marks in the map", value = TRUE)),
+              #         column(
+              #           width = 6,
+              #           tags$br(),
+              #           conditionalPanel("input.pretty_plot_tick", helpText("Length and size values are relative to 1"))
+              #         )
+              #       ),
+              #       conditionalPanel(
+              #         condition = "input.pretty_plot_tick",
+              #         fluidRow(
+              #           column(6, radioButtons("pretty_plot_tick_manual", tags$h5("Tick location options"),
+              #                                  choices = list("Use default tick locations" = 1, "Enter tick locations manually" = 2),
+              #                                  selected = 1)),
+              #           column(6, numericInput("pretty_plot_tick_length", tags$h5("Tick length"),
+              #                                  value = 1.0, min = 0, step = 0.1))
+              #         )
+              #       ),
+              #       fluidRow(
+              #         conditionalPanel(
+              #           condition = "input.pretty_plot_tick && input.pretty_plot_tick_manual == 2",
+              #           column(12, helpText("Enter locations as '#, #, ..., #'.",
+              #                               "Tick location values must have the same units as the specified coordinate system.",
+              #                               "If the specified coordinate system is WGS 84 geographic coordinates,",
+              #                               "then the values must be",
+              #                               "decimal degrees with a range of [-180, 180] for longitudes and [-90, 90] for latitudes")),
+              #           column(6, textInput("pretty_plot_tick_manual_lon", tags$h5("Longitude tick locations"), value = "")),
+              #           column(6, textInput("pretty_plot_tick_manual_lat", tags$h5("Latitude tick locations"), value = ""))
+              #         )
+              #       ),
+              #       fluidRow(
+              #         conditionalPanel(
+              #           condition = "input.pretty_plot_tick == false",
+              #           column(12, helpText("The map must include tick marks to include tick labels"))
+              #         ),
+              #         conditionalPanel(
+              #           condition = "input.pretty_plot_tick",
+              #           column(
+              #             width = 6,
+              #             checkboxInput("pretty_plot_tick_label", "Include tick labels in the map", value = TRUE),
+              #             conditionalPanel(
+              #               condition = "input.pretty_plot_tick_label",
+              #               helpText("Tick labels will be generated at all tick marks")
+              #             )
+              #           ),
+              #           column(
+              #             width = 6,
+              #             conditionalPanel(
+              #               condition = "input.pretty_plot_tick_label",
+              #               numericInput("pretty_plot_tick_label_size", tags$h5("Tick label size"),
+              #                            value = 1.0, min = 0.1, max = 3, step = 0.1)
+              #             )
+              #           )
+              #         )
+              #       )
+              #     )
+              #   )
+              # )
             )
           )
         ),
@@ -242,7 +263,22 @@ ui.prettyPlot <- function() {
                         tags$h5("Color scheme preview"),
                         plotOutput("pretty_plot_color_preview_plot", height =  "250px")
                       )
-                    )
+                    )#,
+                    # checkboxInput("pretty_plot_color_na_transparent", "Color NA predictions as transparent", value = TRUE),
+                    # conditionalPanel(
+                    #   condition = "input.pretty_plot_color_na_transparent == false",
+                    #   fluidRow(
+                    #     column(
+                    #       width = 6,
+                    #       colourpicker::colourInput("pretty_plot_color_na", tags$h5("Click to select color for NA predictions"),
+                    #                                 showColour = "background", value = "grey")),
+                    #     column(
+                    #       width = 6,
+                    #       tags$br(), tags$br(),
+                    #       actionButton("pretty_plot_color_na_reset_execute", "Reset NA color to white")
+                    #     )
+                    #   )
+                    # )
                   )
                 )
               ),
@@ -257,7 +293,7 @@ ui.prettyPlot <- function() {
                       column(6, colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"),
                                                           showColour = "background")),
                       column(
-                        width = 6, #offset = 1,
+                        width = 6,
                         tags$br(), tags$br(),
                         actionButton("pretty_plot_background_reset_execute", "Reset background color to white")
                       )
@@ -268,7 +304,8 @@ ui.prettyPlot <- function() {
                       condition = "input.pretty_plot_legend",
                       fluidRow(
                         column(6, selectInput("pretty_plot_legend_pos", tags$h5("Legend position"),
-                                              choices = list("Right" = 1, "Bottom" = 2, "Left" = 3, "Top" = 4),
+                                              choices = list("Right" = 1),
+                                              #list("Right" = 1, "Bottom" = 2, "Left" = 3, "Top" = 4),
                                               selected = 1)),
                         column(
                           width = 6,

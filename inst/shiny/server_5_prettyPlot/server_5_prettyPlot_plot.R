@@ -5,62 +5,54 @@
 
 ###############################################################################
 ### Non-reactive plotting function for prettyPlot
-plot_pretty <- function(model.toplot, data.name, plot.lim, title.ll,
-                           axis.xlab, axis.ylab, title.cex, axis.cex,
-                           list.colorscheme, list.scales, list.sp.layout) {
-  # Variables from server_variables.R used: col.ramp,
-  #    breaks, labels.lab, labels.at
+# called in server_render.R
+plot_pretty <- function(model.toplot, data.name, plot.lim,
+                        title.ll, lab.x, lab.y,
+                        title.cex, lab.cex, axis.cex, axis.tcl,
+                        list.background, list.colorscheme, list.sp.layout) {
   l.cs <- list.colorscheme
-  # browser()
 
-  # plot(1:10)
+  if (l.cs$leg.inc) {
+    layout(matrix(1:2, ncol = 2), width = c(1, lcm(3.6)))
+  }
+
+  # plot(st_geometry(model.toplot))
   plot(
-    st_geometry(model.toplot), axes = TRUE, border = NA,
-    #breaks = l.cs$data.breaks, pal = l.cs$color.palette,
+    list.background[[1]], axes = TRUE, border = NA, col = list.background[[2]],
     xlim = plot.lim[1:2], ylim = plot.lim[3:4],
-    main = title.ll, cex.main = title.cex, cex.axis = axis.cex,
-    xlab = axis.xlab, ylab = axis.ylab,
+    main = title.ll, cex.main = title.cex,
+    cex.lab = lab.cex, cex.axis = axis.cex, tcl = axis.tcl,
+    xlab = lab.x, ylab = lab.y,
     key.pos = NULL, reset = FALSE
   )
+
+  # This is separate for the sake of background and plotting x and y axis labels
   plot(
     model.toplot[data.name], add = TRUE, border = NA,
-    breaks = l.cs$data.breaks, pal = l.cs$color.palette
+    breaks = l.cs$data.breaks, pal = l.cs$color.palette,
+    key.pos = NULL, reset = FALSE
   )
 
+  # Plot legend if necessary
+  if (l.cs$leg.inc) {
+    col.num <- length(l.cs$color.palette)
+    col.pal <- l.cs$color.palette
+    leg.labels <- l.cs$labels
+    opar <- par(mai = c(1, 0, 0.86, 1.2))
+    on.exit(par(opar), add = TRUE)
 
-  ## Generate spplot
-  # spplot(model.toplot, zcol = data.name,
-  #        col = NA, at = l.cs$data.breaks, col.regions = l.cs$color.palette,
-  #        xlim = plot.lim[1:2], ylim = plot.lim[3:4],
-  #        main = list(label = title.ll, cex = title.cex),
-  #        xlab = list(label = axis.xlab, cex = axis.cex),
-  #        ylab = list(label = axis.ylab, cex = axis.cex),
-  #        colorkey = l.cs$list.colorkey,
-  #        scales = list.scales,
-  #        sp.layout = list.sp.layout
-  # )
+    graphics::image(0.6, 1:col.num, t(as.matrix(1:col.num)), col = col.pal,
+                    axes = FALSE, xlab = "", ylab = "")
+    graphics::box(col = "black")
+    # temp <- ifelse(models.num == 1, 0.8, 1.3) # not sure why this is necessary
+    graphics::axis(4, at = 1:col.num, labels = leg.labels, tick = FALSE,
+                   las = 1, cex.axis = 1)
+  }
 }
 
 
 ###############################################################################
 # Reactive plotting functions
-
-###########################################################
-### Reactive function to generate plot from reactiveValues
-pretty_plot_generate <- reactive({
-  req(length(vals$pretty.params.list) > 0)
-
-  p.list <- vals$pretty.params.list
-
-  plot_pretty(
-    p.list$model.toplot, p.list$data.name, p.list$plot.lim,
-    p.list$title.ll, p.list$axis.xlab, p.list$axis.ylab,
-    p.list$title.cex, p.list$axis.cex,
-    p.list$list.colorscheme, p.list$list.scales,
-    p.list$list.sp.layout
-  )
-})
-
 
 ###########################################################
 ### Event to update reactive variables
@@ -87,25 +79,30 @@ pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
 
     title.ll  <- input$pretty_plot_title
     title.cex <- input$pretty_plot_title_cex
-    axis.xlab <- input$pretty_plot_xlab
-    axis.ylab <- input$pretty_plot_ylab
-    axis.cex  <- input$pretty_plot_lab_cex
+    lab.x <- input$pretty_plot_xlab
+    lab.y <- input$pretty_plot_ylab
+    lab.cex  <- input$pretty_plot_lab_cex
+    axis.cex <- input$pretty_plot_tick_label_size
+    axis.tcl <- input$pretty_plot_tick_length * -0.5
 
+    list.background <- list(pretty_plot_range_poly()[[2]],
+                            input$pretty_plot_background_color)
     list.colorscheme <- pretty_plot_colorscheme_list()
-    list.scales <- pretty_plot_scales_list()
+    # list.scales <- pretty_plot_scales_list()
     incProgress(0.2)
     list.sp.layout <- NULL#pretty_plot_splayout_list()
     incProgress(0.3)
   })
 
   # Save plot parameters to reactive values
-  params.list <- list(model.toplot = model.toplot, data.name = data.name,
-                      plot.lim = plot.lim, title.ll = title.ll,
-                      axis.xlab = axis.xlab, axis.ylab = axis.ylab,
-                      title.cex = title.cex, axis.cex = axis.cex,
-                      list.colorscheme = list.colorscheme,
-                      list.scales = list.scales,
-                      list.sp.layout = list.sp.layout)
+  params.list <- list(
+    model.toplot = model.toplot, data.name = data.name, plot.lim = plot.lim,
+    title.ll = title.ll, lab.x = lab.x, lab.y = lab.y,
+    title.cex = title.cex, lab.cex = lab.cex, axis.cex = axis.cex,
+    axis.tcl = axis.tcl, list.background = list.background,
+    list.colorscheme = list.colorscheme, #list.scales = list.scales,
+    list.sp.layout = list.sp.layout
+  )
 
   vals$pretty.params.list <- params.list
   vals$pretty.plotted.idx <- pretty_plot_models_idx_list()
