@@ -38,7 +38,7 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
   if (!all(units(sdm.area.m2)$numerator == c("m", "m"))) {
     stop("Units of st_area(sdm.area.m2) must be m^2")
   }
-
+z <- enquo(data.names)
 
   #--------------------------------------------------------
   # 1) Get intersection of sdm (sdm being overlaid) and base.poly (base)
@@ -66,12 +66,12 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
 
 
   #########################################################
-  # 2) Get predicted abundances for base grid cells that had overlap and
-  #   set abund as NA for cells that don't meet overlap.perc
+  # 2) Get predicted abundances for base grid cells that had overlap
   # TODO: should be some way to do this in a tidy fashion, but I'm not sure how
   #   while being able to handle as many data column names as necessary
-  int.df <- st_set_geometry(int, NULL)
-  int.df$int.area.km <- as.numeric(st_area(int)) / 1e+06
+  int.df <- st_set_geometry(int, NULL) %>%
+    dplyr::mutate(int.area.km = as.numeric(st_area(int)) / 1e+06)
+  int.df <- int.df[!is.na(int.df[, data.names[1]]), ]
 
   new.abund.list <- lapply(data.names, function(i){
     by(int.df[, c(i, "int.area.km")], int.df$base.idx,
