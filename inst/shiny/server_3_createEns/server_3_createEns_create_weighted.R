@@ -134,8 +134,22 @@ create_ens_weights_pix_table <- reactive({
     ens.which %in% ens.which.spatial, "Yes", "No"
   )
 
-  data.frame(paste("Overlaid", ens.which), ens.which.spatial.text) %>%
-    purrr::set_names(c("Model", "Has spatial weights"))
+  ens.which.spatial.text2 <- sapply(ens.which, function(i) {
+    if (i %in% ens.which.spatial) {
+      j <- na_which(vals$overlaid.models[[i]]$Weight.overlaid)
+      ifelse(
+        anyNA(j), 0,
+        sum(!(j %in% na_which(vals$overlaid.models[[i]]$Pred.overlaid)))
+      )
+    } else {
+      "N/A"
+    }
+  })
+
+  data.frame(paste("Overlaid", ens.which), ens.which.spatial.text,
+             ens.which.spatial.text2, stringsAsFactors = FALSE) %>%
+    purrr::set_names(c("Model", "Has spatial weights",
+                       "Count of non-NA predictions with NA weight values"))
 })
 
 ### Generate data frame of pixel weights

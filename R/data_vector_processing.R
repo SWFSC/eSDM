@@ -79,7 +79,7 @@ na_weight_message <- function(x, y) {
   } else if (!all(x %in% y)) {
     paste0(
       ifelse(len.x == 1,
-             paste(len.x, "weight value was classified as NA,"),
+             paste(len.x, "weight value was classified as NA"),
              paste(len.x, "weight values were classified as NA")),
       "<br/>Some non-NA prediction values have NA weight values"
     )
@@ -87,7 +87,7 @@ na_weight_message <- function(x, y) {
   } else {
     paste0(
       ifelse(len.x == 1,
-             paste(len.x, "weight value was classified as NA,"),
+             paste(len.x, "weight value was classified as NA"),
              paste(len.x, "weight values were classified as NA")),
       "<br/>No non-NA prediction values have NA weight values"
     )

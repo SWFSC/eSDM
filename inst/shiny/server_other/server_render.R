@@ -202,7 +202,7 @@ output$create_ens_weights_metric_table_out <- renderTable({
 ### Table of if overlaid models have spatial pixel weights
 output$create_ens_weights_pix_table_out <- renderTable({
   create_ens_weights_pix_table()
-}, rownames = FALSE, align = "lr")
+}, rownames = FALSE, align = "lcc")
 
 ### Table summarizing overlaid models and their polygon weights
 output$create_ens_weights_poly_table_out <- renderTable({

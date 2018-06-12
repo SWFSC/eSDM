@@ -214,8 +214,8 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   # Do not need to test validity of any polygons because base polygon was
   # already checked and overlaid were made directly from base poly
 
-  # TODO change message depending on if 'same-grid overlay' was performed?
-  "Overlay performed successfully"
+  # No message so that nothing is left here if new environment is loaded
+  ""
 })
 
 
