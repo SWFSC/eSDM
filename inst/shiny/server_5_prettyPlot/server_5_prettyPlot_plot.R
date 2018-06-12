@@ -9,14 +9,13 @@
 plot_pretty <- function(model.toplot, data.name, plot.lim,
                         title.ll, lab.x, lab.y,
                         title.cex, lab.cex, axis.cex, axis.tcl,
-                        list.background, list.colorscheme, list.sp.layout) {
+                        list.background, list.colorscheme, list.addobj) {
   l.cs <- list.colorscheme
 
+  #--------------------------------------------------------
   if (l.cs$leg.inc) {
     layout(matrix(1:2, ncol = 2), width = c(1, lcm(3.6)))
   }
-
-  # plot(st_geometry(model.toplot))
   plot(
     list.background[[1]], axes = TRUE, border = NA, col = list.background[[2]],
     xlim = plot.lim[1:2], ylim = plot.lim[3:4],
@@ -26,6 +25,37 @@ plot_pretty <- function(model.toplot, data.name, plot.lim,
     key.pos = NULL, reset = FALSE
   )
 
+
+  #--------------------------------------------------------
+  # Plot added objects pt 1
+  # Currently hard-coded, to change
+  for (i in list.addobj) {
+    if (i$pre.sdm) {
+      if (i$obj.text == 1) {
+        plot(
+          i$obj.sfc, add = TRUE, border = i$col, lwd = i$cex,
+          reset = FALSE, key.pos = NULL
+        )
+      } else if (i$obj.text == 2) {
+        plot(
+          i$obj.sfc, add = TRUE, border = NA, col = i$col, lwd = i$cex,
+          reset = FALSE, key.pos = NULL
+        )
+      } else if (i$obj.text == 3) {
+        plot(
+          i$obj.sfc, add = TRUE, col = i$col, cex = i$cex,
+          reset = FALSE, key.pos = NULL
+        )
+      } else {
+        validate(need(FALSE, "Not ready"))
+      }
+    }
+  }
+
+
+  #--------------------------------------------------------
+  # plot(st_geometry(model.toplot))
+
   # This is separate for the sake of background and plotting x and y axis labels
   plot(
     model.toplot[data.name], add = TRUE, border = NA,
@@ -33,6 +63,34 @@ plot_pretty <- function(model.toplot, data.name, plot.lim,
     key.pos = NULL, reset = FALSE
   )
 
+
+  #--------------------------------------------------------
+  # Plot added objects pt 2
+  # Currently hard-coded, to change
+  for (i in list.addobj) {
+    if (!i$pre.sdm) {
+      if (i$obj.text == 1) {
+        plot(
+          i$obj.sfc, add = TRUE, border = i$col, lwd = i$cex,
+          reset = FALSE, key.pos = NULL
+        )
+      } else if (i$obj.text == 2) {
+        plot(
+          i$obj.sfc, add = TRUE, border = NA, col = i$col, lwd = i$cex,
+          reset = FALSE, key.pos = NULL
+        )
+      } else if (i$obj.text == 3) {
+        plot(
+          i$obj.sfc, add = TRUE, col = i$col, cex = i$cex,
+          reset = FALSE, key.pos = NULL
+        )
+      } else {
+        validate(need(FALSE, "Not ready"))
+      }
+    }
+  }
+
+  #--------------------------------------------------------
   # Plot legend if necessary
   if (l.cs$leg.inc) {
     col.num <- length(l.cs$color.palette)
@@ -69,7 +127,6 @@ pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
   withProgress(message = "Processing specified map parameters", value = 0.5, {
     list.selected <- pretty_plot_models_toplot()
 
-    # browser()
     model.toplot <- suppressMessages(
       st_intersection(list.selected[[3]], pretty_plot_range_poly()[[2]])
     )
@@ -88,9 +145,11 @@ pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
     list.background <- list(pretty_plot_range_poly()[[2]],
                             input$pretty_plot_background_color)
     list.colorscheme <- pretty_plot_colorscheme_list()
-    # list.scales <- pretty_plot_scales_list()
     incProgress(0.2)
-    list.sp.layout <- NULL#pretty_plot_splayout_list()
+    list.addobj <- lapply(vals$pretty.addobj.list, function(i) {
+      c(obj.sfc = list(st_geometry(st_transform(i$obj, st_crs(model.toplot)))),
+        i[2:5])
+    })
     incProgress(0.3)
   })
 
@@ -101,7 +160,7 @@ pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
     title.cex = title.cex, lab.cex = lab.cex, axis.cex = axis.cex,
     axis.tcl = axis.tcl, list.background = list.background,
     list.colorscheme = list.colorscheme, #list.scales = list.scales,
-    list.sp.layout = list.sp.layout
+    list.addobj = list.addobj
   )
 
   vals$pretty.params.list <- params.list

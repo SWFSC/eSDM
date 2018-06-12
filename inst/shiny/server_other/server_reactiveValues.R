@@ -61,6 +61,7 @@ vals <- reactiveValues(
   eval.metrics.names = NULL,       # Names of metrics calculated
 
   # Objects that store data for high quality (pretty) plots
+  pretty.addobj.list = NULL,       # List of objects and descriptor strings to be plotted
   pretty.params.list = NULL,       # List of parameters to use in high quality plots
   pretty.plotted.idx = NULL        # List of vectors of the indicies of currently pretty-plotted models
 )
@@ -132,6 +133,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$eval.metrics       <- vals.save[["eval.metrics"]]
     vals$eval.metrics.names <- vals.save[["eval.metrics.names"]]
 
+    vals$pretty.addobj.list <- vals.save[["pretty.addobj.list"]]
     vals$pretty.params.list <- vals.save[["pretty.params.list"]]
     vals$pretty.plotted.idx <- vals.save[["pretty.plotted.idx"]]
 
@@ -237,10 +239,11 @@ observe({
   vals$eval.data.gis.info
   vals$eval.metrics
   vals$eval.metrics.names
+  vals$pretty.addobj.list
   vals$pretty.params.list
   vals$pretty.plotted.idx
 
-  if (length(reactiveValuesToList(vals)) != 40) {
+  if (length(reactiveValuesToList(vals)) != 41) {
     text.message <-
       shinyjs::alert(paste(
         "There was an error in eSDM data storage and processing,",

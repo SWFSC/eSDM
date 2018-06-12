@@ -4,7 +4,7 @@
 ###############################################################################
 ### Pretty plot widgets
 
-###########################################################
+###############################################################################
 # Range and projection of map
 
 ### Select object with desired projection for map
@@ -54,7 +54,7 @@ output$pretty_plot_range_ymax_uiOut_num <- renderUI({
 })
 
 
-###########################################################
+###############################################################################
 ### Title of plot
 output$pretty_plot_title_uiOut_text <- renderUI({
   req(pretty_plot_models_idx_count() == 1)
@@ -75,7 +75,7 @@ output$pretty_plot_title_uiOut_text <- renderUI({
 })
 
 
-###########################################################
+###############################################################################
 # Color scheme inputs
 
 ### Color palette
@@ -151,31 +151,9 @@ observeEvent(input$pretty_plot_color_palette, {
 })
 
 
-###########################################################
-### Checkbox for including other polygons
-# For this beta version: hardcoded for only study area and land polys
-output$pretty_plot_other_obj_which_uiOut_selectize <- renderUI({
-  bound.poly <- vals$overlay.bound
-  land.poly <- vals$overlay.land
-
-  validate(
-    need((!is.null(bound.poly)) | (!is.null(land.poly)),
-         paste("Error: Neither a study area polygon nor a",
-               "land area polygon is loaded"))
-  )
-
-  choices.list <- list()
-  if (!is.null(bound.poly)) {
-    choices.list <- c(choices.list, "Study area polygon" = 1)
-  }
-  if (!is.null(land.poly)) {
-    choices.list <- c(choices.list, "Land polygon" = 2)
-  }
-
-  selectizeInput("pretty_plot_other_obj_which",
-                 tags$h5("Include selected polygons in map"),
-                 choices = choices.list, selected = NULL, multiple = TRUE)
-})
+###############################################################################
+# Additional polygons
+# Located in 'server_5_prettyPlot_addpolys.R'
 
 
 ###############################################################################

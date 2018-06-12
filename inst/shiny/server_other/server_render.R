@@ -372,6 +372,11 @@ output$pretty_plot_color_preview_plot <- renderPlot({
   pretty_plot_color_preview()
 })
 
+### Table of 'added' additional polys
+output$pretty_plot_addobj_table_out <- renderTable({
+  pretty_plot_addobj_table()
+})
+
 ### Pretty plot error output
 output$pretty_plot_values_event_text <- renderText({
   pretty_plot_values_event()
@@ -389,7 +394,7 @@ output$pretty_plot_plot <- renderPlot({
     p.list$model.toplot, p.list$data.name, p.list$plot.lim,
     p.list$title.ll, p.list$lab.x, p.list$lab.y,
     p.list$title.cex, p.list$lab.cex, p.list$axis.cex, p.list$axis.tcl,
-    p.list$list.background, p.list$list.colorscheme, p.list$list.sp.layout
+    p.list$list.background, p.list$list.colorscheme, p.list$list.addobj
   )
 }, height = 500)
 

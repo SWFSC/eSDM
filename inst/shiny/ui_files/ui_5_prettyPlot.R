@@ -140,9 +140,9 @@ ui.prettyPlot <- function() {
                     helpText("Size values are relative to 1, which is the default size"),
                     fluidRow(
                       column(6, numericInput("pretty_plot_title_cex", tags$h5("Title size (value is relative to 1)"),
-                                             value = 1, step = 0.1)),
+                                             value = 1.3, step = 0.1)),
                       column(6, numericInput("pretty_plot_lab_cex", tags$h5("Axis label size (value is relative to 1)"),
-                                             value = 0.8, step = 0.1))
+                                             value = 1, step = 0.1))
                     )
                   )
                 )
@@ -320,68 +320,33 @@ ui.prettyPlot <- function() {
                   )
                 )
               ),
-              ################################################## Additional polygons
+              ################################################## Additional polygons and points
               column(
                 width = 4,
-                tags$strong("Additional polygons"),
+                tags$strong("Additional polygons and points"),
                 fluidRow(
                   box(
                     width = 12,
-                    checkboxInput("pretty_plot_other_obj", "Include additional polygons in map", value = FALSE),
+                    checkboxInput("pretty_plot_addobj", "Include additional polygons in map", value = FALSE),
                     conditionalPanel(
-                      condition = "input.pretty_plot_other_obj",
-                      helpText("Only the study area polygon and/or the land polygon can be included at this time.",
-                               "Note that after overlaying models, you could go back and upload new 'study area' and/or 'land' polygons",
-                               "to include in your high quality map."),
-                      helpText("The order in which the polygons are selected controls the order in which they are drawn.",
-                               "This means that if the land polygon is selected before the study area polygon,",
-                               "then the study area polygon will be drawn on top of the land polygon. The reverse is also true.",
-                               "This pattern does not hold if one polygon is drawn before the model predictions",
-                               "and the other is drawn after."),
-                      uiOutput("pretty_plot_other_obj_which_uiOut_selectize"),
-                      conditionalPanel(
-                        condition = "input.pretty_plot_other_obj_which == null",
-                        helpText("No additional polygons will be plotted")
+                      condition = "input.pretty_plot_addobj",
+                      uiOutput("pretty_plot_addobj_which_uiOut_message"),
+                      box(
+                        width = 12,
+                        tags$h5("Loaded object(s)"),
+                        tableOutput("pretty_plot_addobj_table_out")
                       ),
-                      fluidRow(
-                        column(
-                          width = 6,
-                          conditionalPanel(
-                            condition = "input.pretty_plot_other_obj_which != null && input.pretty_plot_other_obj_which.includes('1')",
-                            radioButtons("pretty_plot_bound_poly_col", tags$h5("Color of study area border"),
-                                         choices = list("Black" = "black", "Grey" = "grey", "Red" = "red"),
-                                         selected = "black")
-                          )
+                      box(
+                        width = 12,
+                        tags$h5("Add object"),
+                        uiOutput("pretty_plot_addobj_which_uiOut_select"),
+                        fluidRow(
+                          column(6, uiOutput("pretty_plot_addobj_color_uiOut_colour")),
+                          column(6, uiOutput("pretty_plot_addobj_cex_uiOut_numeric"))
                         ),
-                        column(
-                          width = 6,
-                          conditionalPanel(
-                            condition = "input.pretty_plot_other_obj_which != null && input.pretty_plot_other_obj_which.includes('2')",
-                            radioButtons("pretty_plot_land_poly_fill", tags$h5("Color of land"),
-                                         choices = list("Tan" = "tan", "Grey" = "grey"),
-                                         selected = "tan")
-                          )
-                        )
-                      ),
-                      fluidRow(
-                        column(
-                          width = 6,
-                          conditionalPanel(
-                            condition = "input.pretty_plot_other_obj_which != null && input.pretty_plot_other_obj_which.includes('1')",
-                            numericInput("pretty_plot_bound_poly_lwd", tags$h5("Line width of study area border"),
-                                         value = 1.5, min = 0, step = 0.1),
-                            checkboxInput("pretty_plot_bound_poly_first", "Draw study area polygon before model predictions",
-                                          value = FALSE)
-                          )
-                        ),
-                        column(
-                          width = 6,
-                          conditionalPanel(
-                            condition = "input.pretty_plot_other_obj_which != null && input.pretty_plot_other_obj_which.includes('2')",
-                            numericInput("pretty_plot_land_poly_lwd", tags$h5("Line width of land outline"),
-                                         value = 0.3, min = 0, step = 0.1),
-                            checkboxInput("pretty_plot_bound_poly_first", "Draw land polygon before model predictions", value = TRUE)
-                          )
+                        fluidRow(
+                          column(6, uiOutput("pretty_plot_addobj_order_uiOut_radio")),
+                          column(6, uiOutput("pretty_plot_addobj_execute_uiOut_button"))
                         )
                       )
                     )
