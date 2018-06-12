@@ -181,6 +181,7 @@ output$save_app_envir <- downloadHandler(
       vals$models.plot.leaf.idx <- NULL
       vals$models.plot <- NULL
       vals$models.plot.idx <- NULL
+      vals$overlay.plot <- NULL
       vals$overlaid.plot <- NULL
       vals$ens.over.wpoly.plot <- NULL
       vals$ensemble.plot.leaf <- NULL

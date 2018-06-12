@@ -72,8 +72,8 @@ observeEvent(input$overlay_preview_base_execute, {
       addPolygons(
         data = st_geometry(model.toplot),
         stroke = TRUE, color = "black", fillColor = "lightskyblue",
-        fillOpacity = 1, group = "Base grid") %>%
-      mapview::addMouseCoordinates()
+        fillOpacity = 0.8, group = "Base grid") %>%
+      mapview::addMouseCoordinates(style = "basic")
     overlay.groups <- "Base grid"
     incProgress(0.5)
 
@@ -82,7 +82,7 @@ observeEvent(input$overlay_preview_base_execute, {
       leaf.map <- leaf.map %>%
         addPolygons(
           data = land.toplot, fillColor = "tan",
-          stroke = FALSE, fillOpacity = 0.7, group = "Land")
+          stroke = FALSE, fillOpacity = 0.6, group = "Land")
       overlay.groups <- c(overlay.groups, "Land")
     }
     incProgress(0.1)
@@ -90,7 +90,8 @@ observeEvent(input$overlay_preview_base_execute, {
       leaf.map <- leaf.map %>%
         addPolygons(
           data = vals$overlay.bound, fillColor = "transparent",
-          stroke = TRUE, color = "red", group = "Study area")
+          stroke = TRUE, color = "red", fillOpacity = 0.8,
+          group = "Study area")
       overlay.groups <- c(overlay.groups, "Study area")
     }
     incProgress(0.1)

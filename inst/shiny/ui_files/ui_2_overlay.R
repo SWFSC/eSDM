@@ -249,40 +249,43 @@ ui.overlay <- function() {
           ),
           fluidRow(
             box(
-              title = "Preview of Base Grid", status = "primary", solidHeader = TRUE, width = 6, collapsible = TRUE,
+              title = "Base Grid and Overlaid Model Previews", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
               fluidRow(
-                box(
-                  width = 12,
+                column(3, radioButtons("overlay_preview_which", NULL,
+                                       choices = list("Base grid preview" = 1, "Overlaid models preview" = 2))),
+                column(
+                  width = 9,
                   fluidRow(
-                    column(
-                      width = 6,
-                      tags$h5("To preview the base grid, select a set of loaded model predictions"),
-                      uiOutput("overlay_preview_base_execute_uiOut_button")
-                    ),
-                    column(6, helpText("Note: If model predictions were made at a high resolution,",
-                                       "then preview may appear to be completely black when zoomed out"))
+                    box(
+                      width = 12,
+                      conditionalPanel(
+                        condition = "input.overlay_preview_which == 1",
+                        fluidRow(
+                          column(
+                            width = 6,
+                            helpText("The base grid will be outlined in black while if applicable the land and study area",
+                                     "will be filled in tan and outlined in red, respectively"),
+                            uiOutput("overlay_preview_base_execute_uiOut_button")
+                          ),
+                          column(6, helpText("Note: If model predictions were made at a high resolution,",
+                                             "then preview may appear to be completely black when zoomed out"))
+                        )
+                      ),
+                      conditionalPanel(
+                        condition = "input.overlay_preview_which == 2",
+                        uiOutput("overlay_preview_overlaid_models_uiOut_selectize"),
+                        uiOutput("overlay_preview_overlaid_execute_uiOut_button")
+                      )
+                    )
                   )
                 )
               ),
-              shinycssloaders::withSpinner(leaflet::leafletOutput("overlay_preview_base"), type = 1)
-            ),
-            box(
-              title = "Preview of Overlaid Model Predictions", status = "primary", solidHeader = TRUE, width = 6, collapsible = TRUE,
               conditionalPanel(
-                condition = "output.overlay_preview_display_flag == false",
-                ui.notice.no.pred.overlaid(box.width = 12)
+                condition = "input.overlay_preview_which == 1",
+                shinycssloaders::withSpinner(leaflet::leafletOutput("overlay_preview_base"), type = 1)
               ),
               conditionalPanel(
-                condition = "output.overlay_preview_display_flag",
-                fluidRow(
-                  box(
-                    width = 12,
-                    fluidRow(
-                      column(9, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")),
-                      column(3, tags$br(), actionButton("overlay_preview_overlaid_execute", "Preview"))
-                    )
-                  )
-                ),
+                condition = "input.overlay_preview_which == 2",
                 shinycssloaders::withSpinner(plotOutput("overlay_preview_overlaid"), type = 1)
               )
             )

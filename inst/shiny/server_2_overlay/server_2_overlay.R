@@ -9,7 +9,6 @@ output$overlay_display_flag <- reactive({
 })
 outputOptions(output, "overlay_display_flag", suspendWhenHidden = FALSE)
 
-
 ### Flag for if overlaid models have been created
 output$overlay_preview_display_flag <- reactive({
   length(vals$overlaid.models) != 0
@@ -18,6 +17,7 @@ outputOptions(output, "overlay_preview_display_flag",
               suspendWhenHidden = FALSE)
 
 
+###############################################################################
 ### Remove boundary polygon if 'include boundary' box is unchecked
 observeEvent(input$overlay_bound, {
   if (!input$overlay_bound) {
@@ -27,11 +27,10 @@ observeEvent(input$overlay_bound, {
     shinyjs::reset("overlay_bound_gis_shp_files")
     shinyjs::reset("overlay_bound_gis_gdb_path")
     shinyjs::reset("overlay_bound_gis_gdb_name")
-    shinyjs::reset("overlay_preview_include_bound")
   }
 })
 
-### Remove land polygon if 'include land' box is unchecked
+### Remove land polygon and widget info if 'include land' box is unchecked
 observeEvent(input$overlay_land, {
   if (!input$overlay_land){
     vals$overlay.land <- NULL
@@ -40,8 +39,18 @@ observeEvent(input$overlay_land, {
     shinyjs::reset("overlay_land_gis_shp_files")
     shinyjs::reset("overlay_land_gis_gdb_path")
     shinyjs::reset("overlay_land_gis_gdb_name")
-    shinyjs::reset("overlay_preview_include_land")
   }
+})
+
+### Remove land polygon widget info if necessary
+observeEvent(input$overlay_land_load_type, {
+  shinyjs::reset("overlay_land_csv_file")
+  shinyjs::reset("overlay_land_gis_shp_files")
+})
+
+observeEvent(input$overlay_land_file_type, {
+  shinyjs::reset("overlay_land_csv_file")
+  shinyjs::reset("overlay_land_gis_shp_files")
 })
 
 

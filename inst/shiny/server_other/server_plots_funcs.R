@@ -21,8 +21,8 @@ multiplot_inapp <- function(x) {
     TRUE ~ 1.3
   )
   main.cex.curr <- case_when(
-    # x == 1 ~ 1.4,
-    TRUE ~ 1
+    x == 1 ~ 1,
+    TRUE ~ 1.2
   )
 
   leg.lcm <- 3.0

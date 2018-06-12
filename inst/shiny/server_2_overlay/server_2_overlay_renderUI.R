@@ -1,6 +1,7 @@
 ### Items that are rendered for Overlay section of App
 
 
+###############################################################################
 ### Widget for user to select file with projection to use in overlay
 output$overlay_proj_sdm_uiOut_select <- renderUI({
   req(!input$overlay_proj_native, input$overlay_proj_method == 2)
@@ -15,37 +16,58 @@ output$overlay_proj_sdm_uiOut_select <- renderUI({
               choices = choices.list, selected = 1)
 })
 
+
+###############################################################################
 ### Widget (button) to preview base grid with land and study area polygons
 output$overlay_preview_base_execute_uiOut_button <- renderUI({
-  req(isTruthy(input$overlay_loaded_table_rows_selected))
+  validate(
+    need(isTruthy(input$overlay_loaded_table_rows_selected),
+         paste("Select a set of loaded model predictions",
+               "to use as the base grid")),
+    errorClass = "validation2"
+  )
 
   validate(
     if (input$overlay_bound)
       need(isTruthy(vals$overlay.bound),
-           paste("Please either uncheck the boundary box or",
+           paste("Either uncheck the boundary box or",
                  "load a boundary polygon to preview the base grid")),
     if (input$overlay_land)
       need(isTruthy(vals$overlay.land),
-           paste("Please either uncheck the land box or load a land polygon",
-                 "to preview the base grid"))
+           paste("Either uncheck the land box or load a land polygon",
+                 "to preview the base grid")),
+    errorClass = "validation2"
   )
 
   actionButton("overlay_preview_base_execute", "Preview base grid")
 })
 
+
+###############################################################################
 ### Widget for user to select overlaid model(s) to plot
 output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
-  req(length(vals$overlaid.models) > 0)
+  validate(
+    need(length(vals$overlaid.models) > 0,
+         paste("Create overlaid model predictions",
+               "to use this section of the app")),
+    errorClass = "validation2"
+  )
 
   choices.list <- seq_along(vals$overlaid.models)
   names(choices.list) <- paste("Overlaid", choices.list)
 
-  selectizeInput("overlay_preview_overlaid_models",
-                 tags$h5("Overlaid model predictions to preview.",
-                         "'Overlaid' numbers correspond to 'Original' numbers",
-                         "in the table above"),
-                 choices = choices.list, selected = NULL,
-                 multiple = TRUE)
+  selectizeInput(
+    "overlay_preview_overlaid_models",
+    tags$h5("Select overlaid model predictions to preview; 'Overlaid' numbers",
+            "correspond to 'Original' numbers in the table above"),
+    choices = choices.list, selected = NULL, multiple = TRUE
+  )
 })
 
 
+output$overlay_preview_overlaid_execute_uiOut_button <- renderUI({
+  req(length(vals$overlaid.models) > 0)
+  actionButton("overlay_preview_overlaid_execute", "Preview")
+})
+
+###############################################################################
