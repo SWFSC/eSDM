@@ -236,8 +236,8 @@ output$eval_metrics_table_save <- downloadHandler(
 
     ### Get info of models that have eval metrics calculated for them
     orig.table <- cbind(table_orig(), table_orig_stats()[, -1])
-    orig.table <- orig.table[models.which[[1]], -3]
-    over.table <- table_overlaid()[models.which[[2]], -3]
+    orig.table <- orig.table[models.which[[1]], ]
+    over.table <- table_overlaid()[models.which[[2]], ]
     ens.table  <- table_ensembles()[models.which[[3]], ]
 
     if (!is.null(orig.table)) {if (nrow(orig.table) == 0) orig.table <- NULL}
@@ -251,19 +251,20 @@ output$eval_metrics_table_save <- downloadHandler(
           paste(names(orig.table), names(ens.table), sep = "/")[1:4],
           names(orig.table)[5:9]
         )
-
         names(orig.table) <- all.models.names
-      }
-      if (!is.null(over.table)) {
-        all.models.names <- c(paste(names(over.table), names(ens.table),
-                                    sep = "/")[1:4],
-                              names(over.table)[5:9])
 
-        names(over.table) <- all.models.names
+      } else {
+        all.models.names <- c(
+          paste(names(over.table), names(ens.table), sep = "/")[1:4],
+          names(over.table)[5:9]
+        )
       }
 
-      ens.table <- cbind(ens.table, NA, NA, NA, NA, NA)
-      names(ens.table) <- all.models.names
+      if (!is.null(over.table)) names(over.table) <- all.models.names
+
+      ens.table <- purrr::set_names(
+        cbind(ens.table, NA, NA, NA, NA, NA), all.models.names
+      )
     }
     # Else: Either some combo of orig.table and over.table or it's only
     #        the ens.table. Thus, names are already correct.
@@ -277,23 +278,12 @@ output$eval_metrics_table_save <- downloadHandler(
       names(j) == names(models.list.all[[1]])
     }, names.1 = models.list.all[[1]]))
 
-    validate(
-      need(zero_range(sapply(models.list.all, ncol)),
-           paste("Error: while downloading metrics, data tables",
-                 "info tables have different numbers of columns")),
-      need(need.check.table,
-           paste("Error: while downloading metrics, data tables",
-                 "info tables have different names"))
-    )
+    req(zero_range(sapply(models.list.all, ncol)), need.check.table)
     all.models.info <- do.call(rbind, models.list.all)
 
 
     ### Combine metric table and info table
-    validate(
-      need(nrow(all.models.info) == nrow(eval.metrics),
-           paste("Error: while downloading table, metrics and model",
-                 "info tables have different numbers of rows"))
-    )
+    req(nrow(all.models.info) == nrow(eval.metrics))
     eval.metrics.models.info <- cbind(eval.metrics, all.models.info)
 
 
