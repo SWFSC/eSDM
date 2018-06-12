@@ -94,11 +94,11 @@ create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
 
     # Check long extent, polygon validity, and create crs.ll version if nec
     sf.load.raster <- check_dateline(sf.load.raster, progress.detail = TRUE)
-    incProgress(0.1)
+    incProgress(0.2)
     sf.load.raster <- check_valid(sf.load.raster, progress.detail = TRUE)
     incProgress(0.2)
-    sf.list <- gis_model_check(sf.load.raster)
-    incProgress(0.3)
+    sf.list <- check_gis_crs(sf.load.raster)
+    incProgress(0.2)
 
     # Prepare for 'local' code
     sf.load.ll   <- sf.list[[1]]

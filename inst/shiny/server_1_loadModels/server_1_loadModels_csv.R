@@ -214,19 +214,8 @@ create_sf_csv_sfc <- reactive({
     ### d) Perform final quality checks
     # Ensure that sf object is in -180 to 180 longitude range
     sf.temp.ll <- check_dateline(sf.temp.ll)
-
-    incProgress(detail = "Checking if model polygons are valid")
     sf.temp.ll <- check_valid(sf.temp.ll, progress.detail = TRUE)
     incProgress(0.3)
-
-    sf.bbox <- as.numeric(st_bbox(sf.temp.ll))
-    validate(
-      need(all(c(sf.bbox[3:4] <= c(180, 90), sf.bbox[1:2] >= c(-180, -90))),
-           paste("Error: There was an issue processing this .csv data;",
-                 "please manually ensure that all longitude and latitude",
-                 "values in .csv file are between [-180, 180] and [-90, 90],",
-                 "respectively"))
-    )
 
     list(sf.temp.ll, cell.lw)
   })
@@ -235,9 +224,6 @@ create_sf_csv_sfc <- reactive({
 
 ###############################################################################
 create_sf_csv <- eventReactive(input$model_create_csv, {
-  # This check is here so that it occurs before creation of sfc object
-
-
   csv.data <- create_sf_csv_data()
   csv.sf.temp <- create_sf_csv_sfc()[[1]]
 
@@ -252,7 +238,6 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
       validate(need(FALSE, "Error in creating sf object from .csv file"))
     }
 
-
     ### Prep for and run function that adds relevant data to vals
     incProgress(0.4, detail = "Finishing model processing")
     model.res <- paste(create_sf_csv_sfc()[[2]], "degrees")
@@ -261,13 +246,11 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
     model.name <- read_model_csv()[[1]]
     data.names <- model_csv_names_selected()
 
-
     #### Code common to csv, raster, and gis_shp/gis_gdb functions ####
     source(
       file.path("server_1_loadModels", "server_1_loadModels_create_local.R"),
       local = TRUE, echo = FALSE, chdir = TRUE
     )
-
 
     "Model predictions loaded from csv"
   })

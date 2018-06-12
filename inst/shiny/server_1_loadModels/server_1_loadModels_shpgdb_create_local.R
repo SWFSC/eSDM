@@ -5,7 +5,7 @@ withProgress(message = "Adding model predictions to app", value = 0.3, {
   ### Check long extent, polygon validity, and generate crs.ll version if nec
   gis.file <- check_dateline(gis.file, progress.detail = TRUE)
   gis.file <- check_valid(gis.file, progress.detail = TRUE)
-  sf.list <- gis_model_check(gis.file)
+  sf.list <- check_gis_crs(gis.file)
   incProgress(0.4)
 
   ### Process spatial data
