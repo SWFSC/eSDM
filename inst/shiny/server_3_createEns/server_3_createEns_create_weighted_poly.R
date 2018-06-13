@@ -59,9 +59,8 @@ create_ens_weights_poly_weights <- reactive({
     vals$ens.over.wpoly.coverage[idx],
     SIMPLIFY = FALSE)
   )
-  names(x) <- letters[1:length(x)]
 
-  x
+  purrr::set_names(x, letters[1:length(x)])
 })
 
 
@@ -88,7 +87,7 @@ poly_weight <- function(poly.pred, poly.w, coverage) {
 
 ###############################################################################
 ### Plot preview of weight polygons
-# Code located in 'server_other.R'
+# Code located in 'server_plots.R'
 
 
 ###############################################################################
@@ -140,6 +139,8 @@ create_ens_weights_poly_remove <- eventReactive(
         }
       }
     }
+
+    vals$ens.over.wpoly.plot <- NULL
 
     "Weighted poly removed"
   }
@@ -194,11 +195,12 @@ create_ens_weights_poly_add <- eventReactive(
   input$create_ens_weights_poly_add_execute,
   {
     validate(
-      need(!is.null(input$create_ens_weights_poly_model),
+      need(input$create_ens_weights_poly_model,
            paste("Error: Please select at least one overlaid model",
                  "to which to apply weight polygon"))
     )
 
+    #------------------------------------------------------
     ### Get input information
     overlaid.list <- strsplit(input$create_ens_weights_poly_model, " ")
     overlaid.selected <- sapply(overlaid.list, function(i) as.numeric(i[[2]]))
@@ -207,86 +209,88 @@ create_ens_weights_poly_add <- eventReactive(
     poly.filetype.txt <- switch(poly.filetype, "CSV", "Raster", "SHP", "GDB")
 
 
+    #------------------------------------------------------
     ### Get/process weight polygon based on filetype
     if (poly.filetype == 1) {
       # .csv filetype
       poly.filename <- create_ens_weights_poly_csv_process()[[2]]
       poly.sfc      <- create_ens_weights_poly_csv_process()[[1]]
-      poly.sf       <- st_sf(Weight = input$create_ens_weights_poly_csv_weight,
-                             geometry = poly.sfc)
-      rm(poly.sfc)
+      stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
+      poly.sf <- st_sf(Weight = input$create_ens_weights_poly_csv_weight,
+                       geometry = poly.sfc, agr = "constant")
 
     } else if (poly.filetype == 2) {
       # .tif filetype
       poly.filename <- create_ens_weights_poly_raster_read()[[2]]
-      poly.sf       <- create_ens_weights_poly_raster_read()[[1]]
-
-      names(poly.sf)[1] <- "Weight"
-      if (input$create_ens_weights_poly_raster_weight_type == 1) {
-        poly.sf$Weight <- input$create_ens_weights_poly_raster_weight
-      }
+      poly.sfc      <- create_ens_weights_poly_raster_read()[[1]]
+      stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
+      poly.sf <- st_sf(Weight = input$create_ens_weights_poly_raster_weight,
+                       geometry = poly.sfc, agr = "constant")
 
     } else if (poly.filetype == 3) {
       # .shp filetype
       poly.filename <- create_ens_weights_poly_shp_read()[[2]]
-      poly.sf       <- create_ens_weights_poly_shp_read()[[1]]
-
-      if (input$create_ens_weights_poly_shp_weight_type == 1) {
-        poly.sf <- st_as_sf(Weight = input$create_ens_weights_poly_shp_weight,
-                            geometry = st_geometry(poly.sf))
-
-      } else {
-        poly.sf <- poly.sf[input$create_ens_weights_poly_shp_field]
-        names(poly.sf[1]) <- "Weight"
-      }
+      poly.sfc      <- create_ens_weights_poly_shp_read()[[1]]
+      stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
+      poly.sf <- st_sf(Weight = input$create_ens_weights_poly_shp_weight,
+                       geometry = poly.sfc, agr = "constant")
 
     } else if (poly.filetype == 4) {
       # .gdb filetype
       poly.filename <- create_ens_weights_poly_gdb_read()[[2]]
-      poly.sf       <- create_ens_weights_poly_gdb_read()[[1]]
-
-      if (input$create_ens_weights_poly_gdb_weight_type == 1) {
-        poly.sf <- st_as_sf(Weight = input$create_ens_weights_poly_gdb_weight,
-                            geometry = st_geometry(poly.sf))
-
-      } else {
-        poly.sf <- poly.sf[input$create_ens_weights_poly_gdb_field]
-        names(poly.sf)[1] <- "Weight"
-      }
+      poly.sfc      <- create_ens_weights_poly_gdb_read()[[1]]
+      stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
+      poly.sf <- st_sf(Weight = input$create_ens_weights_poly_gdb_weight,
+                       geometry = poly.sfc, agr = "constant")
 
     } else {
       validate(
         need(FALSE, "Error: create_ens_weights_poly_add() filetype error")
       )
     }
+    rm(poly.sfc)
 
-    stopifnot(inherits(poly.sf, "sf"), is.numeric(overlaid.selected))
-    st_agr(poly.sf) <- "constant"
+    stopifnot(
+      inherits(poly.sf, "sf"),
+      is.numeric(overlaid.selected),
+      nrow(poly.sf) == 1
+    )
 
 
-    ### Ensure that weight polygon has same crs as overlaid models
-    if (!identical(st_crs(poly.sf), vals$overlay.crs)) {
-      poly.sf <- st_transform(poly.sf, vals$overlay.crs)
-    }
+    #------------------------------------------------------
+    ### Ensure that weight polygon overlaps with overlaid model(s)
+    sapply(overlaid.selected, function(o.idx) {
+      z <- suppressMessages(
+        st_intersects(st_union(poly.sf), vals$overlaid.models[[o.idx]])
+      )
+      stopifnot(length(z) == 1)
+      validate(
+        need(length(z[[1]]) > 0,
+             paste("Error: the provided weight polygon does not overlap",
+                   "with overlaid model", o.idx))
+      )
+    })
 
-    ### Make sure that new polygon doesn't overlap with loaded polygons
+    ### Ensure that new polygon doesn't overlap with loaded polygons
     ###  already assigned to same overlaid model
-    sapply(overlaid.selected, function(overlaid.idx) {
-      if (!is.null(vals$ens.over.wpoly.sf[[overlaid.idx]])) {
+    sapply(overlaid.selected, function(o.idx) {
+      if (!is.null(vals$ens.over.wpoly.sf[[o.idx]])) {
         mapply(function(poly.loaded, poly.idx) {
           x <- suppressMessages(st_intersection(poly.sf, poly.loaded))
           validate(
             need(nrow(x) == 0,
                  paste("Error: Cannot load weight polygon because",
                        "polygon overlaps with weight polygon number",
-                       poly.idx, "of overlaid model", overlaid.idx))
+                       poly.idx, "of overlaid model", o.idx))
           )
         },
-        vals$ens.over.wpoly.sf[[overlaid.idx]],
-        seq_along(vals$ens.over.wpoly.sf[[overlaid.idx]]))
+        vals$ens.over.wpoly.sf[[o.idx]],
+        seq_along(vals$ens.over.wpoly.sf[[o.idx]]))
       }
     })
 
+
+    #------------------------------------------------------
     ### Add poly.sf and coverage val to applicable indices of vals$ens...
     ewf.selected     <- vals$ens.over.wpoly.filename[overlaid.selected]
     ewf.selected.new <- lapply(ewf.selected, function(l) c(l, poly.filename))
@@ -301,9 +305,18 @@ create_ens_weights_poly_add <- eventReactive(
     ewc.selected.new <- lapply(ewc.selected, function(l) c(l, poly.coverage))
     vals$ens.over.wpoly.coverage[overlaid.selected] <- ewc.selected.new
 
+
+    #------------------------------------------------------
+    ### Reset plot
+    vals$ens.over.wpoly.plot <- NULL
+
+
+    #------------------------------------------------------
     ### Output message
-    paste(poly.filetype.txt, "weight polygon added as weight for:",
-          paste(input$create_ens_weights_poly_model, collapse = ", "))
+    paste(
+      poly.filetype.txt, "weight polygon added as weight for:",
+      paste(input$create_ens_weights_poly_model, collapse = ", ")
+    )
   }
 )
 
@@ -344,7 +357,12 @@ create_ens_weights_poly_csv_process <- reactive({
     csv.poly.sfc <- create_sfc_csv_func(csv.poly.data, crs.ll)
     incProgress(0.3)
 
-    # Check that polygon(s) are valid
+    # Transform weight polygon as necesary
+    if (!identical(st_crs(csv.poly.sfc), vals$overlay.crs)) {
+      csv.poly.sfc <- st_transform(csv.poly.sfc, vals$overlay.crs)
+    }
+
+    # Check that polygon is valid
     csv.poly.sfc <- check_valid(csv.poly.sfc, progress.detail = TRUE)
     incProgress(0.1)
   })
@@ -358,7 +376,7 @@ create_ens_weights_poly_csv_process <- reactive({
 
 ### Flag for successfully loaded file
 output$create_ens_weights_poly_raster_flag <- reactive({
-  !is.null(create_ens_weights_poly_raster_read())
+  isTruthy(create_ens_weights_poly_raster_read())
 })
 outputOptions(output, "create_ens_weights_poly_raster_flag",
               suspendWhenHidden = FALSE)
@@ -374,26 +392,27 @@ create_ens_weights_poly_raster_read <- reactive({
 
 
   withProgress(message = "Loading GIS raster", value = 0.2, {
-    raster.band.num <- ifelse(
-      input$create_ens_weights_poly_raster_weight_type == 1,
-      1, input$create_ens_weights_poly_raster_band
-    )
-    gis.file.raster <- try(raster(file.in$datapath, band = raster.band.num),
+    gis.file.raster <- try(raster(file.in$datapath, band = 1),
                            silent = TRUE)
     gis.file.success <- isTruthy(gis.file.raster)
     incProgress(0.4)
 
     # If specified file could be loaded as a raster, process raster
     if (gis.file.success) {
-      gis.file.raster <- st_as_sf(as(gis.file.raster, "SpatialPolygonsDataF"))
-      # TODO change ^ to as(x, "SpatialPolygons")?
-      st_agr(gis.file.raster) <- "constant"
-      stopifnot(ncol(gis.file.raster) == 2)
+      gis.file.raster <- suppressMessages(st_union(
+        st_as_sfc(as(gis.file.raster, "SpatialPolygons"))
+      ))
+      stopifnot(inherits(gis.file.raster, "sfc"))
       incProgress(0.1)
 
       # Adjust 0 - 360 data to -180 - 180 if needed
       gis.file.raster <- check_dateline(gis.file.raster, 60)
       incProgress(0.1)
+
+      # Transform weight polygon as necesary
+      if (!identical(st_crs(gis.file.raster), vals$overlay.crs)) {
+        gis.file.raster <- st_transform(gis.file.raster, vals$overlay.crs)
+      }
 
       # Check that polygon(s) are valid
       gis.file.raster <- check_valid(gis.file.raster, progress.detail = TRUE)
@@ -404,7 +423,7 @@ create_ens_weights_poly_raster_read <- reactive({
   if(!gis.file.success) {
     NULL
   } else {
-    list(weight.raster, file.in$name)
+    list(gis.file.raster, file.in$name)
   }
 })
 
@@ -414,7 +433,7 @@ create_ens_weights_poly_raster_read <- reactive({
 
 ### Flag for successfully loaded file
 output$create_ens_weights_poly_shp_flag <- reactive({
-  !is.null(create_ens_weights_poly_shp_read())
+  isTruthy(create_ens_weights_poly_shp_read())
 })
 outputOptions(
   output, "create_ens_weights_poly_shp_flag", suspendWhenHidden = FALSE
@@ -432,15 +451,17 @@ create_ens_weights_poly_shp_read <- reactive({
     gis.file.success <- isTruthy(gis.file.shp)
 
     if (gis.file.success) {
-      # Make sf object if necessary
-      if (inherits(gis.file.shp, "sfc")) {
-        gis.file.shp <- st_sf(Weight = NA, geometry = gis.file.shp)
-      }
+      gis.file.shp <- suppressMessages(st_union(gis.file.shp))
       incProgress(0.1)
 
       # Adjust 0 - 360 data to -180 - 180 if needed
       gis.file.shp <- check_dateline(gis.file.shp, 60)
       incProgress(0.1)
+
+      # Transform weight polygon as necesary
+      if (!identical(st_crs(gis.file.shp), vals$overlay.crs)) {
+        gis.file.shp <- st_transform(gis.file.shp, vals$overlay.crs)
+      }
 
       # Check that polygon(s) are valid
       gis.file.shp <- check_valid(gis.file.shp, progress.detail = TRUE)
@@ -448,7 +469,7 @@ create_ens_weights_poly_shp_read <- reactive({
     }
   })
 
-  if(!gis.file.success) {
+  if (!gis.file.success) {
     NULL
   } else {
     list(gis.file.shp, strsplit(files.in$name[1], "[.]")[[1]][1])
@@ -461,7 +482,7 @@ create_ens_weights_poly_shp_read <- reactive({
 
 ### Flag for successfully loaded file
 output$create_ens_weights_poly_gdb_flag <- reactive({
-  !is.null(create_ens_weights_poly_gdb_read())
+  isTruthy(create_ens_weights_poly_gdb_read())
 })
 outputOptions(output, "create_ens_weights_poly_gdb_flag", suspendWhenHidden = FALSE)
 
@@ -480,15 +501,17 @@ create_ens_weights_poly_gdb_read <- eventReactive(
 
       gis.file.success <- isTruthy(gis.file.gdb)
       if (gis.file.success) {
-        # Make sf object if necessary
-        if (inherits(gis.file.gdb, "sfc")) {
-          gis.file.gdb <- st_sf(Weight = NA, geometry = gis.file.gdb)
-        }
+        gis.file.gdb <- suppressMessages(st_union(gis.file.gdb))
         incProgress(0.1)
 
         # Adjust 0 - 360 data to -180 - 180 if needed
         gis.file.gdb <- check_dateline(gis.file.gdb, 60)
         incProgress(0.1)
+
+        # Transform weight polygon as necesary
+        if (!identical(st_crs(gis.file.gdb), vals$overlay.crs)) {
+          gis.file.gdb <- st_transform(gis.file.gdb, vals$overlay.crs)
+        }
 
         # Check that polygon(s) are valid
         gis.file.gdb <- check_valid(gis.file.gdb, progress.detail = TRUE)
@@ -496,7 +519,7 @@ create_ens_weights_poly_gdb_read <- eventReactive(
       }
     })
 
-    if(!gis.file.success) {
+    if (!gis.file.success) {
       NULL
     } else {
       list(gis.file.gdb, gdb.name)

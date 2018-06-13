@@ -252,6 +252,7 @@ ui.createEns <- function() {
                                   column(
                                     width = 6,
                                     fileInput("create_ens_weights_poly_raster_file", label.raster.upload, accept = ".tif"),
+                                    helpText("The band number is assumed to be 1 weight cannot be loaded come from the raster"),
                                     conditionalPanel("output.create_ens_weights_poly_raster_flag == false", ui.error.upload.raster)
                                   ),
                                   column(
@@ -284,24 +285,42 @@ ui.createEns <- function() {
                               conditionalPanel(
                                 condition = "input.create_ens_weights_poly_type == 4",
                                 ui.instructions.upload.gdb(),
+                                # fluidRow(
+                                #   column(6, textInput("create_ens_weights_poly_gdb_path", label.gdb.path, value = ".../folder.gdb")),
+                                #   column(6, textInput("create_ens_weights_poly_gdb_name", label.gdb.name, value = ""))
+                                # ),
+                                # fluidRow(
+                                #   column(6, actionButton("create_ens_weights_poly_gdb_load", label.gdb.upload)),
+                                #   column(
+                                #     width = 6,
+                                #     conditionalPanel(
+                                #       condition = "output.create_ens_weights_poly_gdb_flag == false",
+                                #       ui.error.upload.gdb
+                                #     )
+                                #   )
+                                # ),
+                                # fluidRow(
+                                #   column(6, numericInput("create_ens_weights_poly_gdb_weight",
+                                #                          tags$h5("Weight for area covered by file geodatabase file"),
+                                #                          value = 1, min = 0, step = 0.1))
+                                # )
                                 fluidRow(
-                                  column(6, textInput("create_ens_weights_poly_gdb_path", label.gdb.path, value = ".../folder.gdb")),
-                                  column(6, textInput("create_ens_weights_poly_gdb_name", label.gdb.name, value = ""))
-                                ),
-                                fluidRow(
-                                  column(6, actionButton("create_ens_weights_poly_gdb_load", label.gdb.upload)),
+                                  column(
+                                    width = 6,
+                                    textInput("create_ens_weights_poly_gdb_path", label.gdb.path, value = ".../folder.gdb"),
+                                    textInput("create_ens_weights_poly_gdb_name", label.gdb.name, value = ""),
+                                    actionButton("create_ens_weights_poly_gdb_load", label.gdb.upload)
+                                  ),
                                   column(
                                     width = 6,
                                     conditionalPanel(
                                       condition = "output.create_ens_weights_poly_gdb_flag == false",
                                       ui.error.upload.gdb
-                                    )
+                                    ),
+                                    numericInput("create_ens_weights_poly_gdb_weight",
+                                                 tags$h5("Weight for area covered by file geodatabase file"),
+                                                 value = 1, min = 0, step = 0.1)
                                   )
-                                ),
-                                fluidRow(
-                                  column(6, numericInput("create_ens_weights_poly_gdb_weight",
-                                                         tags$h5("Weight for area covered by file geodatabase file"),
-                                                         value = 1, min = 0, step = 0.1))
                                 )
                               ),
                               ############## General

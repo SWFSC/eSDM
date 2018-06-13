@@ -223,18 +223,18 @@ create_ens_info_rescaling <- reactive ({
 ### Generate string for text about created ensemble
 create_ens_info_rescaling_message <- reactive({
   input.rescale <- input$create_ens_rescale_type
-
   str.rescale <- switch(input.rescale,
                         "1" = "Predictions not rescaled",
                         "2" = "abundance",
                         "3" = "normalization",
                         "4" = "standardization",
                         "5" = "sum to 1")
-  if (input.rescale != "1") {
-    str.rescale <- paste("Predictions rescaled using", str.rescale, "method")
-  }
 
-  str.rescale
+  if (input.rescale != "1") {
+    paste("Predictions rescaled using the ", str.rescale, "method")
+  } else {
+    str.rescale
+  }
 })
 
 ###############################################################################

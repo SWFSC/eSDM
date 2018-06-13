@@ -183,7 +183,9 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
     incProgress(0, detail = "Checking if SDM spans the dateline")
   }
 
-  x.crs.orig <- st_crs(x)
+  x.orig <- x
+  x.crs.orig <- st_crs(x.orig)
+  dateline.flag <- FALSE
   validate(
     need(x.crs.orig$proj4string,
          "Error: The SDM does not have a defined coordinate system")
@@ -194,19 +196,13 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
   }
 
   if (st_bbox(x)[3] > 180) {
-    incProgress(0, detail = "SDM does span the dateline; processing now")
+    dateline.flag <- TRUE
+    if (progress.detail) {
+      incProgress(0, detail = "SDM does span the dateline; processing now")
+    }
     x <- st_wrap_dateline(
       x, c("WRAPDATELINE=YES", paste0("DATELINEOFFSET=", wrap.offset))
     )
-
-    if (st_bbox(x)[3] > 180) {
-      validate(
-        need(FALSE,
-             paste("Error: Unable to correct SDM polygon longitude range;",
-                   "please manually ensure that the longitude range of the",
-                   "SDM is [-180, 180] and then reload the SDM into the eSDM"))
-      )
-    }
   }
 
   ext <- st_bbox(x)
@@ -221,10 +217,11 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
                "SDM is [-90, 90] and then reload the SDM into the eSDM"))
   )
 
-  if (!identical(st_crs(x), x.crs.orig)) {
+  if (dateline.flag){
     st_transform(x, x.crs.orig)
+    # st_transform is fast and identical(y, st_transform(y, st_crs(y))) is TRUE
   } else {
-    x
+    x.orig
   }
 }
 
@@ -232,7 +229,7 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
 #------------------------------------------------------------------------------
 check_valid <- function(x, progress.detail = FALSE) {
   stopifnot(
-    inherits(x, "sf") | inherits(x, "sfc"),
+    inherits(x, c("sf", "sfc")),
     is.logical(progress.detail)
   )
 
