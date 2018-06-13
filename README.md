@@ -17,6 +17,5 @@ devtools::install_github('smwoodman/eSDM')
 ## How to run the eSDM R Shiny tool
 To run the tool locally in RStudio:
 ```r
-library(eSDM)
 eSDM::eSDM_Shiny()
 ```
