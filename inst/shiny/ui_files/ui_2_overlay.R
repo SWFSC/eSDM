@@ -223,7 +223,7 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("2) Overlay options: percent overlap"),
-                      helpText("Specify what percentage of a base grid cell the original model prediction(s) must overlap",
+                      helpText("Specify the minimum percentage of a base grid cell the original model prediction(s) must overlap",
                                "for that cell to have a non-NA overlaid prediction value.",
                                "A value of \"0\" means that cell will have a non-NA overlaid prediction value",
                                "if there is any overlap with any original model prediction."),
@@ -260,16 +260,11 @@ ui.overlay <- function() {
                       width = 12,
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 1",
-                        fluidRow(
-                          column(
-                            width = 6,
-                            helpText("The base grid will be outlined in black while if applicable the land and study area",
-                                     "will be filled in tan and outlined in red, respectively"),
-                            uiOutput("overlay_preview_base_execute_uiOut_button")
-                          ),
-                          column(6, helpText("Note: If model predictions were made at a high resolution,",
-                                             "then preview may appear to be completely black when zoomed out"))
-                        )
+                        helpText("The base grid will be outlined in black while if applicable the land and study area",
+                                 "will be filled in tan and outlined in red, respectively.",
+                                 "Note that if model predictions were made at a high resolution,",
+                                 "then preview may appear to be completely black when zoomed out"),
+                        uiOutput("overlay_preview_base_execute_uiOut_button")
                       ),
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 2",

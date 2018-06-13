@@ -144,6 +144,7 @@ observeEvent(input$create_ens_weights_poly_preview_execute, {
   )
 })
 
+
 #################################################
 ### Generate interactive preview of ensemble predictions to display in-app
 observeEvent(input$ens_preview_interactive_execute, {
@@ -165,8 +166,9 @@ observeEvent(input$ens_preview_interactive_execute, {
   )
 })
 
+
+#################################################
 ### Get preview of ensemble predictions to plot in-app
-#
 observeEvent(input$ens_preview_execute, {
   req(length(vals$ensemble.models) > 0)
 
