@@ -69,8 +69,8 @@ output$model_preview_plot <- renderPlot({
   req(x <- vals$models.plot)
 
   eSDM::multiplot_layout(
-    x$models.toplot, x$data.name, x$plot.titles, x$perc.num, pal.esdm,
-    leg.perc.esdm,
+    x$models.toplot, x$data.name, x$plot.titles, x$perc.num,
+    x$pal, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
     x$plot.dims[5], x$plot.dims[6]
   )
@@ -265,8 +265,8 @@ output$ens_preview_plot <- renderPlot({
   req(x <- vals$ensemble.plot)
 
   eSDM::multiplot_layout(
-    x$models.toplot, x$data.name, x$plot.titles, x$perc.num, pal.esdm,
-    leg.perc.esdm,
+    x$models.toplot, x$data.name, x$plot.titles, x$perc.num,
+    x$pal, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
     x$plot.dims[5], x$plot.dims[6]
   )
@@ -391,7 +391,7 @@ output$pretty_plot_values_event_text <- renderText({
 output$pretty_plot_plot <- renderPlot({
   req(p.list <- vals$pretty.params.list)
   plot_pretty(
-    p.list$model.toplot, p.list$data.name, p.list$plot.lim,
+    p.list$model.toplot, p.list$data.name, p.list$plot.lim, p.list$axes.inc,
     p.list$title.ll, p.list$lab.x, p.list$lab.y,
     p.list$title.cex, p.list$lab.cex, p.list$axis.cex, p.list$axis.tcl,
     p.list$list.background, p.list$list.colorscheme, p.list$list.addobj

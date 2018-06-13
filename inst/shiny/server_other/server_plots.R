@@ -31,6 +31,7 @@ observeEvent(input$model_preview_execute, {
   perc.num <- as.numeric(input$model_preview_perc)
   models.idx <- as.numeric(input$models_loaded_table_rows_selected)
   models.num <- length(models.idx)
+  pal <- switch(perc.num, pal.esdm, pal.esdm.alt)
 
   models.toplot <- vals$models.ll[models.idx]
   stopifnot(models.num == length(models.toplot))
@@ -42,7 +43,7 @@ observeEvent(input$model_preview_execute, {
   vals$models.plot.idx <- models.idx
   vals$models.plot <- list(
     models.toplot = models.toplot, data.name = rep("Pred", models.num),
-    plot.titles = plot.titles, perc.num = perc.num,
+    plot.titles = plot.titles, perc.num = perc.num, pal = pal,
     plot.dims = multiplot_inapp(models.num)
   )
 })
@@ -134,18 +135,6 @@ observeEvent(input$overlay_preview_overlaid_execute, {
 # Create Ensembles tab
 
 #################################################
-### Preview overlaid model predictions with assigned weight polygons
-observeEvent(input$create_ens_weights_poly_preview_execute, {
-  req(vals$ens.over.wpoly.filename)
-  overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
-
-  vals$ens.over.wpoly.plot <- list(
-    st_geometry(vals$overlaid.models[[overlaid.which]]), overlaid.which
-  )
-})
-
-
-#################################################
 ### Generate interactive preview of ensemble predictions to display in-app
 observeEvent(input$ens_preview_interactive_execute, {
   req(length(vals$ensemble.models) > 0)
@@ -168,14 +157,26 @@ observeEvent(input$ens_preview_interactive_execute, {
 
 
 #################################################
+### Preview overlaid model predictions with assigned weight polygons
+observeEvent(input$create_ens_weights_poly_preview_execute, {
+  req(vals$ens.over.wpoly.filename)
+  overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
+
+  vals$ens.over.wpoly.plot <- list(
+    st_geometry(vals$overlaid.models[[overlaid.which]]), overlaid.which
+  )
+})
+
+
+#################################################
 ### Get preview of ensemble predictions to plot in-app
 observeEvent(input$ens_preview_execute, {
   req(length(vals$ensemble.models) > 0)
 
   perc.num <- as.numeric(input$ens_preview_perc)
-
   models.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
   models.num <- length(models.idx)
+  pal <- switch(perc.num, pal.esdm, pal.esdm.alt)
 
   models.toplot <- vals$ensemble.models[models.idx]
   stopifnot(models.num == length(models.toplot))
@@ -188,7 +189,7 @@ observeEvent(input$ens_preview_execute, {
   vals$ensemble.plot.idx <- models.idx
   vals$ensemble.plot <- list(
     models.toplot = models.toplot, data.name = rep("Pred.ens", models.num),
-    plot.titles = plot.titles, perc.num = perc.num,
+    plot.titles = plot.titles, perc.num = perc.num, pal = pal,
     plot.dims = multiplot_inapp(models.num)
   )
 })

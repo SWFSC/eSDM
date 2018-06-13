@@ -47,6 +47,7 @@ pal.esdm <- c(
   "#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0", "#fee090",
   "#fdae61", "#f46d43", "#d73027", "#a50026"
 )
+pal.esdm.alt <- rev(RColorBrewer::brewer.pal(10, "Spectral"))
 leg.perc.esdm <- c(
   "Lowest 60%", "35 - 40%", "30 - 35%", "25 - 30%", "20 - 25%", "15 - 20%",
   "10 - 15%", "5 - 10%", "2 - 5%", "Highest 2%"
@@ -127,6 +128,7 @@ server <- function(input, output, session) {
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot_func.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_addobj.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_download.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_renderUI.R"), local = TRUE, chdir = TRUE)
