@@ -1,12 +1,12 @@
-name: esdm
+name: eSDM
 title: eSDM
 username:
 account: swoodman
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 226248
-bundleId: 1035309
-url: https://swoodman.shinyapps.io/esdm/
-when: 1508437114.06878
+appId: 360627
+bundleId: 1428457
+url: https://swoodman.shinyapps.io/eSDM/
+when: 1528937775.87608
 asMultiple: FALSE
 asStatic: FALSE
