@@ -143,10 +143,6 @@ server <- function(input, output, session) {
   # The function tags$iframe(...) is in ui.R so that the manual renders immediately
 
 
-  # # Submit feedback
-  # source(file.path("server_8_feedbackForm", "server_8_feedbackForm.R"), local = TRUE, chdir = TRUE)
-
-
   # General server code
   source(file.path("server_other", "server_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots.R"), local = TRUE, chdir = TRUE)
