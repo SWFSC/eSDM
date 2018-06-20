@@ -117,30 +117,23 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
     models.toeval <- eval_models()
     incProgress(0.1)
 
-    eval.results <- lapply(models.toeval, function(m) {
-      # TODO calculate abundance here instead of in eval_overlap()?
+    eval.results <- mapply(function(m, idx) {
       eval.data <- st_transform(eval.data, st_crs(m))
       m <- m[!is.na(m[, 1]), ]
-      overlap.out <- eSDM::eval_overlap(eval.data, m, names(m)[1])
-      prediction.out <- eSDM::eval_prediction(
-        NA, NA, names(m)[1], "sight", overlap.out
+
+      if (vals$eval.data.specs[2] == 1) {
+        z <- eSDM::evaluation_metrics(m, eval.data, "Pred", "sight", "count")
+      } else {
+        z <- eSDM::evaluation_metrics(m, eval.data, "Pred", "sight")
+      }
+
+      incProgress(
+        amount = 0.8 / length(models.toeval),
+        detail = paste("Calculating metrics for selected model", idx)
       )
 
-      out1 <- out2 <- out3 <- NULL
-      if ("AUC" %in% which.metrics) {
-        out1 <- eSDM::eval_auc(NA, NA, NA, NA, prediction.out)
-      }
-      if ("TSS" %in% which.metrics) {
-        out2 <- eSDM::eval_tss(NA, NA, NA, NA, prediction.out)
-      }
-      if ("RMSE" %in% which.metrics) {
-        out3 <- eSDM::eval_rmse(NA, NA, "abund", "count", overlap.out)
-      }
-
-      incProgress(amount = 0.8 / length(models.toeval))
-
-      c(out1, out2, out3)
-    })
+      z[c("AUC", "TSS", "RMSE") %in% which.metrics]
+    }, models.toeval, seq_along(models.toeval), SIMPLIFY = TRUE)
   })
 
   # Save model idx and metrics to reactiveValues
@@ -228,7 +221,7 @@ eval_metrics_overlap <- eventReactive(input$eval_metrics_execute, {
 ### Download table
 # Currently set for no Error column: #'[, -3]' is to remove Error column
 output$eval_metrics_table_save <- downloadHandler(
-  filename = "eSDM_eval_metrics.csv",
+  filename = "eSDM_evaluation_metrics.csv",
 
   content = function(file) {
     eval.metrics <- table_eval_metrics()
