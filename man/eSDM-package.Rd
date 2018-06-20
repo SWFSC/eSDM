@@ -4,8 +4,8 @@
 \name{eSDM-package}
 \alias{eSDM-package}
 \alias{eSDM}
-\title{eSDM description}
+\title{eSDM: A tool for creating and exploring ensembles of predictions from species-distribution models}
 \description{
-eSDM
+Provides functions + gui (Shiny app)
 }
 \keyword{package}
