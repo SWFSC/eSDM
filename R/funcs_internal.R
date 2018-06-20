@@ -1,26 +1,25 @@
-#' @title Base Frequencies
-#' @description Load csv file from given shiny file input
+#' Sort data.frame
 #'
+#' Sort a data.frame object by the values in one or two columns
+#'
+#' @param x data.frame to sort
 #' @param col1 integer; the primary column to sort by
 #' @param col2 integer; the secondary column to sort by
 #'
-#' @return Sorted data.frame
+#' @return Sorted data.frame object
 #'
-#' @examples
-#'
-#'
-#' @export
-
+#' @keywords internal
 data_sort <- function(x, col1 = 1, col2 = NA) {
   if (!is.na(col2)) x <- x[order(x[, col2]), ]
   x[order(x[, col1]), ]
 }
 
 
-#' ### Determine whether all values in x are equal, aka have a zero range
-#' From Hadley Wickham
-#' @export
-
+#' Determine whether all values in x are equal
+#'
+#' From Hadley Wickham on stack overflow
+#'
+#' @keywords internal
 zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
   if (length(x) == 1) return(TRUE)
   x <- range(x) / mean(x)
@@ -28,18 +27,21 @@ zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
 }
 
 
-#' ## Get last n element from string x
+#' Get last n element(s) from string x
+#'
 #' From https://stackoverflow.com/questions/7963898
-#' @export
+#'
+#' @keywords internal
 substr_right <- function(x, n) {
   substr(x, nchar(x) - n + 1, nchar(x))
 }
 
 
-#' Determine which elements of the x are
-#' one of "N/A", "n/a", "na", "NaN", or ""
-#' @export
-
+#' Determine which elements of the x are one of invalid
+#'
+#' Invalid elements are "N/A", "n/a", "na", "NaN", or ""
+#'
+#' @keywords internal
 na_which <- function(x) {
   na.char <- c("N/A", "n/a", "na", "NaN", "")
 
@@ -51,14 +53,14 @@ na_which <- function(x) {
 }
 
 
-#' ## Generate message reporting length of x
+#' Generate message reporting length of x
+#'
 #' This message was built to refer to prediction values
-#' @export
-
+#'
+#' @keywords internal
 na_pred_message <- function(x) {
   if (anyNA(x)) {
     "No prediction values were classified as NA"
-
   } else {
     len.x <- length(x)
     ifelse(len.x == 1,
@@ -69,8 +71,11 @@ na_pred_message <- function(x) {
 
 
 #' Generate message reporting length of x
-#' @export
-
+#'
+#' This message was built to refer to weight values, including if any non-NA
+#'   prediction values corresponded to NA weight values
+#'
+#' @keywords internal
 na_weight_message <- function(x, y) {
   len.x <- length(x)
   if (anyNA(x)) {
@@ -95,9 +100,9 @@ na_weight_message <- function(x, y) {
 }
 
 
-#' ## Normalize vector of model predictions, 'x'
-#' @export
-
+#' Normalize vector of model predictions, 'x'
+#'
+#' @keywords internal
 normalize <- function(x) {
   num <- (x - min(x, na.rm = TRUE))
   denom <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
@@ -106,10 +111,9 @@ normalize <- function(x) {
 }
 
 
-#------------------------------------------------------------------------------
-#' ## Round 'x' to nearest 'base' value
-#' @export
-
+#' Round 'x' to nearest 'base' value
+#'
+#' @keywords internal
 mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) {
   if (floor.use) {
     base * floor(x / base)
@@ -123,13 +127,11 @@ mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) {
 }
 
 
-#' Title
-#'
 #' Calculate break points for density intervals
-#' Breaks at top 2%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%
 #'
-#' @export
-
+#' Break points are at: 2%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%
+#'
+#' @keywords internal
 breaks_calc <- function(x) {
   breaks <- rev(c(0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40))
   # if (any(is.na(sp.data))) warning("NA's removed")
@@ -148,29 +150,4 @@ breaks_calc <- function(x) {
   })
 
   c(data.min, data.breaks.mid, data.max)
-}
-
-
-
-#' Calculate abundances for each of cols.data
-#' Assumes that all cols.data have NAs at same place
-#' @export
-
-model_abundance <- function(x, dens.idx, sum.abund = TRUE) {
-  # Calculate areas of polygons with no NAs
-  x.area.m2 <- st_area(x)
-  if (!all(units(x.area.m2)[[1]] == c("m", "m"))) {
-    stop("Units of st_area(x) must be m^2")
-  }
-  x.area <- as.numeric(x.area.m2) / 1e+06
-
-  # Calculate abundance for each data column
-  sapply(dens.idx, function(j) {
-    abund.vec <- as.data.frame(x)[j] * x.area
-    if (sum.abund) {
-      sum(abund.vec, na.rm = TRUE)
-    } else {
-      abund.vec
-    }
-  })
 }

@@ -3,13 +3,8 @@
 \docType{data}
 \name{gshhg.c.L16}
 \alias{gshhg.c.L16}
-\title{GSHHG world map}
-\format{A sfc object with class c("sfc_GEOMETRY", "sfc"):
-\describe{
-  \item{price}{price, in US dollars}
-  \item{carat}{weight of the diamond, in carats}
-  ...
-}}
+\title{Crude resolution GSHHG world map}
+\format{An object with class c("sfc_GEOMETRY", "sfc"):}
 \source{
 \url{http://www.soest.hawaii.edu/pwessel/gshhg/}
 }
@@ -17,6 +12,8 @@
 gshhg.c.L16
 }
 \description{
-Description, crude resolution.
+Crude resolution GSHHG world map, includes heirarchial levels
+  L1 and L6. Processed using lwgeom::st_make_valid() to make the
+  polygon valid
 }
 \keyword{datasets}
