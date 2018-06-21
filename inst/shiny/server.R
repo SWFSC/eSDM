@@ -1,4 +1,4 @@
-### server.R for the Ensemble Tool for Species Distribution Modeling (eSDM)
+### server.R for the Ensemble Tool for Species Distribution Modeling (eSDM) GUI
 # Designed by Sam Woodman
 
 
@@ -80,9 +80,8 @@ server <- function(input, output, session) {
         validate(
           need(isTruthy(sample.try),
                paste("The sample data could not be downloaded; please check",
-                     "your internet connection. If this problem persists,",
-                     "email Sam Woodman (sam.woodman@noaa.gov) or",
-                     "Karin Forney (karin.forney@noaa.gov)."))
+                     "your internet connection. If this problem persists please",
+                     "report this issue at https://github.com/smwoodman/eSDM/issues"))
         )
         incProgress(0.4)
       })
