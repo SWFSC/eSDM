@@ -140,7 +140,7 @@ observe({
   vals$models.pred.type
   vals$models.specs
 
-  check.all <- eSDM::zero_range(
+  check.all <- zero_range(
     sapply(list(vals$models.ll, vals$models.orig, vals$models.names,
                 vals$models.data.names, vals$models.pred.type,
                 vals$models.specs),
@@ -178,7 +178,6 @@ observe({
     )
 
     if (!all(check.all)) {
-      browser()
       shinyjs::alert(
         "eSDM error 2: Improper formatting of 'original' objects, please contact Sam"
       )

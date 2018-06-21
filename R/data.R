@@ -5,7 +5,6 @@
 #'   polygon valid
 #'
 #' @format An object with class c("sfc_GEOMETRY", "sfc"):
-#'
 #' @source \url{http://www.soest.hawaii.edu/pwessel/gshhg/}
 "gshhg.i.L16"
 
@@ -17,7 +16,6 @@
 #'   polygon valid
 #'
 #' @format An object with class c("sfc_GEOMETRY", "sfc"):
-#'
 #' @source \url{http://www.soest.hawaii.edu/pwessel/gshhg/}
 "gshhg.l.L16"
 
@@ -29,6 +27,5 @@
 #'   polygon valid
 #'
 #' @format An object with class c("sfc_GEOMETRY", "sfc"):
-#'
 #' @source \url{http://www.soest.hawaii.edu/pwessel/gshhg/}
 "gshhg.c.L16"

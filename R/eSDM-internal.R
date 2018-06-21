@@ -1,25 +1,12 @@
-#' Sort data.frame
-#'
-#' Sort a data.frame object by the values in one or two columns
-#'
-#' @param x data.frame to sort
-#' @param col1 integer; the primary column to sort by
-#' @param col2 integer; the secondary column to sort by
-#'
-#' @return Sorted data.frame object
-#'
-#' @keywords internal
+# Sort x by col1 and then (if applicable) col2
 data_sort <- function(x, col1 = 1, col2 = NA) {
   if (!is.na(col2)) x <- x[order(x[, col2]), ]
   x[order(x[, col1]), ]
 }
 
 
-#' Determine whether all values in x are equal
-#'
-#' From Hadley Wickham on stack overflow
-#'
-#' @keywords internal
+# Determine whether all values in x are equal;
+# From Hadley on stack overflow
 zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
   if (length(x) == 1) return(TRUE)
   x <- range(x) / mean(x)
@@ -27,21 +14,15 @@ zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
 }
 
 
-#' Get last n element(s) from string x
-#'
-#' From https://stackoverflow.com/questions/7963898
-#'
-#' @keywords internal
+# Get last n element(s) from string x
+# From https://stackoverflow.com/questions/7963898
 substr_right <- function(x, n) {
   substr(x, nchar(x) - n + 1, nchar(x))
 }
 
 
-#' Determine which elements of the x are one of invalid
-#'
-#' Invalid elements are "N/A", "n/a", "na", "NaN", or ""
-#'
-#' @keywords internal
+# Determine which elements of the x are one of invalid
+# Invalid elements are "N/A", "n/a", "na", "NaN", or ""
 na_which <- function(x) {
   na.char <- c("N/A", "n/a", "na", "NaN", "")
 
@@ -53,11 +34,8 @@ na_which <- function(x) {
 }
 
 
-#' Generate message reporting length of x
-#'
-#' This message was built to refer to prediction values
-#'
-#' @keywords internal
+# Generate message reporting length of x
+# This message was built to refer to prediction values
 na_pred_message <- function(x) {
   if (anyNA(x)) {
     "No prediction values were classified as NA"
@@ -70,12 +48,9 @@ na_pred_message <- function(x) {
 }
 
 
-#' Generate message reporting length of x
-#'
-#' This message was built to refer to weight values, including if any non-NA
-#'   prediction values corresponded to NA weight values
-#'
-#' @keywords internal
+# Generate message reporting length of x
+# This message was built to refer to weight values, including if any non-NA
+#   prediction values corresponded to NA weight values
 na_weight_message <- function(x, y) {
   len.x <- length(x)
   if (anyNA(x)) {
@@ -100,9 +75,7 @@ na_weight_message <- function(x, y) {
 }
 
 
-#' Normalize vector of model predictions, 'x'
-#'
-#' @keywords internal
+# Normalize vector of model predictions, 'x'
 normalize <- function(x) {
   num <- (x - min(x, na.rm = TRUE))
   denom <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
@@ -111,9 +84,7 @@ normalize <- function(x) {
 }
 
 
-#' Round 'x' to nearest 'base' value
-#'
-#' @keywords internal
+# Round 'x' to nearest 'base' value
 mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) {
   if (floor.use) {
     base * floor(x / base)
@@ -127,11 +98,8 @@ mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) {
 }
 
 
-#' Calculate break points for density intervals
-#'
-#' Break points are at: 2%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%
-#'
-#' @keywords internal
+# Calculate break points for density intervals
+# Break points are at: 2%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%
 breaks_calc <- function(x) {
   breaks <- rev(c(0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40))
   # if (any(is.na(sp.data))) warning("NA's removed")
