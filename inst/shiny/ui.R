@@ -17,8 +17,8 @@
 
 
 ###############################################################################
-### Load packages; packages installed in server.R (if necessary)
-library(DT) # Load here too because we need DT::dataTableOutput
+### Load packages needed by ui code
+library(DT)
 library(leaflet)
 library(shiny)
 library(shinycssloaders)
@@ -39,7 +39,6 @@ source(file.path("ui_files", "ui_4_evalMetrics.R"), local = TRUE, echo = FALSE, 
 source(file.path("ui_files", "ui_5_prettyPlot.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_6_export.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 source(file.path("ui_files", "ui_7_manual.R"), local = TRUE, echo = FALSE, chdir = TRUE)
-# source(file.path("ui_files", "ui_8_feedbackForm.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 
 
 ###############################################################################
@@ -62,7 +61,6 @@ ui <- dashboardPage(
       menuItem("High Quality Maps", tabName = "prettyPlot", icon = icon("file-image-o")),
       menuItem("Export Predictions", tabName = "export", icon = icon("cloud-download")),
       menuItem("Manual", tabName = "manual", icon = icon("book"))
-      # menuItem("Submit Feedback", tabName = "feedbackForm", icon = icon("commenting"))
     ),
     tags$br(),
     actionButton("close_app", label = "Close App")
@@ -96,7 +94,6 @@ ui <- dashboardPage(
       ui.prettyPlot(),   # High Quality Maps
       ui.export(),       # Export Predictions
       ui.manual()        # Manual
-      # ui.feedbackForm()  # Feedback form
     )
   )
 )
