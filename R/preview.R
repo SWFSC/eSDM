@@ -178,7 +178,7 @@ preview_interactive <- function(sdm.ll, data.name, perc, col.pal,
   #--------------------------------------------------------
   # perc-specific parts of leaflet map
   if (perc == 1) {
-    b.model <- eSDM::breaks_calc(data.vec)
+    b.model <- breaks_calc(data.vec)
     binpal <- colorBin(col.pal, data.vec, bins = b.model, na.color = "grey")
 
     leaf.all %>%

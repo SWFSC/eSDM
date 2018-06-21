@@ -12,7 +12,7 @@
 #' @export
 
 overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
-  #--------------------------------------------------------
+  #----------------------------------------------------------------------------
   # 0) Check that inputs meet requirements
   if (!inherits(base.poly, "sfc")) {
     stop("'base.poly' object must be of class 'sfc'")
@@ -38,9 +38,8 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
   if (!all(units(sdm.area.m2)$numerator == c("m", "m"))) {
     stop("Units of st_area(sdm.area.m2) must be m^2")
   }
-z <- enquo(data.names)
 
-  #--------------------------------------------------------
+  #----------------------------------------------------------------------------
   # 1) Get intersection of sdm (sdm being overlaid) and base.poly (base)
   #   after turning base.poly into an sf object with an index variable;
   #   this var gets passed along during st_intersection() and can be used as
@@ -65,7 +64,7 @@ z <- enquo(data.names)
   # TODO Check if nrow(int) == 0 to see if base.poly and sdm are identical? Or use identical()?
 
 
-  #########################################################
+  #----------------------------------------------------------------------------
   # 2) Get predicted abundances for base grid cells that had overlap
   # TODO: should be some way to do this in a tidy fashion, but I'm not sure how
   #   while being able to handle as many data column names as necessary
@@ -89,7 +88,7 @@ z <- enquo(data.names)
   #   summarise(sum(int.area.km * .data[, |data.names|]))
 
 
-  #########################################################
+  #----------------------------------------------------------------------------
   # 3) Set base grid cells that don't meet overlap.perc as NA
   int.area.by.base.km <- as.numeric(with(int.df, by(int.area.km, base.idx, sum)))
   base.area.km <- as.numeric(base.area.m2) / 1e+06
@@ -104,7 +103,7 @@ z <- enquo(data.names)
   }
 
 
-  #########################################################
+  #----------------------------------------------------------------------------
   # 4) Convert abundances to densities
   stopifnot(nrow(new.abund.df) == length(int.area.by.base.km))
   new.dens.df <- new.abund.df / int.area.by.base.km
@@ -114,7 +113,7 @@ z <- enquo(data.names)
   rm(new.abund.df, int.area.by.base.km)
 
 
-  #########################################################
+  #----------------------------------------------------------------------------
   # 5) Determine which base polys had no overlap with sdm and thus
   # need to be added with NAs for dens value.
   # Add them to abund.df and sort abund.df by base poly order
@@ -137,7 +136,7 @@ z <- enquo(data.names)
   # else nothing to do
 
 
-  #########################################################
+  #----------------------------------------------------------------------------
   # 6) Put base grid together with predicted densities to make overlaid SDM
   stopifnot(nrow(new.dens.df) == nrow(base.poly))
 
