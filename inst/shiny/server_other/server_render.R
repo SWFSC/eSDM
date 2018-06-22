@@ -141,15 +141,23 @@ output$overlay_overlay_all_text <- renderText({
 })
 
 ### Message detailing that overlaid models are created
-output$overlay_overlaid_models_message <- renderText({
-  if (length(vals$overlaid.models) > 0) {
-    paste(
-      "Overlaid models have been created using the geometry of the",
-      paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
-      "SDM as the base grid and with a percent overlap of",
-      paste0(vals$overlay.info[[2]] * 100, "%")
-    )
-  }
+output$overlay_overlaid_models_message <- renderUI({
+  req(length(vals$overlaid.models) > 0)
+
+  HTML(paste0(
+    "Overlaid models have been created using the following overlay options:",
+    tags$br(),
+    paste("1) Using the geometry of the",
+          paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
+          "SDM as the base grid"),
+    tags$br(),
+    paste("2)", vals$overlay.info[[2]]) ,
+    tags$br(),
+    paste("3)", vals$overlay.info[[3]]),
+    tags$br(),
+    paste("4) With a percent overlap of",
+          paste0(vals$overlay.info[[4]] * 100, "%"))
+    ))
 })
 
 

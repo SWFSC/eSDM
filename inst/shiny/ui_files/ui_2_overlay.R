@@ -179,39 +179,52 @@ ui.overlay <- function() {
             box(
               title = "Overlay Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               fluidRow(
-                box(
+                column(
                   width = 6,
-                  tags$strong("1) Overlay options: coordinate system"),
-                  helpText("The overlay process involves calculating the area of polygons and determining their intersection,",
-                           "and thus the coordinate system during the overlay will have an effect on the overlay results."),
-                  checkboxInput("overlay_proj_native",
-                                "Perform the overlay in the native coordinate system of the specified base grid",
-                                value = TRUE),
-                  conditionalPanel(
-                    condition = "input.overlay_proj_native == false",
+                  fluidRow(
                     box(
                       width = 12,
-                      radioButtons("overlay_proj_method", NULL, #tags$h5("Overlay coordinate system"),
-                                   choices = list("Perform overlay in WGS 84 geographic coordinates" = 1,
-                                                  "Select model with desired coordinate system" = 2,
-                                                  "Enter numeric EPSG code" = 3),
-                                   selected = 1),
+                      tags$strong("1) Overlay options: choose base grid"),
+                      tags$h5("Make your selection in the 'Loaded Model Predictions' box."),
+                      tags$br(),
+                      tags$strong("2) Overlay options: load desired study area and land polygons"),
+                      tags$h5("Load these polygons in their respecitve boxes, 'Load Study Area Polygon' and 'Load Land Polygon'.")
+                    ),
+                    box(
+                      width = 12,
+                      tags$strong("3) Overlay options: coordinate system"),
+                      helpText("The overlay process involves calculating the area of polygons and determining their intersection,",
+                               "and thus the coordinate system during the overlay will have an effect on the overlay results."),
+                      checkboxInput("overlay_proj_native",
+                                    "Perform the overlay in the native coordinate system of the specified base grid",
+                                    value = TRUE),
                       conditionalPanel(
-                        condition = "input.overlay_proj_method == 1",
-                        helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
-                                 "1) 'Equatorial axis of ellipsoid' = 6378137 and",
-                                 "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
-                                 "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
-                                 "for more details about assumptions that must be made when calculating the area",
-                                 "using WGS 84 geographic coordinates.")
-                      ),
-                      uiOutput("overlay_proj_sdm_uiOut_select"),
-                      conditionalPanel(
-                        condition = "input.overlay_proj_method == 3",
-                        numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1),
-                        helpText("See", tags$a("epsg.io", href = "http://epsg.io/"), "or the",
-                                 tags$a("EPSG home page", href = "http://www.epsg.org/"),
-                                 "for more information about EPSG codes")
+                        condition = "input.overlay_proj_native == false",
+                        box(
+                          width = 12,
+                          radioButtons("overlay_proj_method", NULL, #tags$h5("Overlay coordinate system"),
+                                       choices = list("Perform overlay in WGS 84 geographic coordinates" = 1,
+                                                      "Select model with desired coordinate system" = 2,
+                                                      "Enter numeric EPSG code" = 3),
+                                       selected = 1),
+                          conditionalPanel(
+                            condition = "input.overlay_proj_method == 1",
+                            helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
+                                     "1) 'Equatorial axis of ellipsoid' = 6378137 and",
+                                     "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
+                                     "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
+                                     "for more details about assumptions that must be made when calculating the area",
+                                     "using WGS 84 geographic coordinates.")
+                          ),
+                          uiOutput("overlay_proj_sdm_uiOut_select"),
+                          conditionalPanel(
+                            condition = "input.overlay_proj_method == 3",
+                            numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1),
+                            helpText("See", tags$a("epsg.io", href = "http://epsg.io/"), "or the",
+                                     tags$a("EPSG home page", href = "http://www.epsg.org/"),
+                                     "for more information about EPSG codes")
+                          )
+                        )
                       )
                     )
                   )
@@ -221,7 +234,7 @@ ui.overlay <- function() {
                   fluidRow(
                     box(
                       width = 12,
-                      tags$strong("2) Overlay options: percent overlap"),
+                      tags$strong("4) Overlay options: percent overlap"),
                       helpText("Specify the minimum percentage of a base grid cell the original model prediction(s) must overlap",
                                "for that cell to have a non-NA overlaid prediction value.",
                                "A value of \"0\" means that cell will have a non-NA overlaid prediction value",
@@ -230,7 +243,7 @@ ui.overlay <- function() {
                     ),
                     box(
                       width = 12,
-                      tags$strong("3) Perform overlay"),
+                      tags$strong("5) Perform overlay"),
                       helpText(tags$strong("It is strongly recommended to save the app environment before overlaying",
                                            "in case you are disconnected from the server during the process.")),
                       helpText(tags$strong("Reminder: loaded study area and land polygons will be used during",
@@ -239,7 +252,7 @@ ui.overlay <- function() {
                       actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"),
                       textOutput("overlay_overlay_all_text"),
                       tags$br(),
-                      tags$span(textOutput("overlay_overlaid_models_message"), style = "color: blue")
+                      tags$span(uiOutput("overlay_overlaid_models_message"), style = "color: blue")
                     )
                   )
                 )
