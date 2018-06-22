@@ -288,7 +288,7 @@ data_sort <- function(x, col1 = 1, col2 = NA) {
 
 
 # Determine whether all values in x are equal;
-# From Hadley on stack overflow
+# From Hadley on stack overflow, simplified version of scales::zero_range()
 zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
   if (length(x) == 1) return(TRUE)
   x <- range(x) / mean(x)

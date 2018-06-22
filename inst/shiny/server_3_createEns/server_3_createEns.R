@@ -161,7 +161,7 @@ ens_abund_values <- reactive({
   ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
 
   ens.tocalc <- vals$ensemble.models[ensemble.which]
-  ens.abund <- round(sapply(ens.tocalc, model_abundance, "Pred.ens"), 0)
+  ens.abund <- round(sapply(ens.tocalc, eSDM::model_abundance, "Pred.ens"), 0)
   names(ens.abund) <- paste("Ensemble", ensemble.which)
 
   ens.abund

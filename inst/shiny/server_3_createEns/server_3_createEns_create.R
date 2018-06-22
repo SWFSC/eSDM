@@ -73,79 +73,96 @@ create_ens_unweighted <- reactive({
 
 ### Get predictions to be used in ensemble
 create_ens_data_rescale <- reactive({
-  switch(input$create_ens_rescale_type,
-         "1" = create_ens_data_extract(),        # No rescaling
-         "2" = create_ens_data_rescale_abund(),  # Rescale densities to given abundance
-         "3" = create_ens_data_rescale_norm(),   # Normalize densities
-         "4" = create_ens_data_rescale_std(),    # Standardize densities
-         "5" = create_ens_data_rescale_sumto1()) # Rescale densities so they sum to 1
+  models.overlaid <- vals$overlaid.models[create_ens_overlaid_idx()]
+  x.pred.idx <- switch(
+    as.numeric(input$create_ens_rescale_type),
+    "none", "abundance", "normalization", "standardization", "sumto1"
+  )
+
+  if (x.pred.idx == "none") {
+    temp <- models.overlaid
+  } else {
+    temp <- eSDM::ensemble_rescale(
+      models.overlaid, rep("Pred.overlaid", length(models.overlaid)),
+      x.pred.idx, input$create_ens_rescale_abund
+    )
+  }
+
+  data.frame(lapply(temp, function(i) st_set_geometry(i, NULL)$Pred.overlaid)) %>%
+    purrr::set_names(letters[1:length(temp)])
+
+  # switch(input$create_ens_rescale_type,
+  #        "1" = create_ens_data_extract(),        # No rescaling
+  #        "2" = create_ens_data_rescale_abund(),  # Rescale densities to given abundance
+  #        "3" = create_ens_data_rescale_norm(),   # Normalize densities
+  #        "4" = create_ens_data_rescale_std(),    # Standardize densities
+  #        "5" = create_ens_data_rescale_sumto1()) # Rescale densities so they sum to 1
 })
 
 
 ###############################################################################
 # 'Level 3' functions
 
-#################################################
-# Rescale model predictions
-
-### Rescale model predictions by abundance
-create_ens_data_rescale_abund <- reactive({
-  abund <- input$create_ens_rescale_abund
-  sf.list <- vals$overlaid.models
-
-  validate(
-    need(abund > 0,
-         paste("Error: Abundance must be greater",
-               "than 0 to rescale predictions"))
-  )
-
-  if (input$create_ens_table_subset) {
-    sf.list <- sf.list[sort(input$create_ens_datatable_rows_selected)]
-  }
-
-  x <- as.data.frame(lapply(sf.list, function(s) {
-    a = s$Pred.overlaid / (eSDM::model_abundance(s, "Pred.overlaid") / abund)
-  }))
-  names(x) <- letters[ncol(x)]
-
-  x
-})
-
-### Normalize model predictions (densities)
-create_ens_data_rescale_norm <- reactive({
-  as.data.frame(apply(create_ens_data_extract(), 2, normalize))
-})
-
-### Standardize model predictions (densities)
-create_ens_data_rescale_std <- reactive({
-  as.data.frame(apply(create_ens_data_extract(), 2, scale))
-})
-
-### Rescale model predictions (densities) to sum to 1
-create_ens_data_rescale_sumto1 <- reactive({
-  as.data.frame(
-    apply(create_ens_data_extract(), 2, function(i) {i / sum(i, na.rm = TRUE)})
-  )
-})
-
-
-#################################################
-### Extract prediction data from overlaid models to use
-create_ens_data_extract <- reactive({
-  overlaid.models <- vals$overlaid.models[create_ens_overlaid_idx()]
-
-  data.extracted <- as.data.frame(
-    lapply(overlaid.models, function(i) i$Pred.overlaid)
-  )
-  names(data.extracted) <- letters[1:ncol(data.extracted)]
-
-  data.extracted
-})
-
+# #################################################
+# # Rescale model predictions
+#
+# ### Rescale model predictions by abundance
+# create_ens_data_rescale_abund <- reactive({
+#   abund <- input$create_ens_rescale_abund
+#   sf.list <- vals$overlaid.models
+#
+#   validate(
+#     need(abund > 0,
+#          "Error: Abundance must be greater than 0 to rescale predictions")
+#   )
+#
+#   if (input$create_ens_table_subset) {
+#     sf.list <- sf.list[sort(input$create_ens_datatable_rows_selected)]
+#   }
+#
+#   x <- as.data.frame(lapply(sf.list, function(s) {
+#     a = s$Pred.overlaid / (eSDM::model_abundance(s, "Pred.overlaid") / abund)
+#   }))
+#   names(x) <- letters[ncol(x)]
+#
+#   x
+# })
+#
+# ### Normalize model predictions (densities)
+# create_ens_data_rescale_norm <- reactive({
+#   as.data.frame(apply(create_ens_data_extract(), 2, normalize))
+# })
+#
+# ### Standardize model predictions (densities)
+# create_ens_data_rescale_std <- reactive({
+#   as.data.frame(apply(create_ens_data_extract(), 2, base::scale))
+# })
+#
+# ### Rescale model predictions (densities) to sum to 1
+# create_ens_data_rescale_sumto1 <- reactive({
+#   as.data.frame(
+#     apply(create_ens_data_extract(), 2, function(i) {i / sum(i, na.rm = TRUE)})
+#   )
+# })
+#
+#
+# #################################################
+# ### Extract prediction data from overlaid models to use
+# create_ens_data_extract <- reactive({
+#   overlaid.models <- vals$overlaid.models[create_ens_overlaid_idx()]
+#
+#   data.extracted <- as.data.frame(
+#     lapply(overlaid.models, function(i) i$Pred.overlaid)
+#   )
+#   names(data.extracted) <- letters[1:ncol(data.extracted)]
+#
+#   data.extracted
+# })
+#
 
 #################################################
 ### Get indices of overlaid models to be used in ensemble
-# This is it's own func as it is used in a flag in server_3_createEns.R
+# This is it's own func since it is used in a flag in server_3_createEns.R
 create_ens_overlaid_idx_num <- reactive({
   req(length(vals$overlaid.models) > 0)
 
