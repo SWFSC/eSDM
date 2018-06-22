@@ -3,10 +3,10 @@
 
 ###############################################################################
 ### File type lists for use in radioButton()'s and selectInupt()'s
-file.type.list1 <- list("Excel .csv" = 1, "GIS shapefile" = 2, 
+file.type.list1 <- list("Excel .csv" = 1, "GIS shapefile" = 2,
                         "GIS file geodatabase feature class" = 3)
-file.type.list2 <- list("Excel .csv" = 1, "GIS raster (GeoTIFF)" = 2, 
-                        "GIS shapefile" = 3, 
+file.type.list2 <- list("Excel .csv" = 1, "GIS raster (GeoTIFF)" = 2,
+                        "GIS shapefile" = 3,
                         "GIS file geodatabase feature class" = 4)
 
 
@@ -34,40 +34,40 @@ label.gdb.upload <- "Upload file geodatabase feature class"
 ###########################################################
 ### Instructions for uploading certain file and object types
 ui.instructions.upload.csv <- function() {
-  helpText("Browse to and open the desired file with the extension '.csv'.", 
-           "This file must have headers. Note that if this file is large", 
+  helpText("Browse to and open the desired file with the extension '.csv'.",
+           "This file must have headers. Note that if this file is large",
            "(greater than ~50 Mb), then it could take several minutes to load.")
 }
 
 ui.instructions.upload.raster <- function() {
-  helpText("Browse to and open the desired GeoTIFF file, which has the", 
-           "extension '.tif.", 
-           "The raster can be in any coordinate system,", 
-           "but the raster coordinates must be", 
+  helpText("Browse to and open the desired GeoTIFF file, which has the",
+           "extension '.tif.",
+           "The raster can be in any coordinate system,",
+           "but the raster coordinates must be",
            "between the equivalent of -180 and 180 decimal degrees.")
 }
 
 ui.instructions.upload.shp <- function() {
-  helpText("Browse to and open all files (.shp, .dbf, etc.) associated with", 
-           "the GIS shapefile. Note that if this file is large", 
+  helpText("Browse to and open all files (.shp, .dbf, etc.) associated with",
+           "the GIS shapefile. Note that if this file is large",
            "(greater than ~50 Mb), then it could take several minutes to load.")
 }
 
 ui.instructions.upload.gdb <- function() {
   tags$h5(
-    tags$span("You can only load SDM predictions from", 
-              "a GIS file geodatabase feature class while", 
-              "running the eSDM locally through RStudio.", 
-              style = "color: red"), 
-    tags$br(), 
-    tags$br(), 
-    helpText("Enter the full file path of the file geodatabase that contains", 
-             "the desired file geodatabase feature class. The path and the", 
-             "name of the feature class should be", 
-             "exactly as they appear in ArcCatalog.", 
-             "This app does not currently support loading a file geodatabse", 
-             "raster dataset or data from an ESRI personal geodatabase.", 
-             "Note that if this file geodatabase feature class is large", 
+    tags$span("You can only load SDM predictions from",
+              "a GIS file geodatabase feature class while",
+              "running the eSDM locally through RStudio.",
+              style = "color: red"),
+    tags$br(),
+    tags$br(),
+    helpText("Enter the full file path of the file geodatabase that contains",
+             "the desired file geodatabase feature class. The path and the",
+             "name of the feature class should be",
+             "exactly as they appear in ArcCatalog.",
+             "This app does not currently support loading a file geodatabse",
+             "raster dataset or data from an ESRI personal geodatabase.",
+             "Note that if this file geodatabase feature class is large",
              "(greater than ~50 Mb), then it could take several minutes to load.")
   )
 }
@@ -79,38 +79,38 @@ ui.instructions.upload.gdb <- function() {
 #######################################
 ### Loading model predictions
 ui.instructions.pred.csv <- function() {
-  helpText(tags$em("Column with longitude data"), "and", 
-           tags$em("Column with latitude data:"), "Longitude and latitude", 
-           "points must be in WGS 84 geographic coordinates and", 
-           "equally spaced in decimal degrees.", 
-           tags$br(), 
-           tags$em("Column with prediciton data:"), "Please ensure that", 
-           "missing prediction values are one of the following: 'NA', 'NaN',", 
-           " 'N/A', 'n/a', 'na', 'Null', blank, or a negative number.", 
-           tags$br(), 
-           tags$em("Prediction value type:"), "Select \"Relative density\"", 
-           "if the predictions are probabilities of occurrence.", tags$br(), 
-           tags$em("Column with weight data:"), "Select \"N/A\" if the", 
+  helpText(tags$em("Column with longitude data"), "and",
+           tags$em("Column with latitude data:"), "Longitude and latitude",
+           "points must be in WGS 84 geographic coordinates and",
+           "equally spaced in decimal degrees.",
+           tags$br(),
+           tags$em("Column with prediciton data:"), "Please ensure that",
+           "missing prediction values are one of the following: 'NA', 'NaN',",
+           " 'N/A', 'n/a', 'na', 'Null', blank, or a negative number.",
+           tags$br(),
+           tags$em("Prediction value type:"), "Select \"Relative density\"",
+           "if the predictions are probabilities of occurrence.", tags$br(),
+           tags$em("Column with weight data:"), "Select \"N/A\" if the",
            "data does not have weight data.")
 }
 
 ui.instructions.pred.raster <- function() {
-  helpText("Please ensure that missing prediction values", 
-           "are one of the following: 'NA', 'NaN', 'N/A', ", 
-           "'n/a', 'na', 'NULL', blank, or a negative number.", 
-           tags$br(), 
-           tags$em("Prediction value type:"), "select \"Relative density\"", 
+  helpText("Please ensure that missing prediction values",
+           "are one of the following: 'NA', 'NaN', 'N/A', ",
+           "'n/a', 'na', 'NULL', blank, or a negative number.",
+           tags$br(),
+           tags$em("Prediction value type:"), "select \"Relative density\"",
            "if the predictions are probabilities of occurrence.")
 }
 
 ui.instructions.pred.shp.gdb <- function() {
-  helpText(tags$em("Column with prediciton data:"), "Please ensure that", 
-           "missing prediction values are one of the following: 'NA', 'NaN',", 
-           " 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.", 
-           tags$br(), 
-           tags$em("Prediction value type:"), "Select \"Relative density\"", 
-           "if the predictions are probabilities of occurrence.", tags$br(), 
-           tags$em("Column with weight data:"), "Select \"N/A\" if the", 
+  helpText(tags$em("Column with prediciton data:"), "Please ensure that",
+           "missing prediction values are one of the following: 'NA', 'NaN',",
+           " 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.",
+           tags$br(),
+           tags$em("Prediction value type:"), "Select \"Relative density\"",
+           "if the predictions are probabilities of occurrence.", tags$br(),
+           tags$em("Column with weight data:"), "Select \"N/A\" if the",
            "data does not have weight data.")
 }
 
@@ -118,14 +118,14 @@ ui.instructions.pred.shp.gdb <- function() {
 #######################################
 ### Loading csv polygons
 ui.instructions.poly.csv <- function() {
-  helpText("The first column must contain the longitude values, ", 
-           "and the second column must contain the latitude values.", 
-           "The longitudes and latitudes must be in WGS 84", 
-           "geographic coordinates and in the range [-180, 180].", 
-           "Multiple polygons may be demarcated", 
-           "using blank cells or cells with 'NA' entries.", 
-           "If the provided points do not form a closed polygon, ", 
-           "then the last point is connected to the first point.", 
+  helpText("The first column must contain the longitude values, ",
+           "and the second column must contain the latitude values.",
+           "The longitudes and latitudes must be in WGS 84",
+           "geographic coordinates and in the range [-180, 180].",
+           "Multiple polygons may be demarcated",
+           "using blank cells or cells with 'NA' entries.",
+           "If the provided points do not form a closed polygon, ",
+           "then the last point is connected to the first point.",
            "Please be aware that this could create an invalid polygon.")
 }
 
@@ -133,34 +133,34 @@ ui.instructions.poly.csv <- function() {
 ###########################################################
 ui.click.row.a1a <- paste("Click on a row in the table below to select or",
                           "deselect the model predictions.")
-ui.click.row.a2a <- paste("Click on row(s) in the table below to select or", 
+ui.click.row.a2a <- paste("Click on row(s) in the table below to select or",
                           "deselect the model predictions.")
 ui.click.row.a1b <- paste("Click on a row in the table(s) below to select or",
                           "deselect the model predictions.")
-ui.click.row.a2b <- paste("Click on row(s) in the table(s) below to select or", 
+ui.click.row.a2b <- paste("Click on row(s) in the table(s) below to select or",
                           "deselect the model predictions.")
-ui.click.row.b1 <- paste("You can only select or deselect a row when", 
-                         tags$em("Display additional information"), 
+ui.click.row.b1 <- paste("You can only select or deselect a row when",
+                         tags$em("Display additional information"),
                          "is unchecked.")
-ui.click.row.b2 <- paste("You can only select or deselect row(s) when", 
-                         tags$em("Display additional information"), 
+ui.click.row.b2 <- paste("You can only select or deselect row(s) when",
+                         tags$em("Display additional information"),
                          "is unchecked.")
 
 ### Instructions for selecting model(s) from one table
-ui.instructions.table.select <- function(text.pre, text.in, sel.num = 2, 
+ui.instructions.table.select <- function(text.pre, text.in, sel.num = 2,
                                          text.other = FALSE) {
-  tags$h5(tags$strong("Select", text.pre, "model predictions", text.in), 
-          switch(sel.num, ui.click.row.a1a, ui.click.row.a2a), 
-          HTML(ifelse(text.other, 
-                      switch(sel.num, ui.click.row.b1, ui.click.row.b2), 
+  tags$h5(tags$strong("Select", text.pre, "model predictions", text.in),
+          switch(sel.num, ui.click.row.a1a, ui.click.row.a2a),
+          HTML(ifelse(text.other,
+                      switch(sel.num, ui.click.row.b1, ui.click.row.b2),
                       HTML(NULL))))
 }
 
 ### Instructions for selecting model(s )from the o-o-e trio of tables
-ui.instructions.multipletables.select <- function(text.in, sel.num = 2, 
+ui.instructions.multipletables.select <- function(text.in, sel.num = 2,
                                                   text.other = NULL) {
-  tags$h5(tags$strong("Select model predictions to", text.in), 
-          switch(sel.num, ui.click.row.a1b, ui.click.row.a2b), 
+  tags$h5(tags$strong("Select model predictions to", text.in),
+          switch(sel.num, ui.click.row.a1b, ui.click.row.a2b),
           HTML(text.other))
 }
 
@@ -172,20 +172,20 @@ ui.instructions.multipletables.select <- function(text.in, sel.num = 2,
 # File upload error messages
 
 ### CSV
-ui.error.upload.csv <- tags$strong("Error: Please choose a file that has a .csv file extension", 
+ui.error.upload.csv <- tags$strong("Error: Please choose a file that has a .csv file extension",
                                    style = "color: red")
 
 ### Raster
-ui.error.upload.raster <- tags$strong("Error: Could not load GIS raster using the uploaded file and band number", 
+ui.error.upload.raster <- tags$strong("Error: Could not load GIS raster using the uploaded file and band number",
                                       style = "color: red")
 
 ### Shapefile
-ui.error.upload.shp <- tags$strong("Error: Could not load GIS shapefile using the uploaded files", 
+ui.error.upload.shp <- tags$strong("Error: Could not load GIS shapefile using the uploaded files",
                                    style = "color: red")
 
 ### File gdb
-ui.error.upload.gdb <- tags$strong("Error: Could not load GIS file geodatabase feature class using", 
-                                   "the provided path and filename", 
+ui.error.upload.gdb <- tags$strong("Error: Could not load GIS file geodatabase feature class using",
+                                   "the provided path and filename",
                                    style = "color: red")
 
 
@@ -195,8 +195,8 @@ ui.error.upload.gdb <- tags$strong("Error: Could not load GIS file geodatabase f
 ### No original model predicitons have been loaded
 # ui.no.model.pred.loaded1
 ui.notice.no.pred.original <- function() {
-  box(width = 4, 
-      tags$h4("No model predictions are loaded"), 
+  box(width = 4,
+      tags$h4("No model predictions are loaded"),
       tags$h5("Please load model predictions to use this section of the app")
   )
 }
@@ -204,17 +204,12 @@ ui.notice.no.pred.original <- function() {
 ### No overlaid model predictions have been created
 # ui.no.model.pred.loaded2
 ui.notice.no.pred.overlaid <- function(box.width = 4) {
-  box(width = box.width, 
-      tags$h4("No overlaid model predictions have been created"), 
-      tags$h5("Please create overlaid model predictions", 
+  box(width = box.width,
+      tags$h4("No overlaid model predictions have been created"),
+      tags$h5("Please create overlaid model predictions",
               "to use this section of the app")
   )
 }
 
-
-###############################################################################
-# Other
-### New line, just under 2x tags$br() height
-ui.new.line <- function() helpText(HTML("<br/>"))
 
 ###############################################################################

@@ -1,6 +1,6 @@
 #' Rescale SDM predictions
 #'
-#' Rescale list of SDM prediction as sf objects
+#' Rescale specified columns in a list of SDM prediction
 #'
 #' @param x is a list of sf objects;
 #' all sf objects must have the same number of rows

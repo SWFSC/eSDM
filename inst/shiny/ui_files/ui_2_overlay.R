@@ -101,7 +101,7 @@ ui.overlay <- function() {
                       column(6, selectInput("overlay_land_provided_res", tags$h5("Resolution of land polygon"),
                                             choices = list("Full" = 1, "High" = 2, "Intermediate" = 3, "Low" = 4, "Crude" = 5),
                                             selected = 1)),
-                      column(6, ui.new.line(), tags$br(), actionButton("overlay_land_provided", "Load provided land polygon"))
+                      column(6, tags$br(), tags$br(), actionButton("overlay_land_provided", "Load provided land polygon"))
                     ),
                     tags$span(textOutput("overlay_land_prov_message"), style = "color: blue"),
                     textOutput("overlay_land_prov_text")
@@ -117,8 +117,7 @@ ui.overlay <- function() {
                       column(6, fileInput("overlay_land_csv_file", label.csv.upload, accept = ".csv")),
                       column(
                         width = 6,
-                        tags$br(),
-                        tags$br(),
+                        tags$br(), tags$br(),
                         tags$span(textOutput("overlay_land_csv_message"), style = "color: blue"),
                         textOutput("overlay_land_csv_text")
                       )

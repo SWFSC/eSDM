@@ -236,7 +236,7 @@ ui.createEns <- function() {
                                     width = 4, offset = 1,
                                     conditionalPanel(
                                       condition = "output.create_ens_weights_poly_csv_flag == false",
-                                      ui.new.line(),
+                                      tags$br(), tags$br(),
                                       ui.error.upload.csv
                                     ),
                                     numericInput("create_ens_weights_poly_csv_weight", tags$h5("Weight for csv polygon(s)"),
@@ -285,25 +285,6 @@ ui.createEns <- function() {
                               conditionalPanel(
                                 condition = "input.create_ens_weights_poly_type == 4",
                                 ui.instructions.upload.gdb(),
-                                # fluidRow(
-                                #   column(6, textInput("create_ens_weights_poly_gdb_path", label.gdb.path, value = ".../folder.gdb")),
-                                #   column(6, textInput("create_ens_weights_poly_gdb_name", label.gdb.name, value = ""))
-                                # ),
-                                # fluidRow(
-                                #   column(6, actionButton("create_ens_weights_poly_gdb_load", label.gdb.upload)),
-                                #   column(
-                                #     width = 6,
-                                #     conditionalPanel(
-                                #       condition = "output.create_ens_weights_poly_gdb_flag == false",
-                                #       ui.error.upload.gdb
-                                #     )
-                                #   )
-                                # ),
-                                # fluidRow(
-                                #   column(6, numericInput("create_ens_weights_poly_gdb_weight",
-                                #                          tags$h5("Weight for area covered by file geodatabase file"),
-                                #                          value = 1, min = 0, step = 0.1))
-                                # )
                                 fluidRow(
                                   column(
                                     width = 6,
@@ -374,7 +355,7 @@ ui.createEns <- function() {
                 tags$strong("3) Create ensemble"),
                 tags$br(), tags$br(),
                 uiOutput("create_ens_create_action_uiOut_button"),
-                tags$br(), tags$br(),
+                tags$br(),
                 tags$span(uiOutput("ens_create_ensemble_text"), style = "color: blue")
               )
             )

@@ -34,18 +34,14 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
                                create_ens_info_weights())
     vals$ensemble.rescaling <- c(vals$ensemble.rescaling,
                                  create_ens_info_rescaling())
-
-
-    ### Create text message to print
-    text.toreturn <- paste(create_ens_info_weighting(), "ensemble")
-    text.toreturn <- paste0("Created ", tolower(substring(text.toreturn, 1, 1)),
-                            substring(text.toreturn, 2))
-    text.toreturn <- paste0("<b>", create_ens_info_rescaling_message(),
-                            "<br/>", "<br/>", text.toreturn)
     incProgress(0.1)
   })
 
-  return(text.toreturn)
+  paste0(
+    create_ens_info_rescaling_message(),
+    tags$br(), tags$br(),
+    paste("Created", tolower(create_ens_info_weighting()), "ensemble")
+  )
 })
 
 
@@ -55,12 +51,11 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 # Create unweighted ensemble
 create_ens_unweighted <- reactive({
   overlaid.data <- create_ens_data_rescale()
-  base.sfc <- vals$overlay.base.sfc
 
-  data.ens <- data.frame(apply(overlaid.data, 1, mean, na.rm = TRUE))
-  names(data.ens) <- "Pred.ens"
-
-  st_sf(data.ens, geometry = base.sfc, agr = "constant")
+  st_sf(
+    data.frame(Pred.ens = apply(overlaid.data, 1, mean, na.rm = TRUE)),
+    geometry = vals$overlay.base.sfc, agr = "constant"
+  )
 })
 
 ####################################################################
@@ -79,6 +74,13 @@ create_ens_data_rescale <- reactive({
     "none", "abundance", "normalization", "standardization", "sumto1"
   )
 
+  if (x.pred.idx == "abundance") {
+    validate(
+      need(input$create_ens_rescale_abund > 0,
+           "Error: Abundance must be greater than 0 to rescale predictions")
+    )
+  }
+
   if (x.pred.idx == "none") {
     temp <- models.overlaid
   } else {
@@ -88,6 +90,7 @@ create_ens_data_rescale <- reactive({
     )
   }
 
+  # Next level-up function expects data.frame of prediction values
   data.frame(lapply(temp, function(i) st_set_geometry(i, NULL)$Pred.overlaid)) %>%
     purrr::set_names(letters[1:length(temp)])
 
@@ -248,7 +251,7 @@ create_ens_info_rescaling_message <- reactive({
                         "5" = "sum to 1")
 
   if (input.rescale != "1") {
-    paste("Predictions rescaled using the ", str.rescale, "method")
+    paste("Predictions rescaled using the", str.rescale, "method")
   } else {
     str.rescale
   }
