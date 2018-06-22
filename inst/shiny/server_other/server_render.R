@@ -103,13 +103,13 @@ output$overlay_bound_gis_gdb_text <- renderText(overlay_bound_gis_gdb())
 
 ### Boundary polygon loaded messages
 output$overlay_bound_csv_message <- renderText({
-  if (!is.null(vals$overlay.bound)) "A study area polygon is loaded"
+  req(vals$overlay.bound) "A study area polygon is loaded"
 })
 output$overlay_bound_gis_shp_message <- renderText({
-  if (!is.null(vals$overlay.bound)) "A study area polygon is loaded"
+  req(vals$overlay.bound) "A study area polygon is loaded"
 })
 output$overlay_bound_gis_gdb_message <- renderText({
-  if (!is.null(vals$overlay.bound)) "A study area polygon is loaded"
+  req(vals$overlay.bound) "A study area polygon is loaded"
 })
 
 ### Land polygon error outputs
@@ -120,16 +120,16 @@ output$overlay_land_gis_gdb_text <- renderText(overlay_land_gis_gdb())
 
 ### Land polygon loaded messages
 output$overlay_land_prov_message <- renderText({
-  if (!is.null(vals$overlay.land)) "A land polygon is loaded"
+  req(vals$overlay.land) "A land polygon is loaded"
 })
 output$overlay_land_csv_message <- renderText({
-  if (!is.null(vals$overlay.land)) "A land polygon is loaded"
+  req(vals$overlay.land) "A land polygon is loaded"
 })
 output$overlay_land_gis_shp_message <- renderText({
-  if (!is.null(vals$overlay.land)) "A land polygon is loaded"
+  req(vals$overlay.land) "A land polygon is loaded"
 })
 output$overlay_land_gis_gdb_message <- renderText({
-  if (!is.null(vals$overlay.land)) "A land polygon is loaded"
+  req(vals$overlay.land) "A land polygon is loaded"
 })
 
 #----------------------------------------------------------
@@ -165,13 +165,11 @@ output$overlay_overlaid_models_message <- renderUI({
 # Previews
 
 ### Preview of base grid
-# 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$overlay_preview_base <- renderLeaflet({
   req(vals$overlay.plot)
 })
 
 ### Preview of overlaid model predictions
-# 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$overlay_preview_overlaid <- renderPlot({
   req(x <- vals$overlaid.plot)
 
