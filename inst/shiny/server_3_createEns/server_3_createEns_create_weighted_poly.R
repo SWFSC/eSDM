@@ -354,7 +354,7 @@ create_ens_weights_poly_csv_process <- reactive({
     csv.poly.data <- csv.poly.list[[2]]
     csv.poly.data[csv.poly.data == ""] <- NA
 
-    csv.poly.sfc <- create_sfc_csv_func(csv.poly.data, crs.ll)
+    csv.poly.sfc <- create_sfc_csv(csv.poly.data[, 1:2], crs.ll)
     incProgress(0.3)
 
     # Transform weight polygon as necesary
