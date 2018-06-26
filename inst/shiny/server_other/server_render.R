@@ -59,7 +59,7 @@ output$models_loaded_table_stats <- renderDT({
 output$model_preview_interactive_plot <- renderLeaflet({
   req(x <- vals$models.plot.leaf)
 
-  eSDM::preview_interactive(
+  preview_interactive(
     x$model.toplot, "Pred", x$perc.num, pal.esdm, leg.perc.esdm,
     x$plot.title, x$leg.title
   )
@@ -68,7 +68,7 @@ output$model_preview_interactive_plot <- renderLeaflet({
 output$model_preview_plot <- renderPlot({
   req(x <- vals$models.plot)
 
-  eSDM::multiplot_layout(
+  multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num,
     x$pal, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
@@ -180,7 +180,7 @@ output$overlay_preview_base <- renderLeaflet({
 output$overlay_preview_overlaid <- renderPlot({
   req(x <- vals$overlaid.plot)
 
-  eSDM::multiplot_layout(
+  multiplot_layout(
     x$models.toplot, x$data.names, x$plot.titles, 1, pal.esdm, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
     x$plot.dims[5], x$plot.dims[6]
@@ -267,7 +267,7 @@ output$ens_remove_text <- renderUI({
 output$ens_preview_interactive_plot <- renderLeaflet({
   req(x <- vals$ensemble.plot.leaf)
 
-  eSDM::preview_interactive(
+  preview_interactive(
     x$model.toplot, "Pred.ens", x$perc.num, pal.esdm, leg.perc.esdm,
     x$plot.title, x$leg.title
   )
@@ -277,7 +277,7 @@ output$ens_preview_interactive_plot <- renderLeaflet({
 output$ens_preview_plot <- renderPlot({
   req(x <- vals$ensemble.plot)
 
-  eSDM::multiplot_layout(
+  multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num,
     x$pal, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],

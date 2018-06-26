@@ -31,7 +31,7 @@ output$model_download_preview_execute <- downloadHandler(
       if (plot.format == 1) {
         jpeg(file, width = 4, height = 4, units = 'in', res = plot.res,
              quality = 150)
-        eSDM::multiplot_layout(
+        multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
           plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
@@ -40,7 +40,7 @@ output$model_download_preview_execute <- downloadHandler(
 
       } else if (plot.format == 2) {
         pdf(file, width = pdf.res, height = pdf.res)
-        eSDM::multiplot_layout(
+        multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
           plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
@@ -49,7 +49,7 @@ output$model_download_preview_execute <- downloadHandler(
 
       } else if (plot.format == 3) {
         png(file, width = 4, height = 4, units = "in", res = plot.res)
-        eSDM::multiplot_layout(
+        multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
           plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
@@ -95,7 +95,7 @@ output$ens_download_preview_execute <- downloadHandler(
       if (plot.format == 1) {
         jpeg(file, width = 4, height = 4, units = 'in', res = plot.res,
              quality = 150)
-        eSDM::multiplot_layout(
+        multiplot_layout(
           models.toplot, rep("Pred.ens", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
           plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
@@ -104,7 +104,7 @@ output$ens_download_preview_execute <- downloadHandler(
 
       } else if (plot.format == 2) {
         pdf(file, width = pdf.res, height = pdf.res)
-        eSDM::multiplot_layout(
+        multiplot_layout(
           models.toplot, rep("Pred.ens", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
           plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
@@ -113,7 +113,7 @@ output$ens_download_preview_execute <- downloadHandler(
 
       } else if (plot.format == 3) {
         png(file, width = 4, height = 4, units = "in", res = plot.res)
-        eSDM::multiplot_layout(
+        multiplot_layout(
           models.toplot, rep("Pred.ens", models.num), plot.titles,
           perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
           plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6]
