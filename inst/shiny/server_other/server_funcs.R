@@ -92,7 +92,7 @@ make_poly_valid <- function(poly.invalid, dens.col = NA, poly.info = NA) {
 # Create sfc object from data frame (from csv) with only long and lat,
 #   respectively, as columns. crs set as crs.prov
 # Designed only for use within eSDM with sf and dplyr loaded
-create_sfc_csv_func <- function(x, crs.prov) {
+create_sfc_csv <- function(x, crs.prov) {
   stopifnot(
     inherits(x, "data.frame"),
     ncol(x) == 2
@@ -100,19 +100,16 @@ create_sfc_csv_func <- function(x, crs.prov) {
 
   names(x) <- c("lon", "lat")
   if (anyNA(x$lon)) {
-    obj.list <- try(
-      x %>%
-        mutate(na_sum = cumsum(is.na(lon) & is.na(lat))) %>%
-        filter(!is.na(lon) & !is.na(lat)) %>%
-        group_by(na_sum) %>%
-        summarise(list(st_polygon(list(matrix(c(.data$lon, .data$lat), ncol = 2))))),
-      silent = TRUE)
-    obj.sfc <- try(st_sfc(do.call(rbind, obj.list[, 2])), silent = TRUE)
+    obj.list <- x %>%
+      mutate(na_sum = cumsum(is.na(lon) & is.na(lat))) %>%
+      filter(!is.na(lon) & !is.na(lat)) %>%
+      group_by(na_sum) %>%
+      summarise(temp = list(st_polygon(list(matrix(c(.data$lon, .data$lat), ncol = 2)))))
+    obj.sfc <- st_sfc(obj.list$temp, crs = crs.prov)
 
   } else {
     obj.list <- list()
-    obj.sfc <- try(st_sfc(st_polygon(list(as.matrix(x)))),
-                   silent = TRUE)
+    obj.sfc <- try(st_sfc(st_polygon(list(as.matrix(x)))), silent = TRUE)
   }
 
   validate(

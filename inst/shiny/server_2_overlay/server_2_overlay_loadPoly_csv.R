@@ -91,7 +91,7 @@ overlay_land_csv <- reactive({
   withProgress(message = 'Loading land polygon', value = 0.7, {
     Sys.sleep(0.5)
 
-    land.sfc <- create_sfc_csv(csv.df, crs.ll)
+    land.sfc <- create_sfc_csv(csv.df[, 1:2], crs.ll)
     incProgress(0.3)
   })
 
