@@ -45,9 +45,11 @@ source(file.path("ui_files", "ui_7_manual.R"), local = TRUE, echo = FALSE, chdir
 ### UI object for Shiny app
 ui <- dashboardPage(
   skin = "blue",
-  title = "eSDM",
-  dashboardHeader(title = "Ensemble Tool for Species Distribution Models (eSDM)",
-                  titleWidth = "540px"),
+  title = "eSDM GUI",
+  dashboardHeader(
+    title = "Ensemble tool for predictions from Species Distribution Models (eSDM)",
+    titleWidth = "600px"
+  ),
 
   dashboardSidebar(
     sidebarMenu(
@@ -63,7 +65,7 @@ ui <- dashboardPage(
       menuItem("Manual", tabName = "manual", icon = icon("book"))
     ),
     tags$br(),
-    actionButton("close_app", label = "Close App")
+    actionButton("close_app", label = "Close GUI")
   ),
 
   dashboardBody(

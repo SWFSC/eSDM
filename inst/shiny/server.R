@@ -27,6 +27,7 @@ library(raster)
 library(RColorBrewer)
 library(ROCR)
 library(sf)
+library(units)
 library(viridis)
 
 
@@ -60,7 +61,7 @@ server <- function(input, output, session) {
   ###############################################
   ### Quit App
   observeEvent(input$close_app, {
-    stopApp(returnValue = "Ensemble app was closed")
+    stopApp(returnValue = "eSDM GUI was closed")
   })
 
   ###############################################

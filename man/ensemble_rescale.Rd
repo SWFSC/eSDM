@@ -20,5 +20,5 @@ one of: "abundance", "normalization", "standardization", or "sumto1"}
 ignored if y is not "abundance"}
 }
 \description{
-Rescale list of SDM prediction as sf objects
+Rescale specified columns in a list of SDM prediction
 }

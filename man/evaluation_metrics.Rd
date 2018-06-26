@@ -29,6 +29,6 @@ Calculate AUC, TSS, and RMSE for given presence and absence points and model pre
 }
 \examples{
 load("../data_provided+/eSDM_loadmodels_pre.RDATA")
-system.time(evaluate_metrics(vals.save$models.ll[[2]], vals.save$eval.data, 1, "sight", "count"))
+evaluation_metrics(vals.save$models.ll[[2]], vals.save$eval.data, 1, "sight", "count")
 
 }

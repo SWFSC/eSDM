@@ -11,12 +11,20 @@
 #' @param y.idx.count name or index of column in \code{y} with
 #'   count data. If not NULL, then RMSE is calculated
 #'
+#' @importFrom ROCR performance
+#' @importFrom ROCR prediction
+#' @importFrom sf st_crs
+#' @importFrom sf st_geometry
+#' @importFrom sf st_intersects
+#' @importFrom sf st_set_geometry
+#' @importFrom sf st_sf
+#'
 #' @return A three-element, numeric vector with AUC, TSS and RMSE values, respectively.
 #'   If \code{y.idx.count} is NULL, then the RMSE value will be NA
 #'
 #' @examples
 #' load("../data_provided+/eSDM_loadmodels_pre.RDATA")
-#' system.time(evaluate_metrics(vals.save$models.ll[[2]], vals.save$eval.data, 1, "sight", "count"))
+#' evaluation_metrics(vals.save$models.ll[[2]], vals.save$eval.data, 1, "sight", "count")
 #'
 #' @export
 evaluation_metrics <- function(x, y, x.idx, y.idx, y.idx.count = NULL) {
@@ -75,16 +83,16 @@ evaluation_metrics <- function(x, y, x.idx, y.idx, y.idx.count = NULL) {
 
   #------------------------------------------------------------
   # Get ROCR prediction output
-  pred.out <- ROCR::prediction(xy.data.overlap[, 1], xy.data.overlap[, 2])
+  pred.out <- prediction(xy.data.overlap[, 1], xy.data.overlap[, 2])
 
   #------------------------------------------------------------
   # AUC value
-  m1 <- slot(ROCR::performance(pred.out, measure = "auc"), "y.values")[[1]]
+  m1 <- performance(pred.out, measure = "auc")@y.values[[1]]
 
   #------------------------------------------------------------
   # TSS value
-  sens <- slot(ROCR::performance(pred.out, "sens"), "y.values")[[1]]
-  spec <- slot(ROCR::performance(pred.out, "spec"), "y.values")[[1]]
+  sens <- performance(pred.out, "sens")@y.values[[1]]
+  spec <- performance(pred.out, "spec")@y.values[[1]]
 
   m2 <- max(sens + spec - 1)
 

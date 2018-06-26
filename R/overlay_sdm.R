@@ -2,15 +2,25 @@
 #'
 #' Overlay models onto base polygons
 #'
-#' @importFrom purrr set_names
-#'
 #' @param base.poly object of class sfc that sdm is being overlaid onto
 #' @param sdm object of class sf representing the SDM that is being overlaid onto base.poly
 #' @param overlap.perc percentage that each base polygon must be overlapped for density value to be kept
 #' @param data.names names or indices of column(s) with data to be overlaid
 #'
+#' @importFrom dplyr %>%
+#' @importFrom dplyr quo
+#' @importFrom purrr set_names
+#' @importFrom sf st_area
+#' @importFrom sf st_bbox
+#' @importFrom sf st_crop
+#' @importFrom sf st_crs
+#' @importFrom sf st_intersection
+#' @importFrom sf st_geometry
+#' @importFrom sf st_sf
+#' @importFrom sf st_set_geometry
+#' @importFrom sf st_set_agr
+#'
 #' @export
-
 overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
   #----------------------------------------------------------------------------
   # 0) Check that inputs meet requirements
