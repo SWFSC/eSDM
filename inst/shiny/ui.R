@@ -54,7 +54,7 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       id = "tabs",
-      menuItem(HTML(paste0("eSDM Roadmap and", "<br/>", "Load or Save Environment")),
+      menuItem(HTML(paste0("eSDM GUI Roadmap and", "<br/>", "Load or Save Workspace")),
                tabName = "roadmap", icon = icon("road")), #icon("sitemap")
       menuItem("Load Model Predictions", tabName = "loadModels", icon = icon("cloud-upload")),
       menuItem("Overlay Model Predictions", tabName = "overlay", icon = icon("cogs")),

@@ -3,11 +3,14 @@
 
 ###############################################################################
 ### File type lists for use in radioButton()'s and selectInupt()'s
-file.type.list1 <- list("Excel .csv" = 1, "GIS shapefile" = 2,
-                        "GIS file geodatabase feature class" = 3)
-file.type.list2 <- list("Excel .csv" = 1, "GIS raster (GeoTIFF)" = 2,
-                        "GIS shapefile" = 3,
-                        "GIS file geodatabase feature class" = 4)
+file.type.list1 <- list(
+  "Excel .csv" = 1, "GIS shapefile" = 2,
+  "GIS file geodatabase feature class" = 3
+)
+file.type.list2 <- list(
+  "Excel .csv" = 1, "GIS raster (GeoTIFF)" = 2, "GIS shapefile" = 3,
+  "GIS file geodatabase feature class" = 4
+)
 
 
 ###############################################################################
@@ -35,8 +38,8 @@ label.gdb.upload <- "Upload file geodatabase feature class"
 ### Instructions for uploading certain file and object types
 ui.instructions.upload.csv <- function() {
   helpText("Browse to and open the desired file with the extension '.csv'.",
-           "This file must have headers. Note that if this file is large",
-           "(greater than ~50 Mb), then it could take several minutes to load.")
+           "This file must have headers. Note that larger files will",
+           "take longer to load.")
 }
 
 ui.instructions.upload.raster <- function() {
@@ -49,8 +52,8 @@ ui.instructions.upload.raster <- function() {
 
 ui.instructions.upload.shp <- function() {
   helpText("Browse to and open all files (.shp, .dbf, etc.) associated with",
-           "the GIS shapefile. Note that if this file is large",
-           "(greater than ~50 Mb), then it could take several minutes to load.")
+           "the GIS shapefile. Note that larger files will take",
+           "longer to load.")
 }
 
 ui.instructions.upload.gdb <- function() {
@@ -65,10 +68,9 @@ ui.instructions.upload.gdb <- function() {
              "the desired file geodatabase feature class. The path and the",
              "name of the feature class should be",
              "exactly as they appear in ArcCatalog.",
-             "This app does not currently support loading a file geodatabse",
+             "The GUI does not currently support loading a file geodatabse",
              "raster dataset or data from an ESRI personal geodatabase.",
-             "Note that if this file geodatabase feature class is large",
-             "(greater than ~50 Mb), then it could take several minutes to load.")
+             "Note that larger files will take longer to load.")
   )
 }
 
@@ -123,28 +125,32 @@ ui.instructions.poly.csv <- function() {
            "The longitudes and latitudes must be in WGS 84",
            "geographic coordinates and in the range [-180, 180].",
            "Multiple polygons may be demarcated",
-           "using blank cells or cells with 'NA' entries.",
-           "If the provided points do not form a closed polygon, ",
-           "then the last point is connected to the first point.",
-           "Please be aware that this could create an invalid polygon.")
+           "using blank cells or cells with 'NA' entries.")
 }
 
 
 ###########################################################
-ui.click.row.a1a <- paste("Click on a row in the table below to select or",
-                          "deselect the model predictions.")
-ui.click.row.a2a <- paste("Click on row(s) in the table below to select or",
-                          "deselect the model predictions.")
-ui.click.row.a1b <- paste("Click on a row in the table(s) below to select or",
-                          "deselect the model predictions.")
-ui.click.row.a2b <- paste("Click on row(s) in the table(s) below to select or",
-                          "deselect the model predictions.")
-ui.click.row.b1 <- paste("You can only select or deselect a row when",
-                         tags$em("Display additional information"),
-                         "is unchecked.")
-ui.click.row.b2 <- paste("You can only select or deselect row(s) when",
-                         tags$em("Display additional information"),
-                         "is unchecked.")
+ui.click.row.a1a <- paste(
+  "Click on a row in the table below to select or deselect model predictions."
+)
+ui.click.row.a2a <- paste(
+  "Click on row(s) in the table below to select or deselect model predictions."
+)
+ui.click.row.a1b <- paste(
+  "Click on a row in the table(s) below to select or deselect model predictions."
+)
+ui.click.row.a2b <- paste(
+  "Click on row(s) in the table(s) below to select or",
+  "deselect model predictions."
+)
+ui.click.row.b1 <- paste(
+  "You can only select or deselect a row when",
+  tags$em("Display additional information"), "is unchecked."
+)
+ui.click.row.b2 <- paste(
+  "You can only select or deselect row(s) when",
+  tags$em("Display additional information"), "is unchecked."
+)
 
 ### Instructions for selecting model(s) from one table
 ui.instructions.table.select <- function(text.pre, text.in, sel.num = 2,
@@ -172,21 +178,29 @@ ui.instructions.multipletables.select <- function(text.in, sel.num = 2,
 # File upload error messages
 
 ### CSV
-ui.error.upload.csv <- tags$strong("Error: Please choose a file that has a .csv file extension",
-                                   style = "color: red")
+ui.error.upload.csv <- tags$strong(
+  "Error: Please choose a file that has a .csv file extension",
+  style = "color: red"
+)
 
 ### Raster
-ui.error.upload.raster <- tags$strong("Error: Could not load GIS raster using the uploaded file and band number",
-                                      style = "color: red")
+ui.error.upload.raster <- tags$strong(
+  "Error: Could not load GIS raster using the uploaded file and band number",
+  style = "color: red"
+)
 
 ### Shapefile
-ui.error.upload.shp <- tags$strong("Error: Could not load GIS shapefile using the uploaded files",
-                                   style = "color: red")
+ui.error.upload.shp <- tags$strong(
+  "Error: Could not load GIS shapefile using the uploaded files",
+  style = "color: red"
+)
 
 ### File gdb
-ui.error.upload.gdb <- tags$strong("Error: Could not load GIS file geodatabase feature class using",
-                                   "the provided path and filename",
-                                   style = "color: red")
+ui.error.upload.gdb <- tags$strong(
+  "Error: Could not load GIS file geodatabase feature class using",
+  "the provided path and filename",
+  style = "color: red"
+)
 
 
 ###########################################################
@@ -195,19 +209,21 @@ ui.error.upload.gdb <- tags$strong("Error: Could not load GIS file geodatabase f
 ### No original model predicitons have been loaded
 # ui.no.model.pred.loaded1
 ui.notice.no.pred.original <- function() {
-  box(width = 4,
-      tags$h4("No model predictions are loaded"),
-      tags$h5("Please load model predictions to use this section of the app")
+  box(
+    width = 4,
+    tags$h4("No model predictions are loaded"),
+    tags$h5("Please load model predictions to use this section of the GUI")
   )
 }
 
 ### No overlaid model predictions have been created
 # ui.no.model.pred.loaded2
 ui.notice.no.pred.overlaid <- function(box.width = 4) {
-  box(width = box.width,
-      tags$h4("No overlaid model predictions have been created"),
-      tags$h5("Please create overlaid model predictions",
-              "to use this section of the app")
+  box(
+    width = box.width,
+    tags$h4("No overlaid model predictions have been created"),
+    tags$h5("Please create overlaid model predictions",
+            "to use this section of the GUI")
   )
 }
 

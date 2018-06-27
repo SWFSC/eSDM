@@ -3,13 +3,11 @@
 \name{eSDM_GUI}
 \alias{eSDM_GUI}
 \title{eSDM GUI}
-\source{
-https://swoodman.shinyapps.io/eSDM/
-}
 \usage{
 eSDM_GUI()
 }
 \description{
-The eSDM graphical user interface (a shiny app) for creating ensembles
-  using predictions from SDMs
+The eSDM graphical user interface (GUI): a Shiny app for creating ensemble
+  predictions using predictions from SDMs. You can also access the gui at
+  https://swoodman.shinyapps.io/eSDM/
 }

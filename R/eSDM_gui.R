@@ -1,13 +1,12 @@
 #' eSDM GUI
 #'
-#' The eSDM graphical user interface (GUI; a Shiny app) for creating ensemble
-#'   predictions using predictions from SDMs
+#' The eSDM graphical user interface (GUI): a Shiny app for creating ensemble
+#'   predictions using predictions from SDMs. You can also access the gui at
+#'   https://swoodman.shinyapps.io/eSDM/
 #'
 #' @usage eSDM_GUI()
 #'
 #' @importFrom shiny runApp
-#'
-#' @source https://swoodman.shinyapps.io/eSDM/
 #'
 #' @export
 eSDM_GUI <- function() {
