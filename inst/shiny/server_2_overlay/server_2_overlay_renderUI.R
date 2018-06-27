@@ -18,12 +18,12 @@ output$overlay_proj_sdm_uiOut_select <- renderUI({
 
 
 ###############################################################################
-### Widget (button) to preview base grid with land and study area polygons
+### Widget (button) to preview base geometry with land and study area polygons
 output$overlay_preview_base_execute_uiOut_button <- renderUI({
   validate(
     need(isTruthy(input$overlay_loaded_table_rows_selected),
          paste("Select a set of loaded model predictions",
-               "to use as the base grid")),
+               "to use as the base geometry")),
     errorClass = "validation2"
   )
 
@@ -31,15 +31,15 @@ output$overlay_preview_base_execute_uiOut_button <- renderUI({
     if (input$overlay_bound)
       need(isTruthy(vals$overlay.bound),
            paste("Either uncheck the boundary box or",
-                 "load a boundary polygon to preview the base grid")),
+                 "load a boundary polygon to preview the base geometry")),
     if (input$overlay_land)
       need(isTruthy(vals$overlay.land),
            paste("Either uncheck the land box or load a land polygon",
-                 "to preview the base grid")),
+                 "to preview the base geometry")),
     errorClass = "validation2"
   )
 
-  actionButton("overlay_preview_base_execute", "Preview base grid")
+  actionButton("overlay_preview_base_execute", "Preview base geometry")
 })
 
 
@@ -49,7 +49,7 @@ output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
   validate(
     need(length(vals$overlaid.models) > 0,
          paste("Create overlaid model predictions",
-               "to use this section of the app")),
+               "to use this section of the GUI")),
     errorClass = "validation2"
   )
 

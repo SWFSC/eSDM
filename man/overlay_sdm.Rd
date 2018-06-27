@@ -2,19 +2,19 @@
 % Please edit documentation in R/overlay_sdm.R
 \name{overlay_sdm}
 \alias{overlay_sdm}
-\title{Title}
+\title{Overlay SDM predictions onto base geometry}
 \usage{
-overlay_sdm(base.poly, sdm, overlap.perc, data.names)
+overlay_sdm(base.geom, sdm, overlap.perc, data.names)
 }
 \arguments{
-\item{base.poly}{object of class sfc that sdm is being overlaid onto}
+\item{base.geom}{object of class sfc that sdm is being overlaid onto}
 
-\item{sdm}{object of class sf representing the SDM that is being overlaid onto base.poly}
+\item{sdm}{object of class sf representing the SDM that is being overlaid onto base.geom}
 
 \item{overlap.perc}{percentage that each base polygon must be overlapped for density value to be kept}
 
 \item{data.names}{names or indices of column(s) with data to be overlaid}
 }
 \description{
-Overlay models onto base polygons
+Overlay SDM predictions onto base geometry
 }

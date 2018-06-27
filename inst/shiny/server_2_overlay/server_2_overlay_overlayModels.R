@@ -1,11 +1,3 @@
-### Overlay predictions that are already on the same grid...
-### ...functionality is in 'server_2_overlay_overlayModels_samegrid.R'
-
-### Get crs in which to do overlay
-### Reset/hide reactive values, preview plots, and eval metrics
-### Overlay models onto base grid and create vals$ens.over... objects
-
-
 ###############################################################################
 ### Where the overlay magic aka science happens
 
@@ -19,14 +11,14 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   #########################################################
   ### Model overlay prep
-  # Get index of model predictions to be base grid
+  # Get index of model predictions to be base geometry
   base.idx <- overlay_base_idx()
   models.num <- length(vals$models.ll)
 
   validate(
     need(length(base.idx) == 1,
          paste("Error: Please select exactly one model from the table",
-               "to use as the base grid")),
+               "to use as the base geometry")),
     need(models.num > 1,
          paste("Error: Please add more than one model to the app",
                "before overlaying")),
@@ -45,7 +37,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   # Set flag for if all of the sdms have the same sfc geometry list column
   models.orig.sfc <- lapply(vals$models.orig, st_geometry)
-  samegrid.flag <- all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]]))
+  samegeo.flag <- all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]]))
   rm(models.orig.sfc)
 
 
@@ -74,9 +66,9 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
     #--------------------------------------------
-    ### Create base grid (sfc) and overlaid model predictions (sf)
+    ### Create base geometry (sfc) and overlaid model predictions (sf)
     incProgress(0.9 / prog.total, detail = paste(
-      "Making the base grid and thus also overlaying original model", base.idx
+      "Making the base geometry and thus also overlaying original model", base.idx
     ))
 
     base.sf <- overlay_create_base_sf() %>%
@@ -102,12 +94,12 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
     #--------------------------------------------
     ### Create overlaid models
-    if (samegrid.flag) {
-      # Same-grid overlay
+    if (samegeo.flag) {
+      # Same-geometry overlay
       models.overlaid <- lapply(models.preoverlay, function(i, j) {
         incProgress(
           0.9 / prog.total,
-          detail = "Overlaying original models using same-grid method"
+          detail = "Overlaying original models"
         )
         sf.temp <- j %>%
           dplyr::left_join(st_set_geometry(i, NULL), by = "Pixels") %>%
@@ -300,7 +292,7 @@ overlay_crs_message <- reactive({
   req(overlay_crs())
 
   if (input$overlay_proj_native) {
-    "In the native coordiante system of the base grid"
+    "In the native coordiante system of the base geometry"
 
   } else {
     switch(

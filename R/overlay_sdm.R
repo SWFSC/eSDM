@@ -1,9 +1,9 @@
-#' Title
+#' Overlay SDM predictions onto base geometry
 #'
-#' Overlay models onto base polygons
+#' Overlay SDM predictions onto base geometry
 #'
-#' @param base.poly object of class sfc that sdm is being overlaid onto
-#' @param sdm object of class sf representing the SDM that is being overlaid onto base.poly
+#' @param base.geom object of class sfc that sdm is being overlaid onto
+#' @param sdm object of class sf representing the SDM that is being overlaid onto base.geom
 #' @param overlap.perc percentage that each base polygon must be overlapped for density value to be kept
 #' @param data.names names or indices of column(s) with data to be overlaid
 #'
@@ -21,11 +21,11 @@
 #' @importFrom sf st_set_agr
 #'
 #' @export
-overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
+overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   #----------------------------------------------------------------------------
   # 0) Check that inputs meet requirements
-  if (!inherits(base.poly, "sfc")) {
-    stop("'base.poly' object must be of class 'sfc'")
+  if (!inherits(base.geom, "sfc")) {
+    stop("'base.geom' object must be of class 'sfc'")
   }
   if (!inherits(sdm, "sf")) stop("'sdm' object must be of class 'sf'")
   if (!(is.numeric(overlap.perc) & 0 <= overlap.perc & overlap.perc <= 100)) {
@@ -33,16 +33,16 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
          "less than or equal to 100")
   }
   stopifnot(
-    st_crs(base.poly) == st_crs(sdm),
+    st_crs(base.geom) == st_crs(sdm),
     all(data.names %in% names(sdm))
   )
-  if (identical(base.poly, st_geometry(sdm))) {
-    warning("'base.poly' and 'sdm' have the same geometry and thus ",
+  if (identical(base.geom, st_geometry(sdm))) {
+    warning("'base.geom' and 'sdm' have the same geometry and thus ",
             "you shouldn't need to use the full overlay procedure")
   }
-  base.area.m2 <- st_area(base.poly)
+  base.area.m2 <- st_area(base.geom)
   if (!all(units(base.area.m2)$numerator == c("m", "m"))) {
-    stop("Units of st_area(base.poly) must be m^2")
+    stop("Units of st_area(base.geom) must be m^2")
   }
   sdm.area.m2 <- st_area(sdm)
   if (!all(units(sdm.area.m2)$numerator == c("m", "m"))) {
@@ -50,28 +50,28 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
   }
 
   #----------------------------------------------------------------------------
-  # 1) Get intersection of sdm (sdm being overlaid) and base.poly (base)
-  #   after turning base.poly into an sf object with an index variable;
+  # 1) Get intersection of sdm (sdm being overlaid) and base.geom (base)
+  #   after turning base.geom into an sf object with an index variable;
   #   this var gets passed along during st_intersection() and can be used as
   #   int-to-base key
-  base.poly.sf <- st_sf(
-    base.idx = 1:length(base.poly), base.poly, agr = "constant"
+  base.geom.sf <- st_sf(
+    base.idx = 1:length(base.geom), base.geom, agr = "constant"
   )
 
   sdm <- sdm %>% dplyr::select(!!quo(data.names))
-  sdm <- st_set_agr(suppressMessages(st_crop(sdm, st_bbox(base.poly))), "constant")
+  sdm <- st_set_agr(suppressMessages(st_crop(sdm, st_bbox(base.geom))), "constant")
   # ^ not tidied so that suppressMessages() can be used
 
-  int <- try(suppressMessages(st_intersection(sdm, base.poly.sf)))
+  int <- try(suppressMessages(st_intersection(sdm, base.geom.sf)))
 
   if (inherits(int, "try-error")) {
-    stop("Unable to run 'st_intersection(sdm, base.poly)'; make sure that ",
-         "'base.poly' and 'sdm' are both valid sfc and sf objects, ",
+    stop("Unable to run 'st_intersection(sdm, base.geom)'; make sure that ",
+         "'base.geom' and 'sdm' are both valid sfc and sf objects, ",
          "respectively")
   }
-  if (length(int) == 0) stop("'sdm' and 'base.poly' do not overlap")
+  if (length(int) == 0) stop("'sdm' and 'base.geom' do not overlap")
   int <- int[as.numeric(st_area(int)) > 1, ]
-  # TODO Check if nrow(int) == 0 to see if base.poly and sdm are identical? Or use identical()?
+  # TODO Check if nrow(int) == 0 to see if base.geom and sdm are identical? Or use identical()?
 
 
   #----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
   # 5) Determine which base polys had no overlap with sdm and thus
   # need to be added with NAs for dens value.
   # Add them to abund.df and sort abund.df by base poly order
-  base.len <- 1:length(base.poly)
+  base.len <- 1:length(base.geom)
   base.idx.na <- base.len[!(base.len %in% base.idx.nona)]
 
   if (length(base.idx.na) != 0) {
@@ -148,7 +148,7 @@ overlay_sdm <- function(base.poly, sdm, overlap.perc, data.names) {
 
   #----------------------------------------------------------------------------
   # 6) Put base grid together with predicted densities to make overlaid SDM
-  stopifnot(nrow(new.dens.df) == nrow(base.poly))
+  stopifnot(nrow(new.dens.df) == nrow(base.geom))
 
-  st_sf(new.dens.df, geometry = base.poly, agr = "constant")
+  st_sf(new.dens.df, geometry = base.geom, agr = "constant")
 }

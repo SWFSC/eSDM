@@ -13,7 +13,7 @@ ui.overlay <- function() {
             box(
               title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               checkboxInput("overlay_bound",
-                            paste("Use a study area polygon as the boundary for the base grid in the overlay process;",
+                            paste("Use a study area polygon as the boundary for the base geometry in the overlay process;",
                                   "uncheck this box to remove a loaded study area polygon"),
                             value = FALSE),
               conditionalPanel(
@@ -68,15 +68,15 @@ ui.overlay <- function() {
             ),
 
             box(
-              title = "Load Land Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              title = "Load Erasing Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               checkboxInput("overlay_land",
-                            paste("Use a land polygon to remove land from the base grid in the overlay process;",
-                                  "uncheck this box to remove a loaded land polygon"),
+                            paste("Use an erasing polygon to remove are from the base geometry in the overlay process;",
+                                  "uncheck this box to remove a loaded erasing polygon"),
                             value = FALSE),
               conditionalPanel(
                 condition = "input.overlay_land == true",
                 fluidRow(
-                  column(6, radioButtons("overlay_land_load_type", tags$h5("Land polygon source"),
+                  column(6, radioButtons("overlay_land_load_type", tags$h5("Erasing polygon source"),
                                          choices = list("Use provided" = 1, "Upload personal" = 2),
                                          selected = 1)),
                   column(
@@ -91,11 +91,11 @@ ui.overlay <- function() {
                   condition = "input.overlay_land_load_type == 1",
                   box(
                     width = 12,
-                    helpText("The provided land polygons are from the Global Self-consistent, Hierarchical, ",
+                    helpText("The provided erasing polygons are from the Global Self-consistent, Hierarchical, ",
                              "High-resolution Geography (GSHHG) Database. They represent all continents, including Antarctica,",
                              "but not lakes and rivers within those continents.",
                              "See the", tags$a("GSHHG website", href = "http://www.soest.hawaii.edu/pwessel/gshhg/"),
-                             "for more information about the provided land polygons.", tags$br(),
+                             "for more information about the provided erasing polygons.", tags$br(),
                              "Note that higher resolution polygons will take longer to load."),
                     fluidRow(
                       column(6, selectInput("overlay_land_provided_res", tags$h5("Resolution of land polygon"),
@@ -168,7 +168,7 @@ ui.overlay <- function() {
           fluidRow(
             box(
               title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              ui.instructions.table.select(text.pre = "loaded", text.in = "to use as the base grid:", sel.num = 1,
+              ui.instructions.table.select(text.pre = "loaded", text.in = "to use as the base geometry:", sel.num = 1,
                                            text.other = TRUE),
               conditionalPanel("input.overlay_loaded_table_stats != true", DTOutput("overlay_loaded_table")),
               conditionalPanel("input.overlay_loaded_table_stats", DTOutput("overlay_loaded_stats_table")),
@@ -184,7 +184,7 @@ ui.overlay <- function() {
                   fluidRow(
                     box(
                       width = 12,
-                      tags$strong("1) Overlay options: choose base grid"),
+                      tags$strong("1) Overlay options: choose base geometry"),
                       tags$h5("Make your selection in the 'Loaded Model Predictions' box."),
                       tags$br(),
                       tags$strong("2) Overlay options: load desired study area and land polygons"),
@@ -196,7 +196,7 @@ ui.overlay <- function() {
                       helpText("The overlay process involves calculating the area of polygons and determining their intersection,",
                                "and thus the coordinate system during the overlay will have an effect on the overlay results."),
                       checkboxInput("overlay_proj_native",
-                                    "Perform the overlay in the native coordinate system of the specified base grid",
+                                    "Perform the overlay in the native coordinate system of the specified base geometry",
                                     value = TRUE),
                       conditionalPanel(
                         condition = "input.overlay_proj_native == false",
@@ -235,7 +235,8 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("4) Overlay options: percent overlap"),
-                      helpText("Specify the minimum percentage of a base grid cell the original model prediction(s) must overlap",
+                      helpText("Specify the minimum percentage of a base geometry polygon the must overlap with",
+                               "original model prediction(s)",
                                "for that cell to have a non-NA overlaid prediction value.",
                                "A value of \"0\" means that cell will have a non-NA overlaid prediction value",
                                "if there is any overlap with any original model prediction."),
@@ -248,8 +249,7 @@ ui.overlay <- function() {
                                            "in case you are disconnected from the server during the process.")),
                       helpText(tags$strong("Reminder: loaded study area and land polygons will be used during",
                                            "the overlay process. This process may take several minutes.")),
-                      tags$span(textOutput("overlay_overlay_samegrid_message_text"), style = "color: red"),
-                      actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"),
+                      actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base geometry"),
                       textOutput("overlay_overlay_all_text"),
                       tags$br(),
                       tags$span(uiOutput("overlay_overlaid_models_message"), style = "color: blue")
@@ -261,10 +261,10 @@ ui.overlay <- function() {
           ),
           fluidRow(
             box(
-              title = "Base Grid and Overlaid Model Previews", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+              title = "Base Geometry and Overlaid Model Previews", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
               fluidRow(
                 column(3, radioButtons("overlay_preview_which", NULL,
-                                       choices = list("Base grid preview" = 1, "Overlaid models preview" = 2))),
+                                       choices = list("Base geometry preview" = 1, "Overlaid models preview" = 2))),
                 column(
                   width = 9,
                   fluidRow(
@@ -272,7 +272,7 @@ ui.overlay <- function() {
                       width = 12,
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 1",
-                        helpText("The base grid will be outlined in black while if applicable the land and study area",
+                        helpText("The base geometry will be outlined in black while if applicable the land and study area",
                                  "will be filled in tan and outlined in red, respectively.",
                                  "Note that if model predictions were made at a high resolution,",
                                  "then preview may appear to be completely black when zoomed out"),
