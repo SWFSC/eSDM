@@ -17,46 +17,41 @@ overlay_bound_csv <- reactive({
            c("text/csv", "application/vnd.ms-excel"),
          "Error: Selected file is not a csv file")
   )
-  csv.df <- read.csv(input$overlay_bound_csv_file$datapath,
-                     stringsAsFactors = FALSE)
-
-  # This reactive func does not go to renderUI, so validate is ok to use
-  # TODO should boundary csv file only be allowed one polygon?
-  validate(
-    need(!anyNA(csv.df),
-         paste("Error: Boundary polygon must be one, single polygon.",
-               "Please load a csv file without invalid entries (such as NA)",
-               "in the longitude and latitude columns"))
+  csv.df <- read.csv(
+    input$overlay_bound_csv_file$datapath, stringsAsFactors = FALSE
   )
 
-  # Process input and make it into sf object
-  withProgress(message = 'Loading boundary polygon', value = 0.7, {
+  validate(
+    need(ncol(csv.df) == 2,
+         paste("Error: The study area .csv file must only have two columns",
+               "(longitude and latitude, respectively)")),
+    need(!anyNA(csv.df),
+         paste("Error: The study area polygon must be one, single polygon.",
+               "Please load a csv file  without invalid entries (e.g. NA)",
+               "in the two columns"))
+  )
+
+  # Process input and make it into sfc object
+  withProgress(message = 'Loading study area polygon', value = 0.7, {
     Sys.sleep(0.5)
 
-    bound.sfc <- try(st_sfc(st_polygon(list(as.matrix(csv.df)))),
+    bound.sfc <- try(st_sfc(st_polygon(list(as.matrix(csv.df))), crs = 4326),
                      silent = TRUE)
     validate(
       need(isTruthy(bound.sfc),
-           paste("Error: The boundary polygon could not be created",
+           paste("Error: The study area polygon could not be created",
                  "from the provided points.",
                  "Please ensure that the .csv file has the longitude points",
                  "in the first column, the latitude points in the second",
                  "column, and that the provided points form a closed",
                  "and valid polygon")) %then%
         need(st_is_valid(bound.sfc),
-             paste("Error: The provided boundary polygon is invalid;",
+             paste("Error: The provided study area polygon is invalid;",
                    "please ensure that the provided points form a closed",
                    "and valid polygon (no self-intersections)"))
     )
-    st_crs(bound.sfc) <- crs.ll
 
-    if (st_bbox(bound.sfc)[3] > 180) {
-      incProgress(detail = "Polygon spans dateline; handling now")
-      bound.sfc <- st_wrap_dateline(
-        bound.sfc, options = c("WRAPDATELINE=YES", "DATELINEOFFSET=60")
-      )
-    }
-
+    bound.sfc <- check_dateline(bound.sfc, 60, progress.detail = TRUE)
     incProgress(0.3)
   })
 
@@ -91,7 +86,7 @@ overlay_land_csv <- reactive({
   withProgress(message = 'Loading land polygon', value = 0.7, {
     Sys.sleep(0.5)
 
-    land.sfc <- create_sfc_csv(csv.df[, 1:2], crs.ll)
+    land.sfc <- pts_to_sfc_coords_shiny(csv.df[, 1:2], crs.ll, TRUE)
     incProgress(0.3)
   })
 

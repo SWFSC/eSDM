@@ -91,45 +91,21 @@ make_poly_valid <- function(poly.invalid, dens.col = NA, poly.info = NA) {
 ###############################################################################
 # Create sfc object from data frame (from csv) with only long and lat,
 #   respectively, as columns. crs set as crs.prov
-# Designed only for use within eSDM with sf and dplyr loaded
-create_sfc_csv <- function(x, crs.prov) {
-  stopifnot(
-    inherits(x, "data.frame"),
-    ncol(x) == 2
-  )
-
-  names(x) <- c("lon", "lat")
-  if (anyNA(x$lon)) {
-    obj.list <- x %>%
-      mutate(na_sum = cumsum(is.na(lon) & is.na(lat))) %>%
-      filter(!is.na(lon) & !is.na(lat)) %>%
-      group_by(na_sum) %>%
-      summarise(temp = list(st_polygon(list(matrix(c(.data$lon, .data$lat), ncol = 2)))))
-    obj.sfc <- st_sfc(obj.list$temp, crs = crs.prov)
-
-  } else {
-    obj.list <- list()
-    obj.sfc <- try(st_sfc(st_polygon(list(as.matrix(x)))), silent = TRUE)
-  }
+pts_to_sfc_coords_shiny <- function(x, crs.prov, progress.detail) {
+  obj.sfc <- try(eSDM::pts_to_sfc_coords(x, crs.prov), silent = TRUE)
 
   validate(
-    need(isTruthy(obj.list) & inherits(obj.sfc, "sfc"),
+    need(inherits(obj.sfc, "sfc"),
          paste("Error: The polygon could not be created",
-               "from the provided points.",
+               "from the points in the provided .csv file.",
                "Please ensure that the .csv file has the longitude points",
                "in the first column, the latitude points in the second",
                "column, and that the provided points form a closed",
-               "and valid polygon")) %then%
-      need(isTruthy(all(st_is_valid(obj.sfc))), #isTruthy() is for NA cases
-           paste("Error: The provided polygon is invalid;",
-                 "please ensure that the provided points form a closed",
-                 "and valid polygon (no self-intersections)"))
+               "and valid polygon"))
   )
-  st_crs(obj.sfc) <- crs.prov
 
-  check_dateline(obj.sfc, 60)
-
-  obj.sfc
+  obj.sfc <- check_dateline(obj.sfc, 60, progress.detail)
+  check_valid(obj.sfc, progress.detail)
 }
 
 
@@ -216,7 +192,6 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
 
   if (dateline.flag){
     st_transform(x, x.crs.orig)
-    # st_transform is fast and identical(y, st_transform(y, st_crs(y))) is TRUE
   } else {
     x.orig
   }
@@ -245,7 +220,6 @@ check_valid <- function(x, progress.detail = FALSE) {
 
 
 #------------------------------------------------------------------------------
-# TODO: change to S3 method?
 check_pred_weight <- function(x, pred.idx, weight.idx, pred.na.idx,
                               weight.na.idx) {
   stopifnot(inherits(pred.idx, c("numeric", "integer")))
