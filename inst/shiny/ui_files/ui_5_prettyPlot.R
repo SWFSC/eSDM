@@ -47,7 +47,10 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    tags$h5("Creating or downloading a map of a large set of model predictions may take several minutes"),
+                    tags$h5("Creating or downloading a map of a large set of model predictions may take several minutes",
+                            tags$br(),
+                            "Note that the GUI will make the map fill the entire space above, and thus depending on the shape",
+                            "of the map there may be extra white space around the colored predictions/background"),
                     tags$br(),
                     fluidRow(
                       column(2, actionButton("pretty_plot_execute", "Generate map")),
@@ -66,8 +69,7 @@ ui.prettyPlot <- function() {
                     width = 12,
                     conditionalPanel(
                       condition = "output.pretty_display_download == false",
-                      tags$h5("Unlike downloading the previews in previous tabs, the image that will be downloaded is the image",
-                              "displayed in the box above.",
+                      tags$h5("The image that will be downloaded is the image displayed in the box above.",
                               "Thus, you must click 'Generate map' to generate a map before you can download that map.")
                     ),
                     conditionalPanel(
@@ -89,7 +91,6 @@ ui.prettyPlot <- function() {
                 )
               )
             )
-
           )
         ),
 
@@ -132,12 +133,13 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
+                    helpText("Delete the text in the input boxes to remove the title or axis labels"),
                     uiOutput("pretty_plot_title_uiOut_text"),
                     fluidRow(
                       column(6, textInput("pretty_plot_xlab", tags$h5("X-axis label"), value = "Longitude")),
                       column(6, textInput("pretty_plot_ylab", tags$h5("Y-axis label"), value = "Latitude"))
                     ),
-                    helpText("Size values are relative to 1, which is the default size"),
+                    helpText("Size values are relative to 1 (the default size)"),
                     fluidRow(
                       column(6, numericInput("pretty_plot_title_cex", tags$h5("Title size (value is relative to 1)"),
                                              value = 1.3, step = 0.1)),
@@ -157,9 +159,10 @@ ui.prettyPlot <- function() {
                     checkboxInput("pretty_plot_tick", "Include tick marks and labels on the map", value = TRUE),
                     conditionalPanel(
                       condition = "input.pretty_plot_tick",
-                      helpText("Length and size values are relative to 1"),
+                      helpText("Tick marks will be generated at default locations.", tags$br(),
+                               "Length and size values are relative to 1 (the default size)"),
                       fluidRow(
-                        column(6, numericInput("pretty_plot_tick_length", tags$h5("Tick length"),
+                        column(6, numericInput("pretty_plot_tick_length", tags$h5("Tick mark length"),
                                                value = 1.0, min = 0, step = 0.1)),
                         column(6, numericInput("pretty_plot_tick_label_size", tags$h5("Tick label size"),
                                                value = 1.0, min = 0.1, max = 3, step = 0.1)
@@ -252,7 +255,7 @@ ui.prettyPlot <- function() {
                     fluidRow(
                       column(
                         width = 8,
-                        radioButtons("pretty_plot_color_perc", tags$h5("Prediction display option"),
+                        radioButtons("pretty_plot_color_perc", tags$h5("Prediction color scheme option"),
                                      choices = list("Color-code predictions by relative percentage" = 1,
                                                     "Color-code predictions by numerical value" = 2)),
                         uiOutput("pretty_plot_color_palette_uiOut_select"),
