@@ -189,8 +189,8 @@ ui.overlay <- function() {
                       tags$strong("1) Overlay options: choose base geometry"),
                       tags$h5("Make your selection in the 'Loaded Model Predictions' box."),
                       tags$br(),
-                      tags$strong("2) Overlay options: load desired study area and land polygons"),
-                      tags$h5("Load these polygons in their respecitve boxes, 'Load Study Area Polygon' and 'Load Land Polygon'.")
+                      tags$strong("2) Overlay options: load desired study area and erasing polygons"),
+                      tags$h5("Load these polygons in their respecitve boxes, 'Load Study Area Polygon' and 'Load Erasing Polygon'.")
                     ),
                     box(
                       width = 12,
