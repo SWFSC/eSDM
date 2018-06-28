@@ -38,38 +38,30 @@ label.gdb.upload <- "Upload file geodatabase feature class"
 ### Instructions for uploading certain file and object types
 ui.instructions.upload.csv <- function() {
   helpText("Browse to and open the desired file with the extension '.csv'.",
-           "This file must have headers. Note that larger files will",
-           "take longer to load.")
+           "This file must have headers. Note that larger files will take longer to load.")
 }
 
 ui.instructions.upload.raster <- function() {
-  helpText("Browse to and open the desired GeoTIFF file, which has the",
-           "extension '.tif.",
-           "The raster can be in any coordinate system,",
-           "but the raster coordinates must be",
+  helpText("Browse to and open the desired GeoTIFF file, which has the extension '.tif'.",
+           "The raster can be in any coordinate system, but the raster coordinates must be",
            "between the equivalent of -180 and 180 decimal degrees.")
 }
 
 ui.instructions.upload.shp <- function() {
   helpText("Browse to and open all files (.shp, .dbf, etc.) associated with",
-           "the GIS shapefile. Note that larger files will take",
-           "longer to load.")
+           "the GIS shapefile. Note that larger files will take longer to load.")
 }
 
 ui.instructions.upload.gdb <- function() {
   tags$h5(
-    tags$span("You can only load SDM predictions from",
-              "a GIS file geodatabase feature class while",
+    tags$span("Note that you can only load SDM predictions from a GIS file geodatabase feature class while",
               "running the eSDM locally through RStudio.",
               style = "color: red"),
     tags$br(),
     tags$br(),
-    helpText("Enter the full file path of the file geodatabase that contains",
-             "the desired file geodatabase feature class. The path and the",
-             "name of the feature class should be",
-             "exactly as they appear in ArcCatalog.",
-             "The GUI does not currently support loading a file geodatabse",
-             "raster dataset or data from an ESRI personal geodatabase.",
+    helpText("Enter the full file path of the file geodatabase that contains the desired file geodatabase feature class.",
+             "The path and the name of the feature class should be exactly as they appear in ArcCatalog.",
+             "The GUI does not currently support loading a file geodatabse raster dataset or data from an ESRI personal geodatabase.",
              "Note that larger files will take longer to load.")
   )
 }
@@ -81,51 +73,40 @@ ui.instructions.upload.gdb <- function() {
 #######################################
 ### Loading model predictions
 ui.instructions.pred.csv <- function() {
-  helpText(tags$em("Column with longitude data"), "and",
-           tags$em("Column with latitude data:"), "Longitude and latitude",
-           "points must be in WGS 84 geographic coordinates and",
-           "equally spaced in decimal degrees.",
+  helpText(tags$em("Column with longitude data"), "and", tags$em("Column with latitude data:"),
+           "Longitude and latitude points must be in WGS 84 geographic coordinates and equally spaced in decimal degrees.",
            tags$br(),
-           tags$em("Column with prediciton data:"), "Please ensure that",
-           "missing prediction values are one of the following: 'NA', 'NaN',",
-           " 'N/A', 'n/a', 'na', 'Null', blank, or a negative number.",
+           tags$em("Column with prediciton data:"), "Please ensure that missing prediction values are one of the following:",
+           "'NA', 'NaN', 'N/A', 'n/a', 'na', 'Null', blank, or a negative number.",
            tags$br(),
-           tags$em("Prediction value type:"), "Select \"Relative density\"",
-           "if the predictions are probabilities of occurrence.", tags$br(),
-           tags$em("Column with weight data:"), "Select \"N/A\" if the",
-           "data does not have weight data.")
+           tags$em("Prediction value type:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
+           tags$br(),
+           tags$em("Column with weight data:"), "Select \"N/A\" if the data does not have weight data.")
 }
 
 ui.instructions.pred.raster <- function() {
-  helpText("Please ensure that missing prediction values",
-           "are one of the following: 'NA', 'NaN', 'N/A', ",
-           "'n/a', 'na', 'NULL', blank, or a negative number.",
+  helpText("Please ensure that missing prediction values are one of the following:",
+           "'NA', 'NaN', 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.",
            tags$br(),
-           tags$em("Prediction value type:"), "select \"Relative density\"",
-           "if the predictions are probabilities of occurrence.")
+           tags$em("Prediction value type:"), "select \"Relative density\" if the predictions are probabilities of occurrence.")
 }
 
 ui.instructions.pred.shp.gdb <- function() {
-  helpText(tags$em("Column with prediciton data:"), "Please ensure that",
-           "missing prediction values are one of the following: 'NA', 'NaN',",
-           " 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.",
+  helpText(tags$em("Column with prediciton data:"), "Please ensure that missing prediction values are one of the following:",
+           "'NA', 'NaN', 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.",
            tags$br(),
-           tags$em("Prediction value type:"), "Select \"Relative density\"",
-           "if the predictions are probabilities of occurrence.", tags$br(),
-           tags$em("Column with weight data:"), "Select \"N/A\" if the",
-           "data does not have weight data.")
+           tags$em("Prediction value type:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
+           tags$br(),
+           tags$em("Column with weight data:"), "Select \"N/A\" if the data does not have weight data.")
 }
 
 
 #######################################
 ### Loading csv polygons
 ui.instructions.poly.csv <- function() {
-  helpText("The first column must contain the longitude values, ",
-           "and the second column must contain the latitude values.",
-           "The longitudes and latitudes must be in WGS 84",
-           "geographic coordinates and in the range [-180, 180].",
-           "Multiple polygons may be demarcated",
-           "using blank cells or cells with 'NA' entries.")
+  helpText("The first column must contain the longitude values,  and the second column must contain the latitude values.",
+           "The longitudes and latitudes must be in WGS 84 geographic coordinates and in the range [-180, 180].",
+           "Multiple polygons may be demarcated using blank cells or cells with 'NA' entries.")
 }
 
 
@@ -140,16 +121,13 @@ ui.click.row.a1b <- paste(
   "Click on a row in the table(s) below to select or deselect model predictions."
 )
 ui.click.row.a2b <- paste(
-  "Click on row(s) in the table(s) below to select or",
-  "deselect model predictions."
+  "Click on row(s) in the table(s) below to select or deselect model predictions."
 )
 ui.click.row.b1 <- paste(
-  "You can only select or deselect a row when",
-  tags$em("Display additional information"), "is unchecked."
+  "You can only select or deselect a row when", tags$em("Display additional information"), "is unchecked."
 )
 ui.click.row.b2 <- paste(
-  "You can only select or deselect row(s) when",
-  tags$em("Display additional information"), "is unchecked."
+  "You can only select or deselect row(s) when", tags$em("Display additional information"), "is unchecked."
 )
 
 ### Instructions for selecting model(s) from one table
@@ -197,8 +175,7 @@ ui.error.upload.shp <- tags$strong(
 
 ### File gdb
 ui.error.upload.gdb <- tags$strong(
-  "Error: Could not load GIS file geodatabase feature class using",
-  "the provided path and filename",
+  "Error: Could not load GIS file geodatabase feature class using the provided path and filename",
   style = "color: red"
 )
 
@@ -222,8 +199,7 @@ ui.notice.no.pred.overlaid <- function(box.width = 4) {
   box(
     width = box.width,
     tags$h4("No overlaid model predictions have been created"),
-    tags$h5("Please create overlaid model predictions",
-            "to use this section of the GUI")
+    tags$h5("Please create overlaid model predictions to use this section of the GUI")
   )
 }
 

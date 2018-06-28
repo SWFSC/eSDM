@@ -18,7 +18,7 @@ ui.overlay <- function() {
                             value = FALSE),
               conditionalPanel(
                 condition = "input.overlay_bound == true",
-                radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1),
+                column(12, radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)),
                 box(
                   width = 12,
                   conditionalPanel(
@@ -75,15 +75,18 @@ ui.overlay <- function() {
                             value = FALSE),
               conditionalPanel(
                 condition = "input.overlay_land == true",
-                fluidRow(
-                  column(6, radioButtons("overlay_land_load_type", tags$h5("Erasing polygon source"),
-                                         choices = list("Use provided" = 1, "Upload personal" = 2),
-                                         selected = 1)),
-                  column(
-                    width = 6,
-                    conditionalPanel(
-                      condition = "input.overlay_land_load_type == 2 ",
-                      radioButtons("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)
+                column(
+                  width = 12,
+                  fluidRow(
+                    column(6, radioButtons("overlay_land_load_type", NULL,
+                                           choices = list("Use provided erasing polygon" = 1, "Upload personal erasing polygon" = 2),
+                                           selected = 1)),
+                    column(
+                      width = 6,
+                      conditionalPanel(
+                        condition = "input.overlay_land_load_type == 2 ",
+                        radioButtons("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)
+                      )
                     )
                   )
                 ),
@@ -91,20 +94,20 @@ ui.overlay <- function() {
                   condition = "input.overlay_land_load_type == 1",
                   box(
                     width = 12,
-                    helpText("The provided erasing polygons are from the Global Self-consistent, Hierarchical, ",
-                             "High-resolution Geography (GSHHG) Database. They represent all continents, including Antarctica,",
-                             "but not lakes and rivers within those continents.",
+                    helpText("The provided erasing polygon is from the Global Self-consistent, Hierarchical, ",
+                             "High-resolution Geography (GSHHG) Database. It is a low-resolution polygon that",
+                             "represents the land of all continents, including Antarctica,",
+                             "but not lakes, rivers, or islands within those continents.",
                              "See the", tags$a("GSHHG website", href = "http://www.soest.hawaii.edu/pwessel/gshhg/"),
-                             "for more information about the provided erasing polygons.", tags$br(),
-                             "Note that higher resolution polygons will take longer to load."),
+                             "for more information about the provided erasing polygon."),
                     fluidRow(
-                      column(6, selectInput("overlay_land_provided_res", tags$h5("Resolution of land polygon"),
-                                            choices = list("Full" = 1, "High" = 2, "Intermediate" = 3, "Low" = 4, "Crude" = 5),
-                                            selected = 1)),
-                      column(6, tags$br(), tags$br(), actionButton("overlay_land_provided", "Load provided land polygon"))
-                    ),
-                    tags$span(textOutput("overlay_land_prov_message"), style = "color: blue"),
-                    textOutput("overlay_land_prov_text")
+                      column(6, actionButton("overlay_land_provided", "Load provided erasing polygon")),
+                      column(
+                        width = 6,
+                        tags$span(textOutput("overlay_land_prov_message"), style = "color: blue"),
+                        textOutput("overlay_land_prov_text")
+                      )
+                    )
                   )
                 ),
                 conditionalPanel(
@@ -133,8 +136,7 @@ ui.overlay <- function() {
                       column(6, fileInput("overlay_land_gis_shp_files", label.shp.upload, multiple = TRUE)),
                       column(
                         width = 6,
-                        tags$br(),
-                        tags$br(),
+                        tags$br(), tags$br(),
                         tags$span(textOutput("overlay_land_gis_shp_message"), style = "color: blue"),
                         textOutput("overlay_land_gis_shp_text")
                       )
