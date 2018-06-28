@@ -17,6 +17,7 @@ Imports:
     mapview, 
     purrr, 
     raster, 
+    rlang, 
     RColorBrewer, 
     ROCR, 
     shiny, 

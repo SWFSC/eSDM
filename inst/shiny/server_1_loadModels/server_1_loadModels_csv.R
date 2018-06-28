@@ -127,8 +127,8 @@ create_sf_csv_sfc <- reactive({
                  "column has a value of 'NA'"))
     )
 
-    diff.lon <-
-      max(csv.data$Lon, na.rm = TRUE) - min(csv.data$Lon, na.rm = TRUE)
+    diff.lon <- max(csv.data$Lon, na.rm = TRUE) -
+      min(csv.data$Lon, na.rm = TRUE)
     validate(
       need(diff.lon <= 360,
            paste("Error: The longitude points in the provided Excel .csv file",
@@ -143,12 +143,12 @@ create_sf_csv_sfc <- reactive({
 
 
     #####################################
-    ### b) Get cell size and then adjust points to center of grid cells (if nec)
+    ### b) Get cell size and (if nec) adjust points to center of grid cells
     # Get cell size
     table.l <- table(round(diff(sort(csv.data$Lon)), 5))
     table.w <- table(round(diff(sort(csv.data$Lat)), 5))
 
-    # Also test for if points are lat/long regular
+    # Test for if points are lat/long regular
     test1 <- length(table.l) == 2 & length(table.w) == 2
     test2 <- "0" %in% names(table.l) & "0" %in% names(table.w)
     test3 <- as.numeric(names(table.l[2])) == as.numeric(names(table.w[2]))
@@ -181,7 +181,7 @@ create_sf_csv_sfc <- reactive({
         )
       }
 
-      # Adjust points
+      # Adjust points to center of the polygon
       csv.data$Lon <- csv.data$Lon + adj.lon
       csv.data$Lat <- csv.data$Lat + adj.lat
     }
@@ -191,27 +191,31 @@ create_sf_csv_sfc <- reactive({
     ### c) Convert points to a list of sfc_POLYGONs and then to a sf object
 
     # Make sf object
-    incProgress(0.1)
-    sfc.list <- apply(csv.data[, c("Lon", "Lat")], 1, function(i, j) {
-      st_sfc(st_polygon(list(matrix(
-        c(i[1] + j, i[1] - j, i[1] - j, i[1] + j, i[1] + j,
-          i[2] + j, i[2] + j, i[2] - j, i[2] - j, i[2] + j),
-        ncol = 2))))
-    }, j = (cell.lw / 2))
-    incProgress(0.2)
-
-    sfc.poly <- st_sfc(do.call(rbind, sfc.list))
-
+    sfc.poly <- try(
+      eSDM::pts_to_sfc_grid(csv.data, cell.lw / 2, crs.ll, FALSE),
+      silent = TRUE
+    )
     validate(
-      need(all(sapply(st_contains(sfc.poly, sfc.poly), length) == 1),
-           "Error: The points in the .csv file are not lat/long regular")
+      need(inherits(sfc.poly, "sfc_POLYGON"),
+           paste("Error: The longitude and latitude data from the",
+                 "provided .csv file could not be processed"))
     )
 
-    sf.temp.ll <- st_sf(csv.data, sfc.poly, crs = crs.ll, agr = "constant")
+    int.interior <- suppressMessages(
+      st_relate(sfc.poly, pattern = "T********")
+    )
+    validate(
+      need(all(sapply(int.interior, length) == 1),
+           paste("Error: The points in the provided .csv file are not",
+                 "equally spaced in decimal degrees"))
+    )
+    incProgress(0.3)
+
+    sf.temp.ll <- st_sf(csv.data, geometry = sfc.poly, agr = "constant")
 
 
     #####################################
-    ### d) Perform final quality checks
+    ### d) Perform final checks
     # Ensure that sf object is in -180 to 180 longitude range
     sf.temp.ll <- check_dateline(sf.temp.ll)
     sf.temp.ll <- check_valid(sf.temp.ll, progress.detail = TRUE)

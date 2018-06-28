@@ -4,10 +4,22 @@
 \alias{pts_to_sfc_grid}
 \title{Create sfc_polygon object from data.frame with grid coordinates}
 \usage{
-pts_to_sfc_grid(x)
+pts_to_sfc_grid(x, poly.radius, crs.prov, polys.check = TRUE)
 }
 \arguments{
-\item{x}{thing}
+\item{x}{data.frame with at least two columns;
+the columns must contain longitude and latitude coordinates, respectively,
+and the coordinates must form a grid}
+
+\item{poly.radius}{radius of each polygon to be created around points in \code{x};
+must be numeric object}
+
+\item{crs.prov}{crs value of new sfc_polygon object;
+value must be interpretable by st_crs(), see st_crs() documentation}
+
+\item{polys.check}{logical indicating whether or not to check using
+st_relate(pattern = 'T********') that none of the created polygons
+intersect each other}
 }
 \description{
 Create sfc_polygon object from data.frame with only longitude and
@@ -15,6 +27,10 @@ Create sfc_polygon object from data.frame with only longitude and
   of the center of each polygon of a grid
 }
 \examples{
-
+x <- data.frame(
+  lon = c(5, 10, 15, 20, 5, 10, 15, 20),
+  lat = c(rep(5, 4), rep(10, 4))
+)
+pts_to_sfc_grid(x, 2.5, 4326)
 
 }
