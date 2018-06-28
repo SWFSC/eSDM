@@ -75,13 +75,13 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       withProgress(message = "Downloading sample data", value = 0.6, {
-        sample.try <- try(download.file("https://github.com/smwoodman/eSDM/raw/master/inst/extdata/data_provided.zip",
+        sample.try <- try(download.file("https://github.com/smwoodman/eSDM-data/raw/master/data_provided.zip",
                                         destfile = file, quiet = TRUE),
                           silent = TRUE)
         validate(
           need(isTruthy(sample.try),
                paste("The sample data could not be downloaded; please check",
-                     "your internet connection. If this problem persists please",
+                     "your internet connection. If this problem persists, please",
                      "report this issue at https://github.com/smwoodman/eSDM/issues"))
         )
         incProgress(0.4)
