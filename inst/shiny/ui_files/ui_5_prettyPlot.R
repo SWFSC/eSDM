@@ -50,7 +50,7 @@ ui.prettyPlot <- function() {
                     tags$h5("Creating or downloading a map of a large set of model predictions may take several minutes",
                             tags$br(),
                             "Note that the GUI will make the map fill the entire space above, and thus depending on the shape",
-                            "of the map there may be extra white space around the colored predictions/background"),
+                            "of the map there may be extra white space around the colored prediction polygons/background"),
                     tags$br(),
                     fluidRow(
                       column(2, actionButton("pretty_plot_execute", "Generate map")),

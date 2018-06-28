@@ -333,10 +333,10 @@ output$eval_metrics_text <- renderText(eval_metrics())
 
 # Validation data title
 output$table_eval_pts_title <- renderText({
-  req(ifelse(
-    vals$eval.data.specs[2] == 1, "Validation data (count) info",
+  ifelse(
+    req(vals$eval.data.specs)[2] == 1, "Validation data (count) info",
     "Validation data (presence/absence) info"
-  ))
+  )
 })
 
 # Validation data table
@@ -396,11 +396,6 @@ output$pretty_plot_values_event_text <- renderText({
 })
 
 ### Pretty plot
-# observe({
-#   output$pretty_plot_plot <- renderPlot({
-#     pretty_plot_generate()
-#   }, height = 500, width = pretty_plot_plot_width())
-# })
 output$pretty_plot_plot <- renderPlot({
   req(p.list <- vals$pretty.params.list)
   plot_pretty(
@@ -411,25 +406,9 @@ output$pretty_plot_plot <- renderPlot({
   )
 }, height = 500)
 
-# pretty_plot_plot_width <- reactive({
-#   if (isTruthy(vals$pretty.params.list)) {
-#     xy.ratio <- unname(
-#       diff(vals$pretty.params.list$plot.lim[1:2]) /
-#         diff(vals$pretty.params.list$plot.lim[3:4])
-#     )
-#     min(500, 500 * xy.ratio)
-#
-#   } else {
-#     500
-#   }
-# })
-
 
 ###############################################################################
 ##### Export Model Predictions #####
-
-#----------------------------------------------------------
-# Tables
 
 ### Table of orig model predictions
 output$export_table_orig_out <- renderDT({
@@ -446,16 +425,4 @@ output$export_table_ens_out <- renderDT({
   table_ensembles()
 }, options = list(dom = 't'), selection = "single")
 
-
-###############################################################################
-# ##### Submit Feedback #####
-# ### Feedback function text
-# output$feedback_submit_text <- renderText({
-#   feedback_submit()
-# })
-#
-# ### Warning message if no internet connection is detected
-# output$feedback_internet_connection_text <- renderText({
-#   feedback_internet_connection()
-# })
 ###############################################################################
