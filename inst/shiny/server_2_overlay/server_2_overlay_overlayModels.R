@@ -96,16 +96,22 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     ### Check that all original models overlap with base.sfc
     base.sfc.union <- st_union(base.sfc)
     x <- sapply(models.preoverlay, function(i) {
-      any(sapply(suppressMessages(st_intersects(i, base.sfc)), length) > 0)
+      i <- suppressMessages(
+        st_intersects(dplyr::filter(i, !is.na(Pred)), base.sfc)
+      )
+      any(sapply(i, length) > 0)
     })
+    y <- which(!x)
 
     validate(
       need(all(x),
-           paste("Error: The following sets of predictions do not overlap",
-                 "with the specified base geometry:\n",
-                 paste("Original", which(!x), collapse = ", ")))
+           paste("Error: The following set(s) of predictions do not have any",
+                 "non-NA prediction polygons that overlap with",
+                 "the specified base geometry:\n",
+                 paste("Original", ifelse(y >= base.idx, y + 1, y),
+                       collapse = ", ")))
     )
-    rm(base.sfc.union, x)
+    rm(base.sfc.union, x, y)
 
 
     #--------------------------------------------

@@ -76,7 +76,7 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   }
 
   int <- int[as.numeric(st_area(int)) > 1, ]
-  if (nrow(int) == 0) stop("'base.geom' and 'sdm' do not overlap")
+  if (nrow(int) == 0) stop("No 'base.geom' and non-NA 'sdm' polygons overlap")
 
 
   #----------------------------------------------------------------------------
