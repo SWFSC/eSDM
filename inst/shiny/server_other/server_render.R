@@ -288,7 +288,7 @@ output$ens_preview_plot <- renderPlot({
 ### Table of abundances of created ensemble predictions
 output$ens_abund_table_out <- renderTable({
   table_ens_abund()
-}, rownames = FALSE, align = "r") #, rownames = TRUE, colnames = FALSE)
+}, rownames = FALSE, align = "r")
 
 
 ###############################################################################
@@ -390,20 +390,37 @@ output$pretty_plot_addobj_table_out <- renderTable({
   pretty_plot_addobj_table()
 })
 
-### Pretty plot error output
-output$pretty_plot_values_event_text <- renderText({
-  pretty_plot_values_event()
+### Pretty plot add error output
+output$pretty_plot_toplot_add_text <- renderText({
+  pretty_plot_toplot_add()
+})
+output$pretty_plot_toplot_remove_text <- renderText({
+  pretty_plot_toplot_remove()
 })
 
+### Pretty plot plot error output
+output$pretty_plot_plot_text <- renderText({
+  pretty_plot_plot()
+})
+
+### Pretty plot table
+output$pretty_plot_toplot_table_out <- renderDT({
+  pretty_plot_toplot_table()
+}, options = list(dom = 't'), rownames = FALSE)
+
 ### Pretty plot
-output$pretty_plot_plot <- renderPlot({
-  req(p.list <- vals$pretty.params.list)
-  plot_pretty(
-    p.list$model.toplot, p.list$data.name, p.list$plot.lim, p.list$axes.inc,
-    p.list$title.ll, p.list$lab.x, p.list$lab.y,
-    p.list$title.cex, p.list$lab.cex, p.list$axis.cex, p.list$axis.tcl,
-    p.list$list.background, p.list$list.colorscheme, p.list$list.addobj
-  )
+output$pretty_plot_plot_out <- renderPlot({
+  # req(p.list <- vals$pretty.params.list)
+  # plot_pretty(
+  #   p.list$model.toplot, p.list$data.name, p.list$plot.lim, p.list$axes.inc,
+  #   p.list$title.ll, p.list$lab.x, p.list$lab.y,
+  #   p.list$title.cex, p.list$lab.cex, p.list$axis.cex, p.list$axis.tcl,
+  #   p.list$list.background, p.list$list.colorscheme, p.list$list.addobj
+  # )
+  req(p.list <- vals$pretty.plot.list)
+
+  plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
+
 }, height = 500)
 
 

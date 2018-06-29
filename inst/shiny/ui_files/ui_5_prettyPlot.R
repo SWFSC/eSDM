@@ -9,7 +9,7 @@ ui.prettyPlot <- function() {
       fluidRow(
         box(
           solidHeader = FALSE, status = "primary", height = 550, width = 6, align = "center",
-          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot", height = 400), type = 1)
+          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 400), type = 1)
         ),
         box(
           title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE,
@@ -22,78 +22,98 @@ ui.prettyPlot <- function() {
         )
       ),
 
-      conditionalPanel(
-        condition = "output.pretty_pred_selected_flag == 0 || output.pretty_pred_selected_flag == 2",
-        fluidRow(
-          box(
-            width = 12,
-            helpText(tags$strong("Please select exactly one set of model predictions to plot.",
-                                 "The app can only generate one high quality map at a time for now."))
-          )
-        )
-      ),
-
-      conditionalPanel(
-        condition = "output.pretty_pred_selected_flag == 1",
-        ################################################################# Map Control
-        fluidRow(
-          box(
-            title = "Map Control", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
-            fluidRow(
-              ################################################ Generate map
-              column(
-                width = 6,
-                tags$strong("Generate map in-app"),
-                fluidRow(
-                  box(
-                    width = 12,
-                    tags$h5("Creating or downloading a map of a large set of model predictions may take several minutes",
-                            tags$br(),
-                            "Note that the GUI will make the map fill the entire space above, and thus depending on the shape",
-                            "of the map there may be extra white space around the colored prediction polygons/background"),
-                    tags$br(),
-                    fluidRow(
-                      column(2, actionButton("pretty_plot_execute", "Generate map")),
-                      column(10, textOutput("pretty_plot_values_event_text"))
+      ################################################################# Map Control
+      fluidRow(
+        box(
+          title = "Map Control", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
+          fluidRow(
+            ################################################ To-plot list
+            column(
+              width = 8,
+              tags$strong("1) Manage to-plot list"),
+              fluidRow(
+                box(
+                  width = 12,
+                  fluidRow(
+                    column(
+                      width = 6,
+                      uiOutput("pretty_plot_toplot_add_execute_uiOut_button"),
+                      textOutput("pretty_plot_toplot_add_text")
+                    ),
+                    column(
+                      width = 6,
+                      uiOutput("pretty_plot_toplot_remove_execute_uiOut_button"),
+                      textOutput("pretty_plot_toplot_remove_text")
                     )
-                  )
+                  ),
+                  DTOutput("pretty_plot_toplot_table_out")
+                )
+              )
+            ),
+
+            ################################################ Plot map
+            column(
+              width = 4,
+              tags$strong("2) Plot map in-app"),
+              fluidRow(
+                box(
+                  width = 12,
+                  tags$h5("Note that the GUI will make the map fill the entire space above, and thus depending on the shape",
+                          "of the map there may be extra white space around the colored prediction polygons/background"),
+                  tags$br(),
+                  helpText("Text describing plot order"),
+                  fluidRow(
+                    column(4, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
+                    column(4, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0)),
+                    column(4, actionButton("pretty_plot_plot_event", "Plot map"))
+                  ),
+                  textOutput("pretty_plot_plot_text")
                 )
               ),
-
               ################################################ Download map
-              column(
-                width = 6,
-                tags$strong("Download map"),
-                fluidRow(
-                  box(
-                    width = 12,
-                    conditionalPanel(
-                      condition = "output.pretty_display_download == false",
-                      tags$h5("The image that will be downloaded is the image displayed in the box above.",
-                              "Thus, you must click 'Generate map' to generate a map before you can download that map.")
+              tags$strong("3) Download map"),
+              fluidRow(
+                box(
+                  width = 12,
+                  conditionalPanel(
+                    condition = "output.pretty_display_download == false",
+                    tags$h5("The image that will be downloaded is the image displayed in the box above.",
+                            "Thus, you must click 'Generate map' to generate a map before you can download that map.")
+                  ),
+                  conditionalPanel(
+                    condition = "output.pretty_display_download",
+                    tags$h5("The map displayed above will be the map that is downloaded"),
+                    fluidRow(
+                      column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"),
+                                             choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
+                                             selected = 2)),
+                      column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"),
+                                             choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
+                                             selected = 3)),
+                      column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
                     ),
-                    conditionalPanel(
-                      condition = "output.pretty_display_download",
-                      tags$h5("The map displayed above will be the map that is downloaded"),
-                      fluidRow(
-                        column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"),
-                                               choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-                                               selected = 2)),
-                        column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"),
-                                               choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
-                                               selected = 3)),
-                        column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
-                      ),
-                      tags$br(),
-                      downloadButton("pretty_plot_download_execute", "Download map")
-                    )
+                    tags$br(),
+                    downloadButton("pretty_plot_download_execute", "Download map")
                   )
                 )
               )
             )
           )
-        ),
+        )
+      ),
 
+      # conditionalPanel(
+      #   condition = "output.pretty_pred_selected_flag == false",
+      #   fluidRow(
+      #     box(
+      #       width = 12,
+      #       tags$span("Please select exactly one set of model predictions to specify parameters", style = "color: red")
+      #     )
+      #   )
+      # ),
+
+      conditionalPanel(
+        condition = "output.pretty_pred_selected_flag",
         ################################################################# Map Parameters - Section 1
         fluidRow(
           box(

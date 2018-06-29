@@ -17,18 +17,22 @@ pretty_plot_models_idx_list <- reactive({
 
 ### Returns vector of logicals representing whether a table has a row selected
 pretty_plot_tables_null <- reactive({
-  idx.list <- list(input$pretty_table_orig_out_rows_selected,
-                   input$pretty_table_over_out_rows_selected,
-                   input$pretty_table_ens_out_rows_selected)
+  idx.list <- list(
+    input$pretty_table_orig_out_rows_selected,
+    input$pretty_table_over_out_rows_selected,
+    input$pretty_table_ens_out_rows_selected
+  )
 
   sapply(idx.list, is.null)
 })
 
 ### Returns number of selected rows (SDMs to plot)
 pretty_plot_models_idx_count <- reactive({
-  idx.list <- list(input$pretty_table_orig_out_rows_selected,
-                   input$pretty_table_over_out_rows_selected,
-                   input$pretty_table_ens_out_rows_selected)
+  idx.list <- list(
+    input$pretty_table_orig_out_rows_selected,
+    input$pretty_table_over_out_rows_selected,
+    input$pretty_table_ens_out_rows_selected
+  )
 
   length(unlist(idx.list))
 })
@@ -48,11 +52,7 @@ outputOptions(output, "pretty_display_flag", suspendWhenHidden = FALSE)
 
 ### Flag for number of model predictions are selected to pretty plot
 output$pretty_pred_selected_flag <- reactive({
-  models.selected.num <- length(unlist(pretty_plot_models_idx_list()))
-
-  case_when(models.selected.num == 0 ~ 0,
-            models.selected.num == 1 ~ 1,
-            TRUE ~ 2)
+  length(unlist(pretty_plot_models_idx_list())) == 1
 })
 outputOptions(output, "pretty_pred_selected_flag", suspendWhenHidden = FALSE)
 

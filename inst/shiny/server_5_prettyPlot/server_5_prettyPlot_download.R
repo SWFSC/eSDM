@@ -15,7 +15,7 @@ output$pretty_plot_download_execute <- downloadHandler(
       plot.format <- input$pretty_plot_download_format
       incProgress(0.2)
 
-      if(plot.format == 1) {
+      if (plot.format == 1) {
         jpeg(file, width = 12, height = 12, units = 'in', res = plot.res,
              quality = 150)
         plot_pretty(
@@ -25,8 +25,8 @@ output$pretty_plot_download_execute <- downloadHandler(
           p.list$list.background, p.list$list.colorscheme, p.list$list.addobj
         )
         dev.off()
-      }
-      if(plot.format == 2) {
+
+      } else if (plot.format == 2) {
         pdf(file, width = pdf.res, height = pdf.res)
         plot_pretty(
           p.list$model.toplot, p.list$data.name, p.list$plot.lim, p.list$axes.inc,
@@ -35,8 +35,8 @@ output$pretty_plot_download_execute <- downloadHandler(
           p.list$list.background, p.list$list.colorscheme, p.list$list.addobj
         )
         dev.off()
-      }
-      if(plot.format == 3) {
+
+      } else if (plot.format == 3) {
         png(file, width = 12, height = 12, units = "in", res = plot.res)
         plot_pretty(
           p.list$model.toplot, p.list$data.name, p.list$plot.lim, p.list$axes.inc,
@@ -45,6 +45,9 @@ output$pretty_plot_download_execute <- downloadHandler(
           p.list$list.background, p.list$list.colorscheme, p.list$list.addobj
         )
         dev.off()
+
+      } else {
+        validate(need(FALSE, "Error: pretty plot download"))
       }
       incProgress(0.4)
     })
