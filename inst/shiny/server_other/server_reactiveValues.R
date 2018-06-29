@@ -82,12 +82,12 @@ load_envir <- eventReactive(input$load_app_envir_file, {
          "Error: Please load a file with the extension '.RDATA'")
   )
 
-  withProgress(message = "Loading saved environment", value = 0.4, {
+  withProgress(message = "Loading saved workspace", value = 0.4, {
     load(file.load$datapath)
     validate(
       need(exists("vals.save"),
-           paste0("Error: Loaded .RDATA file does not contain an envirnment",
-                  "saved using this app"))
+           paste0("Error: The loaded .RDATA file does not contain",
+                  "a workspace saved using the eSDM GUI"))
     )
     incProgress(0.4)
 
@@ -162,7 +162,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
 
   Sys.sleep(0.5)
 
-  paste("App data loaded from", file.load$name)
+  paste("Workspace loaded from", file.load$name)
 })
 
 ### This is here so that the selected saved app environment loads
@@ -177,7 +177,7 @@ output$save_app_envir <- downloadHandler(
     input$save_app_envir_name
   },
   content = function(file) {
-    withProgress(message = "Saving app data", value = 0.3, {
+    withProgress(message = "Preparing workspace to be saved", value = 0.3, {
       # Reset plot info
       vals$models.plot.leaf <- NULL
       vals$models.plot.leaf.idx <- NULL
@@ -250,8 +250,8 @@ observe({
   if (length(reactiveValuesToList(vals)) != 42) {
     text.message <-
       shinyjs::alert(paste(
-        "There was an error in eSDM data storage and processing,",
-        "please restart the app."
+        "There was an error in eSDM GUI data storage and processing,",
+        "please restart the GUI and report this as a bug"
       ))
   }
 })
