@@ -318,14 +318,18 @@ output$eval_models_table_ens_out <- renderDT({
 }, options = list(dom = 't'))
 
 #----------------------------------------------------------
-# Presence/absence loaded message, error outputs, and table
+# Validation data messages, error outputs, and table
 
-# Presence and absence points
+# Validation data loaded message
 output$eval_data_message <- renderText({
-  ifelse(inherits(vals$eval.data, "sf"), "Validation data loaded", "")
+  req(vals$eval.data)
+  paste(
+    "Validation data loaded; data type:",
+    ifelse(vals$eval.data.specs[2] == 1, "'count'", "'presence/absence'")
+  )
 })
 
-# Text outputs
+# Text (error) outputs
 output$eval_csv_data_text <- renderText(eval_data_csv())
 
 output$eval_data_gis_text <- renderText({
@@ -336,10 +340,11 @@ output$eval_data_gis_text <- renderText({
 
 output$eval_metrics_text <- renderText(eval_metrics())
 
-# Validation data title
+# Validation data info title
 output$table_eval_pts_title <- renderText({
+  req(vals$eval.data)
   ifelse(
-    req(vals$eval.data.specs)[2] == 1, "Validation data (count) info",
+    vals$eval.data.specs[2] == 1, "Validation data (count) info",
     "Validation data (presence/absence) info"
   )
 })
