@@ -57,15 +57,40 @@ observeEvent(input$model_preview_execute, {
 # Overlay tab
 
 #################################################
-### Generate preview of base grid to plot in-app
+### Generate preview of base geometry to plot in-app
 # Helper reactive functions are in server_2_overlay_plot.R
-observeEvent(input$overlay_preview_base_execute, {
-  withProgress(message = "Preparing base grid preview", value = 0.3, {
+overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute, {
+  withProgress(message = "Preparing base geometry preview", value = 0.3, {
     b.inc <- !is.null(vals$overlay.bound)
     l.inc <- !is.null(vals$overlay.land)
-
     model.toplot <- overlay_preview_base_model()
 
+    # Validation checks
+    if (b.inc) {
+      temp <- suppressMessages(
+        st_intersects(st_union(vals$overlay.bound), model.toplot)
+      )
+      validate(
+        need(length(temp[[1]]) != 0,
+             paste("Error: The study area polygon and specified base",
+                   "geometry do not intersect"))
+      )
+      rm(temp)
+    }
+    if (l.inc) {
+      land.toplot <- overlay_preview_base_land()
+      temp <- suppressMessages(
+        st_intersects(st_union(land.toplot), model.toplot)
+      )
+      validate(
+        need(length(temp[[1]]) != 0,
+             paste("Error: The erasing polygon and specified base geometry",
+                   "do not intersect"))
+      )
+      rm(temp)
+    }
+
+    # Create leaflet
     leaf.map <- leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
       addTiles(group = "OpenStreetMap") %>%
@@ -73,18 +98,17 @@ observeEvent(input$overlay_preview_base_execute, {
       addPolygons(
         data = st_geometry(model.toplot),
         stroke = TRUE, color = "black", fillColor = "lightskyblue",
-        fillOpacity = 0.8, group = "Base grid") %>%
+        fillOpacity = 0.8, group = "Base geometry") %>%
       mapview::addMouseCoordinates(style = "basic")
-    overlay.groups <- "Base grid"
+    overlay.groups <- "Base geometry"
     incProgress(0.5)
 
     if (l.inc) {
-      land.toplot <- overlay_preview_base_land()
       leaf.map <- leaf.map %>%
         addPolygons(
           data = land.toplot, fillColor = "tan",
-          stroke = FALSE, fillOpacity = 0.6, group = "Land")
-      overlay.groups <- c(overlay.groups, "Land")
+          stroke = FALSE, fillOpacity = 0.6, group = "Erasing polygon")
+      overlay.groups <- c(overlay.groups, "Erasing polygon")
     }
     incProgress(0.1)
     if (b.inc) {
@@ -107,6 +131,8 @@ observeEvent(input$overlay_preview_base_execute, {
 
     vals$overlay.plot <- leaf.map
   })
+
+  ""
 })
 
 

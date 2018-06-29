@@ -278,7 +278,8 @@ ui.overlay <- function() {
                                  "will be filled in tan and outlined in red, respectively.",
                                  "Note that if model predictions were made at a high resolution,",
                                  "then preview may appear to be completely black when zoomed out"),
-                        uiOutput("overlay_preview_base_execute_uiOut_button")
+                        uiOutput("overlay_preview_base_execute_uiOut_button"),
+                        textOutput("overlay_preview_base_create_text")
                       ),
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 2",

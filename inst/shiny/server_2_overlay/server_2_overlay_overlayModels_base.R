@@ -92,6 +92,14 @@ overlay_clip_land_bound <- reactive({
   overlay.land  <- overlay_proj_land()
   overlay.bound <- overlay_proj_bound()
 
+  temp <- suppressMessages(st_intersects(overlay.bound, overlay.land))
+  validate(
+    need(length(temp[[1]]) != 0,
+         "Error: The study area polygon and erasing polygon do not intersect")
+  )
+  rm(temp)
+
+
   land.bound.try <- try(
     suppressMessages(st_crop(overlay.land, st_bbox(overlay.bound))),
     silent = TRUE
@@ -229,9 +237,13 @@ overlay_proj_bound <- reactive({
     overlay.bound <- st_transform(overlay.bound, overlay_crs())
   }
 
+  temp <- suppressMessages(st_intersects(overlay.bound, overlay_proj_base()))
   validate(
     need(length(overlay.bound) == 1,
-         "Error in base creation: the bound poly is not unioned")
+         "Error in base creation: the study area poly is not unioned") %then%
+      need(length(temp[[1]]) != 0,
+           paste("Error: The study area polygon and specified base geometry",
+                 "do not intersect"))
   )
 
   overlay.bound
@@ -239,15 +251,19 @@ overlay_proj_bound <- reactive({
 
 ### Output land polygon in specified projection
 overlay_proj_land <- reactive({
-  overlay.land <- overlay_clip_land_llpre()
+  system.time(overlay.land <- overlay_clip_land_llpre())
 
   if (!identical(overlay_crs(), crs.ll)) {
     overlay.land <- st_transform(overlay.land, overlay_crs())
   }
 
+  temp <- suppressMessages(st_intersects(overlay.land, overlay_proj_base()))
   validate(
     need(length(overlay.land) == 1,
-         "Error in base creation: the land poly is not unioned")
+         "Error in base creation: the erasing poly is not unioned") %then%
+      need(length(temp[[1]]) != 0,
+           paste("Error: The erasing polygon and specified base geometry",
+                 "do not intersect"))
   )
 
   overlay.land
@@ -269,6 +285,15 @@ overlay_clip_land_llpre <- reactive({
                   st_bbox(suppressWarnings(st_buffer(overlay.bound, 5)))),
           silent = TRUE)
     )
+
+    validate(
+      need(overlay.land.clipll,
+           "Error in base creation: Issue with land prep") %then%
+        need(length(overlay.land.clipll) > 0,
+             paste("Error: The erasing polygon and study area polygon",
+                   "do not intersect"))
+    )
+
   } else {
     base.ll <- overlay_base_pre()[[1]]
     overlay.land.clipll <- suppressMessages(
@@ -276,13 +301,23 @@ overlay_clip_land_llpre <- reactive({
                   st_bbox(suppressWarnings(st_buffer(base.ll, 5)))),
           silent = TRUE)
     )
+
+    validate(
+      need(overlay.land.clipll,
+           "Error in base creation: Issue with land prep") %then%
+        need(length(overlay.land.clipll) > 0,
+             paste("Error: The erasing polygon and specified base geometry",
+                   "do not intersect"))
+    )
   }
 
-  if (isTruthy(overlay.land.clipll)) {
-    st_union(overlay.land.clipll)
-  } else {
-    validate(need(FALSE, "Error in base creation: Issue with land prep"))
-  }
+  st_union(overlay.land.clipll)
+
+  # if (isTruthy(overlay.land.clipll)) {
+  #   st_union(overlay.land.clipll)
+  # } else {
+  #   validate(need(FALSE, "Error in base creation: Issue with land prep"))
+  # }
 })
 
 ### Return a list with the crs.ll and orig crs versions of the base
