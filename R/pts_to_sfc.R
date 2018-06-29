@@ -75,12 +75,8 @@ pts_to_sfc_coords <- function(x, crs.prov = NULL) {
 #'   must be numeric object
 #' @param crs.prov crs value of new sfc_polygon object;
 #'   value must be interpretable by st_crs(), see st_crs() documentation
-#' @param polys.check logical indicating whether or not to check using
-#'   st_relate(pattern = 'T********') that none of the created polygons
-#'   intersect each other
 #'
 #' @importFrom sf st_polygon
-#' @importFrom sf st_relate
 #' @importFrom sf st_sfc
 #'
 #' @examples
@@ -91,12 +87,11 @@ pts_to_sfc_coords <- function(x, crs.prov = NULL) {
 #' pts_to_sfc_grid(x, 2.5, 4326)
 #'
 #' @export
-pts_to_sfc_grid <- function(x, poly.radius, crs.prov, polys.check = TRUE) {
+pts_to_sfc_grid <- function(x, poly.radius, crs.prov = NULL) {
   stopifnot(
     inherits(x, "data.frame"),
     ncol(x) >= 2,
-    inherits(poly.radius, "numeric"),
-    inherits(polys.check, "logical")
+    inherits(poly.radius, "numeric")
   )
 
   sfc.list <- apply(x, 1, function(i, j) {
@@ -109,18 +104,8 @@ pts_to_sfc_grid <- function(x, poly.radius, crs.prov, polys.check = TRUE) {
   }, j = poly.radius)
 
   if (is.null(crs.prov)) {
-    sfc <- st_sfc(do.call(rbind, sfc.list))
+    st_sfc(do.call(rbind, sfc.list))
   } else {
-    sfc <- st_sfc(do.call(rbind, sfc.list), crs = crs.prov)
+    st_sfc(do.call(rbind, sfc.list), crs = crs.prov)
   }
-
-  if (polys.check) {
-    int.interior <- suppressMessages(st_relate(sfc, pattern = "T********"))
-    if (any(sapply(int.interior, length) > 1)) {
-      warning("Some of the created polygons intersect each other. ",
-              "Are the points in x not a grid or is poly.radius too large?")
-    }
-  }
-
-  sfc
 }

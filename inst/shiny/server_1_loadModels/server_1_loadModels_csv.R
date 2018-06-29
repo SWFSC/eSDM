@@ -119,6 +119,9 @@ create_sf_csv_sfc <- reactive({
     #####################################
     ### a) Initial check to see if there are any obvious data issues
     validate(
+      need(!all.equal(lon.idx, lat.idx),
+          paste("Error: The longitude and latitude data columns",
+                "cannot be the same")) %then%
       need(!anyNA(csv.data$Lon),
            paste("Error: At least one of the points in the longitude data",
                  "column has a value of 'NA'")),
@@ -150,15 +153,16 @@ create_sf_csv_sfc <- reactive({
 
     # Test for if points are lat/long regular
     test1 <- length(table.l) == 2 & length(table.w) == 2
-    test2 <- "0" %in% names(table.l) & "0" %in% names(table.w)
-    test3 <- as.numeric(names(table.l[2])) == as.numeric(names(table.w[2]))
+    test2 <- as.numeric(names(table.l[2])) == as.numeric(names(table.w[2]))
 
     validate(
-      need(all(c(test1, test2, test3)),
-           "Error: The points in the .csv file are not lat/long regular")
+      need(all(c(test1, test2)),
+           paste("Error: The points in the .csv file are not lat/long regular;",
+                 "note that the longitude spacing must be the same",
+                 "as the latitude spacing"))
     )
-    cell.lw <- as.numeric(names(table.w[2]))
-    rm(table.l, table.w, test1, test2, test3)
+    cell.lw <- as.numeric(names(table.l[2]))
+    rm(table.l, table.w, test1, test2)
 
     # Adjust points if necessary
     pt.loc <- input$model_csv_pt_loc
@@ -192,22 +196,13 @@ create_sf_csv_sfc <- reactive({
 
     # Make sf object
     sfc.poly <- try(
-      eSDM::pts_to_sfc_grid(csv.data, cell.lw / 2, crs.ll, FALSE),
+      eSDM::pts_to_sfc_grid(csv.data, cell.lw / 2, crs.ll),
       silent = TRUE
     )
     validate(
       need(inherits(sfc.poly, "sfc_POLYGON"),
            paste("Error: The longitude and latitude data from the",
                  "provided .csv file could not be processed"))
-    )
-
-    int.interior <- suppressMessages(
-      st_relate(sfc.poly, pattern = "T********")
-    )
-    validate(
-      need(all(sapply(int.interior, length) == 1),
-           paste("Error: The points in the provided .csv file are not",
-                 "equally spaced in decimal degrees"))
     )
     incProgress(0.3)
 
