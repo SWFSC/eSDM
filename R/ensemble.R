@@ -8,8 +8,13 @@
 #'   each element of x; must be the same length as x
 #' @param y rescaling method;
 #' one of: "abundance", "normalization", "standardization", or "sumto1"
-#' @param y.abund value to which to resclae abundances of x;
+#' @param y.abund value to which to rescale abundances of x;
 #'   ignored if y is not "abundance"
+#'
+#' @importFrom purrr set_names
+#' @importFrom sf st_sf
+#' @importFrom sf st_geometry
+#' @importFrom sf st_set_geometry
 #'
 #' @export
 ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
@@ -31,14 +36,14 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
       mapply(function(i, j) {
         st_set_geometry(i, NULL)[, j] / (eSDM::model_abundance(i, j) / y.abund)
       }, x, x.pred.idx, SIMPLIFY = FALSE)
-    ) %>% purrr::set_names(paste0("x.", 1:length(x)))
+    ) %>% set_names(paste0("x.", 1:length(x)))
 
   } else {
     data.extracted <- data.frame(
       mapply(function(i, j) {
         st_set_geometry(i, NULL)[, j]
       }, x, x.pred.idx, SIMPLIFY = FALSE)
-    ) %>% purrr::set_names(paste0("x.", 1:length(x)))
+    ) %>% set_names(paste0("x.", 1:length(x)))
 
     if (y == "normalization") {
       data.rescaled <- as.data.frame(apply(data.extracted, 2, esdm_normalize))

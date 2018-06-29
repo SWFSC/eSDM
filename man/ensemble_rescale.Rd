@@ -16,7 +16,7 @@ each element of x; must be the same length as x}
 \item{y}{rescaling method;
 one of: "abundance", "normalization", "standardization", or "sumto1"}
 
-\item{y.abund}{value to which to resclae abundances of x;
+\item{y.abund}{value to which to rescale abundances of x;
 ignored if y is not "abundance"}
 }
 \description{

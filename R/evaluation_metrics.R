@@ -23,7 +23,6 @@
 #'   If \code{y.idx.count} is NULL, then the RMSE value will be NA
 #'
 #' @examples
-#' load("../data_provided+/eSDM_loadmodels_pre.RDATA")
 #' evaluation_metrics(vals.save$models.ll[[2]], vals.save$eval.data, 1, "sight", "count")
 #'
 #' @export
