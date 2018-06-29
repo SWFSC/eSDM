@@ -66,7 +66,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
     #--------------------------------------------
-    ### Create base geometry (sfc) and overlaid model predictions (sf)
+    ### Create base geometry (base.sfc) and 1st overlaid model predictions (base.sf)
     incProgress(0.9 / prog.total, detail = paste(
       "Making the base geometry and thus also overlaying original model", base.idx
     ))
@@ -90,6 +90,22 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       collapse = ", "
     )
     rm(base.sfc.ll)
+
+
+    #--------------------------------------------
+    ### Check that all original models overlap with base.sfc
+    base.sfc.union <- st_union(base.sfc)
+    x <- sapply(models.preoverlay, function(i) {
+      any(sapply(suppressMessages(st_intersects(i, base.sfc)), length) > 0)
+    })
+
+    validate(
+      need(all(x),
+           paste("Error: The following sets of predictions do not overlap",
+                 "with the specified base geometry:\n",
+                 paste("Original", which(!x), collapse = ", ")))
+    )
+    rm(base.sfc.union, x)
 
 
     #--------------------------------------------
@@ -128,16 +144,16 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
           eSDM::overlay_sdm(base.sfc, sdm, overlap.perc, c("Pred", "Weight")),
           silent = TRUE
         )
+
         validate(
           need(temp,
                paste("Error: the eSDM was unable to overlay original model",
                      sdm.num))
         )
 
-        df.toadd <- data.frame(Error.overlaid = NA, Pixels = 1:nrow(temp))
         temp %>%
-          dplyr::bind_cols(df.toadd) %>%
-          dplyr::select(c(1, 4, 2, 5, 3)) %>%
+          dplyr::bind_cols(Pixels = 1:nrow(temp)) %>%
+          dplyr::select(c(1, 2, 4, 3)) %>%
           st_set_agr("constant")
       },
       models.preoverlay, 2:(prog.total - 1),

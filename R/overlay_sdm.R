@@ -40,6 +40,11 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
     warning("'base.geom' and 'sdm' have the same geometry and thus ",
             "you shouldn't need to use the full overlay procedure")
   }
+  # temp <- suppressMessages(st_intersects(st_union(base.geom), base.sfc))
+  # if (sapply(, length) > 0) {
+  #   warning("'base.geom' and 'sdm' have the same geometry and thus ",
+  #           "you shouldn't need to use the full overlay procedure")
+  # }
   base.area.m2 <- st_area(base.geom)
   if (!all(units(base.area.m2)$numerator == c("m", "m"))) {
     stop("Units of st_area(base.geom) must be m^2")
@@ -62,16 +67,16 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   sdm <- st_set_agr(suppressMessages(st_crop(sdm, st_bbox(base.geom))), "constant")
   # ^ not tidied so that suppressMessages() can be used
 
-  int <- try(suppressMessages(st_intersection(sdm, base.geom.sf)))
+  int <- try(suppressMessages(st_intersection(sdm, base.geom.sf)), silent = TRUE)
 
   if (inherits(int, "try-error")) {
     stop("Unable to run 'st_intersection(sdm, base.geom)'; make sure that ",
          "'base.geom' and 'sdm' are both valid sfc and sf objects, ",
          "respectively")
   }
-  if (length(int) == 0) stop("'sdm' and 'base.geom' do not overlap")
+
   int <- int[as.numeric(st_area(int)) > 1, ]
-  # TODO Check if nrow(int) == 0 to see if base.geom and sdm are identical? Or use identical()?
+  if (nrow(int) == 0) stop("'base.geom' and 'sdm' do not overlap")
 
 
   #----------------------------------------------------------------------------
