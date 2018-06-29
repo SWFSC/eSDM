@@ -119,8 +119,8 @@ create_sf_csv_sfc <- reactive({
     #####################################
     ### a) Initial check to see if there are any obvious data issues
     validate(
-      need(!all.equal(lon.idx, lat.idx),
-          paste("Error: The longitude and latitude data columns",
+      need(!(lon.idx == lat.idx),
+           paste("Error: The longitude and latitude data columns",
                 "cannot be the same")) %then%
       need(!anyNA(csv.data$Lon),
            paste("Error: At least one of the points in the longitude data",
@@ -193,7 +193,6 @@ create_sf_csv_sfc <- reactive({
 
     #####################################
     ### c) Convert points to a list of sfc_POLYGONs and then to a sf object
-
     # Make sf object
     sfc.poly <- try(
       eSDM::pts_to_sfc_grid(csv.data, cell.lw / 2, crs.ll),
