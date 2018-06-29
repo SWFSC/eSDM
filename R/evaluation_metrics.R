@@ -1,3 +1,6 @@
+# @examples
+# evaluation_metrics(vals.save$models.ll[[2]], vals.save$eval.data, 1, "sight", "count")
+
 #' Evaluation metrics
 #'
 #' Calculate AUC, TSS, and RMSE for given presence and absence points and model predictions
@@ -22,8 +25,6 @@
 #' @return A three-element, numeric vector with AUC, TSS and RMSE values, respectively.
 #'   If \code{y.idx.count} is NULL, then the RMSE value will be NA
 #'
-#' @examples
-#' evaluation_metrics(vals.save$models.ll[[2]], vals.save$eval.data, 1, "sight", "count")
 #'
 #' @export
 evaluation_metrics <- function(x, y, x.idx, y.idx, y.idx.count = NULL) {

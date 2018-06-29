@@ -27,7 +27,3 @@ A three-element, numeric vector with AUC, TSS and RMSE values, respectively.
 \description{
 Calculate AUC, TSS, and RMSE for given presence and absence points and model predictions
 }
-\examples{
-evaluation_metrics(vals.save$models.ll[[2]], vals.save$eval.data, 1, "sight", "count")
-
-}
