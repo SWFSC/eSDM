@@ -9,7 +9,7 @@
 val.pretty.color.num <- reactiveVal(value = NULL)
 
 ###############################################################################
-# 'Initialize' all 40 elements of vals
+# 'Initialize' all 42 elements of vals
 
 vals <- reactiveValues(
   # Objects that store loaded models and related info
@@ -63,7 +63,8 @@ vals <- reactiveValues(
   # Objects that store data for high quality (pretty) plots
   pretty.addobj.list = NULL,       # List of objects and descriptor strings to be plotted
   pretty.params.list = NULL,       # List of parameters to use in high quality plots
-  pretty.plotted.idx = NULL        # List of vectors of the indicies of currently pretty-plotted models
+  pretty.toplot.idx  = NULL,       # List of (table, idx) pairs of predictions in to-plot list
+  pretty.plot.list   = NULL        #
 )
 
 
@@ -135,7 +136,8 @@ load_envir <- eventReactive(input$load_app_envir_file, {
 
     vals$pretty.addobj.list <- vals.save[["pretty.addobj.list"]]
     vals$pretty.params.list <- vals.save[["pretty.params.list"]]
-    vals$pretty.plotted.idx <- vals.save[["pretty.plotted.idx"]]
+    vals$pretty.toplot.idx  <- vals.save[["pretty.toplot.idx"]]
+    vals$pretty.plot.list   <- vals.save[["pretty.plot.list"]]
 
     incProgress(0.1)
 
@@ -200,7 +202,7 @@ output$save_app_envir <- downloadHandler(
 )
 
 ###############################################################################
-### Make sure no extra reactive values get added and length(vals) == 40
+### Make sure no extra reactive values get added and length(vals) == 42
 observe({
   vals$models.ll
   vals$models.orig
@@ -242,9 +244,10 @@ observe({
   vals$eval.metrics.names
   vals$pretty.addobj.list
   vals$pretty.params.list
-  vals$pretty.plotted.idx
+  vals$pretty.toplot.idx
+  vals$pretty.plot.list
 
-  if (length(reactiveValuesToList(vals)) != 41) {
+  if (length(reactiveValuesToList(vals)) != 42) {
     text.message <-
       shinyjs::alert(paste(
         "There was an error in eSDM data storage and processing,",
