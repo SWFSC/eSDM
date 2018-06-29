@@ -1,11 +1,3 @@
-### Overlay predictions that are already on the same grid...
-### ...functionality is in 'server_2_overlay_overlayModels_samegrid.R'
-
-### Get crs in which to do overlay
-### Reset/hide reactive values, preview plots, and eval metrics
-### Overlay models onto base grid and create vals$ens.over... objects
-
-
 ###############################################################################
 ### Where the overlay magic aka science happens
 
@@ -19,14 +11,14 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   #########################################################
   ### Model overlay prep
-  # Get index of model predictions to be base grid
+  # Get index of model predictions to be base geometry
   base.idx <- overlay_base_idx()
   models.num <- length(vals$models.ll)
 
   validate(
     need(length(base.idx) == 1,
          paste("Error: Please select exactly one model from the table",
-               "to use as the base grid")),
+               "to use as the base geometry")),
     need(models.num > 1,
          paste("Error: Please add more than one model to the app",
                "before overlaying")),
@@ -41,20 +33,11 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     }
   )
 
-  # Store base index and overlap percentage
   overlap.perc <- input$overlay_grid_coverage / 100
-  vals$overlay.info <- list(base.idx, overlap.perc)
-
-  # Get and store crs of coord system to be used in overlay process
-  vals$overlay.crs <- overlay_crs()
 
   # Set flag for if all of the sdms have the same sfc geometry list column
   models.orig.sfc <- lapply(vals$models.orig, st_geometry)
-  if (all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]]))) {
-    samegrid.flag <- TRUE
-  } else {
-    samegrid.flag <- FALSE
-  }
+  samegeo.flag <- all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]]))
   rm(models.orig.sfc)
 
 
@@ -64,8 +47,8 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     prog.total <- length(vals$models.ll) + 1
 
     #--------------------------------------------
-    ### Project model predictions as necessary
-    # Polys and base projected in overlay_create_base_sf() suite of reac funcs
+    ### Transform model predictions as necessary
+    # Polys and base transformed in overlay_create_base_sf() suite of reac funcs
     # Polygons have already been checked for if they're valid
     incProgress(0, detail = "Projecting model predictions if necessary")
 
@@ -83,9 +66,9 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
     #--------------------------------------------
-    ### Create base grid (sfc) and overlaid model predictions (sf)
+    ### Create base geometry (base.sfc) and 1st overlaid model predictions (base.sf)
     incProgress(0.9 / prog.total, detail = paste(
-      "Making the base grid and thus also overlaying original model", base.idx
+      "Making the base geometry and thus also overlaying original model", base.idx
     ))
 
     base.sf <- overlay_create_base_sf() %>%
@@ -108,18 +91,37 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     )
     rm(base.sfc.ll)
 
-    # Store data
-    vals$overlay.base.sfc <- base.sfc
+
+    #--------------------------------------------
+    ### Check that all original models overlap with base.sfc
+    base.sfc.union <- st_union(base.sfc)
+    x <- sapply(models.preoverlay, function(i) {
+      i <- suppressMessages(
+        st_intersects(dplyr::filter(i, !is.na(Pred)), base.sfc)
+      )
+      any(sapply(i, length) > 0)
+    })
+    y <- which(!x)
+
+    validate(
+      need(all(x),
+           paste("Error: The following set(s) of predictions do not have any",
+                 "non-NA prediction polygons that overlap with",
+                 "the specified base geometry:\n",
+                 paste("Original", ifelse(y >= base.idx, y + 1, y),
+                       collapse = ", ")))
+    )
+    rm(base.sfc.union, x, y)
 
 
     #--------------------------------------------
     ### Create overlaid models
-    if (samegrid.flag) {
-      # Same-grid overlay
+    if (samegeo.flag) {
+      # Same-geometry overlay
       models.overlaid <- lapply(models.preoverlay, function(i, j) {
         incProgress(
           0.9 / prog.total,
-          detail = "Overlaying original models using same-grid method"
+          detail = "Overlaying original models"
         )
         sf.temp <- j %>%
           dplyr::left_join(st_set_geometry(i, NULL), by = "Pixels") %>%
@@ -148,16 +150,16 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
           eSDM::overlay_sdm(base.sfc, sdm, overlap.perc, c("Pred", "Weight")),
           silent = TRUE
         )
+
         validate(
           need(temp,
                paste("Error: the eSDM was unable to overlay original model",
                      sdm.num))
         )
 
-        df.toadd <- data.frame(Error.overlaid = NA, Pixels = 1:nrow(temp))
         temp %>%
-          dplyr::bind_cols(df.toadd) %>%
-          dplyr::select(c(1, 4, 2, 5, 3)) %>%
+          dplyr::bind_cols(Pixels = 1:nrow(temp)) %>%
+          dplyr::select(c(1, 2, 4, 3)) %>%
           st_set_agr("constant")
       },
       models.preoverlay, 2:(prog.total - 1),
@@ -168,7 +170,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
     #--------------------------------------------
-    ### Procces then store overlaid models and their info in vals
+    ### Procces overlaid models and their info
     models.overlaid.all <- c(models.overlaid, list(base.sf))
 
     # Reorder model list
@@ -196,7 +198,15 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
              n.abund, base.specs[5]))
     }, models.overlaid.all, vals$models.pred.type)
 
-    # Store info
+
+    #--------------------------------------------
+    # Store overlaid info in vals
+    # All done here so that all error checks happen before storage
+    vals$overlay.base.sfc <- base.sfc
+    vals$overlay.crs <- overlay_crs()
+    vals$overlay.info <- list(base.idx, overlay_studyarea_land_message(),
+                              overlay_crs_message(), overlap.perc)
+
     vals$overlaid.models <- models.overlaid.all
     vals$overlaid.models.specs <- specs.list
 
@@ -225,11 +235,9 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
 ###############################################################################
-### Reset vals$overlaid..., vals.ens.over..., vals$ensemble...,
-# and vals$eval... (if any overlaid metrics are calc'd)
-# before creating new overlaid
-### Called in overlay_all() and overlay_samegrid_all()
-overlay_reset <- reactive({
+### Reset  applicable vals elements before creating new overlaid things
+### Is a function rather than reactive so that it runs every time
+overlay_reset <- function() {
   vals$overlay.crs           <- NULL
   vals$overlay.info          <- NULL
   vals$overlay.base.sfc      <- NULL
@@ -272,7 +280,7 @@ overlay_reset <- reactive({
   }
 
   TRUE
-})
+}
 
 
 ###############################################################################
@@ -301,10 +309,47 @@ overlay_crs <- reactive({
 })
 
 
+### Generate crs message to provide info about overlaid models
+overlay_crs_message <- reactive({
+  req(overlay_crs())
+
+  if (input$overlay_proj_native) {
+    "In the native coordiante system of the base geometry"
+
+  } else {
+    switch(
+      as.numeric(input$overlay_proj_method),
+      "In WGS 84 geographic coordinates",
+      paste("In the coordinate system of the",
+            paste0("'", vals$models.names[as.numeric(req(input$overlay_proj_sdm))], "'"),
+            "SDM"),
+      paste("In the coordinate system of EPSG code", input$overlay_proj_epsg)
+    )
+  }
+})
+
+
 ###############################################################################
 ### Get index of sdm to be used as base
 overlay_base_idx <- reactive({
   as.numeric(input$overlay_loaded_table_rows_selected)
+})
+
+
+###############################################################################
+overlay_studyarea_land_message <- reactive({
+  if (isTruthy(vals$overlay.land) & isTruthy(vals$overlay.bound)) {
+    "Both a study area polygon and a land area polygon were used"
+
+  } else if (isTruthy(vals$overlay.bound)) {
+    "Only a study area area polygon was used"
+
+  } else if (isTruthy(vals$overlay.land)) {
+    "Only a land area polygon was used"
+
+  } else {
+    "Neither a land area polygon and a study area polygon were used"
+  }
 })
 
 

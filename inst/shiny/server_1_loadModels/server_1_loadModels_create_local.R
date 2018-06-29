@@ -48,7 +48,7 @@ sf.load.orig <- st_set_geometry(sf.load.orig, NULL) %>%
 specs.curr <- c(
   model.res, nrow(sf.load.ll), sum(!is.na(sf.load.ll$Pred)),
   ifelse(pred.type == 1,
-         unname(round(model_abundance(sf.load.orig, "Pred"), 0)),
+         unname(round(eSDM::model_abundance(sf.load.orig, "Pred"), 0)),
          "N/A"),
   paste0("(", paste(round(st_bbox(sf.load.ll), 0)[c(1, 3)], collapse = ", "),
          "), (",

@@ -13,12 +13,12 @@ ui.overlay <- function() {
             box(
               title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               checkboxInput("overlay_bound",
-                            paste("Use a study area polygon as the boundary for the base grid in the overlay process;",
+                            paste("Use a study area polygon as the boundary for the base geometry in the overlay process;",
                                   "uncheck this box to remove a loaded study area polygon"),
                             value = FALSE),
               conditionalPanel(
                 condition = "input.overlay_bound == true",
-                radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1),
+                column(12, radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)),
                 box(
                   width = 12,
                   conditionalPanel(
@@ -68,22 +68,25 @@ ui.overlay <- function() {
             ),
 
             box(
-              title = "Load Land Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              title = "Load Erasing Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               checkboxInput("overlay_land",
-                            paste("Use a land polygon to remove land from the base grid in the overlay process;",
-                                  "uncheck this box to remove a loaded land polygon"),
+                            paste("Use an erasing polygon to remove are from the base geometry in the overlay process;",
+                                  "uncheck this box to remove a loaded erasing polygon"),
                             value = FALSE),
               conditionalPanel(
                 condition = "input.overlay_land == true",
-                fluidRow(
-                  column(6, radioButtons("overlay_land_load_type", tags$h5("Land polygon source"),
-                                         choices = list("Use provided" = 1, "Upload personal" = 2),
-                                         selected = 1)),
-                  column(
-                    width = 6,
-                    conditionalPanel(
-                      condition = "input.overlay_land_load_type == 2 ",
-                      radioButtons("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)
+                column(
+                  width = 12,
+                  fluidRow(
+                    column(6, radioButtons("overlay_land_load_type", NULL,
+                                           choices = list("Use provided erasing polygon" = 1, "Upload personal erasing polygon" = 2),
+                                           selected = 1)),
+                    column(
+                      width = 6,
+                      conditionalPanel(
+                        condition = "input.overlay_land_load_type == 2 ",
+                        radioButtons("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)
+                      )
                     )
                   )
                 ),
@@ -91,20 +94,20 @@ ui.overlay <- function() {
                   condition = "input.overlay_land_load_type == 1",
                   box(
                     width = 12,
-                    helpText("The provided land polygons are from the Global Self-consistent, Hierarchical, ",
-                             "High-resolution Geography (GSHHG) Database. They represent all continents, including Antarctica,",
-                             "but not lakes and rivers within those continents.",
+                    helpText("The provided erasing polygon is from the Global Self-consistent, Hierarchical, ",
+                             "High-resolution Geography (GSHHG) Database. It is a low-resolution polygon that",
+                             "represents the land of all continents, including Antarctica,",
+                             "but not lakes, rivers, or islands within those continents.",
                              "See the", tags$a("GSHHG website", href = "http://www.soest.hawaii.edu/pwessel/gshhg/"),
-                             "for more information about the provided land polygons.", tags$br(),
-                             "Note that higher resolution polygons will take longer to load."),
+                             "for more information about the provided erasing polygon."),
                     fluidRow(
-                      column(6, selectInput("overlay_land_provided_res", tags$h5("Resolution of land polygon"),
-                                            choices = list("Full" = 1, "High" = 2, "Intermediate" = 3, "Low" = 4, "Crude" = 5),
-                                            selected = 1)),
-                      column(6, ui.new.line(), tags$br(), actionButton("overlay_land_provided", "Load provided land polygon"))
-                    ),
-                    tags$span(textOutput("overlay_land_prov_message"), style = "color: blue"),
-                    textOutput("overlay_land_prov_text")
+                      column(6, actionButton("overlay_land_provided", "Load provided erasing polygon")),
+                      column(
+                        width = 6,
+                        tags$span(textOutput("overlay_land_prov_message"), style = "color: blue"),
+                        textOutput("overlay_land_prov_text")
+                      )
+                    )
                   )
                 ),
                 conditionalPanel(
@@ -117,8 +120,7 @@ ui.overlay <- function() {
                       column(6, fileInput("overlay_land_csv_file", label.csv.upload, accept = ".csv")),
                       column(
                         width = 6,
-                        tags$br(),
-                        tags$br(),
+                        tags$br(), tags$br(),
                         tags$span(textOutput("overlay_land_csv_message"), style = "color: blue"),
                         textOutput("overlay_land_csv_text")
                       )
@@ -134,8 +136,7 @@ ui.overlay <- function() {
                       column(6, fileInput("overlay_land_gis_shp_files", label.shp.upload, multiple = TRUE)),
                       column(
                         width = 6,
-                        tags$br(),
-                        tags$br(),
+                        tags$br(), tags$br(),
                         tags$span(textOutput("overlay_land_gis_shp_message"), style = "color: blue"),
                         textOutput("overlay_land_gis_shp_text")
                       )
@@ -169,7 +170,7 @@ ui.overlay <- function() {
           fluidRow(
             box(
               title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              ui.instructions.table.select(text.pre = "loaded", text.in = "to use as the base grid:", sel.num = 1,
+              ui.instructions.table.select(text.pre = "loaded", text.in = "to use as the base geometry:", sel.num = 1,
                                            text.other = TRUE),
               conditionalPanel("input.overlay_loaded_table_stats != true", DTOutput("overlay_loaded_table")),
               conditionalPanel("input.overlay_loaded_table_stats", DTOutput("overlay_loaded_stats_table")),
@@ -180,39 +181,52 @@ ui.overlay <- function() {
             box(
               title = "Overlay Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               fluidRow(
-                box(
+                column(
                   width = 6,
-                  tags$strong("1) Overlay options: coordinate system"),
-                  helpText("The overlay process involves calculating the area of polygons and determining their intersection,",
-                           "and thus the coordinate system during the overlay will have an effect on the overlay results."),
-                  checkboxInput("overlay_proj_native",
-                                "Perform the overlay in the native coordinate system of the specified base grid",
-                                value = TRUE),
-                  conditionalPanel(
-                    condition = "input.overlay_proj_native == false",
+                  fluidRow(
                     box(
                       width = 12,
-                      radioButtons("overlay_proj_method", NULL, #tags$h5("Overlay coordinate system"),
-                                   choices = list("Perform overlay in WGS 84 geographic coordinates" = 1,
-                                                  "Select model with desired coordinate system" = 2,
-                                                  "Enter numeric EPSG code" = 3),
-                                   selected = 1),
+                      tags$strong("1) Overlay options: choose base geometry"),
+                      tags$h5("Make your selection in the 'Loaded Model Predictions' box."),
+                      tags$br(),
+                      tags$strong("2) Overlay options: load desired study area and erasing polygons"),
+                      tags$h5("Load these polygons in their respecitve boxes, 'Load Study Area Polygon' and 'Load Erasing Polygon'.")
+                    ),
+                    box(
+                      width = 12,
+                      tags$strong("3) Overlay options: coordinate system"),
+                      helpText("The overlay process involves calculating the area of polygons and determining their intersection,",
+                               "and thus the coordinate system during the overlay will have an effect on the overlay results."),
+                      checkboxInput("overlay_proj_native",
+                                    "Perform the overlay in the native coordinate system of the specified base geometry",
+                                    value = TRUE),
                       conditionalPanel(
-                        condition = "input.overlay_proj_method == 1",
-                        helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
-                                 "1) 'Equatorial axis of ellipsoid' = 6378137 and",
-                                 "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
-                                 "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
-                                 "for more details about assumptions that must be made when calculating the area",
-                                 "using WGS 84 geographic coordinates.")
-                      ),
-                      uiOutput("overlay_proj_sdm_uiOut_select"),
-                      conditionalPanel(
-                        condition = "input.overlay_proj_method == 3",
-                        numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1),
-                        helpText("See", tags$a("epsg.io", href = "http://epsg.io/"), "or the",
-                                 tags$a("EPSG home page", href = "http://www.epsg.org/"),
-                                 "for more information about EPSG codes")
+                        condition = "input.overlay_proj_native == false",
+                        box(
+                          width = 12,
+                          radioButtons("overlay_proj_method", NULL, #tags$h5("Overlay coordinate system"),
+                                       choices = list("Perform overlay in WGS 84 geographic coordinates" = 1,
+                                                      "Select model with desired coordinate system" = 2,
+                                                      "Enter numeric EPSG code" = 3),
+                                       selected = 1),
+                          conditionalPanel(
+                            condition = "input.overlay_proj_method == 1",
+                            helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
+                                     "1) 'Equatorial axis of ellipsoid' = 6378137 and",
+                                     "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
+                                     "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
+                                     "for more details about assumptions that must be made when calculating the area",
+                                     "using WGS 84 geographic coordinates.")
+                          ),
+                          uiOutput("overlay_proj_sdm_uiOut_select"),
+                          conditionalPanel(
+                            condition = "input.overlay_proj_method == 3",
+                            numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1),
+                            helpText("See", tags$a("epsg.io", href = "http://epsg.io/"), "or the",
+                                     tags$a("EPSG home page", href = "http://www.epsg.org/"),
+                                     "for more information about EPSG codes")
+                          )
+                        )
                       )
                     )
                   )
@@ -222,8 +236,9 @@ ui.overlay <- function() {
                   fluidRow(
                     box(
                       width = 12,
-                      tags$strong("2) Overlay options: percent overlap"),
-                      helpText("Specify the minimum percentage of a base grid cell the original model prediction(s) must overlap",
+                      tags$strong("4) Overlay options: percent overlap"),
+                      helpText("Specify the minimum percentage of a base geometry polygon the must overlap with",
+                               "original model prediction(s)",
                                "for that cell to have a non-NA overlaid prediction value.",
                                "A value of \"0\" means that cell will have a non-NA overlaid prediction value",
                                "if there is any overlap with any original model prediction."),
@@ -231,16 +246,15 @@ ui.overlay <- function() {
                     ),
                     box(
                       width = 12,
-                      tags$strong("3) Perform overlay"),
+                      tags$strong("5) Perform overlay"),
                       helpText(tags$strong("It is strongly recommended to save the app environment before overlaying",
                                            "in case you are disconnected from the server during the process.")),
                       helpText(tags$strong("Reminder: loaded study area and land polygons will be used during",
                                            "the overlay process. This process may take several minutes.")),
-                      tags$span(textOutput("overlay_overlay_samegrid_message_text"), style = "color: red"),
-                      actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base grid"),
+                      actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base geometry"),
                       textOutput("overlay_overlay_all_text"),
                       tags$br(),
-                      tags$span(textOutput("overlay_overlaid_models_message"), style = "color: blue")
+                      tags$span(uiOutput("overlay_overlaid_models_message"), style = "color: blue")
                     )
                   )
                 )
@@ -249,10 +263,10 @@ ui.overlay <- function() {
           ),
           fluidRow(
             box(
-              title = "Base Grid and Overlaid Model Previews", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+              title = "Base Geometry and Overlaid Model Previews", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
               fluidRow(
                 column(3, radioButtons("overlay_preview_which", NULL,
-                                       choices = list("Base grid preview" = 1, "Overlaid models preview" = 2))),
+                                       choices = list("Base geometry preview" = 1, "Overlaid models preview" = 2))),
                 column(
                   width = 9,
                   fluidRow(
@@ -260,11 +274,12 @@ ui.overlay <- function() {
                       width = 12,
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 1",
-                        helpText("The base grid will be outlined in black while if applicable the land and study area",
+                        helpText("The base geometry will be outlined in black while if applicable the land and study area",
                                  "will be filled in tan and outlined in red, respectively.",
                                  "Note that if model predictions were made at a high resolution,",
                                  "then preview may appear to be completely black when zoomed out"),
-                        uiOutput("overlay_preview_base_execute_uiOut_button")
+                        uiOutput("overlay_preview_base_execute_uiOut_button"),
+                        textOutput("overlay_preview_base_create_text")
                       ),
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 2",

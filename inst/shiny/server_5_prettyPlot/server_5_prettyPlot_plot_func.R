@@ -1,6 +1,93 @@
 ###############################################################################
-### Non-reactive plotting function for prettyPlot
+### Non-reactive plotting functions for prettyPlot
 # called in server_render.R
+# NOTE: plot will briefly 'regenerate if screen width changes, i.e.
+# if the scroll down bar appears
+
+
+###############################################################################
+pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
+  req(vals$pretty.params.list)
+
+  plot.nrow <- input$pretty_plot_nrow
+  plot.ncol <- input$pretty_plot_ncol
+
+  validate(
+    need(inherits(plot.nrow, "integer") & inherits(plot.ncol, "integer"),
+         paste("Error: 'Number of rows' and 'Number of columns'",
+               "must be whole numbers")) %then%
+      need((plot.nrow * plot.ncol) >= length(vals$pretty.params.list),
+           paste("Error: 'Number of rows' * 'Number of columns' must be",
+                 "greater than or equal to the number of items in the",
+                 "to-plot list"))
+  )
+
+  vals$pretty.plot.list <- list(
+    dims = c(plot.nrow, plot.ncol), idx.list = vals$pretty.toplot.idx,
+    params.list = vals$pretty.params.list
+  )
+
+  ""
+})
+
+
+###############################################################################
+plot_pretty_top <- function(dims, idx.list, params.list) {
+  # Layout prep
+  layout.num <- dims[1] * dims[2]
+  models.num <- length(params.list)
+  layout.dif <- layout.num - models.num
+
+  counter <- 1
+  layout.vec <- c()
+  for(j in 1:layout.num) {
+    if (j > models.num) {
+      layout.vec <- c(layout.vec, counter, counter)
+      counter <- counter + 1
+
+    } else {
+      if (params.list[[j]]$list.colorscheme$leg.inc) {
+        layout.vec <- c(layout.vec, counter, counter + 1)
+        counter <- counter + 2
+
+      } else {
+        layout.vec <- c(layout.vec, counter, counter)
+        counter <- counter + 1
+      }
+    }
+  }
+  rm(counter)
+
+  # Create layout
+  layout(
+    matrix(
+      layout.vec, nrow = dims[1], ncol = dims[2] * 2, byrow = TRUE
+    ),
+    widths = rep(c(1, lcm(3.4)), layout.num)
+  )
+  # layout(
+  #   matrix(
+  #     1:(layout.num * 2), nrow = dims[1], ncol = dims[2] * 2, byrow = TRUE
+  #   ),
+  #   widths = rep(c(1, lcm(3.4)), layout.num)
+  # )
+
+  # Plot the plots
+  for(k in params.list) {
+    plot_pretty(
+      k$model.toplot, k$data.name, k$plot.lim, k$axes.inc,
+      k$title.ll, k$lab.x, k$lab.y,
+      k$title.cex, k$lab.cex, k$axis.cex, k$axis.tcl,
+      k$list.background, k$list.colorscheme, k$list.addobj
+    )
+  }
+
+  # Fill any empty layout sections
+  if (layout.dif != 0) for (l in 1:layout.dif) graphics::plot.new()
+}
+
+
+###############################################################################
 plot_pretty <- function(model.toplot, data.name, plot.lim, axes.inc,
                         title.ll, lab.x, lab.y,
                         title.cex, lab.cex, axis.cex, axis.tcl,
@@ -8,9 +95,9 @@ plot_pretty <- function(model.toplot, data.name, plot.lim, axes.inc,
   l.cs <- list.colorscheme
 
   #--------------------------------------------------------
-  if (l.cs$leg.inc) {
-    layout(matrix(1:2, ncol = 2), width = c(1, lcm(3.6)))
-  }
+  # if (l.cs$leg.inc) {
+  #   layout(matrix(1:2, ncol = 2), width = c(1, lcm(3.6)))
+  # }
   plot(
     list.background[[1]], axes = axes.inc, border = NA, col = list.background[[2]],
     xlim = plot.lim[1:2], ylim = plot.lim[3:4],
@@ -62,7 +149,7 @@ plot_pretty <- function(model.toplot, data.name, plot.lim, axes.inc,
 
   #--------------------------------------------------------
   # Plot added objects pt 2
-  # Currently hard-coded, to change
+  # TODO Currently hard-coded, need to change
   for (i in list.addobj) {
     if (!i$pre.sdm) {
       if (i$obj.text == 1) {
@@ -98,7 +185,6 @@ plot_pretty <- function(model.toplot, data.name, plot.lim, axes.inc,
     graphics::image(0.6, 1:col.num, t(as.matrix(1:col.num)), col = col.pal,
                     axes = FALSE, xlab = "", ylab = "")
     graphics::box(col = "black")
-    # temp <- ifelse(models.num == 1, 0.8, 1.3) # not sure why this is necessary
     graphics::axis(4, at = 1:col.num, labels = leg.labels, tick = FALSE,
                    las = 1, cex.axis = 1)
   }

@@ -59,7 +59,7 @@ output$models_loaded_table_stats <- renderDT({
 output$model_preview_interactive_plot <- renderLeaflet({
   req(x <- vals$models.plot.leaf)
 
-  eSDM::preview_interactive(
+  preview_interactive(
     x$model.toplot, "Pred", x$perc.num, pal.esdm, leg.perc.esdm,
     x$plot.title, x$leg.title
   )
@@ -68,7 +68,7 @@ output$model_preview_interactive_plot <- renderLeaflet({
 output$model_preview_plot <- renderPlot({
   req(x <- vals$models.plot)
 
-  eSDM::multiplot_layout(
+  multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num,
     x$pal, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
@@ -103,13 +103,16 @@ output$overlay_bound_gis_gdb_text <- renderText(overlay_bound_gis_gdb())
 
 ### Boundary polygon loaded messages
 output$overlay_bound_csv_message <- renderText({
-  if (!is.null(vals$overlay.bound)) "A study area polygon is loaded"
+  req(vals$overlay.bound)
+  "A study area polygon is loaded"
 })
 output$overlay_bound_gis_shp_message <- renderText({
-  if (!is.null(vals$overlay.bound)) "A study area polygon is loaded"
+  req(vals$overlay.bound)
+  "A study area polygon is loaded"
 })
 output$overlay_bound_gis_gdb_message <- renderText({
-  if (!is.null(vals$overlay.bound)) "A study area polygon is loaded"
+  req(vals$overlay.bound)
+  "A study area polygon is loaded"
 })
 
 ### Land polygon error outputs
@@ -120,16 +123,20 @@ output$overlay_land_gis_gdb_text <- renderText(overlay_land_gis_gdb())
 
 ### Land polygon loaded messages
 output$overlay_land_prov_message <- renderText({
-  if (!is.null(vals$overlay.land)) "A land polygon is loaded"
+  req(vals$overlay.land)
+  "An erasing polygon is loaded"
 })
 output$overlay_land_csv_message <- renderText({
-  if (!is.null(vals$overlay.land)) "A land polygon is loaded"
+  req(vals$overlay.land)
+  "An erasing polygon is loaded"
 })
 output$overlay_land_gis_shp_message <- renderText({
-  if (!is.null(vals$overlay.land)) "A land polygon is loaded"
+  req(vals$overlay.land)
+  "An erasing polygon is loaded"
 })
 output$overlay_land_gis_gdb_message <- renderText({
-  if (!is.null(vals$overlay.land)) "A land polygon is loaded"
+  req(vals$overlay.land)
+  "An erasing polygon is loaded"
 })
 
 #----------------------------------------------------------
@@ -141,33 +148,43 @@ output$overlay_overlay_all_text <- renderText({
 })
 
 ### Message detailing that overlaid models are created
-output$overlay_overlaid_models_message <- renderText({
-  if (length(vals$overlaid.models) > 0) {
-    paste(
-      "Overlaid models have been created using the geometry of the",
-      paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
-      "SDM as the base grid and with a percent overlap of",
-      paste0(vals$overlay.info[[2]] * 100, "%")
-    )
-  }
+output$overlay_overlaid_models_message <- renderUI({
+  req(length(vals$overlaid.models) > 0)
+
+  HTML(paste0(
+    "Overlaid models have been created using the following overlay options:",
+    tags$br(),
+    paste("1) Using the geometry of the",
+          paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
+          "SDM as the base grid"),
+    tags$br(),
+    paste("2)", vals$overlay.info[[2]]) ,
+    tags$br(),
+    paste("3)", vals$overlay.info[[3]]),
+    tags$br(),
+    paste("4) With a percent overlap of",
+          paste0(vals$overlay.info[[4]] * 100, "%"))
+  ))
 })
 
+
+output$overlay_preview_base_create_text <- renderText({
+  overlay_preview_base_create()
+})
 
 #----------------------------------------------------------
 # Previews
 
 ### Preview of base grid
-# 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$overlay_preview_base <- renderLeaflet({
   req(vals$overlay.plot)
 })
 
 ### Preview of overlaid model predictions
-# 'suspendWhenHidden = FALSE' in server_hide+show.R
 output$overlay_preview_overlaid <- renderPlot({
   req(x <- vals$overlaid.plot)
 
-  eSDM::multiplot_layout(
+  multiplot_layout(
     x$models.toplot, x$data.names, x$plot.titles, 1, pal.esdm, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
     x$plot.dims[5], x$plot.dims[6]
@@ -254,7 +271,7 @@ output$ens_remove_text <- renderUI({
 output$ens_preview_interactive_plot <- renderLeaflet({
   req(x <- vals$ensemble.plot.leaf)
 
-  eSDM::preview_interactive(
+  preview_interactive(
     x$model.toplot, "Pred.ens", x$perc.num, pal.esdm, leg.perc.esdm,
     x$plot.title, x$leg.title
   )
@@ -264,7 +281,7 @@ output$ens_preview_interactive_plot <- renderLeaflet({
 output$ens_preview_plot <- renderPlot({
   req(x <- vals$ensemble.plot)
 
-  eSDM::multiplot_layout(
+  multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num,
     x$pal, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
@@ -274,8 +291,9 @@ output$ens_preview_plot <- renderPlot({
 
 ### Table of abundances of created ensemble predictions
 output$ens_abund_table_out <- renderTable({
+  req(abund_reac_flag())
   table_ens_abund()
-}, rownames = FALSE, align = "r") #, rownames = TRUE, colnames = FALSE)
+}, rownames = FALSE, align = "r")
 
 
 ###############################################################################
@@ -300,14 +318,18 @@ output$eval_models_table_ens_out <- renderDT({
 }, options = list(dom = 't'))
 
 #----------------------------------------------------------
-# Presence/absence loaded message, error outputs, and table
+# Validation data messages, error outputs, and table
 
-# Presence and absence points
+# Validation data loaded message
 output$eval_data_message <- renderText({
-  ifelse(inherits(vals$eval.data, "sf"), "Validation data loaded", "")
+  req(vals$eval.data)
+  paste(
+    "Validation data loaded; data type:",
+    ifelse(vals$eval.data.specs[2] == 1, "'count'", "'presence/absence'")
+  )
 })
 
-# Text outputs
+# Text (error) outputs
 output$eval_csv_data_text <- renderText(eval_data_csv())
 
 output$eval_data_gis_text <- renderText({
@@ -318,12 +340,13 @@ output$eval_data_gis_text <- renderText({
 
 output$eval_metrics_text <- renderText(eval_metrics())
 
-# Validation data title
+# Validation data info title
 output$table_eval_pts_title <- renderText({
-  req(ifelse(
+  req(vals$eval.data)
+  ifelse(
     vals$eval.data.specs[2] == 1, "Validation data (count) info",
     "Validation data (presence/absence) info"
-  ))
+  )
 })
 
 # Validation data table
@@ -377,46 +400,42 @@ output$pretty_plot_addobj_table_out <- renderTable({
   pretty_plot_addobj_table()
 })
 
-### Pretty plot error output
-output$pretty_plot_values_event_text <- renderText({
-  pretty_plot_values_event()
+### Pretty plot add error output
+output$pretty_plot_toplot_add_text <- renderText({
+  pretty_plot_toplot_add()
+})
+output$pretty_plot_toplot_remove_text <- renderText({
+  pretty_plot_toplot_remove()
 })
 
-### Pretty plot
-# observe({
-#   output$pretty_plot_plot <- renderPlot({
-#     pretty_plot_generate()
-#   }, height = 500, width = pretty_plot_plot_width())
-# })
-output$pretty_plot_plot <- renderPlot({
-  req(p.list <- vals$pretty.params.list)
-  plot_pretty(
-    p.list$model.toplot, p.list$data.name, p.list$plot.lim, p.list$axes.inc,
-    p.list$title.ll, p.list$lab.x, p.list$lab.y,
-    p.list$title.cex, p.list$lab.cex, p.list$axis.cex, p.list$axis.tcl,
-    p.list$list.background, p.list$list.colorscheme, p.list$list.addobj
-  )
-}, height = 500)
+### Pretty plot plot error output
+output$pretty_plot_plot_text <- renderText({
+  pretty_plot_plot()
+})
 
-# pretty_plot_plot_width <- reactive({
-#   if (isTruthy(vals$pretty.params.list)) {
-#     xy.ratio <- unname(
-#       diff(vals$pretty.params.list$plot.lim[1:2]) /
-#         diff(vals$pretty.params.list$plot.lim[3:4])
-#     )
-#     min(500, 500 * xy.ratio)
-#
-#   } else {
-#     500
-#   }
-# })
+### Pretty plot table
+output$pretty_plot_toplot_table_out <- renderDT({
+  pretty_plot_toplot_table()
+}, options = list(dom = 't'), rownames = FALSE)
+
+### Pretty plot
+output$pretty_plot_plot_out <- renderPlot({
+  # req(p.list <- vals$pretty.params.list)
+  # plot_pretty(
+  #   p.list$model.toplot, p.list$data.name, p.list$plot.lim, p.list$axes.inc,
+  #   p.list$title.ll, p.list$lab.x, p.list$lab.y,
+  #   p.list$title.cex, p.list$lab.cex, p.list$axis.cex, p.list$axis.tcl,
+  #   p.list$list.background, p.list$list.colorscheme, p.list$list.addobj
+  # )
+  req(p.list <- vals$pretty.plot.list)
+
+  plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
+
+}, height = 500)
 
 
 ###############################################################################
 ##### Export Model Predictions #####
-
-#----------------------------------------------------------
-# Tables
 
 ### Table of orig model predictions
 output$export_table_orig_out <- renderDT({
@@ -433,16 +452,4 @@ output$export_table_ens_out <- renderDT({
   table_ensembles()
 }, options = list(dom = 't'), selection = "single")
 
-
-###############################################################################
-# ##### Submit Feedback #####
-# ### Feedback function text
-# output$feedback_submit_text <- renderText({
-#   feedback_submit()
-# })
-#
-# ### Warning message if no internet connection is detected
-# output$feedback_internet_connection_text <- renderText({
-#   feedback_internet_connection()
-# })
 ###############################################################################

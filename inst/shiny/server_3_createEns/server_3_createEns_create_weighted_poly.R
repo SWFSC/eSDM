@@ -354,16 +354,13 @@ create_ens_weights_poly_csv_process <- reactive({
     csv.poly.data <- csv.poly.list[[2]]
     csv.poly.data[csv.poly.data == ""] <- NA
 
-    csv.poly.sfc <- create_sfc_csv_func(csv.poly.data, crs.ll)
+    csv.poly.sfc <- pts_to_sfc_coords_shiny(csv.poly.data[, 1:2], crs.ll, TRUE)
     incProgress(0.3)
 
     # Transform weight polygon as necesary
     if (!identical(st_crs(csv.poly.sfc), vals$overlay.crs)) {
       csv.poly.sfc <- st_transform(csv.poly.sfc, vals$overlay.crs)
     }
-
-    # Check that polygon is valid
-    csv.poly.sfc <- check_valid(csv.poly.sfc, progress.detail = TRUE)
     incProgress(0.1)
   })
 

@@ -127,19 +127,19 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   #------------------------------------
   ### If these predictions were pretty-plotted, reset and hide pretty plot
   ### Else, adjust vals idx
-  if (!is.null(vals$pretty.plotted.idx)) {
+  if (!is.null(vals$pretty.toplot.idx)) {
     browser()
-    if (any(idx %in% vals$pretty.plotted.idx[[3]])) {
+    if (any(idx %in% vals$pretty.toplot.idx[[3]])) {
       shinyjs::hide("pretty_plot_plot", time = 0)
       vals$pretty.params.list <- NULL
-      vals$pretty.plotted.idx <- NULL
+      vals$pretty.toplot.idx <- NULL
     } else {
-      idx.adjust <- sapply(vals$pretty.plotted.idx[[3]], function(i) {
+      idx.adjust <- sapply(vals$pretty.toplot.idx[[3]], function(i) {
         sum(idx < i)
       })
-      vals$pretty.plotted.idx[[3]] <- vals$pretty.plotted.idx[[3]] - idx.adjust
+      vals$pretty.toplot.idx[[3]] <- vals$pretty.toplot.idx[[3]] - idx.adjust
       validate(
-        need(all(vals$pretty.plotted.idx[[3]] > 0),
+        need(all(vals$pretty.toplot.idx[[3]] > 0),
              "Error: While deleting ensemble model(s), error 2")
       )
     }
@@ -161,7 +161,7 @@ ens_abund_values <- reactive({
   ensemble.which <- sort(input$ens_datatable_ensembles_rows_selected)
 
   ens.tocalc <- vals$ensemble.models[ensemble.which]
-  ens.abund <- round(sapply(ens.tocalc, model_abundance, "Pred.ens"), 0)
+  ens.abund <- round(sapply(ens.tocalc, eSDM::model_abundance, "Pred.ens"), 0)
   names(ens.abund) <- paste("Ensemble", ensemble.which)
 
   ens.abund

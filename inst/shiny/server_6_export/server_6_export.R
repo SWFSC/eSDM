@@ -148,9 +148,9 @@ export_model_selected <- reactive({
     model.selected <- vals$ensemble.models[[z]]
   }
 
-  # TODO include pixels?
+  # Pred column (column 1) is only column all 3 model types have in common
   st_sf(
-    st_set_geometry(model.selected, NULL) %>% dplyr::select(Density = 1, 3),
+    dplyr::select(st_set_geometry(model.selected, NULL), Density = 1),
     st_geometry(model.selected), agr = "constant"
   )
 })

@@ -79,6 +79,7 @@ output$export_filename_uiOut_text <- renderUI({
   filename.value <- paste0("eSDM_", filename.value, filename.ext)
 
   #------------------------------------
+
   ### textInput()
   textInput("export_filename", tags$h5("Filename"), value = filename.value)
 })
@@ -90,9 +91,10 @@ output$export_out_uiOut_download <- renderUI({
   req(input$export_filename)
 
   isolate({
-    ext.text <- switch(as.numeric(input$export_format),
-                       ".csv", ".shp",
-                       ifelse(input$export_format_kml == 1, ".kml", ".kmz"))
+    ext.text <- switch(
+      as.numeric(input$export_format),
+      ".csv", ".shp", ifelse(input$export_format_kml == 1, ".kml", ".kmz")
+    )
   })
 
   validate(

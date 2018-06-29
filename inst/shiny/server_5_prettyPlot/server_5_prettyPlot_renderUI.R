@@ -2,7 +2,25 @@
 
 
 ###############################################################################
-### Pretty plot widgets
+# Map control widgets
+output$pretty_plot_toplot_add_execute_uiOut_button <- renderUI({
+  validate(
+    need(length(unlist(pretty_plot_models_idx_list())) == 1,
+         paste("Please select exactly one set of model predictions",
+               "to specify parameters")),
+    errorClass = "validation2"
+  )
+
+  actionButton("pretty_plot_toplot_add_execute",
+               "Add specified info to to-plot list")
+})
+output$pretty_plot_toplot_remove_execute_uiOut_button <- renderUI({
+  req(pretty_plot_toplot_table())
+
+  actionButton("pretty_plot_toplot_remove_execute",
+               "Remove selected item(s) from to-plot list")
+})
+
 
 ###############################################################################
 # Range and projection of map

@@ -1,31 +1,28 @@
-### Plotting code for 'High Quality Maps' tab
-# NOTE: plot will briefly 'regenerate if screen width changes, i.e.
-# if the scroll down bar appears
+### Ccode for 'High Quality Maps' tab for adding parameters to reactive values
 
 
 ###############################################################################
 # Reactive plotting functions
 
 ###########################################################
-### Event to update reactive variables
-pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
+### Add data to pretty plotreactive variables
+pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
   validate(
     need(pretty_plot_models_idx_count() > 0,
          paste("Error: Please select at least one set of",
-               "model predictions to plot")) %then%
-      need(pretty_plot_models_idx_count() == 1,
-           "Error: App can only handle plotting one pretty plot for now")
+               "model predictions to plot"))
   )
 
-  # Set plotting variables
+  # Get/set plotting variables
   withProgress(message = "Processing specified map parameters", value = 0.5, {
     list.selected <- pretty_plot_models_toplot()
 
     model.toplot <- suppressMessages(
       st_intersection(list.selected[[3]], pretty_plot_range_poly()[[2]])
     )
-    data.name <- switch(list.selected[[1]],
-                        "Pred", "Pred.overlaid", "Pred.ens")
+    data.name <- switch(
+      list.selected[[1]], "Pred", "Pred.overlaid", "Pred.ens"
+    )
     plot.lim <- pretty_plot_range_poly()[[1]]
     axes.inc <- input$pretty_plot_tick
 
@@ -59,10 +56,54 @@ pretty_plot_values_event <- eventReactive(input$pretty_plot_execute, {
     list.addobj = list.addobj
   )
 
-  vals$pretty.params.list <- params.list
-  vals$pretty.plotted.idx <- pretty_plot_models_idx_list()
+  vals$pretty.params.list <- c(vals$pretty.params.list, list(params.list))
+  vals$pretty.toplot.idx <- c(
+    vals$pretty.toplot.idx, list(pretty_plot_models_idx_list())
+  )
 
   ""
 })
+
+
+###########################################################
+### Table
+pretty_plot_toplot_table <- reactive({
+  req(vals$pretty.toplot.idx)
+
+  data.frame(
+    Predictions = sapply(vals$pretty.toplot.idx, function(i) {
+      switch(
+        which(!sapply(i, is.null)),
+        row.names(table_orig())[i[[1]]],
+        row.names(table_overlaid())[i[[2]]],
+        row.names(table_ensembles())[i[[3]]]
+      )
+    }),
+    Title = sapply(vals$pretty.params.list, function(j) j$title.ll),
+    stringsAsFactors = FALSE
+  )
+})
+
+
+###########################################################
+### Remove stuff from list
+pretty_plot_toplot_remove <- eventReactive(input$pretty_plot_toplot_remove_execute, {
+  req(vals$pretty.params.list)
+
+  x <- input$pretty_plot_toplot_table_out_rows_selected
+  validate(
+    need(x, "Error: Select at least one row from the to-plot list to remove")
+  )
+
+  vals$pretty.params.list <- vals$pretty.params.list[-x]
+  vals$pretty.toplot.idx <- vals$pretty.toplot.idx[-x]
+
+  if (length(vals$pretty.params.list) == 0) vals$pretty.params.list <- NULL
+  if (length(vals$pretty.toplot.idx) == 0) vals$pretty.toplot.idx <- NULL
+
+  ""
+})
+
+
 
 ###############################################################################

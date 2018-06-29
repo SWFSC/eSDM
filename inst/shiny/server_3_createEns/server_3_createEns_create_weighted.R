@@ -92,7 +92,7 @@ create_ens_weighted_metric <- reactive({
 
   # Check that length of weights == length of overlaid models to ensemble
   validate(
-    need(length(weights) == ncol(data.rescaled),
+    need(length(data.weights) == ncol(data.rescaled),
          "Weighted ens by metrics: number of weights != number of of model")
   )
 

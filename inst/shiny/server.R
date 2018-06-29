@@ -1,4 +1,4 @@
-### server.R for the Ensemble Tool for Species Distribution Modeling (eSDM)
+### server.R for the Ensemble Tool for Species Distribution Modeling (eSDM) GUI
 # Designed by Sam Woodman
 
 
@@ -27,6 +27,7 @@ library(raster)
 library(RColorBrewer)
 library(ROCR)
 library(sf)
+library(units)
 library(viridis)
 
 
@@ -60,7 +61,7 @@ server <- function(input, output, session) {
   ###############################################
   ### Quit App
   observeEvent(input$close_app, {
-    stopApp(returnValue = "Ensemble app was closed")
+    stopApp(returnValue = "eSDM GUI was closed")
   })
 
   ###############################################
@@ -74,15 +75,14 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       withProgress(message = "Downloading sample data", value = 0.6, {
-        sample.try <- try(download.file("https://github.com/smwoodman/eSDM/raw/master/inst/extdata/data_provided.zip",
+        sample.try <- try(download.file("https://github.com/smwoodman/eSDM-data/raw/master/data_provided.zip",
                                         destfile = file, quiet = TRUE),
                           silent = TRUE)
         validate(
           need(isTruthy(sample.try),
                paste("The sample data could not be downloaded; please check",
-                     "your internet connection. If this problem persists,",
-                     "email Sam Woodman (sam.woodman@noaa.gov) or",
-                     "Karin Forney (karin.forney@noaa.gov)."))
+                     "your internet connection. If this problem persists, please",
+                     "report this issue at https://github.com/smwoodman/eSDM/issues"))
         )
         incProgress(0.4)
       })
@@ -127,9 +127,9 @@ server <- function(input, output, session) {
   # Make high quality maps (pretty plots)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_toplot.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot_func.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_addobj.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep_addobj.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_download.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_renderUI.R"), local = TRUE, chdir = TRUE)
 
@@ -143,16 +143,12 @@ server <- function(input, output, session) {
   # The function tags$iframe(...) is in ui.R so that the manual renders immediately
 
 
-  # # Submit feedback
-  # source(file.path("server_8_feedbackForm", "server_8_feedbackForm.R"), local = TRUE, chdir = TRUE)
-
-
   # General server code
   source(file.path("server_other", "server_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots_download.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, chdir = TRUE)
-  # server_reactiveValues.R is sourced at the top of the server code in order to initialize reactiveValues
+  # server_reactiveValues.R is sourced at the top of the server code in order to initialize vals
   source(file.path("server_other", "server_render.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_render_tables.R"), local = TRUE, chdir = TRUE)
 }

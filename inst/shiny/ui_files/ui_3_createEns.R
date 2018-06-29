@@ -146,7 +146,7 @@ ui.createEns <- function() {
                         box(
                           width = 12,
                           helpText(tags$strong("Unweighted ensembling method:"),
-                                   "Calculate the simple mean of all predictions in each grid cell.")
+                                   "Calculate the simple mean of all predictions for each polygon.")
                         )
                       ),
 
@@ -160,7 +160,7 @@ ui.createEns <- function() {
                           box(
                             width = 12,
                             helpText(tags$strong("Weighted ensembling method:"),
-                                     "Calculate the weighted mean of all predictions in each grid cell."),
+                                     "Calculate the weighted mean of all predictions for each polygon."),
                             helpText(tags$strong("Manual entry method:"),
                                      "Entered weights correspond to the order of the models in the",
                                      "overlaid model predictions table.",
@@ -174,7 +174,7 @@ ui.createEns <- function() {
                           box(
                             width = 12,
                             helpText(tags$strong("Weighted ensembling method:"),
-                                     "Calculate the weighted mean of all predictions in each grid cell."),
+                                     "Calculate the weighted mean of all predictions for each polygon."),
                             helpText(tags$strong("Evaluation metric method:"),
                                      "The table displays both the evaluation metric values and the relative weights for the models.",
                                      "The relative weights are the metric values rescalued so that the maximum value is one."),
@@ -191,7 +191,7 @@ ui.createEns <- function() {
                           box(
                             width = 12,
                             helpText(tags$strong("Weighted ensembling method:"),
-                                     "Calculate the weighted mean of all predictions in each grid cell."),
+                                     "Calculate the weighted mean of all predictions for each polygon."),
                             helpText(tags$strong("Pixel-level spatial weights method:"),
                                      "Overlaid predictions are multiplied by their corresponding spatial weight. These pixel-level",
                                      "spatial weights were specified by the 'Column with weight data' input",
@@ -208,7 +208,7 @@ ui.createEns <- function() {
                           box(
                             width = 12,
                             helpText(tags$strong("Weighted ensembling method:"),
-                                     "Calculate the weighted mean of all predictions in each grid cell."),
+                                     "Calculate the weighted mean of all predictions for each polygon."),
                             helpText(tags$strong("Polygon(s) with weights method"),
                                      "Select one or more sets of overlaid model predictions and load weight polygons",
                                      "to assign to the selected sets of predictions. These weight polygons designate area(s)",
@@ -216,7 +216,7 @@ ui.createEns <- function() {
                                      "Currently you may only assign one weight for each weight polygon, but you may load",
                                      "multiple polygons to apply unique weights to multiple prediction regions",
                                      "for one set of predictions. However, these polygons must not overlap.",
-                                     "All predictions whose grid cell overlaps with a weight polygon by less than the percentage",
+                                     "All predictions whose polygon overlaps with a weight polygon by less than the percentage",
                                      "specified below, including those with no overlap, will have a weight of one."),
                             fluidRow(
                               column(7, uiOutput("create_ens_weights_poly_model_uiOut_selectize")),
@@ -236,7 +236,7 @@ ui.createEns <- function() {
                                     width = 4, offset = 1,
                                     conditionalPanel(
                                       condition = "output.create_ens_weights_poly_csv_flag == false",
-                                      ui.new.line(),
+                                      tags$br(), tags$br(),
                                       ui.error.upload.csv
                                     ),
                                     numericInput("create_ens_weights_poly_csv_weight", tags$h5("Weight for csv polygon(s)"),
@@ -285,25 +285,6 @@ ui.createEns <- function() {
                               conditionalPanel(
                                 condition = "input.create_ens_weights_poly_type == 4",
                                 ui.instructions.upload.gdb(),
-                                # fluidRow(
-                                #   column(6, textInput("create_ens_weights_poly_gdb_path", label.gdb.path, value = ".../folder.gdb")),
-                                #   column(6, textInput("create_ens_weights_poly_gdb_name", label.gdb.name, value = ""))
-                                # ),
-                                # fluidRow(
-                                #   column(6, actionButton("create_ens_weights_poly_gdb_load", label.gdb.upload)),
-                                #   column(
-                                #     width = 6,
-                                #     conditionalPanel(
-                                #       condition = "output.create_ens_weights_poly_gdb_flag == false",
-                                #       ui.error.upload.gdb
-                                #     )
-                                #   )
-                                # ),
-                                # fluidRow(
-                                #   column(6, numericInput("create_ens_weights_poly_gdb_weight",
-                                #                          tags$h5("Weight for area covered by file geodatabase file"),
-                                #                          value = 1, min = 0, step = 0.1))
-                                # )
                                 fluidRow(
                                   column(
                                     width = 6,
@@ -374,7 +355,7 @@ ui.createEns <- function() {
                 tags$strong("3) Create ensemble"),
                 tags$br(), tags$br(),
                 uiOutput("create_ens_create_action_uiOut_button"),
-                tags$br(), tags$br(),
+                tags$br(),
                 tags$span(uiOutput("ens_create_ensemble_text"), style = "color: blue")
               )
             )

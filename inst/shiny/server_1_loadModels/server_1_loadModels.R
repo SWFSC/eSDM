@@ -89,19 +89,18 @@ observeEvent(input$model_remove_execute, {
 
   ### If these predictions were pretty-plotted, reset and hide pretty plot
   ### Else, adjust vals idx
-  if (isTruthy(vals$pretty.plotted.idx)) {
+  if (isTruthy(vals$pretty.toplot.idx)) {
     browser()
-    if (any(idx %in% vals$pretty.plotted.idx[[1]])) {
-      shinyjs::hide("pretty_plot_plot", time = 0)
+    if (any(idx %in% vals$pretty.toplot.idx[[1]])) {
       vals$pretty.params.list <- NULL
-      vals$pretty.plotted.idx <- NULL
+      vals$pretty.toplot.idx <- NULL
     } else {
-      idx.adjust <- sapply(vals$pretty.plotted.idx[[1]], function(i) {
+      idx.adjust <- sapply(vals$pretty.toplot.idx[[1]], function(i) {
         sum(idx < i)
       })
-      vals$pretty.plotted.idx[[1]] <- vals$pretty.plotted.idx[[1]] - idx.adjust
+      vals$pretty.toplot.idx[[1]] <- vals$pretty.toplot.idx[[1]] - idx.adjust
       validate(
-        need(all(vals$pretty.plotted.idx[[1]] > 0),
+        need(all(vals$pretty.toplot.idx[[1]] > 0),
              "Error: While deleting 1+ original model(s), error 2")
       )
     }
@@ -140,7 +139,7 @@ observe({
   vals$models.pred.type
   vals$models.specs
 
-  check.all <- eSDM::zero_range(
+  check.all <- zero_range(
     sapply(list(vals$models.ll, vals$models.orig, vals$models.names,
                 vals$models.data.names, vals$models.pred.type,
                 vals$models.specs),
@@ -178,7 +177,6 @@ observe({
     )
 
     if (!all(check.all)) {
-      browser()
       shinyjs::alert(
         "eSDM error 2: Improper formatting of 'original' objects, please contact Sam"
       )

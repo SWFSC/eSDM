@@ -1,5 +1,5 @@
 Package: eSDM
-Title: eSDM tool
+Title: Ensemble tool for predictions from Species Distribution Models
 Description: What the package does (one paragraph).
 Version: 0.0.0.9000
 Authors@R: person("Sam", "Woodman", email = "sam.woodman@noaa.gov", role = c("aut", "cre"))
@@ -17,10 +17,12 @@ Imports:
     mapview, 
     purrr, 
     raster, 
+    rlang, 
     RColorBrewer, 
     ROCR, 
     shiny, 
     sf, 
+    units,
     viridis
 License: GPL-3
 Encoding: UTF-8

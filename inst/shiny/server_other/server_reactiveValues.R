@@ -9,7 +9,7 @@
 val.pretty.color.num <- reactiveVal(value = NULL)
 
 ###############################################################################
-# 'Initialize' all 40 elements of vals
+# 'Initialize' all 42 elements of vals
 
 vals <- reactiveValues(
   # Objects that store loaded models and related info
@@ -62,8 +62,9 @@ vals <- reactiveValues(
 
   # Objects that store data for high quality (pretty) plots
   pretty.addobj.list = NULL,       # List of objects and descriptor strings to be plotted
-  pretty.params.list = NULL,       # List of parameters to use in high quality plots
-  pretty.plotted.idx = NULL        # List of vectors of the indicies of currently pretty-plotted models
+  pretty.params.list = NULL,       # List of lists parameters to use in high quality plots
+  pretty.toplot.idx  = NULL,       # List of (table, idx) pairs of predictions in to-plot list
+  pretty.plot.list   = NULL        # List of plot dimensions, pretty.toplot.idx, and pretty.params.list
 )
 
 
@@ -81,12 +82,12 @@ load_envir <- eventReactive(input$load_app_envir_file, {
          "Error: Please load a file with the extension '.RDATA'")
   )
 
-  withProgress(message = "Loading saved environment", value = 0.4, {
+  withProgress(message = "Loading saved workspace", value = 0.4, {
     load(file.load$datapath)
     validate(
       need(exists("vals.save"),
-           paste0("Error: Loaded .RDATA file does not contain an envirnment",
-                  "saved using this app"))
+           paste0("Error: The loaded .RDATA file does not contain",
+                  "a workspace saved using the eSDM GUI"))
     )
     incProgress(0.4)
 
@@ -135,7 +136,8 @@ load_envir <- eventReactive(input$load_app_envir_file, {
 
     vals$pretty.addobj.list <- vals.save[["pretty.addobj.list"]]
     vals$pretty.params.list <- vals.save[["pretty.params.list"]]
-    vals$pretty.plotted.idx <- vals.save[["pretty.plotted.idx"]]
+    vals$pretty.toplot.idx  <- vals.save[["pretty.toplot.idx"]]
+    vals$pretty.plot.list   <- vals.save[["pretty.plot.list"]]
 
     incProgress(0.1)
 
@@ -160,7 +162,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
 
   Sys.sleep(0.5)
 
-  paste("App data loaded from", file.load$name)
+  paste("Workspace loaded from", file.load$name)
 })
 
 ### This is here so that the selected saved app environment loads
@@ -175,7 +177,7 @@ output$save_app_envir <- downloadHandler(
     input$save_app_envir_name
   },
   content = function(file) {
-    withProgress(message = "Saving app data", value = 0.3, {
+    withProgress(message = "Preparing workspace to be saved", value = 0.3, {
       # Reset plot info
       vals$models.plot.leaf <- NULL
       vals$models.plot.leaf.idx <- NULL
@@ -200,7 +202,7 @@ output$save_app_envir <- downloadHandler(
 )
 
 ###############################################################################
-### Make sure no extra reactive values get added and length(vals) == 40
+### Make sure no extra reactive values get added and length(vals) == 42
 observe({
   vals$models.ll
   vals$models.orig
@@ -242,13 +244,14 @@ observe({
   vals$eval.metrics.names
   vals$pretty.addobj.list
   vals$pretty.params.list
-  vals$pretty.plotted.idx
+  vals$pretty.toplot.idx
+  vals$pretty.plot.list
 
-  if (length(reactiveValuesToList(vals)) != 41) {
+  if (length(reactiveValuesToList(vals)) != 42) {
     text.message <-
       shinyjs::alert(paste(
-        "There was an error in eSDM data storage and processing,",
-        "please restart the app."
+        "There was an error in eSDM GUI data storage and processing,",
+        "please restart the GUI and report this as a bug"
       ))
   }
 })

@@ -165,7 +165,7 @@ pretty_plot_colorscheme_list <- reactive({
   if (perc) {
     # Percentages
     leg.breaks.pretty <- seq(1, 0, length.out = 11)
-    data.breaks <- eSDM::breaks_calc(x.df)
+    data.breaks <- breaks_calc(x.df)
     labels.lab.pretty <- leg.perc.esdm
     # labels.at.pretty <- seq(0.95, 0.05, length.out = 10)
 
