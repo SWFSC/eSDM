@@ -122,9 +122,11 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
       m <- m[!is.na(m[, 1]), ]
 
       if (vals$eval.data.specs[2] == 1) {
-        z <- eSDM::evaluation_metrics(m, eval.data, "Pred", "sight", "count")
+        z <- eSDM::evaluation_metrics(
+          m, eval.data, names(m)[1], "sight", "count"
+        )
       } else {
-        z <- eSDM::evaluation_metrics(m, eval.data, "Pred", "sight")
+        z <- eSDM::evaluation_metrics(m, eval.data, names(m)[1], "sight")
       }
 
       incProgress(

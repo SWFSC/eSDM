@@ -291,6 +291,7 @@ output$ens_preview_plot <- renderPlot({
 
 ### Table of abundances of created ensemble predictions
 output$ens_abund_table_out <- renderTable({
+  req(abund_reac_flag())
   table_ens_abund()
 }, rownames = FALSE, align = "r")
 

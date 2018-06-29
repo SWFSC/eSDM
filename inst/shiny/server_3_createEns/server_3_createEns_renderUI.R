@@ -245,16 +245,21 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
 })
 
 
-### Relating to calculating abundance
-output$ens_calc_abund_execute_uiOut_text <- renderUI({
+### Flag for if appropriate ensembles are selected for abundance calc
+abund_reac_flag <- reactive({
   ens.rows <- input$ens_datatable_ensembles_rows_selected
   req(input$ens_select_action == 5, ens.rows)
 
   ens.rescalings <- vals$ensemble.rescaling[ens.rows]
   rescaling.abund.bad <- c("Normalization", "Standardization", "Sum to 1")
 
+  all(!(ens.rescalings %in% rescaling.abund.bad))
+})
+
+### Text saying abundance can't be calculated
+output$ens_calc_abund_execute_uiOut_text <- renderUI({
   validate(
-    need(all(!(ens.rescalings %in% rescaling.abund.bad)),
+    need(abund_reac_flag(),
          paste("Abundance cannot be reasonably calculated for ensembles",
                "made with predictions rescaled using the 'Normalization',",
                "'Standardization', or 'Sum to 1' methods")),
@@ -266,13 +271,7 @@ output$ens_calc_abund_execute_uiOut_text <- renderUI({
 
 ### actionButton to calculate abundances
 output$ens_calc_abund_execute_uiOut_button <- renderUI({
-  ens.rows <- input$ens_datatable_ensembles_rows_selected
-  req(input$ens_select_action == 5, ens.rows)
-
-  ens.rescalings <- vals$ensemble.rescaling[ens.rows]
-  rescaling.abund.bad <- c("Normalization", "Standardization", "Sum to 1")
-
-  req(all(!(ens.rescalings %in% rescaling.abund.bad)))
+  req(abund_reac_flag())
   actionButton("ens_calc_abund_execute", "Calculate abundance(s)")
 })
 

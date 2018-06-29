@@ -19,7 +19,7 @@ ui.roadmap <- function() {
               box(
                 width = 6,
                 tags$strong("Save current GUI workspace"),
-                textInput("save_app_envir_name", tags$h5("Filename (must have '.RDATA' extension"),
+                textInput("save_app_envir_name", tags$h5("Filename (must have '.RDATA' extension)"),
                           value = paste0("eSDM_", gsub("-", "", Sys.Date()), ".RDATA")),
                 downloadButton("save_app_envir", "Download GUI workspace")
               )
