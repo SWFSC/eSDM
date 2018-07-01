@@ -19,5 +19,5 @@ devtools::install_github('smwoodman/eSDM')
 To run the eSDM R Shiny tool locally:
 
 ```r
-eSDM::eSDM_Shiny()
+eSDM::eSDM_GUI()
 ```
