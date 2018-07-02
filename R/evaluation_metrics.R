@@ -10,7 +10,7 @@
 #' @param x.idx name or index of column in \code{x} with
 #'   prediction (density) values
 #' @param y.idx name or index of column in \code{y} with
-#'   presence/absence data
+#'   validation data (count or presence/absence data) TODO
 #' @param y.idx.count name or index of column in \code{y} with
 #'   count data. If not NULL, then RMSE is calculated
 #'
