@@ -15,7 +15,7 @@ evaluation_metrics(x, y, x.idx, y.idx, y.idx.count = NULL)
 prediction (density) values}
 
 \item{y.idx}{name or index of column in \code{y} with
-presence/absence data}
+validation data (count or presence/absence data) TODO}
 
 \item{y.idx.count}{name or index of column in \code{y} with
 count data. If not NULL, then RMSE is calculated}
