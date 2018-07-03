@@ -5,3 +5,7 @@ esdm_normalize <- function(x) {
 
   num / denom
 }
+
+esdm_rmse <- function(x, y) {
+  sqrt(mean((x - y) ^ 2, na.rm = TRUE))
+}

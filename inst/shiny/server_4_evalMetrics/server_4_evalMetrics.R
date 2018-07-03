@@ -113,29 +113,33 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   )
 
   # Calculate metrics
-  withProgress(message = 'Evaluating models', value = 0.1, {
+  withProgress(message = 'Evaluating models', value = 0, {
     models.toeval <- eval_models()
+    m.num <- length(models.toeval)
     incProgress(0.1)
 
     eval.results <- mapply(function(m, idx) {
       eval.data <- st_transform(eval.data, st_crs(m))
       m <- m[!is.na(m[, 1]), ]
 
-      if (vals$eval.data.specs[2] == 1) {
-        z <- eSDM::evaluation_metrics(
-          m, eval.data, names(m)[1], "sight", "count"
-        )
-      } else {
-        z <- eSDM::evaluation_metrics(m, eval.data, names(m)[1], "sight")
-      }
-
       incProgress(
-        amount = 0.8 / length(models.toeval),
-        detail = paste("Calculating metrics for selected model", idx)
+        amount = 0.8 / m.num,
+        detail = paste("Calculating metrics for model", idx, "of", m.num)
       )
 
-      z[c("AUC", "TSS", "RMSE") %in% which.metrics]
+      if (vals$eval.data.specs[2] == 1) {
+        suppressMessages(
+          eSDM::evaluation_metrics(m, eval.data, names(m)[1], "count", TRUE)
+        )
+      } else {
+        suppressMessages(
+          eSDM::evaluation_metrics(m, eval.data, names(m)[1], "sight")
+        )
+      }
     }, models.toeval, seq_along(models.toeval), SIMPLIFY = TRUE)
+
+    incProgress(0.1, "Processing metrics")
+    eval.results <- eval.results[c("AUC", "TSS", "RMSE") %in% which.metrics, ]
   })
 
   # Save model idx and metrics to reactiveValues
@@ -143,7 +147,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   vals$eval.metrics <- eval.results
   vals$eval.metrics.names <- which.metrics
 
-  "Metric(s) calculated"
+  ""
 })
 
 

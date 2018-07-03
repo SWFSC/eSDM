@@ -148,7 +148,8 @@ ui.evalMetrics <- function() {
                     tags$br(),
                     actionButton("eval_metrics_execute", "Calculate metrics"),
                     tags$br(), tags$br(),
-                    textOutput("eval_metrics_text")
+                    textOutput("eval_metrics_text"),
+                    tags$span(textOutput("eval_metrics_message"), style = "color: blue")
                   )
                 )
               )

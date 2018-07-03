@@ -340,6 +340,11 @@ output$eval_data_gis_text <- renderText({
 
 output$eval_metrics_text <- renderText(eval_metrics())
 
+output$eval_metrics_message <- renderText({
+  req(vals$eval.metrics)
+  "Metrics calculated"
+})
+
 # Validation data info title
 output$table_eval_pts_title <- renderText({
   req(vals$eval.data)
