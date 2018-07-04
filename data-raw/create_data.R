@@ -18,10 +18,14 @@ preds.2 <- st_set_agr(st_crop(y, bite), "constant")
 preds.3 <- st_set_agr(st_crop(z, bite), "constant")
 rm(x, y, z)
 
-plot(bite, axes = TRUE)
-plot(st_geometry(preds.1), add = TRUE, col = NA, border = "red")
-plot(st_geometry(preds.2), add = TRUE, col = NA, border = "blue")
-plot(st_geometry(preds.3), add = TRUE, col = NA, border = "green")
+row.names(preds.1) <- 1:nrow(preds.1)
+row.names(preds.2) <- 1:nrow(preds.2)
+row.names(preds.3) <- 1:nrow(preds.3)
+
+# plot(bite, axes = TRUE)
+# plot(st_geometry(preds.1), add = TRUE, col = NA, border = "red")
+# plot(st_geometry(preds.2), add = TRUE, col = NA, border = "blue")
+# plot(st_geometry(preds.3), add = TRUE, col = NA, border = "green")
 
 devtools::use_data(preds.1)
 devtools::use_data(preds.2)
@@ -36,8 +40,8 @@ validation.data <- st_as_sf(
 )
 validation.data <- st_crop(validation.data, bite)
 
-plot(bite, axes = TRUE)
-plot(st_geometry(validation.data), add = TRUE)
-plot(validation.data[2], pch = 19)
+# plot(bite, axes = TRUE)
+# plot(st_geometry(validation.data), add = TRUE)
+# plot(validation.data[2], pch = 19)
 
 devtools::use_data(validation.data)
