@@ -4,7 +4,7 @@
 \name{gshhg.l.L16}
 \alias{gshhg.l.L16}
 \title{Low resolution GSHHG world map}
-\format{An object with class c("sfc_GEOMETRY", "sfc"):}
+\format{An object of class \code{\link[sf]{sfc}}}
 \source{
 \url{http://www.soest.hawaii.edu/pwessel/gshhg/}
 }

@@ -3,13 +3,17 @@
 \docType{data}
 \name{validation.data}
 \alias{validation.data}
-\title{Sample validation data points}
-\format{An object with class c("data.frame", "sf")}
+\title{Sample validation data}
+\format{An object of class \code{\link[sf]{sf}} with 8 rows and 3 variables
+\describe{
+  \item{sight}{presence/absenve indicator}
+  \item{count}{observed individuals}
+  \item{geometry}{simple feature list column}
+}}
 \usage{
 validation.data
 }
 \description{
-Sample SDM predictions; created from Validation_data.csv clipped to the
-  SoCal_bite.csv region
+Sample validation data created by cropping Validation_data.csv to the SoCal_bite.csv region
 }
 \keyword{datasets}

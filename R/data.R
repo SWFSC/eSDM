@@ -1,44 +1,56 @@
 #' Low resolution GSHHG world map
 #'
 #' Low resolution GSHHG world map, includes heirarchial levels
-#'   L1 and L6. Processed using lwgeom::st_make_valid() to make the
-#'   polygon valid
+#'   L1 and L6. Processed using \code{lwgeom::st_make_valid()}
 #'
-#' @format An object with class c("sfc_GEOMETRY", "sfc"):
+#' @format An object of class \code{\link[sf]{sfc}}
 #' @source \url{http://www.soest.hawaii.edu/pwessel/gshhg/}
 "gshhg.l.L16"
 
 #' Sample SDM density predictions
 #'
-#' Sample SDM density predictions; created by importing
-#'   Sample_predictions_2.csv into the GUI, exporting predictions, and then
+#' \code{preds.1}, \code{preds.2}, and \code{preds.3} are objects of class \code{\link[sf]{sf}} that serve as
+#'   sample sets of SDM density predictions for the \code{eSDM} package
+#'
+#' @details
+#' \code{preds.1} is a set of sample SDM density predictions created by importing
+#'   Sample_predictions_2.csv into the eSDM GUI, exporting predictions, and then
 #'   clipping them to the SoCal_bite.csv region
 #'
-#' @format An object with class c("data.frame", "sf")
+#' \code{preds.2} is a set of sample SDM density predictions created by importing
+#'   Sample_predictions_1.csv into the eSDM GUI, exporting predictions, and then
+#'   clipping them to the SoCal_bite.csv region
+#'
+#' \code{preds.3} is a set of sample SDM density predictions created by importing
+#'   Sample_predictions_4_gdb into the eSDM GUI, exporting predictions, and then
+#'   clipping them to the SoCal_bite.csv region
+#'
+#' @aliases preds.1 preds.2 preds.3
+#'
+#' @format Objects of class sf with a column of density predictions (\code{Density}) and
+#'   a simple feature list column (\code{geometry})
+#'
+#' @name preds
+
+
+#' @rdname preds
 "preds.1"
 
-#' Sample SDM density predictions
-#'
-#' Sample SDM density predictions; created by importing
-#'   Sample_predictions_1.csv into the GUI, exporting predictions, and then
-#'   clipping them to the SoCal_bite.csv region
-#'
-#' @format An object with class c("data.frame", "sf")
+#' @rdname preds
 "preds.2"
 
-#' Sample SDM density predictions
-#'
-#' Sample SDM density predictions; created by importing
-#'   Sample_predictions_4_gdb into the GUI, exporting predictions, and then
-#'   clipping them to the SoCal_bite.csv region
-#'
-#' @format An object with class c("data.frame", "sf")
+#' @rdname preds
 "preds.3"
 
-#' Sample validation data points
+
+#' Sample validation data
 #'
-#' Sample SDM predictions; created from Validation_data.csv clipped to the
-#'   SoCal_bite.csv region
+#' Sample validation data created by cropping Validation_data.csv to the SoCal_bite.csv region
 #'
-#' @format An object with class c("data.frame", "sf")
+#' @format An object of class \code{\link[sf]{sf}} with 8 rows and 3 variables
+#' \describe{
+#'   \item{sight}{1's and 0's indicating species presence/absence}
+#'   \item{count}{number of speceis observed at each point}
+#'   \item{geometry}{simple feature list column representing validation data points}
+#' }
 "validation.data"
