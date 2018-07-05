@@ -22,6 +22,7 @@
 #' @importFrom sf st_sf
 #' @importFrom sf st_set_geometry
 #' @importFrom sf st_set_agr
+#' @importFrom rlang sym
 #'
 #' @export
 overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
