@@ -8,7 +8,10 @@
 #' @param data.names names or indices of column(s) with data to be overlaid
 #'
 #' @importFrom dplyr %>%
+#' @importFrom dplyr filter
+#' @importFrom dplyr mutate
 #' @importFrom dplyr quo
+#' @importFrom dplyr select
 #' @importFrom purrr set_names
 #' @importFrom sf st_area
 #' @importFrom sf st_bbox
@@ -59,33 +62,39 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   #   after turning base.geom into an sf object with an index variable;
   #   this var gets passed along during st_intersection() and can be used as
   #   int-to-base key
+  browser()
   base.geom.sf <- st_sf(
     base.idx = 1:length(base.geom), base.geom, agr = "constant"
   )
 
-  sdm <- sdm %>% dplyr::select(!!quo(data.names))
+  sdm <- sdm %>%
+    select(data.names) %>%
+    filter(!is.na(!!sym(data.names[1])))
   sdm <- st_set_agr(suppressMessages(st_crop(sdm, st_bbox(base.geom))), "constant")
   # ^ not tidied so that suppressMessages() can be used
+  # ^^ Will throw a waring if st_agr(sdm) != "constant" for all data
 
   int <- try(suppressMessages(st_intersection(sdm, base.geom.sf)), silent = TRUE)
 
   if (inherits(int, "try-error")) {
-    stop("Unable to run 'st_intersection(sdm, base.geom)'; make sure that ",
-         "'base.geom' and 'sdm' are both valid sfc and sf objects, ",
-         "respectively")
+    stop("Unable to successfully run 'st_intersection(sdm, base.geom)'; ",
+         "make sure that base.geom and sdm are both ",
+         "valid objects of class sfc and sf, respectively")
   }
 
   int <- int[as.numeric(st_area(int)) > 1, ]
-  if (nrow(int) == 0) stop("No 'base.geom' and non-NA 'sdm' polygons overlap")
-
+  if (nrow(int) == 0) {
+    stop("No 'base.geom' and 'sdm' polygons with non-na data.names[1] values ",
+         "overlap")
+  }
+  stopifnot(all(!is.na(st_set_geometry(sdm, NULL)[, 1])))
 
   #----------------------------------------------------------------------------
   # 2) Get predicted abundances for base grid cells that had overlap
   # TODO: should be some way to do this in a tidy fashion, but I'm not sure how
   #   while being able to handle as many data column names as necessary
   int.df <- st_set_geometry(int, NULL) %>%
-    dplyr::mutate(int.area.km = as.numeric(st_area(int)) / 1e+06)
-  int.df <- int.df[!is.na(int.df[, data.names[1]]), ]
+    mutate(int.area.km = as.numeric(st_area(int)) / 1e+06)
 
   new.abund.list <- lapply(data.names, function(i){
     by(int.df[, c(i, "int.area.km")], int.df$base.idx,
@@ -135,7 +144,7 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   base.len <- 1:length(base.geom)
   base.idx.na <- base.len[!(base.len %in% base.idx.nona)]
 
-  if (length(base.idx.na) != 0) {
+  if (length(base.idx.na) > 0) {
     new.dens.df.1 <- data.frame(idx = base.idx.nona, new.dens.df)
     new.dens.df.2 <- as.data.frame(
       matrix(NA, nrow = length(base.idx.na), ncol = ncol(new.dens.df.1))
