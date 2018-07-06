@@ -13,7 +13,6 @@ gshhg.l.L16
 }
 \description{
 Low resolution GSHHG world map, includes heirarchial levels
-  L1 and L6. Processed using lwgeom::st_make_valid() to make the
-  polygon valid
+  L1 and L6. Processed using \code{lwgeom::st_make_valid()}
 }
 \keyword{datasets}

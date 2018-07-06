@@ -6,9 +6,9 @@
 \title{Sample validation data}
 \format{An object of class \code{\link[sf]{sf}} with 8 rows and 3 variables
 \describe{
-  \item{sight}{presence/absenve indicator}
-  \item{count}{observed individuals}
-  \item{geometry}{simple feature list column}
+  \item{sight}{1's and 0's indicating species presence/absence}
+  \item{count}{number of speceis observed at each point}
+  \item{geometry}{simple feature list column representing validation data points}
 }}
 \usage{
 validation.data

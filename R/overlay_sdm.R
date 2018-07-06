@@ -44,11 +44,7 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
     warning("'base.geom' and 'sdm' have the same geometry and thus ",
             "you shouldn't need to use the full overlay procedure")
   }
-  # temp <- suppressMessages(st_intersects(st_union(base.geom), base.sfc))
-  # if (sapply(, length) > 0) {
-  #   warning("'base.geom' and 'sdm' have the same geometry and thus ",
-  #           "you shouldn't need to use the full overlay procedure")
-  # }
+
   base.area.m2 <- st_area(base.geom)
   if (!all(units(base.area.m2)$numerator == c("m", "m"))) {
     stop("Units of st_area(base.geom) must be m^2")
@@ -63,7 +59,6 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   #   after turning base.geom into an sf object with an index variable;
   #   this var gets passed along during st_intersection() and can be used as
   #   int-to-base key
-  browser()
   base.geom.sf <- st_sf(
     base.idx = 1:length(base.geom), base.geom, agr = "constant"
   )
@@ -73,7 +68,7 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
     filter(!is.na(!!sym(data.names[1])))
   sdm <- st_set_agr(suppressMessages(st_crop(sdm, st_bbox(base.geom))), "constant")
   # ^ not tidied so that suppressMessages() can be used
-  # ^^ Will throw a waring if st_agr(sdm) != "constant" for all data
+  # ^^ Will throw a waring if st_agr(sdm) != "constant" for all provided data
 
   int <- try(suppressMessages(st_intersection(sdm, base.geom.sf)), silent = TRUE)
 
@@ -108,9 +103,6 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
 
   new.abund.df <- as.data.frame(lapply(new.abund.list, as.numeric)) %>%
     set_names(paste0(data.names, ".overlaid"))
-  # new.abund.df2 <- int.df %>%
-  #   group_by(base.idx) %>%
-  #   summarise(sum(int.area.km * .data[, |data.names|]))
 
 
   #----------------------------------------------------------------------------
@@ -132,9 +124,6 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   # 4) Convert abundances to densities
   stopifnot(nrow(new.abund.df) == length(int.area.by.base.km))
   new.dens.df <- new.abund.df / int.area.by.base.km
-  # new.dens.df <- new.dens.df %>%
-  #   dplyr::mutate(Pixel = 1:nrow(new.dens.df))
-  # new.dens.df <- new.dens.df[, c(1, 3, 2, 4)]
   rm(new.abund.df, int.area.by.base.km)
 
 
