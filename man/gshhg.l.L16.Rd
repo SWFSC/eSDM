@@ -4,7 +4,7 @@
 \name{gshhg.l.L16}
 \alias{gshhg.l.L16}
 \title{Low resolution GSHHG world map}
-\format{An object with class c("sfc_GEOMETRY", "sfc"):}
+\format{An object of class \code{\link[sf]{sfc}}}
 \source{
 \url{http://www.soest.hawaii.edu/pwessel/gshhg/}
 }
@@ -13,7 +13,6 @@ gshhg.l.L16
 }
 \description{
 Low resolution GSHHG world map, includes heirarchial levels
-  L1 and L6. Processed using lwgeom::st_make_valid() to make the
-  polygon valid
+  L1 and L6. Processed using \code{lwgeom::st_make_valid()}
 }
 \keyword{datasets}

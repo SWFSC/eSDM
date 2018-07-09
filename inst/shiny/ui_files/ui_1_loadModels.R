@@ -283,7 +283,7 @@ ui.loadModels <- function() {
               condition = "input.model_select_action == 2",
               box(
                 title = "Static Preview", status = "primary", solidHeader = TRUE,  width = 12, collapsible = TRUE,
-                shinycssloaders::withSpinner(plotOutput("model_preview_plot"), type = 1)
+                shinycssloaders::withSpinner(plotOutput("model_preview_plot", height = 500), type = 1)
               )
             )
           )

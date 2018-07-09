@@ -351,13 +351,13 @@ na_weight_message <- function(x, y) {
 }
 
 
-# Normalize vector of model predictions, 'x'
-normalize <- function(x) {
-  num <- (x - min(x, na.rm = TRUE))
-  denom <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
-
-  num / denom
-}
+# # Normalize vector of model predictions, 'x'
+# normalize <- function(x) {
+#   num <- (x - min(x, na.rm = TRUE))
+#   denom <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+#
+#   num / denom
+# }
 
 
 # Round 'x' to nearest 'base' value
