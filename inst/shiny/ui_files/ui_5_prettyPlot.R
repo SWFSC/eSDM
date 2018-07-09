@@ -8,10 +8,6 @@ ui.prettyPlot <- function() {
       condition = "output.pretty_display_flag",
       fluidRow(
         box(
-          solidHeader = FALSE, status = "primary", height = 550, width = 6, align = "center",
-          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 400), type = 1)
-        ),
-        box(
           title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE,
           ui.instructions.multipletables.select(text.in = "map:"),
           DTOutput("pretty_table_orig_out"),
@@ -19,6 +15,10 @@ ui.prettyPlot <- function() {
           DTOutput("pretty_table_over_out"),
           tags$br(),
           DTOutput("pretty_table_ens_out")
+        ),
+        box(
+          solidHeader = FALSE, status = "primary", height = 550, width = 6, align = "center",
+          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 400), type = 1)
         )
       ),
 

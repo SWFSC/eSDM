@@ -9,7 +9,7 @@ ui.evalMetrics <- function() {
       fluidRow(
         ############################################################################### Available model predictions
         box(
-          title = "Select Predictions to Evaluate", status = "warning", solidHeader = FALSE, width = 7, collapsible = TRUE,
+          title = "Select Predictions to Evaluate", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
           ui.instructions.multipletables.select(text.in = "evaluate:"),
           DTOutput("eval_models_table_orig_out"),
           tags$br(),
@@ -19,7 +19,7 @@ ui.evalMetrics <- function() {
         ),
         ############################################################################### Load validation data
         box(
-          title = "Load Validation Data", status = "warning", solidHeader = FALSE, width = 5, collapsible = TRUE,
+          title = "Load Validation Data", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
           fluidRow(
             column(6, radioButtons("eval_load_type", tags$h5("Validation data file type"),
                                    choices = file.type.list1, selected = 1)),
@@ -118,7 +118,7 @@ ui.evalMetrics <- function() {
       ),
       fluidRow(
         column(
-          width = 7,
+          width = 6,
           fluidRow(
             ############################################################################### Calculate metrics
             box(
@@ -212,7 +212,7 @@ ui.evalMetrics <- function() {
 
         ############################################################################### Calculated metrics
         box(
-          title = "Metrics", status = "warning", solidHeader = FALSE, width = 5, collapsible = TRUE,
+          title = "Metrics", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
           fluidRow(
             column(
               width = 6,
