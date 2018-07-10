@@ -314,7 +314,7 @@ overlay_crs_message <- reactive({
   req(overlay_crs())
 
   if (input$overlay_proj_native) {
-    "In the native coordiante system of the base geometry"
+    "In the native coordinate system of the base geometry"
 
   } else {
     switch(
