@@ -65,12 +65,6 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
     ),
     widths = rep(c(1, lcm(3.4)), layout.num)
   )
-  # layout(
-  #   matrix(
-  #     1:(layout.num * 2), nrow = dims[1], ncol = dims[2] * 2, byrow = TRUE
-  #   ),
-  #   widths = rep(c(1, lcm(3.4)), layout.num)
-  # )
 
   # Plot the plots
   for(k in params.list) {
@@ -80,7 +74,7 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
       k$title.cex, k$lab.cex, k$axis.cex, k$axis.tcl,
       k$list.background, k$list.colorscheme, k$list.addobj
     )
-  }
+    }
 
   # Fill any empty layout sections
   if (layout.dif != 0) for (l in 1:layout.dif) graphics::plot.new()
@@ -94,17 +88,14 @@ plot_pretty <- function(model.toplot, data.name, plot.lim, axes.inc,
                         list.background, list.colorscheme, list.addobj) {
   l.cs <- list.colorscheme
 
+
   #--------------------------------------------------------
-  # if (l.cs$leg.inc) {
-  #   layout(matrix(1:2, ncol = 2), width = c(1, lcm(3.6)))
-  # }
   plot(
     list.background[[1]], axes = axes.inc, border = NA, col = list.background[[2]],
     xlim = plot.lim[1:2], ylim = plot.lim[3:4],
     main = title.ll, cex.main = title.cex,
     cex.lab = lab.cex, cex.axis = axis.cex, tcl = axis.tcl,
-    xlab = lab.x, ylab = lab.y,
-    key.pos = NULL, reset = FALSE
+    xlab = lab.x, ylab = lab.y
   )
   if (!axes.inc) graphics::box()
 
@@ -115,20 +106,14 @@ plot_pretty <- function(model.toplot, data.name, plot.lim, axes.inc,
   for (i in list.addobj) {
     if (i$pre.sdm) {
       if (i$obj.text == 1) {
-        plot(
-          i$obj.sfc, add = TRUE, border = i$col, lwd = i$cex,
-          reset = FALSE, key.pos = NULL
-        )
+        plot(i$obj.sfc, add = TRUE, border = i$col, lwd = i$cex)
+
       } else if (i$obj.text == 2) {
-        plot(
-          i$obj.sfc, add = TRUE, border = NA, col = i$col, lwd = i$cex,
-          reset = FALSE, key.pos = NULL
-        )
+        plot(i$obj.sfc, add = TRUE, border = NA, col = i$col, lwd = i$cex)
+
       } else if (i$obj.text == 3) {
-        plot(
-          i$obj.sfc, add = TRUE, col = i$col, cex = i$cex,
-          reset = FALSE, key.pos = NULL
-        )
+        plot(i$obj.sfc, add = TRUE, col = i$col, cex = i$cex)
+
       } else {
         validate(need(FALSE, "Not ready"))
       }
@@ -137,14 +122,16 @@ plot_pretty <- function(model.toplot, data.name, plot.lim, axes.inc,
 
 
   #--------------------------------------------------------
-  # plot(st_geometry(model.toplot))
-
-  # This is separate for the sake of background and plotting x and y axis labels
+  # Separate for the sake of background and plotting x and y axis labels
+  opar <- par()
   plot(
     model.toplot[data.name], add = TRUE, border = NA,
     breaks = l.cs$data.breaks, pal = l.cs$color.palette,
-    key.pos = NULL, reset = FALSE
+    reset = FALSE
   )
+  par(mai = opar$mai)
+  par(mar = opar$mar)
+  rm(opar)
 
 
   #--------------------------------------------------------
@@ -153,20 +140,14 @@ plot_pretty <- function(model.toplot, data.name, plot.lim, axes.inc,
   for (i in list.addobj) {
     if (!i$pre.sdm) {
       if (i$obj.text == 1) {
-        plot(
-          i$obj.sfc, add = TRUE, border = i$col, lwd = i$cex,
-          reset = FALSE, key.pos = NULL
-        )
+        plot(i$obj.sfc, add = TRUE, border = i$col, lwd = i$cex)
+
       } else if (i$obj.text == 2) {
-        plot(
-          i$obj.sfc, add = TRUE, border = NA, col = i$col, lwd = i$cex,
-          reset = FALSE, key.pos = NULL
-        )
+        plot(i$obj.sfc, add = TRUE, border = NA, col = i$col, lwd = i$cex)
+
       } else if (i$obj.text == 3) {
-        plot(
-          i$obj.sfc, add = TRUE, col = i$col, cex = i$cex,
-          reset = FALSE, key.pos = NULL
-        )
+        plot(i$obj.sfc, add = TRUE, col = i$col, cex = i$cex)
+
       } else {
         validate(need(FALSE, "Not ready"))
       }
@@ -180,13 +161,14 @@ plot_pretty <- function(model.toplot, data.name, plot.lim, axes.inc,
     col.pal <- l.cs$color.palette
     leg.labels <- l.cs$labels
     opar <- par(mai = c(1, 0, 0.86, 1.2))
-    on.exit(par(opar), add = TRUE)
 
     graphics::image(0.6, 1:col.num, t(as.matrix(1:col.num)), col = col.pal,
                     axes = FALSE, xlab = "", ylab = "")
     graphics::box(col = "black")
     graphics::axis(4, at = 1:col.num, labels = leg.labels, tick = FALSE,
                    las = 1, cex.axis = 1)
+
+    par(mai = opar$mai)
   }
 }
 

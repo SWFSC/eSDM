@@ -253,24 +253,11 @@ check_pred_weight <- function(x, pred.idx, weight.idx, pred.na.idx,
 
 # Calculate break points for density intervals
 # Break points are at: 2%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%
-breaks_calc <- function(x) {
-  breaks <- rev(c(0.02, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40))
-  # if (any(is.na(sp.data))) warning("NA's removed")
-  # if (any(sp.data == 0, na.rm = TRUE)) warning("Densities contain 0's")
-  # if (any(sp.data < 0, na.rm = TRUE)) warning("Densities contain values < 0")
-
+breaks_calc <- function(x, breaks = c(seq(0.4, 0.05, by = -0.05), 0.02)) {
   x <- x[!is.na(x)]
   x <- sort(x, decreasing = TRUE)
 
-  data.len <- length(x)
-  data.max <- max(x)
-  data.min <- min(x)
-
-  data.breaks.mid <- sapply(breaks, function(i) {
-    x[ceiling(i * data.len)]
-  })
-
-  c(data.min, data.breaks.mid, data.max)
+  c(-Inf, x[ceiling(breaks * length(x))], Inf)
 }
 
 

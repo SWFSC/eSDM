@@ -380,17 +380,17 @@ output$eval_metrics_overlap_text <- renderText({
 ### Table of orig model predictions
 output$pretty_table_orig_out <- renderDT({
   table_orig()[, 1:3]
-}, options = list(dom = 't'))
+}, options = list(dom = 't'), selection = "single")
 
 ### Table of overlaid model predictions
 output$pretty_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
-}, options = list(dom = 't'))
+}, options = list(dom = 't'), selection = "single")
 
 ### Table of ensemble model predictions
 output$pretty_table_ens_out <- renderDT({
   table_ensembles()
-}, options = list(dom = 't'))
+}, options = list(dom = 't'), selection = "single")
 
 #----------------------------------------------------------
 # Outputs

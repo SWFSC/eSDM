@@ -457,7 +457,7 @@ ui.createEns <- function() {
             ),
             conditionalPanel(
               condition = "input.ens_select_action == 2",
-              shinycssloaders::withSpinner(plotOutput("ens_preview_plot"), type = 1)
+              shinycssloaders::withSpinner(plotOutput("ens_preview_plot", height = 500), type = 1)
             )
           )
         )

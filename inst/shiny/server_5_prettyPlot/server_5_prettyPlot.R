@@ -3,6 +3,47 @@
 
 
 ###############################################################################
+observeEvent(input$pretty_table_orig_out_rows_selected, {
+  x <- input$pretty_table_orig_out_rows_selected
+  y <- input$pretty_table_over_out_rows_selected
+  z <- input$pretty_table_ens_out_rows_selected
+
+  if(!is.null(x) & !is.null(y)) {
+    dataTableProxy("pretty_table_over_out") %>% selectRows(list())
+  }
+  if(!is.null(x) & !is.null(z)) {
+    dataTableProxy("pretty_table_ens_out") %>% selectRows(list())
+  }
+}, ignoreInit = TRUE)
+
+observeEvent(input$pretty_table_over_out_rows_selected, {
+  x <- input$pretty_table_orig_out_rows_selected
+  y <- input$pretty_table_over_out_rows_selected
+  z <- input$pretty_table_ens_out_rows_selected
+
+  if(!is.null(y) & !is.null(x)) {
+    dataTableProxy("pretty_table_orig_out") %>% selectRows(list())
+  }
+  if(!is.null(y) & !is.null(z)) {
+    dataTableProxy("pretty_table_ens_out") %>% selectRows(list())
+  }
+}, ignoreInit = TRUE)
+
+observeEvent(input$pretty_table_ens_out_rows_selected, {
+  x <- input$pretty_table_orig_out_rows_selected
+  y <- input$pretty_table_over_out_rows_selected
+  z <- input$pretty_table_ens_out_rows_selected
+
+  if(!is.null(z) & !is.null(x)) {
+    dataTableProxy("pretty_table_orig_out") %>% selectRows(list())
+  }
+  if(!is.null(z) & !is.null(y)) {
+    dataTableProxy("pretty_table_over_out") %>% selectRows(list())
+  }
+}, ignoreInit = TRUE)
+
+
+###############################################################################
 # Idx of returned object (list or vector) corresponds to...
 # ...table idx (orig, over, ens)
 # Each function calls input$... so that there isn't a reactive chain within
@@ -56,11 +97,11 @@ output$pretty_pred_selected_flag <- reactive({
 })
 outputOptions(output, "pretty_pred_selected_flag", suspendWhenHidden = FALSE)
 
-### Flag for if map has been generated (download flag)
-output$pretty_display_download <- reactive({
-  length(vals$pretty.params.list) > 0
-})
-outputOptions(output, "pretty_display_download", suspendWhenHidden = FALSE)
+# ### Flag for if map has been generated (download flag)
+# output$pretty_display_download <- reactive({
+#   length(vals$pretty.params.list) > 0
+# })
+# outputOptions(output, "pretty_display_download", suspendWhenHidden = FALSE)
 
 
 ###############################################################################

@@ -6,6 +6,23 @@ ui.prettyPlot <- function() {
     conditionalPanel(condition = "output.pretty_display_flag == false", ui.notice.no.pred.original()),
     conditionalPanel(
       condition = "output.pretty_display_flag",
+      # fluidRow(
+      #   box(
+      #     solidHeader = FALSE, status = "primary", height = 550, width = 12, align = "center",
+      #     shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 400), type = 1)
+      #   )
+      # ),
+      # fluidRow(
+      #   box(
+      #     title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE,
+      #     ui.instructions.multipletables.select(text.in = "map:"),
+      #     DTOutput("pretty_table_orig_out"),
+      #     tags$br(),
+      #     DTOutput("pretty_table_over_out"),
+      #     tags$br(),
+      #     DTOutput("pretty_table_ens_out")
+      #   )
+      # ),
       fluidRow(
         box(
           title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE,
@@ -75,42 +92,24 @@ ui.prettyPlot <- function() {
               fluidRow(
                 box(
                   width = 12,
-                  conditionalPanel(
-                    condition = "output.pretty_display_download == false",
-                    tags$h5("The image that will be downloaded is the image displayed in the box above.",
-                            "Thus, you must click 'Generate map' to generate a map before you can download that map.")
+                  tags$h5("The map displayed above will be the map that is downloaded"),
+                  fluidRow(
+                    column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"),
+                                           choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
+                                           selected = 1)),
+                    column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"),
+                                           choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
+                                           selected = 3)),
+                    column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
                   ),
-                  conditionalPanel(
-                    condition = "output.pretty_display_download",
-                    tags$h5("The map displayed above will be the map that is downloaded"),
-                    fluidRow(
-                      column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"),
-                                             choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-                                             selected = 2)),
-                      column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"),
-                                             choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
-                                             selected = 3)),
-                      column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
-                    ),
-                    tags$br(),
-                    downloadButton("pretty_plot_download_execute", "Download map")
-                  )
+                  tags$br(),
+                  downloadButton("pretty_plot_download_execute", "Download map")
                 )
               )
             )
           )
         )
       ),
-
-      # conditionalPanel(
-      #   condition = "output.pretty_pred_selected_flag == false",
-      #   fluidRow(
-      #     box(
-      #       width = 12,
-      #       tags$span("Please select exactly one set of model predictions to specify parameters", style = "color: red")
-      #     )
-      #   )
-      # ),
 
       conditionalPanel(
         condition = "output.pretty_pred_selected_flag",
