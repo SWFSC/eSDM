@@ -230,6 +230,7 @@ ui.createEns <- function() {
                                 condition = "input.create_ens_weights_poly_type == 1",
                                 ui.instructions.upload.csv(),
                                 ui.instructions.poly.csv(),
+                                ui.instructions.ens.weightpoly0(),
                                 fluidRow(
                                   column(6, fileInput("create_ens_weights_poly_csv_file", label.csv.upload, accept = ".csv")),
                                   column(
@@ -248,6 +249,7 @@ ui.createEns <- function() {
                               conditionalPanel(
                                 condition = "input.create_ens_weights_poly_type == 2",
                                 ui.instructions.upload.raster(),
+                                ui.instructions.ens.weightpoly0(),
                                 fluidRow(
                                   column(
                                     width = 6,
@@ -267,6 +269,7 @@ ui.createEns <- function() {
                               conditionalPanel(
                                 condition = "input.create_ens_weights_poly_type == 3",
                                 ui.instructions.upload.shp(),
+                                ui.instructions.ens.weightpoly0(),
                                 fluidRow(
                                   column(
                                     width = 6,
@@ -285,6 +288,7 @@ ui.createEns <- function() {
                               conditionalPanel(
                                 condition = "input.create_ens_weights_poly_type == 4",
                                 ui.instructions.upload.gdb(),
+                                ui.instructions.ens.weightpoly0(),
                                 fluidRow(
                                   column(
                                     width = 6,

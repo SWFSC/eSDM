@@ -106,7 +106,7 @@ ui.instructions.pred.shp.gdb <- function() {
 ui.instructions.poly.csv <- function() {
   helpText("The first column must contain the longitude values,  and the second column must contain the latitude values.",
            "The longitudes and latitudes must be in WGS 84 geographic coordinates and in the range [-180, 180].",
-           "Multiple polygons may be demarcated using blank cells or cells with 'NA' entries.")
+           "Multiple polygons may be demarcated rows with blank cells or cells with 'NA' entries.")
 }
 
 
@@ -203,5 +203,11 @@ ui.notice.no.pred.overlaid <- function(box.width = 4) {
   )
 }
 
+
+###############################################################################
+ui.instructions.ens.weightpoly0 <- function() {
+  helpText("A weight entry of '0' means that predictions within the weight polygon will be set to NA",
+           "and thus will not be included in the ensemble")
+}
 
 ###############################################################################

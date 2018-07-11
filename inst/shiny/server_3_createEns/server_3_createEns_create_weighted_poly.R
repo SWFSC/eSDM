@@ -216,38 +216,47 @@ create_ens_weights_poly_add <- eventReactive(
       poly.filename <- create_ens_weights_poly_csv_process()[[2]]
       poly.sfc      <- create_ens_weights_poly_csv_process()[[1]]
       stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
-      poly.sf <- st_sf(Weight = input$create_ens_weights_poly_csv_weight,
-                       geometry = poly.sfc, agr = "constant")
+      weight.val <- ifelse(
+        input$create_ens_weights_poly_csv_weight == 0,
+        NA, input$create_ens_weights_poly_csv_weight
+      )
 
     } else if (poly.filetype == 2) {
       # .tif filetype
       poly.filename <- create_ens_weights_poly_raster_read()[[2]]
       poly.sfc      <- create_ens_weights_poly_raster_read()[[1]]
       stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
-      poly.sf <- st_sf(Weight = input$create_ens_weights_poly_raster_weight,
-                       geometry = poly.sfc, agr = "constant")
+      weight.val <- ifelse(
+        input$create_ens_weights_poly_raster_weight == 0,
+        NA, input$create_ens_weights_poly_raster_weight
+      )
 
     } else if (poly.filetype == 3) {
       # .shp filetype
       poly.filename <- create_ens_weights_poly_shp_read()[[2]]
       poly.sfc      <- create_ens_weights_poly_shp_read()[[1]]
       stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
-      poly.sf <- st_sf(Weight = input$create_ens_weights_poly_shp_weight,
-                       geometry = poly.sfc, agr = "constant")
+      weight.val <- ifelse(
+        input$create_ens_weights_poly_shp_weight == 0,
+        NA, input$create_ens_weights_poly_shp_weight
+      )
 
     } else if (poly.filetype == 4) {
       # .gdb filetype
       poly.filename <- create_ens_weights_poly_gdb_read()[[2]]
       poly.sfc      <- create_ens_weights_poly_gdb_read()[[1]]
       stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
-      poly.sf <- st_sf(Weight = input$create_ens_weights_poly_gdb_weight,
-                       geometry = poly.sfc, agr = "constant")
+      weight.val <- ifelse(
+        input$create_ens_weights_poly_gdb_weight == 0,
+        NA, input$create_ens_weights_poly_gdb_weight
+      )
 
     } else {
       validate(
         need(FALSE, "Error: create_ens_weights_poly_add() filetype error")
       )
     }
+    poly.sf <- st_sf(Weight = weight.val, geometry = poly.sfc, agr = "constant")
     rm(poly.sfc)
 
     stopifnot(
