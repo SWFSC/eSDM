@@ -4,8 +4,25 @@
 ###############################################################################
 # 'Create Ensemble Predictions' box, other widgets
 
-### Widget with options for rescaling
-output$create_ens_rescale_type_uiOut_radio <- renderUI({
+# ### Widget with options for rescaling
+# output$create_ens_rescale_type_uiOut_radio <- renderUI({
+#   if (input$create_ens_table_subset) {
+#     models.which <- input$create_ens_datatable_rows_selected
+#   } else {
+#     models.which <- seq_along(vals$overlaid.models)
+#   }
+#   req(length(models.which) >= 2)
+#
+#   pred.type <- vals$models.pred.type[models.which]
+#
+#   choices.list <- list("None" = 1, "Abundance" = 2, "Normalization" = 3,
+#                        "Standardization" = 4, "Sum to 1" = 5)
+#   if (!all(pred.type == "1")) choices.list <- choices.list[2:5]
+#
+#   radioButtons("create_ens_rescale_type", NULL,
+#                choices = choices.list, selected = choices.list[[1]])
+# })
+create_ens_rescale_type_helper <- reactive({
   if (input$create_ens_table_subset) {
     models.which <- input$create_ens_datatable_rows_selected
   } else {
@@ -13,14 +30,33 @@ output$create_ens_rescale_type_uiOut_radio <- renderUI({
   }
   req(length(models.which) >= 2)
 
+  models.which
+})
+### Widget with options for rescaling
+output$create_ens_rescale_type_uiOut_radio <- renderUI({
+  models.which <- create_ens_rescale_type_helper()
   pred.type <- vals$models.pred.type[models.which]
 
   choices.list <- list("None" = 1, "Abundance" = 2, "Normalization" = 3,
                        "Standardization" = 4, "Sum to 1" = 5)
-  if (!all(pred.type == "1")) choices.list <- choices.list[2:5]
+  choices.list.sel <- ifelse(all(pred.type == "1"), 1, 2)
 
-  radioButtons("create_ens_rescale_type", NULL,
-               choices = choices.list, selected = choices.list[[1]])
+  radioButtons("create_ens_rescale_type", NULL, choices = choices.list,
+               selected = choices.list.sel)
+})
+
+
+### Message for if not all predictions are absolute abundance
+output$create_ens_rescale_type_message <- renderUI({
+  models.which <- create_ens_rescale_type_helper()
+  pred.type <- vals$models.pred.type[models.which]
+
+  req(!all(pred.type == "1"))
+
+  paste(
+    "All prediction types are not \"Absolute density\" and thus the",
+    "overlaid predictions should probably be rescaled"
+  )
 })
 
 
@@ -65,8 +101,8 @@ output$create_ens_weights_metric_uiOut_text <- renderUI({
   validate(
     need(all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]]),
          paste("You must calculate at least one metric for all selected",
-                 "overlaid model predictions to use this weighting method.",
-                 "Calculate metric(s) in the 'Evaluation Metrics' tab")),
+               "overlaid model predictions to use this weighting method.",
+               "Calculate metric(s) in the 'Evaluation Metrics' tab")),
     errorClass = "validation2"
   )
 

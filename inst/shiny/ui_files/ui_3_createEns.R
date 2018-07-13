@@ -47,30 +47,31 @@ ui.createEns <- function() {
                   box(
                     width = 12,
                     tags$strong("1) Ensemble options: rescaling method"),
-                    conditionalPanel(
-                      condition = "output.ens_rescale_none_flag == false",
-                      helpText(tags$strong("Note: All prediction types are not \"Absolute density\", ",
-                                           "and thus the model predictions must be rescaled"))
-                    ),
+                    # conditionalPanel(
+                    #   condition = "output.ens_rescale_none_flag == false",
+                    #   helpText(tags$strong("Note: All prediction types are not \"Absolute density\", ",
+                    #                        "and thus the overlaid predictions must be rescaled"))
+                    # ),
                     uiOutput("create_ens_rescale_type_uiOut_radio"),
                     column(
                       width = 12,
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 1",
-                        helpText(tags$u("Description:"), "Model predictions will not be changed")
+                        helpText(tags$u("Description:"), "Overlaid predictions will not be changed"),
+                        tags$span(uiOutput("create_ens_rescale_type_message"), style = "color: red")
                       ),
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 2",
                         numericInput("create_ens_rescale_abund", tags$h5("Abundance to which to rescale predictions"),
                                      value = 0, min = 0, step = 1),
                         helpText(tags$u("Description:"),
-                                 "For each model, rescale predictions so that the predicted",
+                                 "For each set of overlaid predictions, rescale them so that the predicted",
                                  "abundance is the value entered above")
                       ),
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 3",
                         helpText(tags$u("Description:"),
-                                 "For each model, rescale predictions (X) into a range of [0, 1]",
+                                 "For each set of overlaid predictions, rescale them (X) into a range of [0, 1]",
                                  "using the following formula:"),
                         column(
                           width = 12,
@@ -82,7 +83,7 @@ ui.createEns <- function() {
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 4",
                         helpText(tags$u("Description:"),
-                                 "For each model, rescale predictions (X) to have a mean", HTML("(&mu;)"),
+                                 "For each set of overlaid predictions, rescale them (X) to have a mean", HTML("(&mu;)"),
                                  "of 0 and", "standard deviation", HTML("(&sigma;)"),
                                  "of 1 (unit variance) using the following formula:"),
                         column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
