@@ -168,9 +168,14 @@ observeEvent(input$ens_preview_interactive_execute, {
   perc.num <- as.numeric(input$ens_preview_interactive_perc)
   model.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
 
+  model.toplot = vals$ensemble.models[[model.idx]]
+  if (!identical(st_crs(model.toplot), crs.ll)) {
+    model.toplot <- st_transform(model.toplot, crs.ll)
+  }
+
   vals$ensemble.plot.leaf.idx <- model.idx
   vals$ensemble.plot.leaf <- list(
-    model.toplot = vals$ensemble.models[[model.idx]], perc.num = perc.num,
+    model.toplot = model.toplot, perc.num = perc.num,
     plot.title = paste(
       vals$ensemble.method[model.idx], "|", vals$ensemble.rescaling[model.idx],
       "|", vals$ensemble.overlaid.idx[model.idx]
