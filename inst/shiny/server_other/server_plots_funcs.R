@@ -193,7 +193,8 @@ preview_interactive <- function(sdm.ll, data.name, perc, col.pal,
   stopifnot(
     inherits(sdm.ll, "sf"),
     !is.null(sdm.ll[data.name]),
-    perc %in% c(1, 2)
+    perc %in% c(1, 2),
+    identical(st_crs(sdm.ll), st_crs(4326))
   )
   if (!is.null(leg.labels) & length(col.pal) != length(leg.labels)) {
     stop("If 'leg.labels' is not NULL, then 'col.pal' and 'leg.labels' ",

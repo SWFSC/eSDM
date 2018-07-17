@@ -65,7 +65,8 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
 
   sdm <- sdm %>%
     select(data.names) %>%
-    filter(!is.na(!!sym(data.names[1])))
+    filter(!is.na(!!sym(data.names[1]))) %>%
+    st_set_agr("constant")
   sdm <- st_set_agr(suppressMessages(st_crop(sdm, st_bbox(base.geom))), "constant")
   # ^ not tidied so that suppressMessages() can be used
   # ^^ Will throw a waring if st_agr(sdm) != "constant" for all provided data

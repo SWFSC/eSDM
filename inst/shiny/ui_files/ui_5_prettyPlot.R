@@ -281,9 +281,9 @@ ui.prettyPlot <- function() {
                         uiOutput("pretty_plot_color_num_uiOut_num")
                       ),
                       column(
-                        width = 3,
-                        tags$h5("Color scheme preview"),
-                        plotOutput("pretty_plot_color_preview_plot", height =  "250px")
+                        width = 4,
+                        tags$span(tags$h5("Color scheme preview"), style = "text-align: right"),
+                        plotOutput("pretty_plot_color_preview_plot", width = "85px", height =  "250px")
                       )
                     )#,
                     # checkboxInput("pretty_plot_color_na_transparent", "Color NA predictions as transparent", value = TRUE),

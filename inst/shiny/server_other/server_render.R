@@ -425,17 +425,8 @@ output$pretty_plot_toplot_table_out <- renderDT({
 
 ### Pretty plot
 output$pretty_plot_plot_out <- renderPlot({
-  # req(p.list <- vals$pretty.params.list)
-  # plot_pretty(
-  #   p.list$model.toplot, p.list$data.name, p.list$plot.lim, p.list$axes.inc,
-  #   p.list$title.ll, p.list$lab.x, p.list$lab.y,
-  #   p.list$title.cex, p.list$lab.cex, p.list$axis.cex, p.list$axis.tcl,
-  #   p.list$list.background, p.list$list.colorscheme, p.list$list.addobj
-  # )
   req(p.list <- vals$pretty.plot.list)
-
   plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
-
 }, height = 500)
 
 

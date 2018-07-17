@@ -192,8 +192,9 @@ eval_data_gdb_load <- eventReactive(input$eval_gis_gdb_load, {
   gdb.name <- input$eval_gis_gdb_name
 
   withProgress(message = "Loading GIS file", value = 0.3, {
-    gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),
-                        silent = TRUE)
+    gis.file.gdb <- try(
+      st_read(gdb.path, gdb.name, quiet = TRUE), silent = TRUE
+    )
     gis.file.success <- isTruthy(gis.file.gdb)
     incProgress(0.4)
 

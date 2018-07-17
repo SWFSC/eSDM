@@ -190,6 +190,7 @@ output$save_app_envir <- downloadHandler(
       vals$ensemble.plot.leaf.idx <- NULL
       vals$ensemble.plot <- NULL
       vals$ensemble.plot.idx <- NULL
+      vals$pretty.plot.list <- NULL
 
       # Convert to list and save
       vals.save <- reactiveValuesToList(vals)
@@ -248,10 +249,9 @@ observe({
   vals$pretty.plot.list
 
   if (length(reactiveValuesToList(vals)) != 42) {
-    text.message <-
-      shinyjs::alert(paste(
-        "There was an error in eSDM GUI data storage and processing,",
-        "please restart the GUI and report this as a bug"
-      ))
+    shinyjs::alert(paste(
+      "There was an error in the eSDM GUI data storage and processing;",
+      "please restart the GUI and report as an issue"
+    ))
   }
 })

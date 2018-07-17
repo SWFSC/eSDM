@@ -47,30 +47,31 @@ ui.createEns <- function() {
                   box(
                     width = 12,
                     tags$strong("1) Ensemble options: rescaling method"),
-                    conditionalPanel(
-                      condition = "output.ens_rescale_none_flag == false",
-                      helpText(tags$strong("Note: All prediction types are not \"Absolute density\", ",
-                                           "and thus the model predictions must be rescaled"))
-                    ),
+                    # conditionalPanel(
+                    #   condition = "output.ens_rescale_none_flag == false",
+                    #   helpText(tags$strong("Note: All prediction types are not \"Absolute density\", ",
+                    #                        "and thus the overlaid predictions must be rescaled"))
+                    # ),
                     uiOutput("create_ens_rescale_type_uiOut_radio"),
                     column(
                       width = 12,
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 1",
-                        helpText(tags$u("Description:"), "Model predictions will not be changed")
+                        helpText(tags$u("Description:"), "Overlaid predictions will not be changed"),
+                        tags$span(uiOutput("create_ens_rescale_type_message"), style = "color: red")
                       ),
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 2",
                         numericInput("create_ens_rescale_abund", tags$h5("Abundance to which to rescale predictions"),
                                      value = 0, min = 0, step = 1),
                         helpText(tags$u("Description:"),
-                                 "For each model, rescale predictions so that the predicted",
+                                 "For each set of overlaid predictions, rescale them so that the predicted",
                                  "abundance is the value entered above")
                       ),
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 3",
                         helpText(tags$u("Description:"),
-                                 "For each model, rescale predictions (X) into a range of [0, 1]",
+                                 "For each set of overlaid predictions, rescale them (X) into a range of [0, 1]",
                                  "using the following formula:"),
                         column(
                           width = 12,
@@ -82,7 +83,7 @@ ui.createEns <- function() {
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 4",
                         helpText(tags$u("Description:"),
-                                 "For each model, rescale predictions (X) to have a mean", HTML("(&mu;)"),
+                                 "For each set of overlaid predictions, rescale them (X) to have a mean", HTML("(&mu;)"),
                                  "of 0 and", "standard deviation", HTML("(&sigma;)"),
                                  "of 1 (unit variance) using the following formula:"),
                         column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
@@ -106,7 +107,7 @@ ui.createEns <- function() {
                       ),
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag",
-                        tags$h5("Select overlaid predictions to preview with their weight polygons"),
+                        tags$h5("Select overlaid predictions to preview with their weight polygon(s)"),
                         fluidRow(
                           column(6, uiOutput("create_ens_weights_poly_preview_model_uiOut_select")),
                           column(6, uiOutput("create_ens_weights_poly_preview_execute_uiOut_button"))
@@ -132,7 +133,7 @@ ui.createEns <- function() {
                         condition = "input.create_ens_type == 2",
                         radioButtons("create_ens_weight_type", tags$h5("Weighted ensembling method"),
                                      choices = list("Manual entry" = 1, "Evaluation metric" = 2,
-                                                    "Pixel-level spatial weights" = 3, "Polygon(s) with weights" = 4),
+                                                    "Pixel-level spatial weights" = 3, "Weight polygon(s)" = 4),
                                      selected = 1)
                       )
                     )
@@ -146,7 +147,7 @@ ui.createEns <- function() {
                         box(
                           width = 12,
                           helpText(tags$strong("Unweighted ensembling method:"),
-                                   "Calculate the simple mean of all predictions for each polygon.")
+                                   "Calculate the mean of all corresponding predictions")
                         )
                       ),
 
@@ -160,7 +161,7 @@ ui.createEns <- function() {
                           box(
                             width = 12,
                             helpText(tags$strong("Weighted ensembling method:"),
-                                     "Calculate the weighted mean of all predictions for each polygon."),
+                                     "Calculate the weighted mean of all corresponding predictions"),
                             helpText(tags$strong("Manual entry method:"),
                                      "Entered weights correspond to the order of the models in the",
                                      "overlaid model predictions table.",
@@ -174,9 +175,8 @@ ui.createEns <- function() {
                           box(
                             width = 12,
                             helpText(tags$strong("Weighted ensembling method:"),
-                                     "Calculate the weighted mean of all predictions for each polygon."),
+                                     "Calculate the weighted mean of all corresponding predictions"),
                             helpText(tags$strong("Evaluation metric method:"),
-                                     "The table displays both the evaluation metric values and the relative weights for the models.",
                                      "The relative weights are the metric values rescalued so that the maximum value is one."),
                             uiOutput("create_ens_weights_metric_uiOut_text"),
                             fluidRow(
@@ -191,7 +191,7 @@ ui.createEns <- function() {
                           box(
                             width = 12,
                             helpText(tags$strong("Weighted ensembling method:"),
-                                     "Calculate the weighted mean of all predictions for each polygon."),
+                                     "Calculate the weighted mean of all corresponding predictions"),
                             helpText(tags$strong("Pixel-level spatial weights method:"),
                                      "Overlaid predictions are multiplied by their corresponding spatial weight. These pixel-level",
                                      "spatial weights were specified by the 'Column with weight data' input",
@@ -208,16 +208,14 @@ ui.createEns <- function() {
                           box(
                             width = 12,
                             helpText(tags$strong("Weighted ensembling method:"),
-                                     "Calculate the weighted mean of all predictions for each polygon."),
-                            helpText(tags$strong("Polygon(s) with weights method"),
-                                     "Select one or more sets of overlaid model predictions and load weight polygons",
-                                     "to assign to the selected sets of predictions. These weight polygons designate area(s)",
-                                     "in which the selected sets of predictions will be weighted.",
-                                     "Currently you may only assign one weight for each weight polygon, but you may load",
-                                     "multiple polygons to apply unique weights to multiple prediction regions",
-                                     "for one set of predictions. However, these polygons must not overlap.",
-                                     "All predictions whose polygon overlaps with a weight polygon by less than the percentage",
-                                     "specified below, including those with no overlap, will have a weight of one."),
+                                     "Calculate the weighted mean of all corresponding predictions"),
+                            helpText(tags$strong("Weight polygon(s)"),
+                                     "Load and assign weight polygon(s) to overlaid predictions.",
+                                     "Weight polygons designate area(s) in which the specified predictions will be weighted.",
+                                     "You can only assign one weight per weight polygon, but you may load",
+                                     "multiple polygons to apply unique weights to different prediction regions.",
+                                     "Weight polygons may not overlap.",
+                                     "All predictions not assigned a weight polygon will have a weight of one."),
                             fluidRow(
                               column(7, uiOutput("create_ens_weights_poly_model_uiOut_selectize")),
                               column(5, selectInput("create_ens_weights_poly_type", tags$h5("File type"),
@@ -230,6 +228,7 @@ ui.createEns <- function() {
                                 condition = "input.create_ens_weights_poly_type == 1",
                                 ui.instructions.upload.csv(),
                                 ui.instructions.poly.csv(),
+                                ui.instructions.ens.weightpoly0(),
                                 fluidRow(
                                   column(6, fileInput("create_ens_weights_poly_csv_file", label.csv.upload, accept = ".csv")),
                                   column(
@@ -248,6 +247,7 @@ ui.createEns <- function() {
                               conditionalPanel(
                                 condition = "input.create_ens_weights_poly_type == 2",
                                 ui.instructions.upload.raster(),
+                                ui.instructions.ens.weightpoly0(),
                                 fluidRow(
                                   column(
                                     width = 6,
@@ -267,6 +267,7 @@ ui.createEns <- function() {
                               conditionalPanel(
                                 condition = "input.create_ens_weights_poly_type == 3",
                                 ui.instructions.upload.shp(),
+                                ui.instructions.ens.weightpoly0(),
                                 fluidRow(
                                   column(
                                     width = 6,
@@ -285,6 +286,7 @@ ui.createEns <- function() {
                               conditionalPanel(
                                 condition = "input.create_ens_weights_poly_type == 4",
                                 ui.instructions.upload.gdb(),
+                                ui.instructions.ens.weightpoly0(),
                                 fluidRow(
                                   column(
                                     width = 6,
@@ -328,7 +330,6 @@ ui.createEns <- function() {
                     box(
                       width = 12,
                       helpText(tags$strong("Loaded weight polygons")),
-                      # tags$h5("Summary table of loaded polygon file(s) and weight(s) for models to be used in ensemble"),
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag == false",
                         helpText("No weight polygons have been loaded")

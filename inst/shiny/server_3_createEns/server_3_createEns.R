@@ -22,16 +22,16 @@ outputOptions(output, "ens_overlaid_selected_flag", suspendWhenHidden = FALSE)
 
 
 #------------------------------------------------
-### Flag for if prediction types of all selected overlaid models are 'Absolute'
-output$ens_rescale_none_flag <- reactive({
-  if (input$create_ens_table_subset) {
-    models.which <- input$create_ens_datatable_rows_selected
-  } else {
-    models.which <- seq_along(vals$overlaid.models)
-  }
-  all(vals$models.pred.type[models.which] == "1")
-})
-outputOptions(output, "ens_rescale_none_flag", suspendWhenHidden = FALSE)
+# ### Flag for if prediction types of all selected overlaid models are 'Absolute'
+# output$ens_rescale_none_flag <- reactive({
+#   if (input$create_ens_table_subset) {
+#     models.which <- input$create_ens_datatable_rows_selected
+#   } else {
+#     models.which <- seq_along(vals$overlaid.models)
+#   }
+#   all(vals$models.pred.type[models.which] == "1")
+# })
+# outputOptions(output, "ens_rescale_none_flag", suspendWhenHidden = FALSE)
 
 
 #------------------------------------------------
