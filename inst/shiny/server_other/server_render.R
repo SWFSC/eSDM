@@ -3,7 +3,7 @@
 
 ###############################################################################
 ### Reactive functions that return tables are in server_render_tables.R
-
+dt.list <- list(dom = 't', pageLength = 50)
 
 ###############################################################################
 ##### Load Models tab #####
@@ -47,12 +47,12 @@ output$create_sf_gis_gdb_text <- renderText({
 ### Table of loaded original model preds
 output$models_loaded_table <- renderDT({
   table_orig()
-}, options = list(dom = 't'), selection = "multiple")
+}, options = dt.list, selection = "multiple")
 
 ### Table of stats of loaded original model preds
 output$models_loaded_table_stats <- renderDT({
   table_orig_stats()
-}, options = list(dom = 't'), selection = "none")
+}, options = dt.list, selection = "none")
 
 #----------------------------------------------------------
 ### Plot/preview of loaded, original model(s)
@@ -86,12 +86,12 @@ output$model_preview_plot <- renderPlot({
 ### Table of loaded model predictions
 output$overlay_loaded_table <- renderDT({
   table_orig()
-}, options = list(dom = 't'), selection = "single")
+}, options = dt.list, selection = "single")
 
 ### Table of stats of loaded model predictions
 output$overlay_loaded_stats_table <- renderDT({
   table_orig_stats()
-}, options = list(dom = 't'), selection = "none")
+}, options = dt.list, selection = "none")
 
 #----------------------------------------------------------
 # Polygon error outputs and loaded messages
@@ -206,7 +206,7 @@ output$create_ens_table <- renderTable({
 ### Datatable of overlaid predictions and info
 output$create_ens_datatable <- renderDT({
   table_overlaid()
-}, options = list(dom = 't'))
+}, options = dt.list)
 
 #----------------------------------------------------------
 # Weights outputs
@@ -260,7 +260,7 @@ output$ens_create_ensemble_text <- renderUI({
 output$ens_datatable_ensembles <- renderDT({
   table_ensembles()
 },
-options = list(dom = 't'))
+options = dt.list)
 
 ### Remove ensemble error output
 output$ens_remove_text <- renderUI({
@@ -305,17 +305,17 @@ output$ens_abund_table_out <- renderTable({
 ### Table of orig model predictions
 output$eval_models_table_orig_out <- renderDT({
   table_orig()[, 1:3]
-}, options = list(dom = 't'))
+}, options = dt.list)
 
 ### Table of overlaid model predictions
 output$eval_models_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
-}, options = list(dom = 't'))
+}, options = dt.list)
 
 ### Table of ensemble models
 output$eval_models_table_ens_out <- renderDT({
   table_ensembles()
-}, options = list(dom = 't'))
+}, options = dt.list)
 
 #----------------------------------------------------------
 # Validation data messages, error outputs, and table
@@ -380,17 +380,17 @@ output$eval_metrics_overlap_text <- renderText({
 ### Table of orig model predictions
 output$pretty_table_orig_out <- renderDT({
   table_orig()[, 1:3]
-}, options = list(dom = 't'), selection = "single")
+}, options = dt.list, selection = "single")
 
 ### Table of overlaid model predictions
 output$pretty_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
-}, options = list(dom = 't'), selection = "single")
+}, options = dt.list, selection = "single")
 
 ### Table of ensemble model predictions
 output$pretty_table_ens_out <- renderDT({
   table_ensembles()
-}, options = list(dom = 't'), selection = "single")
+}, options = dt.list, selection = "single")
 
 #----------------------------------------------------------
 # Outputs
@@ -421,7 +421,7 @@ output$pretty_plot_plot_text <- renderText({
 ### Pretty plot table
 output$pretty_plot_toplot_table_out <- renderDT({
   pretty_plot_toplot_table()
-}, options = list(dom = 't'), rownames = FALSE)
+}, options = dt.list, rownames = FALSE)
 
 ### Pretty plot
 output$pretty_plot_plot_out <- renderPlot({
@@ -436,16 +436,16 @@ output$pretty_plot_plot_out <- renderPlot({
 ### Table of orig model predictions
 output$export_table_orig_out <- renderDT({
   table_orig()[, 1:3]
-}, options = list(dom = 't'), selection = "single")
+}, options = dt.list, selection = "single")
 
 ### Table of overlaid model predictions
 output$export_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
-}, options = list(dom = 't'), selection = "single")
+}, options = dt.list, selection = "single")
 
 ### Table of ensemble models
 output$export_table_ens_out <- renderDT({
   table_ensembles()
-}, options = list(dom = 't'), selection = "single")
+}, options = dt.list, selection = "single")
 
 ###############################################################################

@@ -7,18 +7,40 @@
 ensemble_rescale(x, x.pred.idx, y, y.abund = NULL)
 }
 \arguments{
-\item{x}{is a list of sf objects;
-all sf objects must have the same number of rows}
+\item{x}{is a list of objects of \code{sf};
+all objects must have the same number of rows}
 
-\item{x.pred.idx}{names or column indices of predicted density column in
-each element of x; must be the same length as x}
+\item{x.pred.idx}{vector of names or column indices of predicted density column for each element of \code{x};
+must be the same length as \code{x}}
 
-\item{y}{rescaling method;
-one of: "abundance", "normalization", "standardization", or "sumto1"}
+\item{y}{rescaling method; must be one of: "abundance", "normalization", "standardization", or "sumto1".
+See 'Details' for descriptions of the rescaling methods}
 
-\item{y.abund}{value to which to rescale abundances of x;
-ignored if y is not "abundance"}
+\item{y.abund}{numeric value; ignored if \code{y} is not "abundance"}
+}
+\value{
+The list \code{x}, but with the specified columns rescaled
 }
 \description{
 Rescale specified columns in a list of SDM prediction
+}
+\details{
+This function is intended to be used between overlaying predictions with \code{\link{overlay_sdm}} and
+  creating ensembles with \code{\link{ensemble_create}},
+  which is why all elelments of \code{x} must have the same number of rows.
+  The rescaling methods are as follows:
+  \describe{
+  \item{'abundance' - Rescale the density values so that the predicted abundance is \code{y.abund}}{}
+  \item{'normalization' - Rescale the density values to a range of [0, 1]}{}
+  \item{'standardization' - Rescale the density values to have a mean of 0 and standard deviation of 1}{}
+  \item{'sumto1' - Rescale the density values so their sum is 1}{}
+  }
+}
+\examples{
+x <- list(
+  preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, "Density")
+)
+ensemble_rescale(x, c("Density", "Density.overlaid"), "abundance", 50)
+ensemble_rescale(x, c(1, 1), "normalization")
+
 }
