@@ -140,7 +140,7 @@ output$create_ens_weights_poly_model_uiOut_selectize <- renderUI({
 
   input.val <- as.list(paste("Overlaid", models.which))
   selectizeInput("create_ens_weights_poly_model",
-                 tags$h5("Overlaid predictions to which to apply polygon weights"),
+                 tags$h5("Overlaid predictions to which to assign weight polygon(s)"),
                  choices = input.val, selected = NULL, multiple = TRUE)
 })
 

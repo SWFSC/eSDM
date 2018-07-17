@@ -82,13 +82,18 @@ output$pretty_plot_title_uiOut_text <- renderUI({
   table.idx <- list.selected[[1]]
   model.idx <- list.selected[[2]]
 
-  val.default <- ifelse(
-    table.idx == 3,
-    paste("Ensembling method:", vals$ensemble.method[model.idx], "||",
-          "Rescaling method:", vals$ensemble.rescaling[model.idx]),
-    paste("Model file:", vals$models.names[model.idx], "||",
-          "Data header:", vals$models.data.names[[model.idx]][1])
+  val.default <- switch(
+    table.idx, paste("Original", model.idx),
+    paste("Overlaid", model.idx), paste("Ensemble", model.idx)
   )
+
+  # val.default <- ifelse(
+  #   table.idx == 3,
+  #   paste("Ensembling method:", vals$ensemble.method[model.idx], "||",
+  #         "Rescaling method:", vals$ensemble.rescaling[model.idx]),
+  #   paste("Model file:", vals$models.names[model.idx], "||",
+  #         "Data header:", vals$models.data.names[[model.idx]][1])
+  # )
 
   textInput("pretty_plot_title", tags$h5("Map title"), value = val.default)
 })
