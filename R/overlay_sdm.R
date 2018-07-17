@@ -2,12 +2,13 @@
 #'
 #' Overlay SDM predictions onto base geometry
 #'
-#' @param base.geom object of class sfc that sdm is being overlaid onto
-#' @param sdm object of class sf representing the SDM that is being overlaid onto base.geom
-#' @param overlap.perc percentage that each base polygon must be overlapped for density value to be kept
+#' @param base.geom object of class \code{sfc}; base geometry
+#' @param sdm object of class \code{sf}; original SDM predictions
+#' @param overlap.perc percentage of each base polygon that must intersect with \code{sdm} for overlaid density value to be kept
 #' @param data.names names or indices of column(s) with data to be overlaid
 #'
 #' @importFrom dplyr %>%
+#' @importFrom dplyr arrange
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate
 #' @importFrom dplyr quo
@@ -22,7 +23,16 @@
 #' @importFrom sf st_sf
 #' @importFrom sf st_set_geometry
 #' @importFrom sf st_set_agr
+#' @importFrom rlang .data
 #' @importFrom rlang sym
+#'
+#' @details TODO - copy from paper?
+#'
+#' @return Object of class \code{sf} with the geometry of \code{base.geom} and
+#'   the specified values of \code{sdm} overalid onto that geometry
+#'
+#' @examples
+#' overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, "Density")
 #'
 #' @export
 overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
@@ -143,17 +153,20 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
     new.dens.df.2[, 1] <- base.idx.na
     names(new.dens.df.2) <- names(new.dens.df.1)
 
-    new.dens.df <- rbind(new.dens.df.1, new.dens.df.2)
-    new.dens.df <- new.dens.df[order(new.dens.df$idx), ]
+    new.dens.df <- rbind(new.dens.df.1, new.dens.df.2) %>%
+      arrange(.data$idx) %>%
+      select(-.data$idx)
     row.names(new.dens.df) <- 1:nrow(new.dens.df)
-    new.dens.df <- new.dens.df[, -1]
   }
   # else nothing to do
 
 
   #----------------------------------------------------------------------------
   # 6) Put base grid together with predicted densities to make overlaid SDM
-  stopifnot(nrow(new.dens.df) == nrow(base.geom))
+  stopifnot(
+    nrow(new.dens.df) == nrow(base.geom),
+    inherits(new.dens.df, "data.frame")
+  )
 
   st_sf(new.dens.df, geometry = base.geom, agr = "constant")
 }

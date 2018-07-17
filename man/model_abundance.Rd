@@ -7,21 +7,31 @@
 model_abundance(x, dens.idx, sum.abund = TRUE)
 }
 \arguments{
-\item{x}{object of class sf; SDM with density predictions}
+\item{x}{object of class \code{sf}; SDM with density predictions}
 
-\item{dens.idx}{name or index of column in \code{x} with density predictions.
-Can be a vector of names or indices}
+\item{dens.idx}{name or index of column(s) in \code{x} with density predictions.
+Can be a character vector (column names) or numeric vector (column indices)}
 
-\item{sum.abund}{logical indicating whether to return the total predicted
-abundnace (TRUE) or the abundance for for each prediction polygon (FALSE)}
+\item{sum.abund}{logical; if \code{TRUE} return the total predicted abundance and
+if \code{FALSE} the abundance for for each prediction polygon}
 }
 \value{
-Either a single number (total predicted abundnace for the SDM) or
-  a numerical vector with the predicted abundance for
-  each prediction polygon
+Depends on \code{dens.idx} and \code{sum.abund}.
+  If \code{dens.idx} is a vector of length 1, then ...TODO
+  either a single number (total predicted abundance for the SDM) or
+  a numerical vector with the predicted abundance for each prediction polygon
 }
 \description{
-Calculates the predicted abundance by multiplying the values in the
-  column(s) with density predictions by area of their prediciton polygon
-  (calcualted using sf::st_area())
+Calculates the predicted abundance by multiplying the density predictions by prediction polygon areas
+}
+\details{
+Multiplies the values in the specified column(s) (i.e. the density predictions)
+  by the area in square kilometers of their corresponding prediciton polygon.
+  The area of each prediction polygon is calcualted using \code{st_area} from \code{\link[sf]{geos_measures}}
+}
+\examples{
+model_abundance(preds.1, "Density")
+model_abundance(preds.1, c(1, 1))
+model_abundance(preds.1, c(1, 1), FALSE)
+
 }
