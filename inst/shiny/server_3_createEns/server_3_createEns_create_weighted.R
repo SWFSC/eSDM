@@ -37,7 +37,7 @@ create_ens_weighted_manual <- reactive({
   )
 
   data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p) {
-    weighted.mean(p, data.weights, na.rm = TRUE)
+    stats::weighted.mean(p, data.weights, na.rm = TRUE)
   }))
 
   st_sf(data.ens, geometry = base.sfc, agr = "constant")
@@ -96,8 +96,9 @@ create_ens_weighted_metric <- reactive({
          "Weighted ens by metrics: number of weights != number of of model")
   )
 
-  data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p)
-    weighted.mean(p, data.weights, na.rm = TRUE)))
+  data.ens <- data.frame(Pred.ens = apply(
+    data.rescaled, 1, function(p) stats::weighted.mean(p, data.weights, na.rm = TRUE)
+  ))
 
   st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })

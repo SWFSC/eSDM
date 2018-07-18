@@ -4,7 +4,7 @@
 #'
 #' @param base.geom object of class \code{sfc}; base geometry
 #' @param sdm object of class \code{sf}; original SDM predictions
-#' @param overlap.perc percentage of each base polygon that must intersect with \code{sdm} for overlaid density value to be kept
+#' @param overlap.perc numeric; percentage of each base polygon that must intersect with \code{sdm} for overlaid density value to be kept
 #' @param data.names names or indices of column(s) with data to be overlaid
 #'
 #' @importFrom dplyr %>%
@@ -32,7 +32,8 @@
 #'   the specified values of \code{sdm} overalid onto that geometry
 #'
 #' @examples
-#' overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, "Density")
+#' overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, 1)
+#' overlay_sdm(sf::st_geometry(preds.2), preds.1, 50, c("Density", "Density2"))
 #'
 #' @export
 overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
@@ -48,7 +49,7 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   }
   stopifnot(
     st_crs(base.geom) == st_crs(sdm),
-    all(data.names %in% names(sdm))
+    all(data.names %in% names(sdm)) | inherits(data.names, "numeric")
   )
   if (identical(base.geom, st_geometry(sdm))) {
     warning("'base.geom' and 'sdm' have the same geometry and thus ",
@@ -72,6 +73,8 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   base.geom.sf <- st_sf(
     base.idx = 1:length(base.geom), base.geom, agr = "constant"
   )
+
+  if (inherits(data.names, "numeric")) data.names <- names(sdm)[data.names]
 
   sdm <- sdm %>%
     select(data.names) %>%

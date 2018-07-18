@@ -1,7 +1,7 @@
 #' eSDM GUI
 #'
-#' The eSDM graphical user interface (GUI); an R Shiny app for creating ensemble
-#'   predictions using SDM predictions. The GUI can also be accessed at \url{https://swoodman.shinyapps.io/eSDM/}
+#' The eSDM graphical user interface (GUI); an R Shiny app for creating ensemble predictions using SDM predictions.
+#'   The GUI can also be accessed at \url{https://swoodman.shinyapps.io/eSDM/}
 #'
 #' @usage eSDM_GUI()
 #'

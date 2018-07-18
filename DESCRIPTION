@@ -24,7 +24,8 @@ Imports:
     shinycssloaders,
     shinydashboard,
     shinyjs,
-    sf, 
+    sf,
+    stats,
     units,
     viridis
 License: GPL-3

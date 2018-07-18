@@ -16,7 +16,7 @@ to be rescaled for each element of \code{x}; must be the same length as \code{x}
 \item{y}{rescaling method; must be one of: "abundance", "normalization", "standardization", or "sumto1".
 See 'Details' section for descriptions of the rescaling methods}
 
-\item{y.abund}{numeric value; ignored if \code{y} is not "abundance"}
+\item{y.abund}{numeric value; ignored if \code{y != "abundance"}}
 }
 \value{
 The list \code{x}, but with the specified columns rescaled
@@ -25,9 +25,9 @@ The list \code{x}, but with the specified columns rescaled
 Rescale specified columns for each element in a list of SDM predictions
 }
 \details{
-This function is intended to be used between overlaying predictions with \code{\link{overlay_sdm}} and
+\code{ensemble_rescale} is intended to be used between overlaying predictions with \code{\link{overlay_sdm}} and
   creating ensembles with \code{\link{ensemble_create}},
-  which is why all elelments of \code{x} must have the same number of rows.
+  which is why all elments of \code{x} must have the same number of rows.
   The rescaling methods are as follows:
   \describe{
   \item{'abundance' - Rescale the density values so that the predicted abundance is \code{y.abund}}{}

@@ -4,21 +4,45 @@
 \alias{ensemble_create}
 \title{Create ensemble of SDM predictions}
 \usage{
-ensemble_create(x, x.pred.idx, y, y.abund = NULL)
+ensemble_create(x, x.pred.idx, y, y.weights = NULL)
 }
 \arguments{
-\item{x}{is a list of sf objects;
-all sf objects must have the same geometry}
+\item{x}{list of objects of class \code{sf}, all of which must have the same geometry}
 
-\item{x.pred.idx}{vector of names or column indices of predicted density column in
-each element of x; must be the same length as x}
+\item{x.pred.idx}{vector of names or column indices giving the predictions column for each element of\code{x};
+must be the same length as \code{x}}
 
-\item{y}{rescaling method;
-one of: "abundance", "normalization", "standardization", or "sumto1"}
+\item{y}{ensembling method; one of: "unweighted", "weighted"}
 
-\item{y.abund}{value to which to rescale abundances of x;
-ignored if y is not "abundance"}
+\item{y.weights}{either a numeric vector the same length as \code{x} or
+a data frame with \code{ncol(y.weights) == length(x)} and the same number of rows as each element of \code{x};
+ignored if \code{y == "unweighted"}}
+}
+\value{
+object of class \code{sf} with two columns: 'Pred.ens' and 'geometry';
+  'Pred.ens' constists of the ensemble predictions and 'geometry' is the simple feature geometry list-column.
+  The \code{sf} object attribute \code{agr} is set as 'constant' for 'Pred.ens'
 }
 \description{
-Description
+Create weighted or unweighted ensemble of SDM predictions
+}
+\details{
+\code{ensemble_create} is intended to be used after overlaying predictions with \code{\link{overlay_sdm}} and
+  (if desired) rescaling the overlaid predictions with \code{\link{ensemble_rescale}},
+  which is why all elments of \code{x} must have the same geometry.
+
+  \code{ensemble_create} includes functionality for ensembling methods provided in \link{eSDM_GUI} except for 'Weight polygon(s)',
+  which currently must be done manually if not using the GUI.
+  For instance, if \code{y.weights} is a data frame, then the 'Pixel-level spatial weights' ensembling method is performed.
+}
+\examples{
+x <- list(
+  preds.1, preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, "Density")
+)
+ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "unweighted")
+ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "weighted", c(0.5, 1, 0.8))
+
+weights.df <- data.frame(runif(325), runif(325), c(rep(NA, 100), runif(225)))
+ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "weighted", weights.df)
+
 }
