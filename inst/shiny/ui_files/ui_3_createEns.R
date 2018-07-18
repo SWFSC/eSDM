@@ -21,7 +21,7 @@ ui.createEns <- function() {
           ),
           conditionalPanel(
             condition = "input.create_ens_table_subset == true",
-            ui.instructions.table.select(text.pre = "overlaid", text.in = "to ensemble:", sel.num = 2),
+            ui.instructions.table.select(text.pre = "overlaid", text.in = "to ensemble:"),
             DTOutput("create_ens_datatable")
           ),
           column(12, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid model predictions"))
@@ -370,7 +370,7 @@ ui.createEns <- function() {
         fluidRow(
           box(
             title = "Created Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
-            ui.instructions.table.select(text.pre = "ensemble", text.in = "with which to perform an action:", sel.num = 2),
+            ui.instructions.table.select(text.pre = "ensemble", text.in = "with which to perform an action:"),
             DTOutput("ens_datatable_ensembles"),
             tags$br(),
             column(4, radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"),
