@@ -183,23 +183,15 @@ ui.loadModels <- function() {
           fluidRow(
             box(
               title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              ui.instructions.table.select(text.pre = "loaded", text.in = "with which to perform an action:", sel.num = 2,
-                                           text.other = TRUE),
+              ui.instructions.table.select(
+                text.pre = "loaded", text.in = "with which to perform an action:", sel.num = 2
+              ),
               conditionalPanel("input.models_loaded_table_stats != true", DTOutput("models_loaded_table")),
               conditionalPanel("input.models_loaded_table_stats", DTOutput("models_loaded_table_stats")),
               column(
                 width = 12,
-                fluidRow(
-                  column(4, checkboxInput("models_loaded_table_stats", "Display additional information")),
-                  column(
-                    width = 8,
-                    conditionalPanel(
-                      condition = "input.models_loaded_table_stats",
-                      helpText("If 'Resolution' data begins with a '~', then the predictions are irregularly spaced in",
-                               "their provided coordinate system and the provided value is an approximation")
-                    )
-                  )
-                ),
+                checkboxInput("models_loaded_table_stats",
+                              "Display additional information - NOTE that you can only select or deselect row(s) when this box is unchecked"),
                 fluidRow(
                   column(3, radioButtons("model_select_action", tags$h5("Action to perform with selected model predictions"),
                                          choices = list("Plot interactive preview" = 1, "Plot static preview(s)" = 2,

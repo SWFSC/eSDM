@@ -13,7 +13,7 @@ gis_res_calc <- function(sf.ll, sf.orig) {
   ### Get extents of individual polys in original projection and units if apl
   crs.orig <- st_crs(sf.orig)$proj4string
   crs.orig.m  <- grepl("+units=m", crs.orig)
-  crs.orig.ll <- grepl("+proj=longlat", crs.orig)
+  crs.orig.ll <- st_is_longlat(crs.orig)
 
   if ((crs.orig.m | crs.orig.ll) & (crs.orig.m != crs.orig.ll) &
       !identical(st_crs(sf.orig), crs.ll)) {
@@ -36,6 +36,7 @@ gis_res_calc <- function(sf.ll, sf.orig) {
         NA
       }
     }, div.val = ifelse(crs.orig.m, 1e+03, 1))
+
   } else {
     res.orig <- NA
   }

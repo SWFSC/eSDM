@@ -170,11 +170,11 @@ ui.overlay <- function() {
           fluidRow(
             box(
               title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              ui.instructions.table.select(text.pre = "loaded", text.in = "to use as the base geometry:", sel.num = 1,
-                                           text.other = TRUE),
+              ui.instructions.table.select(text.pre = "loaded", text.in = "to use as the base geometry:", sel.num = 1),
               conditionalPanel("input.overlay_loaded_table_stats != true", DTOutput("overlay_loaded_table")),
               conditionalPanel("input.overlay_loaded_table_stats", DTOutput("overlay_loaded_stats_table")),
-              column(12, checkboxInput("overlay_loaded_table_stats", "Display additional information"))
+              column(12, checkboxInput("overlay_loaded_table_stats", paste("Display additional information - NOTE that you can only",
+                                                                           "select or deselect a row when this box is unchecked")))
             )
           ),
           fluidRow(

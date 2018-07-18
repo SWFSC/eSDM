@@ -69,8 +69,9 @@ ui <- dashboardPage(
   ),
 
   dashboardBody(
-    ### Required by shinyjs package
+    ### Use shinyjs package and window-closing functionlity
     useShinyjs(),
+    extendShinyjs(text = jscode, functions = c("closeWindow")),
 
     ### Control validate text output
     tags$head(

@@ -56,13 +56,19 @@ leg.perc.esdm <- c(
   "10 - 15%", "5 - 10%", "2 - 5%", "Highest 2%"
 )
 
+###
+jscode <- "shinyjs.closeWindow = function() { window.close(); }"
+
 
 ###############################################################################
 ### Server function
 server <- function(input, output, session) {
   ###############################################
-  ### Quit App
+  ### Quit GUI
+  session$onSessionEnded(stopApp)
+
   observeEvent(input$close_app, {
+    js$closeWindow()
     stopApp(returnValue = "eSDM GUI was closed")
   })
 
