@@ -1,12 +1,11 @@
-#' Create sfc_polygon object from data.frame with polygon coordinates
+#' Create polygon from polygon coordinates
 #'
-#' Create sfc_polygon object from data.frame with only longitude and
-#'   latitude columns, respectively, which contain the polygon coordinates
+#' Create object of class \code{sfc} of type \code{POLYGON} from a data frame with the polygon coordinates
 #'
-#' @param x data.frame with two columns; the columns must contain longitude
-#'   and latitude coordinates, respectively
-#' @param crs.prov crs value of new sfc_polygon object;
-#'   value must be interpretable by st_crs(), see st_crs() documentation
+#' @param x data frame with two columns;
+#'   the columns must contain longitude and latitude coordinates, respectively
+#' @param crs.prov crs value for polygon being created;
+#'   value must be readable by \code{\link{sf}{st_crs}}
 #
 #' @importFrom dplyr %>%
 #' @importFrom dplyr filter
@@ -18,6 +17,10 @@
 #' @importFrom rlang .data
 #' @importFrom sf st_polygon
 #' @importFrom sf st_sfc
+#'
+#' @details TODO
+#'
+#' @return Object of class \code{sfc} of type \code{POLYGON} with the provided coordinates and crs value
 #'
 #' @examples
 #' x <- data.frame(
@@ -62,14 +65,13 @@ pts_to_sfc_coords <- function(x, crs.prov = NULL) {
 }
 
 
-#' Create sfc_polygon object from data.frame with grid coordinates
+#' Create polygons from grid coordinates
 #'
-#' Create sfc_polygon object from data.frame with only longitude and
-#'   latitude columns, respectively, which contain the coordinates
-#'   of the center of each polygon of a grid
+#' Create object of class \code{sfc} of type \code{POLYGON} from a data frame with
+#'   coordinates of the center of each polygon of a grid
 #'
-#' @param x data.frame with at least two columns;
-#'   the columns must contain longitude and latitude coordinates, respectively,
+#' @param x data frame with at least two columns;
+#'   the first two columns must contain longitude and latitude coordinates, respectively,
 #'   and the coordinates must form a grid
 #' @param poly.radius radius of each polygon to be created around points in \code{x};
 #'   must be numeric object
@@ -78,6 +80,10 @@ pts_to_sfc_coords <- function(x, crs.prov = NULL) {
 #'
 #' @importFrom sf st_polygon
 #' @importFrom sf st_sfc
+#'
+#' @details TODO
+#'
+#' @return Object of class \code{sfc} of type \code{POLYGON}
 #'
 #' @examples
 #' x <- data.frame(

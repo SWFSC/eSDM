@@ -2,13 +2,13 @@
 % Please edit documentation in R/pts_to_sfc.R
 \name{pts_to_sfc_grid}
 \alias{pts_to_sfc_grid}
-\title{Create sfc_polygon object from data.frame with grid coordinates}
+\title{Create polygons from grid coordinates}
 \usage{
 pts_to_sfc_grid(x, poly.radius, crs.prov = NULL)
 }
 \arguments{
-\item{x}{data.frame with at least two columns;
-the columns must contain longitude and latitude coordinates, respectively,
+\item{x}{data frame with at least two columns;
+the first two columns must contain longitude and latitude coordinates, respectively,
 and the coordinates must form a grid}
 
 \item{poly.radius}{radius of each polygon to be created around points in \code{x};
@@ -17,10 +17,15 @@ must be numeric object}
 \item{crs.prov}{crs value of new sfc_polygon object;
 value must be interpretable by st_crs(), see st_crs() documentation}
 }
+\value{
+Object of class \code{sfc} of type \code{POLYGON}
+}
 \description{
-Create sfc_polygon object from data.frame with only longitude and
-  latitude columns, respectively, which contain the coordinates
-  of the center of each polygon of a grid
+Create object of class \code{sfc} of type \code{POLYGON} from a data frame with
+  coordinates of the center of each polygon of a grid
+}
+\details{
+TODO
 }
 \examples{
 x <- data.frame(

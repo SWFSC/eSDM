@@ -7,14 +7,14 @@
 ensemble_rescale(x, x.pred.idx, y, y.abund = NULL)
 }
 \arguments{
-\item{x}{is a list of objects of \code{sf};
+\item{x}{list of objects of class \code{sf};
 all objects must have the same number of rows}
 
-\item{x.pred.idx}{vector of names or column indices of predicted density column for each element of \code{x};
-must be the same length as \code{x}}
+\item{x.pred.idx}{character or numeric vector of names or column indices of predicted density column
+to be rescaled for each element of \code{x}; must be the same length as \code{x}}
 
 \item{y}{rescaling method; must be one of: "abundance", "normalization", "standardization", or "sumto1".
-See 'Details' for descriptions of the rescaling methods}
+See 'Details' section for descriptions of the rescaling methods}
 
 \item{y.abund}{numeric value; ignored if \code{y} is not "abundance"}
 }
@@ -22,7 +22,7 @@ See 'Details' for descriptions of the rescaling methods}
 The list \code{x}, but with the specified columns rescaled
 }
 \description{
-Rescale specified columns in a list of SDM prediction
+Rescale specified columns for each element in a list of SDM predictions
 }
 \details{
 This function is intended to be used between overlaying predictions with \code{\link{overlay_sdm}} and

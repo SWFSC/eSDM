@@ -13,11 +13,11 @@
 #'   sample sets of SDM density predictions for the \code{eSDM} package
 #'
 #' @details
-#' \code{preds.1} is a set of sample SDM density predictions created by importing
+#' \code{preds.1} sample SDM density predictions created by importing
 #'   Sample_predictions_2.csv into the eSDM GUI, exporting predictions, and then
 #'   clipping them to the SoCal_bite.csv region
 #'
-#' \code{preds.2} is a set of sample SDM density predictions created by importing
+#' \code{preds.2} sample SDM density predictions created by importing
 #'   Sample_predictions_1.csv into the eSDM GUI, exporting predictions, and then
 #'   clipping them to the SoCal_bite.csv region
 #'
@@ -27,8 +27,9 @@
 #'
 #' @aliases preds.1 preds.2 preds.3
 #'
-#' @format Objects of class sf with a column of density predictions (\code{Density}) and
-#'   a simple feature list column (\code{geometry})
+#' @format Objects of class \code{sf} with a column of density predictions (name: \code{Density}) and
+#'   a simple feature list column (name: \code{geometry}).
+#'   \code{preds.1} also has a second column of sample density predictions (name: \code{Density2})
 #'
 #' @name preds
 
@@ -46,6 +47,7 @@
 #' Sample validation data
 #'
 #' Sample validation data created by cropping Validation_data.csv to the SoCal_bite.csv region
+#'   (.csv files from ...)
 #'
 #' @format An object of class \code{\link[sf]{sf}} with 8 rows and 3 variables
 #' \describe{

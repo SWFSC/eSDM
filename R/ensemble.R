@@ -1,13 +1,13 @@
 #' Rescale SDM predictions
 #'
-#' Rescale specified columns in a list of SDM prediction
+#' Rescale specified columns for each element in a list of SDM predictions
 #'
-#' @param x is a list of objects of \code{sf};
+#' @param x list of objects of class \code{sf};
 #'   all objects must have the same number of rows
-#' @param x.pred.idx vector of names or column indices of predicted density column for each element of \code{x};
-#'   must be the same length as \code{x}
+#' @param x.pred.idx character or numeric vector of names or column indices of predicted density column
+#'   to be rescaled for each element of \code{x}; must be the same length as \code{x}
 #' @param y rescaling method; must be one of: "abundance", "normalization", "standardization", or "sumto1".
-#'   See 'Details' for descriptions of the rescaling methods
+#'   See 'Details' section for descriptions of the rescaling methods
 #' @param y.abund numeric value; ignored if \code{y} is not "abundance"
 #'
 #' @importFrom purrr set_names

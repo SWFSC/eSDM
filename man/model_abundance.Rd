@@ -16,10 +16,12 @@ Can be a character vector (column names) or numeric vector (column indices)}
 if \code{FALSE} the abundance for for each prediction polygon}
 }
 \value{
-Depends on \code{dens.idx} and \code{sum.abund}.
-  If \code{dens.idx} is a vector of length 1, then ...TODO
-  either a single number (total predicted abundance for the SDM) or
-  a numerical vector with the predicted abundance for each prediction polygon
+If \code{sum.abund == TRUE}, then a vector of the same length as \code{dens.idx}
+  representing the predicted abundance for the density values in each column.
+  If \code{sum.abund == FALSE} and the length of \code{dens.idx} is 1,
+  then a numeric vector with the predicted abundance of each prediction polygon of \code{x}.
+  If \code{sum.abund == FALSE} and the length of \code{dens.idx} is greater than 1,
+  then a data frame with \code{length(dens.idx)} columns of the predicted abundance of prediction polygons
 }
 \description{
 Calculates the predicted abundance by multiplying the density predictions by prediction polygon areas

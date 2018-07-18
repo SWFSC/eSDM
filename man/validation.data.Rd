@@ -15,5 +15,6 @@ validation.data
 }
 \description{
 Sample validation data created by cropping Validation_data.csv to the SoCal_bite.csv region
+  (.csv files from ...)
 }
 \keyword{datasets}

@@ -2,20 +2,25 @@
 % Please edit documentation in R/pts_to_sfc.R
 \name{pts_to_sfc_coords}
 \alias{pts_to_sfc_coords}
-\title{Create sfc_polygon object from data.frame with polygon coordinates}
+\title{Create polygon from polygon coordinates}
 \usage{
 pts_to_sfc_coords(x, crs.prov = NULL)
 }
 \arguments{
-\item{x}{data.frame with two columns; the columns must contain longitude
-and latitude coordinates, respectively}
+\item{x}{data frame with two columns;
+the columns must contain longitude and latitude coordinates, respectively}
 
-\item{crs.prov}{crs value of new sfc_polygon object;
-value must be interpretable by st_crs(), see st_crs() documentation}
+\item{crs.prov}{crs value for polygon being created;
+value must be readable by \code{\link{sf}{st_crs}}}
+}
+\value{
+Object of class \code{sfc} of type \code{POLYGON} with the provided coordinates and crs value
 }
 \description{
-Create sfc_polygon object from data.frame with only longitude and
-  latitude columns, respectively, which contain the polygon coordinates
+Create object of class \code{sfc} of type \code{POLYGON} from a data frame with the polygon coordinates
+}
+\details{
+TODO
 }
 \examples{
 x <- data.frame(
