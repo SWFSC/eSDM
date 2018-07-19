@@ -84,8 +84,9 @@ pretty_plot_models_idx_count <- reactive({
 
 ### Flag for if any model predictions are in app
 output$pretty_display_flag <- reactive({
-  list.models.all <- list(vals$models.ll, vals$overlaid.models,
-                          vals$ensemble.models)
+  list.models.all <- list(
+    vals$models.ll, vals$overlaid.models, vals$ensemble.models
+  )
 
   any(sapply(list.models.all, length) > 0)
 })
@@ -97,11 +98,6 @@ output$pretty_pred_selected_flag <- reactive({
 })
 outputOptions(output, "pretty_pred_selected_flag", suspendWhenHidden = FALSE)
 
-# ### Flag for if map has been generated (download flag)
-# output$pretty_display_download <- reactive({
-#   length(vals$pretty.params.list) > 0
-# })
-# outputOptions(output, "pretty_display_download", suspendWhenHidden = FALSE)
 
 
 ###############################################################################

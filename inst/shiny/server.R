@@ -29,6 +29,7 @@ library(ROCR)
 library(rlang)
 library(sf)
 library(stats)
+library(tmap)
 library(units)
 library(viridis)
 
@@ -68,7 +69,7 @@ server <- function(input, output, session) {
   session$onSessionEnded(stopApp)
 
   observeEvent(input$close_app, {
-    js$closeWindow()
+    # js$closeWindow()
     stopApp(returnValue = "eSDM GUI was closed")
   })
 
@@ -134,12 +135,12 @@ server <- function(input, output, session) {
 
   # Make high quality maps (pretty plots)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_toplot.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot_func.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep_addobj.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_download.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_plot.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep_addobj.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_renderUI.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_toplotlist.R"), local = TRUE, chdir = TRUE)
 
 
   # Export model predictions

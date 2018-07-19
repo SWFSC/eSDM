@@ -6,12 +6,12 @@ ui.prettyPlot <- function() {
     conditionalPanel(condition = "output.pretty_display_flag == false", ui.notice.no.pred.original()),
     conditionalPanel(
       condition = "output.pretty_display_flag",
-      # fluidRow(
-      #   box(
-      #     solidHeader = FALSE, status = "primary", height = 550, width = 12, align = "center",
-      #     shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 400), type = 1)
-      #   )
-      # ),
+      fluidRow(
+        box(
+          title = "", solidHeader = TRUE, status = "primary", height = 570, width = 12, align = "center", collapsed = TRUE,
+          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 400), type = 1)
+        )
+      ),
       # fluidRow(
       #   box(
       #     title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE,
@@ -23,90 +23,148 @@ ui.prettyPlot <- function() {
       #     DTOutput("pretty_table_ens_out")
       #   )
       # ),
-      fluidRow(
-        box(
-          title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE,
-          ui.instructions.multipletables.select(text.in = "map:"),
-          DTOutput("pretty_table_orig_out"),
-          tags$br(),
-          DTOutput("pretty_table_over_out"),
-          tags$br(),
-          DTOutput("pretty_table_ens_out")
-        ),
-        box(
-          solidHeader = FALSE, status = "primary", height = 550, width = 6, align = "center",
-          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 400), type = 1)
-        )
-      ),
 
       ################################################################# Map Control
       fluidRow(
         box(
           title = "Map Control", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
           fluidRow(
-            ################################################ To-plot list
+            column(2, radioButtons("pretty_plot_mapcontrol", NULL,
+                                   choices = list("Add new map to to-plot list" = 1, "Update parameters of map in to-plot list" = 2,
+                                                  "Plot or download map(s) in to-plot list" = 3),
+                                   selected = 1)),
+
             column(
-              width = 8,
-              tags$strong("1) Manage to-plot list"),
+              width = 10,
+              conditionalPanel("input.pretty_plot_mapcontrol == 1", tags$strong("1) Add new map to to-plot list")),
+              conditionalPanel("input.pretty_plot_mapcontrol == 2", tags$strong("2) Update parameters of map in to-plot list")),
+              conditionalPanel("input.pretty_plot_mapcontrol == 3", tags$strong("3) Plot or download map(s) in to-plot list")),
               fluidRow(
                 box(
                   width = 12,
-                  fluidRow(
-                    column(
-                      width = 6,
-                      uiOutput("pretty_plot_toplot_add_execute_uiOut_button"),
-                      textOutput("pretty_plot_toplot_add_text")
-                    ),
-                    column(
-                      width = 6,
-                      uiOutput("pretty_plot_toplot_remove_execute_uiOut_button"),
-                      textOutput("pretty_plot_toplot_remove_text")
+                  #-----------------------------------------------
+                  conditionalPanel(
+                    condition = "input.pretty_plot_mapcontrol == 1",
+                    fluidRow(
+                      column(
+                        width = 7,
+                        ui.instructions.multipletables.select(
+                          text.in = "add to the to-plot list:", sel.num = 1,
+                          text.other = "Then adjust the map parameters as desired in the boxes below and click the 'Add...' button"
+                        ),
+                        DTOutput("pretty_table_orig_out"),
+                        tags$br(),
+                        DTOutput("pretty_table_over_out"),
+                        tags$br(),
+                        DTOutput("pretty_table_ens_out")
+                      ),
+                      column(
+                        width = 5,
+                        uiOutput("pretty_plot_toplot_add_id_uiOut_text"),
+                        tags$br(), tags$br(),
+                        uiOutput("pretty_plot_toplot_add_execute_uiOut_button"),
+                        textOutput("pretty_plot_toplot_add_text")
+                      )
                     )
                   ),
-                  DTOutput("pretty_plot_toplot_table_out")
-                )
-              )
-            ),
-
-            ################################################ Plot map
-            column(
-              width = 4,
-              tags$strong("2) Plot map in-app"),
-              fluidRow(
-                box(
-                  width = 12,
-                  tags$h5("Note that the GUI will make the map fill the entire space above, and thus depending on the shape",
-                          "of the map there may be extra white space around the colored prediction polygons/background"),
-                  tags$br(),
-                  helpText("Text describing plot order"),
-                  fluidRow(
-                    column(4, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
-                    column(4, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0)),
-                    column(4, actionButton("pretty_plot_plot_event", "Plot map"))
+                  #-----------------------------------------------
+                  conditionalPanel(
+                    condition = "input.pretty_plot_mapcontrol == 2",
+                    tags$strong("stuff 2")
                   ),
-                  textOutput("pretty_plot_plot_text")
-                )
-              ),
-              ################################################ Download map
-              tags$strong("3) Download map"),
-              fluidRow(
-                box(
-                  width = 12,
-                  tags$h5("The map displayed above will be the map that is downloaded"),
-                  fluidRow(
-                    column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"),
-                                           choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-                                           selected = 1)),
-                    column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"),
-                                           choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
-                                           selected = 3)),
-                    column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
-                  ),
-                  tags$br(),
-                  downloadButton("pretty_plot_download_execute", "Download map")
+                  #-----------------------------------------------
+                  conditionalPanel(
+                    condition = "input.pretty_plot_mapcontrol == 3",
+                    fluidRow(
+                      column(
+                        width = 6,
+                        helpText("Select what you want to plot in the table"),
+                        DTOutput("pretty_plot_toplot_table_out")
+                      ),
+                      column(
+                        width = 6,
+                        fluidRow(
+                          column(
+                            width = 4,
+                            numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0),
+                            numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0)
+                          ),
+                          column(
+                            width = 6, offset = 2,
+                            tags$br(), tags$br(),
+                            actionButton("pretty_plot_plot_event", "Plot map"),
+                            textOutput("pretty_plot_plot_text")
+                          )
+                        )
+                      )
+                    )
+                  )
                 )
               )
             )
+            # ################################################ To-plot list
+            # column(
+            #   width = 8,
+            #   tags$strong("1) Manage to-plot list"),
+            #   fluidRow(
+            #     box(
+            #       width = 12,
+            #       fluidRow(
+            #         column(
+            #           width = 6,
+            #           uiOutput("pretty_plot_toplot_add_execute_uiOut_button"),
+            #           textOutput("pretty_plot_toplot_add_text")
+            #         ),
+            #         column(
+            #           width = 6,
+            #           uiOutput("pretty_plot_toplot_remove_execute_uiOut_button"),
+            #           textOutput("pretty_plot_toplot_remove_text")
+            #         )
+            #       ),
+            #       DTOutput("pretty_plot_toplot_table_out")
+            #     )
+            #   )
+            # )
+            #
+            # ################################################ Plot map
+            # column(
+            #   width = 4,
+            #   tags$strong("2) Plot map in-app"),
+            #   fluidRow(
+            #     box(
+            #       width = 12,
+            #       tags$h5("Note that the GUI will make the map fill the entire space above, and thus depending on the shape",
+            #               "of the map there may be extra white space around the colored prediction polygons/background"),
+            #       tags$br(),
+            #       helpText("Text describing plot order"),
+            #       fluidRow(
+            #         column(4, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
+            #         column(4, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0)),
+            #         column(4, actionButton("pretty_plot_plot_event", "Plot map"))
+            #       ),
+            #       textOutput("pretty_plot_plot_text")
+            #     )
+            #   ),
+            #   ################################################ Download map
+            #   tags$strong("3) Download map"),
+            #   fluidRow(
+            #     box(
+            #       width = 12,
+            #       tags$h5("The map displayed above will be the map that is downloaded"),
+            #       fluidRow(
+            #         column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"),
+            #                                choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
+            #                                selected = 1)),
+            #         column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"),
+            #                                choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
+            #                                selected = 3)),
+            #         column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
+            #       ),
+            #       tags$br(),
+            #       downloadButton("pretty_plot_download_execute", "Download map")
+            #     )
+            #   )
+            # )
           )
         )
       ),

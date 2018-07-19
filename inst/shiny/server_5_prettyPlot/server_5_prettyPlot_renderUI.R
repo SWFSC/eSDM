@@ -4,13 +4,7 @@
 ###############################################################################
 # Map control widgets
 output$pretty_plot_toplot_add_execute_uiOut_button <- renderUI({
-  req(length(unlist(pretty_plot_models_idx_list())) == 1)
-  # validate(
-  #   need(length(unlist(pretty_plot_models_idx_list())) == 1,
-  #        paste("Please select exactly one set of model predictions",
-  #              "to specify parameters")),
-  #   errorClass = "validation2"
-  # )
+  req(pretty_plot_models_idx_count() == 1)
 
   actionButton("pretty_plot_toplot_add_execute",
                "Add specified info to to-plot list")
@@ -20,6 +14,25 @@ output$pretty_plot_toplot_remove_execute_uiOut_button <- renderUI({
 
   actionButton("pretty_plot_toplot_remove_execute",
                "Remove selected item(s) from to-plot list")
+})
+
+output$pretty_plot_toplot_add_id_uiOut_text <- renderUI({
+  val.default <- "Map ID"
+  if (pretty_plot_models_idx_count() == 1) {
+    list.selected <- pretty_plot_models_toplot()
+
+    table.idx <- list.selected[[1]]
+    model.idx <- list.selected[[2]]
+
+    val.default <- switch(
+      table.idx, paste("Original", model.idx),
+      paste("Overlaid", model.idx), paste("Ensemble", model.idx)
+    )
+    val.default <- paste(val.default, "ID")
+  }
+
+  textInput("pretty_plot_toplot_add_id", tags$h5("ID of map within to-plot list"),
+            value = val.default)
 })
 
 

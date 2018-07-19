@@ -32,36 +32,42 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
 
     title.cex <- input$pretty_plot_title_cex
     lab.cex  <- input$pretty_plot_lab_cex
-    axis.cex <- input$pretty_plot_tick_label_size
-    axis.tcl <- input$pretty_plot_tick_length * -0.5
+    # axis.cex <- input$pretty_plot_tick_label_size
+    # axis.tcl <- input$pretty_plot_tick_length * -0.5
 
-    list.background <- list(pretty_plot_range_poly()[[2]],
-                            input$pretty_plot_background_color)
-    list.colorscheme <- pretty_plot_colorscheme_list()
-    incProgress(0.2)
-    list.addobj <- lapply(vals$pretty.addobj.list, function(i) {
-      c(obj.sfc = list(st_geometry(st_transform(i$obj, st_crs(model.toplot)))),
-        i[2:5])
-    })
-    incProgress(0.3)
+    # list.background <- list(pretty_plot_range_poly()[[2]],
+    #                         input$pretty_plot_background_color)
+    # list.colorscheme <- pretty_plot_colorscheme_list()
+    # incProgress(0.2)
+    # list.addobj <- lapply(vals$pretty.addobj.list, function(i) {
+    #   c(obj.sfc = list(st_geometry(st_transform(i$obj, st_crs(model.toplot)))),
+    #     i[2:5])
+    # })
+    # incProgress(0.3)
   })
 
   # Save plot parameters to reactive values
+  # params.list <- list(
+  #   model.toplot = model.toplot, data.name = data.name, plot.lim = plot.lim,
+  #   axes.inc = axes.inc, title.ll = title.ll, lab.x = lab.x, lab.y = lab.y,
+  #   title.cex = title.cex, lab.cex = lab.cex, axis.cex = axis.cex,
+  #   axis.tcl = axis.tcl, list.background = list.background,
+  #   list.colorscheme = list.colorscheme, #list.scales = list.scales,
+  #   list.addobj = list.addobj
+  # )
+
   params.list <- list(
     model.toplot = model.toplot, data.name = data.name, plot.lim = plot.lim,
     axes.inc = axes.inc, title.ll = title.ll, lab.x = lab.x, lab.y = lab.y,
-    title.cex = title.cex, lab.cex = lab.cex, axis.cex = axis.cex,
-    axis.tcl = axis.tcl, list.background = list.background,
-    list.colorscheme = list.colorscheme, #list.scales = list.scales,
-    list.addobj = list.addobj
+    title.cex = title.cex, lab.cex = lab.cex,
+    id = input$pretty_plot_toplot_add_id
   )
-
   vals$pretty.params.list <- c(vals$pretty.params.list, list(params.list))
   vals$pretty.toplot.idx <- c(
     vals$pretty.toplot.idx, list(pretty_plot_models_idx_list())
   )
 
-  ""
+  paste0("'", input$pretty_plot_toplot_add_id, "' added to to-plot list")
 })
 
 
@@ -79,7 +85,7 @@ pretty_plot_toplot_table <- reactive({
         row.names(table_ensembles())[i[[3]]]
       )
     }),
-    Title = sapply(vals$pretty.params.list, function(j) j$title.ll),
+    ID = sapply(vals$pretty.params.list, function(i) i$id),
     stringsAsFactors = FALSE
   )
 })

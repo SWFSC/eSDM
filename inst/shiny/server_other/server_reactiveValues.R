@@ -63,7 +63,7 @@ vals <- reactiveValues(
   # Objects that store data for high quality (pretty) plots
   pretty.addobj.list = NULL,       # List of objects and descriptor strings to be plotted
   pretty.params.list = NULL,       # List of lists parameters to use in high quality plots
-  pretty.toplot.idx  = NULL,       # List of (table, idx) pairs of predictions in to-plot list
+  pretty.toplot.idx  = NULL,       # List of (table, idx, id) pairs of predictions in to-plot list
   pretty.plot.list   = NULL        # List of plot dimensions, pretty.toplot.idx, and pretty.params.list
 )
 

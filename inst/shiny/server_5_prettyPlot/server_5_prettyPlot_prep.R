@@ -24,11 +24,6 @@ pretty_plot_models_toplot_list <- reactive({
 
   req(models.idx.count == 1)
 
-  validate(
-    need(models.idx.count == 1,
-         "Error: Pretty plots not ready for multiplots")
-  )
-
   table.idx <- which(!tables.null)
   model.idx.list <- pretty_plot_models_idx_list()
 
@@ -182,87 +177,6 @@ pretty_plot_colorscheme_list <- reactive({
   list(data.breaks = data.breaks, color.palette = color.palette,
        leg.inc = leg.include, labels = labels.lab.pretty)
 })
-
-
-###############################################################################
-### Generate 'scales' list for spplot, aka list of tick/tick label details
-### Argument in spplot:
-# scales = list(draw = tick, alternating = 1, tck = c(1,0),
-#               x = list(at = c(), labels = c()),
-#               y = list(at = c(), labels = c()))
-# labels degree symbol: labels = parse(text = paste0(c(), "*degree*W"))
-
-# pretty_plot_scales_list <- reactive({
-#   ### If ticks are not plotted, we're done
-#   ### Else, process inputs and store results in 'scales' list
-#   if (!input$pretty_plot_tick) {
-#     list.scales <- list(draw = FALSE)
-#
-#   } else {
-#     scales.tck <- c(input$pretty_plot_tick_length, 0) # tick length
-#     list.scales <- list(draw = TRUE, tck = scales.tck)
-#
-#     ## If applicable: get manually entered tick locations
-#     ## Else: use defaults by not providing any x.at or y.at arguments
-#     if (input$pretty_plot_tick_manual == 2) {
-#       # Read in tick locations
-#       x.at <- unlist(strsplit(input$pretty_plot_tick_manual_lon, ", "))
-#       y.at <- unlist(strsplit(input$pretty_plot_tick_manual_lat, ", "))
-#       validate(
-#         need(isTruthy(x.at),
-#              paste("Error: Please either enter 'Longitude tick locations'" ,
-#                    "values or select \"Use default tick locations\"")),
-#         need(isTruthy(y.at),
-#              paste("Error: Please either enter 'Latitude tick locations'" ,
-#                    "values or select \"Use default tick locations\""))
-#       )
-#
-#       # Convert tick locations to numbers
-#       x.at <- suppressWarnings(as.numeric(x.at))
-#       y.at <- suppressWarnings(as.numeric(y.at))
-#       validate(
-#         need(!anyNA(x.at),
-#              paste("Error: Please ensure that the 'Longitude tick",
-#                    "locations' entry is valid")),
-#         need(!anyNA(y.at),
-#              paste("Error: Please ensure that the 'Latitude tick",
-#                    "locations' entry is valid"))
-#       )
-#
-#       # Sort tick locations and check that tick locations ∈ [map limits]
-#       x.at <- sort(x.at)
-#       y.at <- sort(y.at)
-#       plot.lim <- pretty_plot_range_poly()[[1]]
-#
-#       x.intervals <- findInterval(x.at, plot.lim[1:2], rightmost.closed = TRUE)
-#       y.intervals <- findInterval(y.at, plot.lim[3:4], rightmost.closed = TRUE)
-#
-#       validate(
-#         need(all(x.intervals == 1),
-#              paste("Error: Not all 'Longitude tick location' entries",
-#                    "are within the provided map range")),
-#         need(all(y.intervals == 1),
-#              paste("Error: Not all 'Latitude tick location' entries",
-#                    "are within the provided map range"))
-#       )
-#
-#       list.scales <- c(list.scales, list(x = list(at = x.at),
-#                                          y = list(at = y.at)))
-#     }
-#
-#     ## Store tick label details or lack thereof (no labels)
-#     if (input$pretty_plot_tick_label) {
-#       tick.lab.size <- c(input$pretty_plot_tick_label_size, 0)
-#       list.scales <- c(list.scales, list(alternating = 1, cex = tick.lab.size))
-#
-#     } else {
-#       list.scales <- c(list.scales, list(alternating = 0))
-#
-#     }
-#   }
-#
-#   list.scales
-# })
 
 
 ###############################################################################
