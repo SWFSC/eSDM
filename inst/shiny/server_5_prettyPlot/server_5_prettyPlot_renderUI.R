@@ -113,6 +113,98 @@ output$pretty_plot_title_uiOut_text <- renderUI({
 
 
 ###############################################################################
+# Coordinate grid lines and labels
+
+### Longitude start
+output$pretty_plot_tick_lon_start_uiOut_numeric <- renderUI({
+  req(input$pretty_plot_range_xmin, input$pretty_plot_range_xmax)
+
+  if (input$pretty_plot_range_xmin >= input$pretty_plot_range_xmax) {
+    val.def <- 1
+
+  } else {
+    num.range <- c(input$pretty_plot_range_xmin, input$pretty_plot_range_xmax)
+    val.def <- base::pretty(num.range, n = 5)
+    val.def <- val.def[dplyr::between(val.def, num.range[1], num.range[2])][1]
+  }
+
+  numericInput("pretty_plot_tick_lon_start", tags$h5("Longitude grid line start"),
+               value = val.def, min = 0, step = 5)
+})
+
+
+### Longitude interval
+output$pretty_plot_tick_lon_interval_uiOut_numeric <- renderUI({
+  req(input$pretty_plot_range_xmin, input$pretty_plot_range_xmax)
+
+  if (input$pretty_plot_range_xmin >= input$pretty_plot_range_xmax) {
+    val.def <- 1
+
+  } else {
+    range.diff <- input$pretty_plot_range_xmax - input$pretty_plot_range_xmin
+    if (range.diff >= 50) {
+      val.def <- 10
+    } else if (range.diff >= 10) {
+      val.def <- 5
+    } else if (range.diff >= 5) {
+      val.def <- 1
+    } else {
+      val.def <- round(range.diff / 5, 1)
+    }
+  }
+
+  numericInput("pretty_plot_tick_lon_interval", tags$h5("Longitude grid line interval"),
+               value = val.def, min = 0, step = val.def)
+})
+
+
+### Latitude start
+output$pretty_plot_tick_lat_start_uiOut_numeric <- renderUI({
+  req(input$pretty_plot_range_ymin, input$pretty_plot_range_ymax)
+
+  if (input$pretty_plot_range_ymin >= input$pretty_plot_range_ymax) {
+    val.def <- 1
+
+  } else {
+    num.range <- c(input$pretty_plot_range_ymin, input$pretty_plot_range_ymax)
+    val.def <- base::pretty(num.range, n = 5)
+    val.def <- val.def[dplyr::between(val.def, num.range[1], num.range[2])][1]
+  }
+
+  numericInput("pretty_plot_tick_lat_start", tags$h5("Latitude grid line start"),
+               value = val.def, min = 0, step = 0.1)
+})
+
+
+### Latitude interval
+# pretty_plot_tick_lat_interval_uiOut_numeric
+output$pretty_plot_tick_lat_interval_uiOut_numeric <- renderUI({
+  req(input$pretty_plot_range_ymin, input$pretty_plot_range_ymax)
+
+  if (input$pretty_plot_range_ymin >= input$pretty_plot_range_ymax) {
+    val.def <- 1
+
+  } else {
+    range.diff <- input$pretty_plot_range_ymax - input$pretty_plot_range_ymin
+    if (range.diff >= 50) {
+      val.def <- 10
+    } else if (range.diff >= 10) {
+      val.def <- 5
+    } else if (range.diff >= 5) {
+      val.def <- 1
+    } else {
+      val.def <- round(range.diff / 5, 1)
+    }
+  }
+
+  numericInput("pretty_plot_tick_lat_interval", tags$h5("Latitude grid line interval"),
+               value = val.def, min = 0, step = val.def)
+})
+
+
+
+
+###############################################################################
 # Color scheme inputs
 
 ### Color palette

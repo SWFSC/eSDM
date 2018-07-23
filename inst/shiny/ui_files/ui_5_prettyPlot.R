@@ -9,20 +9,9 @@ ui.prettyPlot <- function() {
       fluidRow(
         box(
           title = "", solidHeader = TRUE, status = "primary", height = 570, width = 12, align = "center", collapsed = TRUE,
-          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 400), type = 1)
+          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out"), type = 1)
         )
       ),
-      # fluidRow(
-      #   box(
-      #     title = "Select Predictions to Map", solidHeader = FALSE, status = "warning", width = 6, collapsible = TRUE,
-      #     ui.instructions.multipletables.select(text.in = "map:"),
-      #     DTOutput("pretty_table_orig_out"),
-      #     tags$br(),
-      #     DTOutput("pretty_table_over_out"),
-      #     tags$br(),
-      #     DTOutput("pretty_table_ens_out")
-      #   )
-      # ),
 
       ################################################################# Map Control
       fluidRow(
@@ -78,22 +67,24 @@ ui.prettyPlot <- function() {
                     fluidRow(
                       column(
                         width = 6,
-                        helpText("Select what you want to plot in the table"),
+                        helpText("Select what you want to plot. Maps will be plotted in order you select them,",
+                                 "left to right, top to bottom"),
                         DTOutput("pretty_plot_toplot_table_out")
                       ),
                       column(
                         width = 6,
                         fluidRow(
+                          column(4, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
+                          column(4, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0))
+                        ),
+                        fluidRow(
                           column(
-                            width = 4,
-                            numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0),
-                            numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0)
-                          ),
-                          column(
-                            width = 6, offset = 2,
-                            tags$br(), tags$br(),
+                            width = 12,
                             actionButton("pretty_plot_plot_event", "Plot map"),
-                            textOutput("pretty_plot_plot_text")
+                            textOutput("pretty_plot_plot_text"),
+                            helpText("Note that when plotting multiple maps at the same time,",
+                                     "the GUI will make the map fill the entire space above, and thus depending on the shape",
+                                     "of the map there may be extra white space around the colored prediction polygons/background")
                           )
                         )
                       )
@@ -102,49 +93,6 @@ ui.prettyPlot <- function() {
                 )
               )
             )
-            # ################################################ To-plot list
-            # column(
-            #   width = 8,
-            #   tags$strong("1) Manage to-plot list"),
-            #   fluidRow(
-            #     box(
-            #       width = 12,
-            #       fluidRow(
-            #         column(
-            #           width = 6,
-            #           uiOutput("pretty_plot_toplot_add_execute_uiOut_button"),
-            #           textOutput("pretty_plot_toplot_add_text")
-            #         ),
-            #         column(
-            #           width = 6,
-            #           uiOutput("pretty_plot_toplot_remove_execute_uiOut_button"),
-            #           textOutput("pretty_plot_toplot_remove_text")
-            #         )
-            #       ),
-            #       DTOutput("pretty_plot_toplot_table_out")
-            #     )
-            #   )
-            # )
-            #
-            # ################################################ Plot map
-            # column(
-            #   width = 4,
-            #   tags$strong("2) Plot map in-app"),
-            #   fluidRow(
-            #     box(
-            #       width = 12,
-            #       tags$h5("Note that the GUI will make the map fill the entire space above, and thus depending on the shape",
-            #               "of the map there may be extra white space around the colored prediction polygons/background"),
-            #       tags$br(),
-            #       helpText("Text describing plot order"),
-            #       fluidRow(
-            #         column(4, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
-            #         column(4, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0)),
-            #         column(4, actionButton("pretty_plot_plot_event", "Plot map"))
-            #       ),
-            #       textOutput("pretty_plot_plot_text")
-            #     )
-            #   ),
             #   ################################################ Download map
             #   tags$strong("3) Download map"),
             #   fluidRow(
@@ -170,7 +118,7 @@ ui.prettyPlot <- function() {
       ),
 
       conditionalPanel(
-        condition = "output.pretty_pred_selected_flag",
+        condition = "output.pretty_params_display_flag",
         ################################################################# Map Parameters - Section 1
         fluidRow(
           box(
@@ -189,9 +137,9 @@ ui.prettyPlot <- function() {
                       condition = "input.pretty_plot_proj_ll == false",
                       uiOutput("pretty_plot_proj_idx_uiOut_select")
                     ),
-                    helpText("Map range values must have the same units as the specified coordinate system.",
-                             "If the specified coordinate system is WGS 84 geographic coordinates, then the values must be",
-                             "decimal degrees with a range of [-180, 180] for longitudes and [-90, 90] for latitudes"),
+                    helpText("Map range values have the same units as the specified coordinate system, e.g.",
+                             "if the specified coordinate system is WGS 84 geographic coordinates then the values are",
+                             "decimal degrees and must have a longitude range of [-180, 180] and a latitude range of [-90, 90]"),
                     fluidRow(
                       column(6, uiOutput("pretty_plot_range_xmin_uiOut_num")),
                       column(6, uiOutput("pretty_plot_range_xmax_uiOut_num"))
@@ -229,90 +177,45 @@ ui.prettyPlot <- function() {
               ################################################## Tick marks and tick labels
               column(
                 width = 4,
-                tags$strong("Tick marks and labels"),
+                tags$strong("Coordinate grid lines and labels"),
                 fluidRow(
                   box(
                     width = 12,
-                    checkboxInput("pretty_plot_tick", "Include tick marks and labels on the map", value = TRUE),
+                    checkboxInput("pretty_plot_tick", "Include coordinate grid lines", value = TRUE),
                     conditionalPanel(
                       condition = "input.pretty_plot_tick",
-                      helpText("Tick marks will be generated at default locations.", tags$br(),
-                               "Length and size values are relative to 1 (the default size)"),
+                      helpText("Size and width values are relative to 1 (the default size)"),
                       fluidRow(
-                        column(6, numericInput("pretty_plot_tick_length", tags$h5("Tick mark length"),
-                                               value = 1.0, min = 0, step = 0.1)),
-                        column(6, numericInput("pretty_plot_tick_label_size", tags$h5("Tick label size"),
-                                               value = 1.0, min = 0.1, max = 3, step = 0.1)
+                        column(
+                          width = 6,
+                          uiOutput("pretty_plot_tick_lon_start_uiOut_numeric"),
+                          uiOutput("pretty_plot_tick_lat_start_uiOut_numeric"),
+                          numericInput("pretty_plot_tick_lw", tags$h5("Grid line width"), value = 1.0, min = 0.1, step = 0.1),
+                          numericInput("pretty_plot_tick_alpha", tags$h5("Grid line transparency (alpha value)"),
+                                       value = 1.0, min = 0, max = 1, step = 0.1)
+                        ),
+                        column(
+                          width = 6,
+                          uiOutput("pretty_plot_tick_lon_interval_uiOut_numeric"),
+                          uiOutput("pretty_plot_tick_lat_interval_uiOut_numeric"),
+                          colourpicker::colourInput("pretty_plot_tick_color", tags$h5("Click to select color for coordiante grid lines"),
+                                                    value = "#D6D6D6", showColour = "background")
+                        )
+                      ),
+                      checkboxInput("pretty_plot_tick_label_inc", tags$h5("Include coordinate labels"), value = TRUE),
+                      conditionalPanel(
+                        condition = "input.pretty_plot_tick_label_inc",
+                        fluidRow(
+                          column(6, radioButtons("pretty_plot_tick_label_inout", tags$h5("Coordinate label location"),
+                                                 choices = list("Inside frame" = 1, "Outside frame" = 2), selected = 1)),
+                          column(6, numericInput("pretty_plot_tick_label_size", tags$h5("Coordinate label size"),
+                                                 value = 1.0, min = 0.1, step = 0.1))
                         )
                       )
                     )
                   )
                 )
               )
-              # column(
-              #   width = 4,
-              #   tags$strong("Tick marks and tick labels"),
-              #   fluidRow(
-              #     box(
-              #       width = 12,
-              #       fluidRow(
-              #         column(6, checkboxInput("pretty_plot_tick", "Include tick marks in the map", value = TRUE)),
-              #         column(
-              #           width = 6,
-              #           tags$br(),
-              #           conditionalPanel("input.pretty_plot_tick", helpText("Length and size values are relative to 1"))
-              #         )
-              #       ),
-              #       conditionalPanel(
-              #         condition = "input.pretty_plot_tick",
-              #         fluidRow(
-              #           column(6, radioButtons("pretty_plot_tick_manual", tags$h5("Tick location options"),
-              #                                  choices = list("Use default tick locations" = 1, "Enter tick locations manually" = 2),
-              #                                  selected = 1)),
-              #           column(6, numericInput("pretty_plot_tick_length", tags$h5("Tick length"),
-              #                                  value = 1.0, min = 0, step = 0.1))
-              #         )
-              #       ),
-              #       fluidRow(
-              #         conditionalPanel(
-              #           condition = "input.pretty_plot_tick && input.pretty_plot_tick_manual == 2",
-              #           column(12, helpText("Enter locations as '#, #, ..., #'.",
-              #                               "Tick location values must have the same units as the specified coordinate system.",
-              #                               "If the specified coordinate system is WGS 84 geographic coordinates,",
-              #                               "then the values must be",
-              #                               "decimal degrees with a range of [-180, 180] for longitudes and [-90, 90] for latitudes")),
-              #           column(6, textInput("pretty_plot_tick_manual_lon", tags$h5("Longitude tick locations"), value = "")),
-              #           column(6, textInput("pretty_plot_tick_manual_lat", tags$h5("Latitude tick locations"), value = ""))
-              #         )
-              #       ),
-              #       fluidRow(
-              #         conditionalPanel(
-              #           condition = "input.pretty_plot_tick == false",
-              #           column(12, helpText("The map must include tick marks to include tick labels"))
-              #         ),
-              #         conditionalPanel(
-              #           condition = "input.pretty_plot_tick",
-              #           column(
-              #             width = 6,
-              #             checkboxInput("pretty_plot_tick_label", "Include tick labels in the map", value = TRUE),
-              #             conditionalPanel(
-              #               condition = "input.pretty_plot_tick_label",
-              #               helpText("Tick labels will be generated at all tick marks")
-              #             )
-              #           ),
-              #           column(
-              #             width = 6,
-              #             conditionalPanel(
-              #               condition = "input.pretty_plot_tick_label",
-              #               numericInput("pretty_plot_tick_label_size", tags$h5("Tick label size"),
-              #                            value = 1.0, min = 0.1, max = 3, step = 0.1)
-              #             )
-              #           )
-              #         )
-              #       )
-              #     )
-              #   )
-              # )
             )
           )
         ),

@@ -26,6 +26,7 @@ Imports:
     shinyjs,
     sf,
     stats,
+    tmap,
     units,
     viridis
 License: GPL-3

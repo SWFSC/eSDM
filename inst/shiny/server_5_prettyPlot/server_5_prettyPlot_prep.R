@@ -79,6 +79,37 @@ pretty_plot_range_poly <- reactive({
 
 
 ###############################################################################
+### Generate list of coordinate grid line and label info
+pretty_plot_tick_list <- reactive({
+  lon.grid.vals <- seq(
+    from = input$pretty_plot_tick_lon_start,
+    to = input$pretty_plot_range_xmax,
+    by = input$pretty_plot_tick_lon_interval
+  )
+
+  lat.grid.vals <- seq(
+    from = input$pretty_plot_tick_lat_start,
+    to = input$pretty_plot_range_ymax,
+    by = input$pretty_plot_tick_lat_interval
+  )
+
+  grid.labs.size <- ifelse(
+    input$pretty_plot_tick_label_inc, input$pretty_plot_tick_label_size, 0
+  )
+
+  list(
+    inc = input$pretty_plot_tick,
+    x.vals = lon.grid.vals, y.vals = lat.grid.vals,
+    grid.lw = input$pretty_plot_tick_lw,
+    grid.alpha = input$pretty_plot_tick_alpha,
+    grid.col = input$pretty_plot_tick_color,
+    grid.labs.size = grid.labs.size,
+    grid.labs.in = input$pretty_plot_tick_label_inout == 1
+  )
+})
+
+
+###############################################################################
 # Background color
 pretty_plot_background <- reactive({
   input$pretty_plot_background_color

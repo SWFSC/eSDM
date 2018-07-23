@@ -427,7 +427,7 @@ output$pretty_plot_toplot_table_out <- renderDT({
 output$pretty_plot_plot_out <- renderPlot({
   req(p.list <- vals$pretty.plot.list)
   plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
-}, height = 500)
+})
 
 
 ###############################################################################

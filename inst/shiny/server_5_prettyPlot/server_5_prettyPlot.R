@@ -93,10 +93,16 @@ output$pretty_display_flag <- reactive({
 outputOptions(output, "pretty_display_flag", suspendWhenHidden = FALSE)
 
 ### Flag for number of model predictions are selected to pretty plot
-output$pretty_pred_selected_flag <- reactive({
-  length(unlist(pretty_plot_models_idx_list())) == 1
+output$pretty_params_display_flag <- reactive({
+  if (input$pretty_plot_mapcontrol == 1) {
+    length(unlist(pretty_plot_models_idx_list())) == 1
+  } else if (input$pretty_plot_mapcontrol == 2) {
+    FALSE #TODO
+  } else {
+    FALSE
+  }
 })
-outputOptions(output, "pretty_pred_selected_flag", suspendWhenHidden = FALSE)
+outputOptions(output, "pretty_params_display_flag", suspendWhenHidden = FALSE)
 
 
 

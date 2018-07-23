@@ -24,16 +24,14 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
       list.selected[[1]], "Pred", "Pred.overlaid", "Pred.ens"
     )
     plot.lim <- pretty_plot_range_poly()[[1]]
-    axes.inc <- input$pretty_plot_tick
 
-    title.ll  <- input$pretty_plot_title
-    lab.x <- input$pretty_plot_xlab
-    lab.y <- input$pretty_plot_ylab
+    list.titlelab <- list(
+      title = input$pretty_plot_title, xlab = input$pretty_plot_xlab,
+      ylab = input$pretty_plot_ylab, titlecex = input$pretty_plot_title_cex,
+      labcex = input$pretty_plot_lab_cex
+    )
 
-    title.cex <- input$pretty_plot_title_cex
-    lab.cex  <- input$pretty_plot_lab_cex
-    # axis.cex <- input$pretty_plot_tick_label_size
-    # axis.tcl <- input$pretty_plot_tick_length * -0.5
+    list.tick <- pretty_plot_tick_list()
 
     # list.background <- list(pretty_plot_range_poly()[[2]],
     #                         input$pretty_plot_background_color)
@@ -58,8 +56,8 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
 
   params.list <- list(
     model.toplot = model.toplot, data.name = data.name, plot.lim = plot.lim,
-    axes.inc = axes.inc, title.ll = title.ll, lab.x = lab.x, lab.y = lab.y,
-    title.cex = title.cex, lab.cex = lab.cex,
+    # title.ll = title.ll, lab.x = lab.x, lab.y = lab.y, title.cex = title.cex, lab.cex = lab.cex,
+    list.titlelab = list.titlelab, list.tick = list.tick,
     id = input$pretty_plot_toplot_add_id
   )
   vals$pretty.params.list <- c(vals$pretty.params.list, list(params.list))

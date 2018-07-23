@@ -70,6 +70,7 @@ server <- function(input, output, session) {
 
   observeEvent(input$close_app, {
     # js$closeWindow()
+    # rm(gfill, envir = )
     stopApp(returnValue = "eSDM GUI was closed")
   })
 
