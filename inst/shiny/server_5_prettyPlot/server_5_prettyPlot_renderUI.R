@@ -281,6 +281,27 @@ observeEvent(input$pretty_plot_color_palette, {
 
 
 ###############################################################################
+
+output$pretty_plot_legend_pos_uiOut_select <- renderUI({
+  if (input$pretty_plot_legend_inout == 1) {
+    choices.list <- list(
+      "Top left" = 1, "Top center" = 2, "Top right" = 3, "Center right" = 4,
+      "Bottom right" = 5, "Bottom center" = 6, "Bottom left" = 7,
+      "Center left" = 8
+    )
+
+  } else { #input$pretty_plot_legend_inout == 2
+    choices.list <- list(
+      "Right" = "right", "Bottom" = "bottom", "Left" = "left", "Top" = "top"
+    )
+  }
+
+  selectInput("pretty_plot_legend_pos", tags$h5("Legend position"),
+              choices = choices.list, selected = 1)
+})
+
+
+###############################################################################
 # Additional polygons
 # Located in 'server_5_prettyPlot_addpolys.R'
 

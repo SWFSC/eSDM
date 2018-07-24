@@ -109,8 +109,8 @@ outputOptions(output, "pretty_params_display_flag", suspendWhenHidden = FALSE)
 ###############################################################################
 ### Preview of selected color palette and number of colors
 pretty_plot_color_preview <- reactive({
-  color.num     <- pretty_plot_colorscheme_palette_num()[[1]]
-  color.palette <- pretty_plot_colorscheme_palette_num()[[2]]
+  color.palette <- pretty_plot_colorscheme_palette_num()[[1]]
+  color.num     <- pretty_plot_colorscheme_palette_num()[[2]]
   color.labels  <- color.num:1
   # if (!input$pretty_plot_color_na_transparent) {
   #   color.labels <- c("NA", color.labels)

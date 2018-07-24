@@ -110,13 +110,6 @@ pretty_plot_tick_list <- reactive({
 
 
 ###############################################################################
-# Background color
-pretty_plot_background <- reactive({
-  input$pretty_plot_background_color
-})
-
-
-###############################################################################
 # Color scheme of predictions
 
 ### Process inputs and return list with num of colors and color palette to use
@@ -136,8 +129,8 @@ pretty_plot_colorscheme_palette_num <- reactive({
 
   ### Set number of colors and color palette
   if (color.palette.idx == 1) {
-    color.num <- 10
     color.palette <- pal.esdm
+    color.num <- 10
 
   } else if (color.palette.idx == 2) {
     validate(
@@ -167,19 +160,18 @@ pretty_plot_colorscheme_palette_num <- reactive({
     validate(need(FALSE, "Error: selecting color palette and number failed"))
   }
 
-  list(color.num, color.palette)
+  list(color.palette, color.num)
 })
 
 
-# Generate 'colorscheme' list, aka list of vars that control color scheme
+# Generate list that specifies color scheme things
 pretty_plot_colorscheme_list <- reactive({
   ### Get reactive elements
   perc <- input$pretty_plot_color_perc == 1
-  color.num     <- pretty_plot_colorscheme_palette_num()[[1]]
-  color.palette <- pretty_plot_colorscheme_palette_num()[[2]]
+  color.palette <- pretty_plot_colorscheme_palette_num()[[1]]
+  color.num     <- pretty_plot_colorscheme_palette_num()[[2]]
 
   leg.include <- input$pretty_plot_legend
-  leg.pos <- as.numeric(input$pretty_plot_legend_pos)
 
   list.selected <- pretty_plot_models_toplot()
   x <- list.selected[[3]]
@@ -187,26 +179,63 @@ pretty_plot_colorscheme_list <- reactive({
   x.df <- st_set_geometry(x, NULL)[, data.name]
 
 
-  ### Calculate data and legend break points and legend labels
+  ### Determine data break points and legend labels
   if (perc) {
     # Percentages
-    leg.breaks.pretty <- seq(1, 0, length.out = 11)
     data.breaks <- breaks_calc(x.df)
     labels.lab.pretty <- leg.perc.esdm
-    # labels.at.pretty <- seq(0.95, 0.05, length.out = 10)
 
   } else {
     # Values
-    leg.breaks.pretty <- seq(1, 0, length.out = (color.num + 1))
-    data.breaks <- seq(min(x.df, na.rm = TRUE), max(x.df, na.rm = TRUE),
-                       length.out = (color.num))
-    labels.lab.pretty <- as.character(
-      round(data.breaks, input$pretty_plot_legend_round)
+    data.breaks <- seq(
+      min(x.df, na.rm = TRUE), max(x.df, na.rm = TRUE),
+      length.out = (color.num + 1)
+    )
+    data.breaks.labs <- round(data.breaks, input$pretty_plot_legend_round)
+    labels.lab.pretty <- paste(
+      head(data.breaks.labs, -1), tail(data.breaks.labs, -1),
+      sep = " - "
     )
   }
 
-  list(data.breaks = data.breaks, color.palette = color.palette,
-       leg.inc = leg.include, labels = labels.lab.pretty)
+  list(
+    data.name = data.name, data.breaks = data.breaks, col.pal = color.palette,
+    leg.labs = labels.lab.pretty
+  )
+})
+
+
+###############################################################################
+### Generate list of legend arguments
+pretty_plot_legend_list <- reactive({
+  if (input$pretty_plot_legend) {
+    if (input$pretty_plot_legend_inout == 1) {
+      leg.out <- FALSE
+      leg.pos <- NULL
+      leg.outside.pos <- switch(
+        as.numeric(input$pretty_plot_legend_pos),
+        c("left", "top"), c("center", "top"), c("right", "top"),
+        c("right", "center"),
+        c("right", "bottom"), c("center", "bottom"), c("left", "bottom"),
+        c("left", "center")
+      )
+
+    } else{ #input$pretty_plot_legend_inout == 2
+      leg.out <- TRUE
+      leg.pos <- input$pretty_plot_legend_pos
+      leg.outside.pos <- NULL
+    }
+
+    leg.text.size <- input$pretty_plot_legend_size
+
+    list(
+      inc = TRUE, out = leg.out, pos = leg.pos, out.pos = leg.outside.pos,
+      text.size = leg.text.size
+    )
+
+  } else {
+    list(inc = FALSE)
+  }
 })
 
 

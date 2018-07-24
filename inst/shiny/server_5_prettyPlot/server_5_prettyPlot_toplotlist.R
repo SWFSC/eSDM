@@ -20,44 +20,35 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     model.toplot <- suppressMessages(
       st_intersection(list.selected[[3]], pretty_plot_range_poly()[[2]])
     )
-    data.name <- switch(
-      list.selected[[1]], "Pred", "Pred.overlaid", "Pred.ens"
-    )
     plot.lim <- pretty_plot_range_poly()[[1]]
+    background.color <- input$pretty_plot_background_color
+    incProgress(0.1)
 
     list.titlelab <- list(
       title = input$pretty_plot_title, xlab = input$pretty_plot_xlab,
       ylab = input$pretty_plot_ylab, titlecex = input$pretty_plot_title_cex,
       labcex = input$pretty_plot_lab_cex
     )
-
+    list.colorscheme <- pretty_plot_colorscheme_list()
+    list.legend <- pretty_plot_legend_list()
     list.tick <- pretty_plot_tick_list()
+    incProgress(0.1)
 
-    # list.background <- list(pretty_plot_range_poly()[[2]],
-    #                         input$pretty_plot_background_color)
-    # list.colorscheme <- pretty_plot_colorscheme_list()
-    # incProgress(0.2)
+    list.addobj <- NULL
     # list.addobj <- lapply(vals$pretty.addobj.list, function(i) {
     #   c(obj.sfc = list(st_geometry(st_transform(i$obj, st_crs(model.toplot)))),
     #     i[2:5])
     # })
-    # incProgress(0.3)
+    incProgress(0.3)
   })
 
   # Save plot parameters to reactive values
-  # params.list <- list(
-  #   model.toplot = model.toplot, data.name = data.name, plot.lim = plot.lim,
-  #   axes.inc = axes.inc, title.ll = title.ll, lab.x = lab.x, lab.y = lab.y,
-  #   title.cex = title.cex, lab.cex = lab.cex, axis.cex = axis.cex,
-  #   axis.tcl = axis.tcl, list.background = list.background,
-  #   list.colorscheme = list.colorscheme, #list.scales = list.scales,
-  #   list.addobj = list.addobj
-  # )
-
   params.list <- list(
-    model.toplot = model.toplot, data.name = data.name, plot.lim = plot.lim,
-    # title.ll = title.ll, lab.x = lab.x, lab.y = lab.y, title.cex = title.cex, lab.cex = lab.cex,
+    model.toplot = model.toplot, plot.lim = plot.lim,
+    background.color = background.color,
     list.titlelab = list.titlelab, list.tick = list.tick,
+    list.colorscheme = list.colorscheme, list.legend = list.legend,
+    list.addobj = list.addobj,
     id = input$pretty_plot_toplot_add_id
   )
   vals$pretty.params.list <- c(vals$pretty.params.list, list(params.list))

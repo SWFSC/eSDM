@@ -124,10 +124,10 @@ ui.prettyPlot <- function() {
           box(
             title = "Map Parameters - Section 1", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
             fluidRow(
-              ################################################## Map projection and range
+              ################################################## Map coordinate system and range
               column(
                 width = 4,
-                tags$strong("Map projection and range"),
+                tags$strong("Map coordinate system and range"),
                 fluidRow(
                   box(
                     width = 12,
@@ -141,12 +141,16 @@ ui.prettyPlot <- function() {
                              "if the specified coordinate system is WGS 84 geographic coordinates then the values are",
                              "decimal degrees and must have a longitude range of [-180, 180] and a latitude range of [-90, 90]"),
                     fluidRow(
-                      column(6, uiOutput("pretty_plot_range_xmin_uiOut_num")),
-                      column(6, uiOutput("pretty_plot_range_xmax_uiOut_num"))
-                    ),
-                    fluidRow(
-                      column(6, uiOutput("pretty_plot_range_ymin_uiOut_num")),
-                      column(6, uiOutput("pretty_plot_range_ymax_uiOut_num"))
+                      column(
+                        width = 6,
+                        uiOutput("pretty_plot_range_xmin_uiOut_num"),
+                        uiOutput("pretty_plot_range_ymin_uiOut_num")
+                      ),
+                      column(
+                        width = 6,
+                        uiOutput("pretty_plot_range_xmax_uiOut_num"),
+                        uiOutput("pretty_plot_range_ymax_uiOut_num")
+                      )
                     )
                   )
                 )
@@ -170,6 +174,104 @@ ui.prettyPlot <- function() {
                                              value = 1.3, step = 0.1)),
                       column(6, numericInput("pretty_plot_lab_cex", tags$h5("Axis label size (value is relative to 1)"),
                                              value = 1, step = 0.1))
+                    )
+                  )
+                )
+              ),
+              ################################################## Color scheme of predictions
+              column(
+                width = 4,
+                tags$strong("Background color and prediction color scheme"),
+                fluidRow(
+                  box(
+                    width = 12,
+                    fluidRow(
+                      column(6, colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"),
+                                                          showColour = "background")),
+                      column(
+                        width = 6,
+                        tags$br(), tags$br(),
+                        actionButton("pretty_plot_background_reset_execute", "Reset background color to white")
+                      )
+                    ),
+                    tags$br(), tags$br(),
+                    fluidRow(
+                      column(
+                        width = 8,
+                        radioButtons("pretty_plot_color_perc", tags$h5("Prediction color scheme option"),
+                                     choices = list("Color-code predictions by relative percentage" = 1,
+                                                    "Color-code predictions by numerical value" = 2)),
+                        uiOutput("pretty_plot_color_palette_uiOut_select"),
+                        uiOutput("pretty_plot_color_num_uiOut_num")
+                      ),
+                      column(
+                        width = 4,
+                        tags$span(tags$h5("Color scheme preview"), style = "text-align: right"),
+                        plotOutput("pretty_plot_color_preview_plot", width = "85px", height =  "250px")
+                      )
+                    )#,
+                    # checkboxInput("pretty_plot_color_na_transparent", "Color NA predictions as transparent", value = TRUE),
+                    # conditionalPanel(
+                    #   condition = "input.pretty_plot_color_na_transparent == false",
+                    #   fluidRow(
+                    #     column(
+                    #       width = 6,
+                    #       colourpicker::colourInput("pretty_plot_color_na", tags$h5("Click to select color for NA predictions"),
+                    #                                 showColour = "background", value = "grey")),
+                    #     column(
+                    #       width = 6,
+                    #       tags$br(), tags$br(),
+                    #       actionButton("pretty_plot_color_na_reset_execute", "Reset NA color to white")
+                    #     )
+                    #   )
+                    # )
+                  )
+                )
+              )
+            )
+          )
+        ),
+
+        ################################################################# Map Parameters - Section 2
+        fluidRow(
+          box(
+            title = "Map Parameters - Section 2", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
+            fluidRow(
+              ################################################## Legend
+              column(
+                width = 4,
+                tags$strong("Legend"),
+                fluidRow(
+                  box(
+                    width = 12,
+                    fluidRow(
+                      column(6, checkboxInput("pretty_plot_legend", "Include legend with the map", value = TRUE)),
+                      column(
+                        width = 6,
+                        conditionalPanel(
+                          condition = "input.pretty_plot_legend && input.pretty_plot_color_perc == 2",
+                          numericInput("pretty_plot_legend_round", tags$h5("Legend labels: number of decimals"),
+                                       value = 3, min = 1, step = 1)
+                        )
+                      )
+                    ),
+                    conditionalPanel(
+                      condition = "input.pretty_plot_legend",
+                      fluidRow(
+                        column(
+                          width = 6,
+                          radioButtons("pretty_plot_legend_inout", tags$h5("Place legend:"),
+                                       choices = list("Inside map frame" = 1, "Outside map frame" = 2), selected = 1),
+                          numericInput("pretty_plot_legend_size", tags$h5("Legend size"),
+                                       value = 0.7, min = 0.1, step = 0.1)
+                        ),
+                        column(
+                          width = 6,
+                          uiOutput("pretty_plot_legend_pos_uiOut_select"),
+                          tags$br(), tags$br(),
+                          checkboxInput("pretty_plot_legend_frame", "Include frame around legend", value = TRUE)
+                        )
+                      )
                     )
                   )
                 )
@@ -215,98 +317,11 @@ ui.prettyPlot <- function() {
                     )
                   )
                 )
-              )
-            )
-          )
-        ),
-
-        ################################################################# Map Parameters - Section 2
-        fluidRow(
-          box(
-            title = "Map Parameters - Section 2", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
-            fluidRow(
-              ################################################## Color scheme of predictions
-              column(
-                width = 4,
-                tags$strong("Color scheme of predictions"),
-                fluidRow(
-                  box(
-                    width = 12,
-                    fluidRow(
-                      column(
-                        width = 8,
-                        radioButtons("pretty_plot_color_perc", tags$h5("Prediction color scheme option"),
-                                     choices = list("Color-code predictions by relative percentage" = 1,
-                                                    "Color-code predictions by numerical value" = 2)),
-                        uiOutput("pretty_plot_color_palette_uiOut_select"),
-                        uiOutput("pretty_plot_color_num_uiOut_num")
-                      ),
-                      column(
-                        width = 4,
-                        tags$span(tags$h5("Color scheme preview"), style = "text-align: right"),
-                        plotOutput("pretty_plot_color_preview_plot", width = "85px", height =  "250px")
-                      )
-                    )#,
-                    # checkboxInput("pretty_plot_color_na_transparent", "Color NA predictions as transparent", value = TRUE),
-                    # conditionalPanel(
-                    #   condition = "input.pretty_plot_color_na_transparent == false",
-                    #   fluidRow(
-                    #     column(
-                    #       width = 6,
-                    #       colourpicker::colourInput("pretty_plot_color_na", tags$h5("Click to select color for NA predictions"),
-                    #                                 showColour = "background", value = "grey")),
-                    #     column(
-                    #       width = 6,
-                    #       tags$br(), tags$br(),
-                    #       actionButton("pretty_plot_color_na_reset_execute", "Reset NA color to white")
-                    #     )
-                    #   )
-                    # )
-                  )
-                )
-              ),
-              ################################################## Legend
-              column(
-                width = 4,
-                tags$strong("Background color and legend"),
-                fluidRow(
-                  box(
-                    width = 12,
-                    fluidRow(
-                      column(6, colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"),
-                                                          showColour = "background")),
-                      column(
-                        width = 6,
-                        tags$br(), tags$br(),
-                        actionButton("pretty_plot_background_reset_execute", "Reset background color to white")
-                      )
-                    ),
-                    tags$br(),
-                    checkboxInput("pretty_plot_legend", "Include legend with the map", value = TRUE),
-                    conditionalPanel(
-                      condition = "input.pretty_plot_legend",
-                      fluidRow(
-                        column(6, selectInput("pretty_plot_legend_pos", tags$h5("Legend position"),
-                                              choices = list("Right" = 1),
-                                              #list("Right" = 1, "Bottom" = 2, "Left" = 3, "Top" = 4),
-                                              selected = 1)),
-                        column(
-                          width = 6,
-                          conditionalPanel(
-                            condition = "input.pretty_plot_color_perc == 2",
-                            numericInput("pretty_plot_legend_round", tags$h5("Legend labels: number of decimals"),
-                                         value = 10, min = 1, step = 1)
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
               ),
               ################################################## Additional polygons and points
               column(
                 width = 4,
-                tags$strong("Additional polygons and points"),
+                tags$strong("Additional polygons or points"),
                 fluidRow(
                   box(
                     width = 12,
