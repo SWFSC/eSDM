@@ -1,4 +1,4 @@
-### Ccode for 'High Quality Maps' tab for adding parameters to reactive values
+### Code for 'High Quality Maps' tab for adding parameters to reactive values
 
 
 ###############################################################################
@@ -14,11 +14,9 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
   )
 
   # Get/set plotting variables
-  withProgress(message = "Processing specified map parameters", value = 0.5, {
-    list.selected <- pretty_plot_models_toplot()
-
+  withProgress(message = "Processing map parameters", value = 0.5, {
     model.toplot <- suppressMessages(
-      st_intersection(list.selected[[3]], pretty_plot_range_poly()[[2]])
+      st_intersection(pretty_plot_model_toplot(), pretty_plot_range_poly()[[2]])
     )
     plot.lim <- pretty_plot_range_poly()[[1]]
     background.color <- input$pretty_plot_background_color
@@ -31,7 +29,7 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     incProgress(0.1)
 
     list.addobj <- NULL
-    # list.addobj <- lapply(vals$pretty.addobj.list, function(i) {
+    # list.addobj <- lapply(vals$pretty.addobj, function(i) {
     #   c(obj.sfc = list(st_geometry(st_transform(i$obj, st_crs(model.toplot)))),
     #     i[2:5])
     # })
@@ -47,7 +45,7 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     list.addobj = list.addobj,
     id = input$pretty_plot_toplot_add_id
   )
-  vals$pretty.params.list <- c(vals$pretty.params.list, list(params.list))
+  vals$pretty.params.toplot <- c(vals$pretty.params.toplot, list(params.list))
   vals$pretty.toplot.idx <- c(
     vals$pretty.toplot.idx, list(pretty_plot_models_idx_list())
   )
@@ -59,7 +57,11 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
 ###########################################################
 ### Table
 pretty_plot_toplot_table <- reactive({
-  req(vals$pretty.toplot.idx)
+  validate(
+    need(vals$pretty.toplot.idx,
+         "No maps have been added to the to-plot list"),
+    errorClass = "validation2"
+  )
 
   data.frame(
     Predictions = sapply(vals$pretty.toplot.idx, function(i) {
@@ -70,7 +72,7 @@ pretty_plot_toplot_table <- reactive({
         row.names(table_ensembles())[i[[3]]]
       )
     }),
-    ID = sapply(vals$pretty.params.list, function(i) i$id),
+    ID = sapply(vals$pretty.params.toplot, function(i) i$id),
     stringsAsFactors = FALSE
   )
 })
@@ -78,22 +80,22 @@ pretty_plot_toplot_table <- reactive({
 
 ###########################################################
 ### Remove stuff from list
-pretty_plot_toplot_remove <- eventReactive(input$pretty_plot_toplot_remove_execute, {
-  req(vals$pretty.params.list)
-
-  x <- input$pretty_plot_toplot_table_out_rows_selected
-  validate(
-    need(x, "Error: Select at least one row from the to-plot list to remove")
-  )
-
-  vals$pretty.params.list <- vals$pretty.params.list[-x]
-  vals$pretty.toplot.idx <- vals$pretty.toplot.idx[-x]
-
-  if (length(vals$pretty.params.list) == 0) vals$pretty.params.list <- NULL
-  if (length(vals$pretty.toplot.idx) == 0) vals$pretty.toplot.idx <- NULL
-
-  ""
-})
+# pretty_plot_toplot_remove <- eventReactive(input$pretty_plot_toplot_remove_execute, {
+#   req(vals$pretty.params.list)
+#
+#   x <- input$pretty_plot_toplot_table_out_rows_selected
+#   validate(
+#     need(x, "Error: Select at least one row from the to-plot list to remove")
+#   )
+#
+#   vals$pretty.params.list <- vals$pretty.params.list[-x]
+#   vals$pretty.toplot.idx <- vals$pretty.toplot.idx[-x]
+#
+#   if (length(vals$pretty.params.list) == 0) vals$pretty.params.list <- NULL
+#   if (length(vals$pretty.toplot.idx) == 0) vals$pretty.toplot.idx <- NULL
+#
+#   ""
+# })
 
 
 

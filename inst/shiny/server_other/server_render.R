@@ -393,7 +393,42 @@ output$pretty_table_ens_out <- renderDT({
 }, options = dt.list, selection = "single")
 
 #----------------------------------------------------------
-# Outputs
+# Map control outputs
+
+### Pretty plot manage to-plot
+# Add map output
+output$pretty_plot_toplot_add_text <- renderText({
+  pretty_plot_toplot_add()
+})
+# Remove map output
+# output$pretty_plot_toplot_remove_text <- renderText({
+#   pretty_plot_toplot_remove()
+# })
+
+### Pretty plot update
+# Table
+output$pretty_plot_update_table_out <- renderDT({
+  pretty_plot_toplot_table()
+}, options = dt.list, rownames = FALSE, selection = "single")
+
+# Message
+output$pretty_plot_update_display_text <- renderText({
+  pretty_plot_update_display()
+})
+
+### Pretty plot plot/download
+# Table
+output$pretty_plot_toplot_table_out <- renderDT({
+  pretty_plot_toplot_table()
+}, options = dt.list, rownames = FALSE)
+
+#Error output
+output$pretty_plot_plot_text <- renderText({
+  pretty_plot_plot()
+})
+
+#----------------------------------------------------------
+# Other outputs
 
 ### Color wheel for preview of color palette
 output$pretty_plot_color_preview_plot <- renderPlot({
@@ -405,27 +440,9 @@ output$pretty_plot_addobj_table_out <- renderTable({
   pretty_plot_addobj_table()
 })
 
-### Pretty plot add error output
-output$pretty_plot_toplot_add_text <- renderText({
-  pretty_plot_toplot_add()
-})
-output$pretty_plot_toplot_remove_text <- renderText({
-  pretty_plot_toplot_remove()
-})
-
-### Pretty plot plot error output
-output$pretty_plot_plot_text <- renderText({
-  pretty_plot_plot()
-})
-
-### Pretty plot table
-output$pretty_plot_toplot_table_out <- renderDT({
-  pretty_plot_toplot_table()
-}, options = dt.list, rownames = FALSE)
-
 ### Pretty plot
 output$pretty_plot_plot_out <- renderPlot({
-  req(p.list <- vals$pretty.plot.list)
+  req(p.list <- vals$pretty.plot)
 
   plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
 })

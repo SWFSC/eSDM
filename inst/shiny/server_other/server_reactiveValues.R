@@ -61,10 +61,11 @@ vals <- reactiveValues(
   eval.metrics.names = NULL,       # Names of metrics calculated
 
   # Objects that store data for high quality (pretty) plots
-  pretty.addobj.list = NULL,       # List of objects and descriptor strings to be plotted
-  pretty.params.list = NULL,       # List of lists parameters to use in high quality plots
-  pretty.toplot.idx  = NULL,       # List of (table, idx, id) pairs of predictions in to-plot list
-  pretty.plot.list   = NULL        # List of plot dimensions, pretty.toplot.idx, and pretty.params.list
+  pretty.addobj        = NULL,     # List of objects and descriptor strings to be plotted
+  pretty.params.update = NULL,     # List of lists of parameters for updating widgets
+  pretty.params.toplot = NULL,     # List of lists of parameters to use to create high quality plots
+  pretty.toplot.idx    = NULL,     # List of (table, idx, id) pairs of predictions in to-plot list
+  pretty.plot          = NULL      # List of plot dimensions, pretty.toplot.idx, and pretty.params.list
 )
 
 
@@ -134,10 +135,11 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$eval.metrics       <- vals.save[["eval.metrics"]]
     vals$eval.metrics.names <- vals.save[["eval.metrics.names"]]
 
-    vals$pretty.addobj.list <- vals.save[["pretty.addobj.list"]]
-    vals$pretty.params.list <- vals.save[["pretty.params.list"]]
-    vals$pretty.toplot.idx  <- vals.save[["pretty.toplot.idx"]]
-    vals$pretty.plot.list   <- vals.save[["pretty.plot.list"]]
+    vals$pretty.addobj        <- vals.save[["pretty.addobj"]]
+    vals$pretty.params.update <- vals.save[["pretty.params.update"]]
+    vals$pretty.params.toplot <- vals.save[["pretty.params.toplot"]]
+    vals$pretty.toplot.idx    <- vals.save[["pretty.toplot.idx"]]
+    vals$pretty.plot          <- vals.save[["pretty.plot"]]
 
     incProgress(0.1)
 
@@ -190,7 +192,7 @@ output$save_app_envir <- downloadHandler(
       vals$ensemble.plot.leaf.idx <- NULL
       vals$ensemble.plot <- NULL
       vals$ensemble.plot.idx <- NULL
-      vals$pretty.plot.list <- NULL
+      vals$pretty.plot <- NULL
 
       # Convert to list and save
       vals.save <- reactiveValuesToList(vals)
@@ -243,15 +245,18 @@ observe({
   vals$eval.data.gis.info
   vals$eval.metrics
   vals$eval.metrics.names
-  vals$pretty.addobj.list
-  vals$pretty.params.list
+  vals$pretty.addobj
+  vals$pretty.params.update
+  vals$pretty.params.toplot
   vals$pretty.toplot.idx
-  vals$pretty.plot.list
+  vals$pretty.plot
 
-  if (length(reactiveValuesToList(vals)) != 42) {
+  if (length(reactiveValuesToList(vals)) != 43) {
+    browser()
+
     shinyjs::alert(paste(
       "There was an error in the eSDM GUI data storage and processing;",
-      "please restart the GUI and report as an issue"
+      "please restart the GUI and report this as an issue."
     ))
   }
 })

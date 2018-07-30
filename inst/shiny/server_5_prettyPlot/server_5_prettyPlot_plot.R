@@ -7,7 +7,7 @@
 ###############################################################################
 # Set reactive values that will then be plotted in server_render
 pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
-  req(vals$pretty.params.list)
+  req(vals$pretty.params.toplot)
 
   plot.which <- input$pretty_plot_toplot_table_out_rows_selected
   plot.nrow <- input$pretty_plot_nrow
@@ -25,10 +25,10 @@ pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
                  "selected from the to-plot list to plot"))
   )
 
-  vals$pretty.plot.list <- list(
+  vals$pretty.plot <- list(
     dims = c(nrow = plot.nrow, ncol = plot.ncol),
     idx.list = vals$pretty.toplot.idx[plot.which],
-    params.list = vals$pretty.params.list[plot.which]
+    params.list = vals$pretty.params.toplot[plot.which]
   )
 
   ""
@@ -93,7 +93,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
     tmap.obj <- tmap.obj +
       tm_legend(show = TRUE, outside = l2$out, position = l2$pos,
                 outside.position = l2$out.pos, text.size = l2$text.size,
-                border = l2$border)
+                frame = l2$border)
   } else {
     tmap.obj <- tmap.obj + tm_legend(show = FALSE)
   }

@@ -19,10 +19,9 @@ output$pretty_plot_toplot_remove_execute_uiOut_button <- renderUI({
 output$pretty_plot_toplot_add_id_uiOut_text <- renderUI({
   val.default <- "Map ID"
   if (pretty_plot_models_idx_count() == 1) {
-    list.selected <- pretty_plot_models_toplot()
 
-    table.idx <- list.selected[[1]]
-    model.idx <- list.selected[[2]]
+    table.idx <- pretty_plot_table_row_idx()[1]
+    model.idx <- pretty_plot_table_row_idx()[2]
 
     val.default <- switch(
       table.idx, paste("Original", model.idx),
@@ -56,8 +55,7 @@ output$pretty_plot_proj_idx_uiOut_select <- renderUI({
 ### Get extent of selected predictions
 pretty_plot_range <- reactive({
   req(pretty_plot_models_idx_count() == 1)
-  model.preds <- pretty_plot_models_toplot()[[3]]
-  round(st_bbox(model.preds), 2)
+  round(st_bbox(pretty_plot_model_toplot()), 2)
 })
 
 ### Render longitude, latitude min and max
@@ -192,10 +190,9 @@ output$pretty_plot_legend_pos_uiOut_select <- renderUI({
 ### Title of plot
 output$pretty_plot_title_uiOut_text <- renderUI({
   req(pretty_plot_models_idx_count() == 1)
-  list.selected <- pretty_plot_models_toplot()
 
-  table.idx <- list.selected[[1]]
-  model.idx <- list.selected[[2]]
+  table.idx <- pretty_plot_table_row_idx()[1]
+  model.idx <- pretty_plot_table_row_idx()[2]
 
   val.default <- switch(
     table.idx, paste("Original", model.idx),
@@ -315,10 +312,12 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
   # req(pretty_plot_models_idx_count() == 0)
   # Uncomment ^ when multiplot is implemented
 
+  validate(need(FALSE, "Need to fix this"))
+
   req(pretty_plot_models_idx_count() == 1)
   # Get rid of ^ when multiplot is implemented
 
-  model.idx.null <- !pretty_plot_tables_null()
+  model.idx.null <- #!pretty_plot_tables_null()
   model.idx.list <- pretty_plot_models_idx_list()
 
   ## Objects that are the same for multi- and single-map

@@ -5,58 +5,83 @@
 ###############################################################################
 # Get set(s) of predictions to plot
 
-### Get desired projection (crs object) for map
-pretty_plot_models_crs <- reactive({
-  if (input$pretty_plot_proj_ll) {
-    crs.ll
-  } else {
-    st_crs(vals$models.orig[[req(as.numeric(input$pretty_plot_proj_idx))]])
-  }
-})
-
 ### Process selected rows from tables of predictions
 # Return list of [which tables have selected rows, a 3 element list of the...
 # ...rows selected in those tables, a 3 element list of selected spdfs]
 # '3 element lists' correspond to the 3 tables
-pretty_plot_models_toplot_list <- reactive({
-  tables.null <- pretty_plot_tables_null()
-  models.idx.count <- pretty_plot_models_idx_count()
+pretty_plot_model_selected <- reactive({
+  req(pretty_plot_models_idx_count() == 1)
 
-  req(models.idx.count == 1)
-
-  table.idx <- which(!tables.null)
   model.idx.list <- pretty_plot_models_idx_list()
+  if (!is.null(model.idx.list[[1]])) {
+    vals$models.orig[[model.idx.list[[1]]]]
 
-  models.list.orig <- vals$models.ll[model.idx.list[[1]]]
-  models.list.over <- vals$overlaid.models[model.idx.list[[2]]]
-  models.list.ens  <- vals$ensemble.models[model.idx.list[[3]]]
+  } else if (!is.null(model.idx.list[[2]])) {
+    vals$overlaid.models[[model.idx.list[[2]]]]
 
-  prettyplot.crs <- pretty_plot_models_crs()
-  models.all <- list(models.list.orig, models.list.over, models.list.ens)
-  models.all.proj <- lapply(models.all, function(j.list) {
-    lapply(j.list, function(j) {
-      if (identical(st_crs(j), prettyplot.crs)) {
-        j
-      } else {
-        st_transform(j, prettyplot.crs)
-      }
-    })
-  })
+  } else if (!is.null(model.idx.list[[3]])) {
+    vals$ensemble.models[[model.idx.list[[3]]]]
 
-  list(table.idx, model.idx.list, models.all.proj)
+  } else {
+    validate(need(FALSE, "Pretty plot error"))
+  }
 })
+
+
+### Get desired projection (crs object) for map
+pretty_plot_crs_selected <- reactive({
+  # if (input$pretty_plot_proj_ll) {
+  #   crs.ll
+  # } else {
+  #   st_crs(vals$models.orig[[req(as.numeric(input$pretty_plot_proj_idx))]])
+  # }
+  if (input$pretty_plot_proj_method == 1) {
+    req(pretty_plot_models_idx_count() == 1)
+    model.idx.list <- pretty_plot_models_idx_list()
+    if (!is.null(model.idx.list[[1]])) {
+      st_crs(vals$models.orig[[model.idx.list[[1]]]])
+
+    } else if (!is.null(model.idx.list[[2]])) {
+      st_crs(vals$overlaid.models[[model.idx.list[[2]]]])
+
+    } else if (!is.null(model.idx.list[[3]])) {
+      st_crs(vals$ensemble.models[[model.idx.list[[3]]]])
+
+    } else {
+      validate(need(FALSE, "Pretty plot error2"))
+    }
+
+  } else if (input$pretty_plot_proj_method == 2) {
+    crs.ll
+
+  } else if (input$pretty_plot_proj_method == 3) {
+    st_crs(vals$models.orig[[req(as.numeric(input$pretty_plot_proj_idx))]])
+
+  } else {
+    x <- st_crs(input$pretty_plot_proj_epsg)
+    validate(
+      need(x[[2]],
+           paste("Error: The provided EPSG code was not recognized;",
+                 "please provide a valid code"))
+    )
+
+    x
+  }
+})
+
 
 ### Return list of: (table idx, pred idx, currently selected model predictions)
 # Currently only one model can be plotted so function just gets only model
 # In the future, this function would be used to get model specified by user
-pretty_plot_models_toplot <- reactive({
-  toplot.list <- pretty_plot_models_toplot_list()
+pretty_plot_model_toplot <- reactive({
+  model.selected <- pretty_plot_model_selected()
+  crs.selected <- pretty_plot_crs_selected()
 
-  table.which <- toplot.list[[1]]
-  model.which <- toplot.list[[2]][[table.which]]
-  model.sf    <- toplot.list[[3]][[table.which]][[1]]
-
-  list(table.which, model.which, model.sf)
+  if (identical(st_crs(model.selected), crs.selected)) {
+    model.selected
+  } else {
+    st_transform(model.selected, crs.selected)
+  }
 })
 
 
@@ -64,14 +89,16 @@ pretty_plot_models_toplot <- reactive({
 ### Compile plot limits, and create a boundary box with which to clip model
 ### Return list of (plot limits, boundary box poly)
 pretty_plot_range_poly <- reactive({
-  plot.lim <- c(input$pretty_plot_range_xmin, input$pretty_plot_range_xmax,
-                input$pretty_plot_range_ymin, input$pretty_plot_range_ymax)
+  plot.lim <- c(
+    input$pretty_plot_range_xmin, input$pretty_plot_range_xmax,
+    input$pretty_plot_range_ymin, input$pretty_plot_range_ymax
+  )
 
   poly.x <- plot.lim[c(1, 1, 2, 2, 1)]
   poly.y <- plot.lim[c(3, 4, 4, 3, 3)]
 
   plot.lim.poly <- st_sfc(
-    st_polygon(list(cbind(poly.x, poly.y))), crs = pretty_plot_models_crs()
+    st_polygon(list(cbind(poly.x, poly.y))), crs = pretty_plot_crs_selected()
   )
 
   list(plot.lim, plot.lim.poly)
@@ -142,13 +169,10 @@ pretty_plot_colorscheme_list <- reactive({
   color.palette <- pretty_plot_colorscheme_palette_num()[[1]]
   color.num     <- pretty_plot_colorscheme_palette_num()[[2]]
 
-  leg.include <- input$pretty_plot_legend
-
-  list.selected <- pretty_plot_models_toplot()
-  x <- list.selected[[3]]
-  data.name <- switch(list.selected[[1]], "Pred", "Pred.overlaid", "Pred.ens")
+  x <- pretty_plot_model_toplot()
+  data.which <- pretty_plot_table_row_idx()[1]
+  data.name <- switch(data.which, "Pred", "Pred.overlaid", "Pred.ens")
   x.df <- st_set_geometry(x, NULL)[, data.name]
-
 
   ### Determine data break points and legend labels
   if (perc) {
@@ -169,6 +193,7 @@ pretty_plot_colorscheme_list <- reactive({
     )
   }
 
+  ### Return list
   list(
     data.name = data.name, data.breaks = data.breaks, col.pal = color.palette,
     leg.labs = labels.lab.pretty

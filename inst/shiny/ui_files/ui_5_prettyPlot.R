@@ -59,7 +59,19 @@ ui.prettyPlot <- function() {
                   #-----------------------------------------------
                   conditionalPanel(
                     condition = "input.pretty_plot_mapcontrol == 2",
-                    tags$strong("stuff 2")
+                    fluidRow(
+                      column(
+                        width = 6,
+                        helpText("Select what you want to update. Values will refelct current values.",
+                                 "Click 'update' button to update parameters"),
+                        DTOutput("pretty_plot_update_table_out")
+                      ),
+                      column(
+                        width = 6,
+                        textOutput("pretty_plot_update_display_text"),
+                        helpText("todo")
+                      )
+                    )
                   ),
                   #-----------------------------------------------
                   conditionalPanel(
@@ -131,12 +143,25 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    checkboxInput("pretty_plot_proj_ll", "Generate the map in WGS 84 geographic coordinates (decimal degrees)",
-                                  value = TRUE),
+                    radioButtons("pretty_plot_proj_method", NULL, #tags$h5("Overlay coordinate system"),
+                                 choices = list("Generate map in the native coordinate system of the selected SDM" = 1,
+                                                "Generate map in WGS 84 geographic coordinates" = 2,
+                                                "Select SDM with desired coordinate system" = 3,
+                                                "Enter numeric EPSG code" = 4),
+                                 selected = 1),
+                    conditionalPanel("input.pretty_plot_proj_method == 3", box(width = 12, uiOutput("pretty_plot_proj_idx_uiOut_select"))),
                     conditionalPanel(
-                      condition = "input.pretty_plot_proj_ll == false",
-                      uiOutput("pretty_plot_proj_idx_uiOut_select")
+                      condition = "input.pretty_plot_proj_method == 4",
+                      box(width = 12, numericInput("pretty_plot_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1))
                     ),
+
+                    # checkboxInput("pretty_plot_proj_ll", "Generate the map in WGS 84 geographic coordinates (decimal degrees)",
+                    #               value = TRUE),
+                    # conditionalPanel(
+                    #   condition = "input.pretty_plot_proj_ll == false",
+                    #
+                    #   uiOutput("pretty_plot_proj_idx_uiOut_select")
+                    # ),
                     helpText("Map range values have the same units as the specified coordinate system, e.g.",
                              "if the specified coordinate system is WGS 84 geographic coordinates then the values are",
                              "decimal degrees and must have a longitude range of [-180, 180] and a latitude range of [-90, 90]"),
@@ -164,15 +189,6 @@ ui.prettyPlot <- function() {
                     width = 12,
                     colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"),
                                               showColour = "background"),
-                    # fluidRow(
-                    #   column(6, colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"),
-                    #                                       showColour = "background")),
-                    #   column(
-                    #     width = 6,
-                    #     tags$br(), tags$br(),
-                    #     actionButton("pretty_plot_background_reset_execute", "Reset background color to white")
-                    #   )
-                    # ),
                     tags$br(), tags$br(),
                     fluidRow(
                       column(

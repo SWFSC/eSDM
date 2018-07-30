@@ -6,8 +6,6 @@
 \alias{preds.1}
 \alias{preds.2}
 \alias{preds.3}
-\alias{preds.2}
-\alias{preds.3}
 \title{Sample SDM density predictions}
 \format{Objects of class \code{sf} with a column of density predictions (name: \code{Density}) and
   a simple feature list column (name: \code{geometry}).

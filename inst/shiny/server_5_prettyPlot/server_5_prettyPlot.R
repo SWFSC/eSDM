@@ -51,31 +51,37 @@ observeEvent(input$pretty_table_ens_out_rows_selected, {
 
 ### Return list of selected rows (SDMS to plot)
 pretty_plot_models_idx_list <- reactive({
-  list(input$pretty_table_orig_out_rows_selected,
-       input$pretty_table_over_out_rows_selected,
-       input$pretty_table_ens_out_rows_selected)
-})
-
-### Returns vector of logicals representing whether a table has a row selected
-pretty_plot_tables_null <- reactive({
-  idx.list <- list(
+  list(
     input$pretty_table_orig_out_rows_selected,
     input$pretty_table_over_out_rows_selected,
     input$pretty_table_ens_out_rows_selected
   )
+})
 
-  sapply(idx.list, is.null)
+### Returns vector of two numbers: table in which table is selected and idx of selected row
+pretty_plot_table_row_idx <- reactive({
+  row.list <- list(
+    input$pretty_table_orig_out_rows_selected,
+    input$pretty_table_over_out_rows_selected,
+    input$pretty_table_ens_out_rows_selected
+  )
+  req(length(unlist(row.list)) == 1)
+
+  table.idx <- which(!sapply(row.list, is.null))
+  row.idx <- row.list[[table.idx]]
+
+  c(table.idx, row.idx)
 })
 
 ### Returns number of selected rows (SDMs to plot)
 pretty_plot_models_idx_count <- reactive({
-  idx.list <- list(
+  row.list <- list(
     input$pretty_table_orig_out_rows_selected,
     input$pretty_table_over_out_rows_selected,
     input$pretty_table_ens_out_rows_selected
   )
 
-  length(unlist(idx.list))
+  length(unlist(row.list))
 })
 
 

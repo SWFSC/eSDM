@@ -1,8 +1,8 @@
 ###############################################################################
 # Add additional poly information to reactive values
 observeEvent(input$pretty_plot_addobj_execute, {
-  vals$pretty.addobj.list <- c(
-    vals$pretty.addobj.list,
+  vals$pretty.addobj <- c(
+    vals$pretty.addobj,
     list(list(
       obj = switch(
         as.numeric(input$pretty_plot_other_obj_which),
@@ -20,14 +20,14 @@ observeEvent(input$pretty_plot_addobj_execute, {
 # Display table for 'added' additional polygons
 pretty_plot_addobj_table <- reactive({
   validate(
-    need(vals$pretty.addobj.list,
+    need(vals$pretty.addobj,
          "No additional objects have been loaded"),
     errorClass = "validation2"
   )
 
   x <- data.frame(do.call(
     rbind,
-    lapply(vals$pretty.addobj.list, function(i) {
+    lapply(vals$pretty.addobj, function(i) {
       c(
         switch(
           i$obj.text,
@@ -44,7 +44,7 @@ pretty_plot_addobj_table <- reactive({
 
 observeEvent(input$pretty_plot_addobj, {
   if (!input$pretty_plot_addobj) {
-    vals$pretty.addobj.list <- NULL
+    vals$pretty.addobj <- NULL
   }
 })
 
