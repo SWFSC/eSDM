@@ -79,6 +79,17 @@ pretty_plot_range_poly <- reactive({
 
 
 ###############################################################################
+# Title and axis labels
+pretty_plot_titlelab_list <- reactive({
+  list(
+    title = input$pretty_plot_title, xlab = input$pretty_plot_xlab,
+    ylab = input$pretty_plot_ylab, titlecex = input$pretty_plot_title_cex,
+    labcex = input$pretty_plot_lab_cex
+  )
+})
+
+
+###############################################################################
 ### Generate list of coordinate grid line and label info
 pretty_plot_tick_list <- reactive({
   lon.grid.vals <- seq(

@@ -155,29 +155,6 @@ ui.prettyPlot <- function() {
                   )
                 )
               ),
-              ################################################## Title and axis labels
-              column(
-                width = 4,
-                tags$strong("Title and axis labels"),
-                fluidRow(
-                  box(
-                    width = 12,
-                    helpText("Delete the text in the input boxes to remove the title or axis labels"),
-                    uiOutput("pretty_plot_title_uiOut_text"),
-                    fluidRow(
-                      column(6, textInput("pretty_plot_xlab", tags$h5("X-axis label"), value = "Longitude")),
-                      column(6, textInput("pretty_plot_ylab", tags$h5("Y-axis label"), value = "Latitude"))
-                    ),
-                    helpText("Size values are relative to 1 (the default size)"),
-                    fluidRow(
-                      column(6, numericInput("pretty_plot_title_cex", tags$h5("Title size (value is relative to 1)"),
-                                             value = 1.3, step = 0.1)),
-                      column(6, numericInput("pretty_plot_lab_cex", tags$h5("Axis label size (value is relative to 1)"),
-                                             value = 1, step = 0.1))
-                    )
-                  )
-                )
-              ),
               ################################################## Color scheme of predictions
               column(
                 width = 4,
@@ -185,22 +162,23 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    fluidRow(
-                      column(6, colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"),
-                                                          showColour = "background")),
-                      column(
-                        width = 6,
-                        tags$br(), tags$br(),
-                        actionButton("pretty_plot_background_reset_execute", "Reset background color to white")
-                      )
-                    ),
+                    colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"),
+                                              showColour = "background"),
+                    # fluidRow(
+                    #   column(6, colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"),
+                    #                                       showColour = "background")),
+                    #   column(
+                    #     width = 6,
+                    #     tags$br(), tags$br(),
+                    #     actionButton("pretty_plot_background_reset_execute", "Reset background color to white")
+                    #   )
+                    # ),
                     tags$br(), tags$br(),
                     fluidRow(
                       column(
                         width = 8,
-                        radioButtons("pretty_plot_color_perc", tags$h5("Prediction color scheme option"),
-                                     choices = list("Color-code predictions by relative percentage" = 1,
-                                                    "Color-code predictions by numerical value" = 2)),
+                        radioButtons("pretty_plot_color_perc", tags$h5("Color-code predictions by:"),
+                                     choices = list("Relative percentage" = 1, "Numerical value" = 2)),
                         uiOutput("pretty_plot_color_palette_uiOut_select"),
                         uiOutput("pretty_plot_color_num_uiOut_num")
                       ),
@@ -227,16 +205,7 @@ ui.prettyPlot <- function() {
                     # )
                   )
                 )
-              )
-            )
-          )
-        ),
-
-        ################################################################# Map Parameters - Section 2
-        fluidRow(
-          box(
-            title = "Map Parameters - Section 2", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
-            fluidRow(
+              ),
               ################################################## Legend
               column(
                 width = 4,
@@ -272,6 +241,38 @@ ui.prettyPlot <- function() {
                           checkboxInput("pretty_plot_legend_frame", "Include frame around legend", value = TRUE)
                         )
                       )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
+
+        ################################################################# Map Parameters - Section 2
+        fluidRow(
+          box(
+            title = "Map Parameters - Section 2", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
+            fluidRow(
+              ################################################## Title and axis labels
+              column(
+                width = 4,
+                tags$strong("Title and axis labels"),
+                fluidRow(
+                  box(
+                    width = 12,
+                    helpText("Delete the text in the input boxes to remove the title or axis labels"),
+                    uiOutput("pretty_plot_title_uiOut_text"),
+                    fluidRow(
+                      column(6, textInput("pretty_plot_xlab", tags$h5("X-axis label"), value = "Longitude")),
+                      column(6, textInput("pretty_plot_ylab", tags$h5("Y-axis label"), value = "Latitude"))
+                    ),
+                    helpText("Size values are relative to 1 (the default size)"),
+                    fluidRow(
+                      column(6, numericInput("pretty_plot_title_cex", tags$h5("Title size (value is relative to 1)"),
+                                             value = 1.3, step = 0.1)),
+                      column(6, numericInput("pretty_plot_lab_cex", tags$h5("Axis label size (value is relative to 1)"),
+                                             value = 1, step = 0.1))
                     )
                   )
                 )

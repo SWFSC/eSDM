@@ -10,7 +10,7 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
   validate(
     need(pretty_plot_models_idx_count() > 0,
          paste("Error: Please select at least one set of",
-               "model predictions to plot"))
+               "model predictions to add to to-plot list"))
   )
 
   # Get/set plotting variables
@@ -24,14 +24,10 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     background.color <- input$pretty_plot_background_color
     incProgress(0.1)
 
-    list.titlelab <- list(
-      title = input$pretty_plot_title, xlab = input$pretty_plot_xlab,
-      ylab = input$pretty_plot_ylab, titlecex = input$pretty_plot_title_cex,
-      labcex = input$pretty_plot_lab_cex
-    )
+    list.titlelab    <- pretty_plot_titlelab_list()
     list.colorscheme <- pretty_plot_colorscheme_list()
-    list.legend <- pretty_plot_legend_list()
-    list.tick <- pretty_plot_tick_list()
+    list.legend      <- pretty_plot_legend_list()
+    list.tick        <- pretty_plot_tick_list()
     incProgress(0.1)
 
     list.addobj <- NULL

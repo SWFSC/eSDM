@@ -87,6 +87,108 @@ output$pretty_plot_range_ymax_uiOut_num <- renderUI({
 
 
 ###############################################################################
+# Color scheme inputs
+
+### Color palette
+# If 'plot predictions as percentages' is selected, then remove some options
+output$pretty_plot_color_palette_uiOut_select <- renderUI({
+  choices.list <- list(
+    "Default: blue to white to red" = 1,
+    "RColorBrewer: Spectral (rainbow)" = 2,
+    "RColorBrewer: YlGnBu" = 3, "viridis: viridis" = 4,
+    "viridis: inferno" = 5, "dichromat: DarkRedtoBlue" = 6
+  )
+
+  # Remove palettes that don't work with 10 colors
+  if (input$pretty_plot_color_perc == 1) choices.list <- choices.list[-c(3, 6)]
+
+  # If possible, keep same selected palette when going from perc to values
+  col.sel <- input$pretty_plot_color_palette
+  if (isTruthy(col.sel)) {
+    if (!(col.sel %in% choices.list)) col.sel <- 1
+  }
+
+  # choices.list <- c("Choose color palette" = "", choices.list)
+
+  selectInput("pretty_plot_color_palette", tags$h5("Color palette"),
+              choices = choices.list, selected = col.sel, width = "80%")
+})
+
+### Number of colors
+# Selectively give user input control, depending on perc/palette
+# input$pretty_plot_color_palette is NULL if helpText() is outputted,
+# but colorschem.num value is hardcoded for those situations in
+# pretty_plot_colorscheme_list()
+output$pretty_plot_color_num_uiOut_num <- renderUI({
+  if (input$pretty_plot_color_perc == 1) {
+    helpText("The number of colors must be ten when color-coding",
+             "predictions by relative percentages")
+
+  } else {
+    if (input$pretty_plot_color_palette == 1) {
+      helpText("The number of colors must be 10 when",
+               "using this color palette")
+
+    } else if (input$pretty_plot_color_palette == 2) {
+      numericInput("pretty_plot_color_num",
+                   tags$h5("Number of colors (Min: 3; Max: 11)"),
+                   value = 11, step = 1, min = 3, max = 11, width = "80%")
+
+    } else if (input$pretty_plot_color_palette == 3) {
+      numericInput("pretty_plot_color_num",
+                   tags$h5("Number of colors (Min: 3; Max: 9)"),
+                   value = 9, step = 1, min = 3, max = 9, width = "80%")
+
+    } else if (input$pretty_plot_color_palette == 6) {
+      helpText("The number of colors must be 12 when",
+               "using this color palette")
+
+    } else {
+      numericInput("pretty_plot_color_num", tags$h5("Number of colors"),
+                   value = 10, step = 1, min = 1, width = "80%")
+    }
+  }
+})
+
+# These do things - 'val.pretty.color.num' is a reactiveVal() output
+observe({
+  val.pretty.color.num(input$pretty_plot_color_num)
+})
+
+observeEvent(input$pretty_plot_color_palette, {
+  req(input$pretty_plot_color_palette == 2)
+  val.pretty.color.num(11)
+})
+
+observeEvent(input$pretty_plot_color_palette, {
+  req(input$pretty_plot_color_palette == 3)
+  val.pretty.color.num(9)
+})
+
+
+###############################################################################
+# Coordinate grid line and labels
+
+output$pretty_plot_legend_pos_uiOut_select <- renderUI({
+  if (input$pretty_plot_legend_inout == 1) {
+    choices.list <- list(
+      "Top left" = 1, "Top center" = 2, "Top right" = 3, "Center right" = 4,
+      "Bottom right" = 5, "Bottom center" = 6, "Bottom left" = 7,
+      "Center left" = 8
+    )
+
+  } else { #input$pretty_plot_legend_inout == 2
+    choices.list <- list(
+      "Right" = "right", "Bottom" = "bottom", "Left" = "left", "Top" = "top"
+    )
+  }
+
+  selectInput("pretty_plot_legend_pos", tags$h5("Legend position"),
+              choices = choices.list, selected = 1)
+})
+
+
+###############################################################################
 ### Title of plot
 output$pretty_plot_title_uiOut_text <- renderUI({
   req(pretty_plot_models_idx_count() == 1)
@@ -199,105 +301,6 @@ output$pretty_plot_tick_lat_interval_uiOut_numeric <- renderUI({
 
   numericInput("pretty_plot_tick_lat_interval", tags$h5("Latitude grid line interval"),
                value = val.def, min = 0, step = val.def)
-})
-
-
-
-
-###############################################################################
-# Color scheme inputs
-
-### Color palette
-# If 'plot predictions as percentages' is selected, then remove some options
-output$pretty_plot_color_palette_uiOut_select <- renderUI({
-  choices.list <- list(
-    "Default: blue to white to red" = 1, "RColorBrewer: Spectral (rainbow)" = 2,
-    "RColorBrewer: YlGnBu" = 3, "viridis: viridis" = 4,
-    "viridis: inferno" = 5, "dichromat: DarkRedtoBlue" = 6
-  )
-
-  # Remove palettes that don't work with 10 colors
-  if (input$pretty_plot_color_perc == 1) choices.list <- choices.list[-c(3, 6)]
-
-  # If possible, keep same selected palette when going from perc to values
-  col.sel <- input$pretty_plot_color_palette
-  if (isTruthy(col.sel)) {
-    if (!(col.sel %in% choices.list)) col.sel <- 1
-  }
-
-  selectInput("pretty_plot_color_palette", tags$h5("Color palette"),
-              choices = choices.list, selected = col.sel, width = "80%")
-})
-
-### Number of colors
-# Selectively give user input control, depending on perc/palette
-# input$pretty_plot_color_palette is NULL if helpText() is outputted,
-# but colorschem.num value is hardcoded for those situations in
-# pretty_plot_colorscheme_list()
-output$pretty_plot_color_num_uiOut_num <- renderUI({
-  if (input$pretty_plot_color_perc == 1) {
-    helpText("The number of colors must be ten when plotting",
-             "relative percentages of predictions")
-
-  } else {
-    if (input$pretty_plot_color_palette == 1) {
-      helpText("The number of colors must be 10 when",
-               "using this color palette")
-
-    } else if (input$pretty_plot_color_palette == 2) {
-      numericInput("pretty_plot_color_num",
-                   tags$h5("Number of colors (Min: 3; Max: 11)"),
-                   value = 11, step = 1, min = 3, max = 11, width = "80%")
-
-    } else if (input$pretty_plot_color_palette == 3) {
-      numericInput("pretty_plot_color_num",
-                   tags$h5("Number of colors (Min: 3; Max: 9)"),
-                   value = 9, step = 1, min = 3, max = 9, width = "80%")
-
-    } else if (input$pretty_plot_color_palette == 6) {
-      helpText("The number of colors must be 12 when",
-               "using this color palette")
-
-    } else {
-      numericInput("pretty_plot_color_num", tags$h5("Number of colors"),
-                   value = 10, step = 1, min = 1, width = "80%")
-    }
-  }
-})
-
-observe({
-  val.pretty.color.num(input$pretty_plot_color_num)
-})
-
-observeEvent(input$pretty_plot_color_palette, {
-  req(input$pretty_plot_color_palette == 2)
-  val.pretty.color.num(11)
-})
-
-observeEvent(input$pretty_plot_color_palette, {
-  req(input$pretty_plot_color_palette == 3)
-  val.pretty.color.num(9)
-})
-
-
-###############################################################################
-
-output$pretty_plot_legend_pos_uiOut_select <- renderUI({
-  if (input$pretty_plot_legend_inout == 1) {
-    choices.list <- list(
-      "Top left" = 1, "Top center" = 2, "Top right" = 3, "Center right" = 4,
-      "Bottom right" = 5, "Bottom center" = 6, "Bottom left" = 7,
-      "Center left" = 8
-    )
-
-  } else { #input$pretty_plot_legend_inout == 2
-    choices.list <- list(
-      "Right" = "right", "Bottom" = "bottom", "Left" = "left", "Top" = "top"
-    )
-  }
-
-  selectInput("pretty_plot_legend_pos", tags$h5("Legend position"),
-              choices = choices.list, selected = 1)
 })
 
 
