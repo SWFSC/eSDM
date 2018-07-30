@@ -156,6 +156,7 @@ server <- function(input, output, session) {
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_prep_addobj.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_renderUI.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_toplotlist.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_5_prettyPlot", "server_5_prettyPlot_update.R"), local = TRUE, chdir = TRUE)
 
 
   # Export model predictions

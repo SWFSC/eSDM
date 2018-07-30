@@ -79,48 +79,6 @@ pretty_plot_range_poly <- reactive({
 
 
 ###############################################################################
-# Title and axis labels
-pretty_plot_titlelab_list <- reactive({
-  list(
-    title = input$pretty_plot_title, xlab = input$pretty_plot_xlab,
-    ylab = input$pretty_plot_ylab, titlecex = input$pretty_plot_title_cex,
-    labcex = input$pretty_plot_lab_cex
-  )
-})
-
-
-###############################################################################
-### Generate list of coordinate grid line and label info
-pretty_plot_tick_list <- reactive({
-  lon.grid.vals <- seq(
-    from = input$pretty_plot_tick_lon_start,
-    to = input$pretty_plot_range_xmax,
-    by = input$pretty_plot_tick_lon_interval
-  )
-
-  lat.grid.vals <- seq(
-    from = input$pretty_plot_tick_lat_start,
-    to = input$pretty_plot_range_ymax,
-    by = input$pretty_plot_tick_lat_interval
-  )
-
-  grid.labs.size <- ifelse(
-    input$pretty_plot_tick_label_inc, input$pretty_plot_tick_label_size, 0
-  )
-
-  list(
-    inc = input$pretty_plot_tick,
-    x.vals = lon.grid.vals, y.vals = lat.grid.vals,
-    grid.lw = input$pretty_plot_tick_lw,
-    grid.alpha = input$pretty_plot_tick_alpha,
-    grid.col = input$pretty_plot_tick_color,
-    grid.labs.size = grid.labs.size,
-    grid.labs.in = input$pretty_plot_tick_label_inout == 1
-  )
-})
-
-
-###############################################################################
 # Color scheme of predictions
 
 ### Process inputs and return list with num of colors and color palette to use
@@ -129,8 +87,10 @@ pretty_plot_colorscheme_palette_num <- reactive({
 
   perc <- input$pretty_plot_color_perc == 1
   color.palette.idx <- input$pretty_plot_color_palette
-  color.num <- 10
-  if (!perc) {
+
+  if (perc) {
+    color.num <- 10
+  } else {
     color.num <- val.pretty.color.num()
 
     # color.num is supposed to be NULL for color.palette.idx %in% c(1, 6)
@@ -146,14 +106,14 @@ pretty_plot_colorscheme_palette_num <- reactive({
   } else if (color.palette.idx == 2) {
     validate(
       need(color.num <= 11,
-           "Error: 'RColorBrewer: Spectral' palette has a max of 11 colors")
+           "Error: The 'RColorBrewer: Spectral' palette has a max of 11 colors")
     )
     color.palette <- rev(RColorBrewer::brewer.pal(color.num, "Spectral"))
 
   } else if (color.palette.idx == 3) {
     validate(
       need(color.num <= 9,
-           "Error: 'RColorBrewer: YlGnBu' palette has a max of 9 colors")
+           "Error: The 'RColorBrewer: YlGnBu' palette has a max of 9 colors")
     )
     color.palette <- rev(RColorBrewer::brewer.pal(color.num, "YlGnBu"))
 
@@ -238,15 +198,60 @@ pretty_plot_legend_list <- reactive({
     }
 
     leg.text.size <- input$pretty_plot_legend_size
+    leg.border <- ifelse(input$pretty_plot_legend_frame, "black", FALSE)
 
     list(
       inc = TRUE, out = leg.out, pos = leg.pos, out.pos = leg.outside.pos,
-      text.size = leg.text.size
+      text.size = leg.text.size, border = leg.border
     )
 
   } else {
     list(inc = FALSE)
   }
+})
+
+
+###############################################################################
+# Section 2
+###############################################################################
+# Title and axis labels
+pretty_plot_titlelab_list <- reactive({
+  list(
+    title = input$pretty_plot_title, xlab = input$pretty_plot_xlab,
+    ylab = input$pretty_plot_ylab, titlecex = input$pretty_plot_title_cex,
+    labcex = input$pretty_plot_lab_cex
+  )
+})
+
+
+###############################################################################
+### Generate list of coordinate grid line and label info
+pretty_plot_tick_list <- reactive({
+  lon.grid.vals <- seq(
+    from = input$pretty_plot_tick_lon_start,
+    to = input$pretty_plot_range_xmax,
+    by = input$pretty_plot_tick_lon_interval
+  )
+
+  lat.grid.vals <- seq(
+    from = input$pretty_plot_tick_lat_start,
+    to = input$pretty_plot_range_ymax,
+    by = input$pretty_plot_tick_lat_interval
+  )
+
+  grid.labs.size <- ifelse(
+    input$pretty_plot_tick_label_inc, input$pretty_plot_tick_label_size, 0
+  )
+
+  list(
+    inc = input$pretty_plot_tick,
+    x.vals = lon.grid.vals, y.vals = lat.grid.vals,
+    grid.lw = input$pretty_plot_tick_lw,
+    grid.alpha = input$pretty_plot_tick_alpha,
+    grid.col = input$pretty_plot_tick_color,
+    grid.labs.size = grid.labs.size,
+    grid.labs.in = input$pretty_plot_tick_label_inout == 1
+  )
 })
 
 
