@@ -58,7 +58,7 @@ leg.perc.esdm <- c(
   "10 - 15%", "5 - 10%", "2 - 5%", "Highest 2%"
 )
 
-###
+# https://github.com/daattali/advanced-shiny/blob/master/close-window/app.R
 jscode <- "shinyjs.closeWindow = function() { window.close(); }"
 
 
@@ -75,8 +75,17 @@ server <- function(input, output, session) {
   })
 
   ###############################################
-  ### Load all other server code: tab-specific scripts and general server code
+  ### Source general and tab-specific server code
+
+  # General server code
+  source(file.path("server_other", "server_funcs.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_plots.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_plots_download.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_reactiveValues.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_render.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_render_tables.R"), local = TRUE, chdir = TRUE)
+
 
   # Roadmap: download sample data
   output$download_sample_data <- downloadHandler(
@@ -85,11 +94,16 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       withProgress(message = "Downloading sample data", value = 0.6, {
-        sample.try <- try(download.file("https://github.com/smwoodman/eSDM-data/raw/master/data_provided.zip",
-                                        destfile = file, quiet = TRUE),
-                          silent = TRUE)
+        sample.try <- try(
+          download.file(
+            "https://github.com/smwoodman/eSDM-data/raw/master/data_provided.zip",
+            destfile = file, quiet = TRUE
+          ),
+          silent = TRUE
+        )
+
         validate(
-          need(isTruthy(sample.try),
+          need(sample.try,
                paste("The sample data could not be downloaded; please check",
                      "your internet connection. If this problem persists, please",
                      "report this issue at https://github.com/smwoodman/eSDM/issues"))
@@ -102,21 +116,21 @@ server <- function(input, output, session) {
   # Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_csv.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_1_loadModels", "server_1_loadModels_raster.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_1_loadModels", "server_1_loadModels_shpgdb.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_1_loadModels", "server_1_loadModels_renderUI.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_funcs.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_1_loadModels", "server_1_loadModels_raster.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_1_loadModels", "server_1_loadModels_renderUI.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_1_loadModels", "server_1_loadModels_shpgdb.R"), local = TRUE, chdir = TRUE)
 
 
   # Overlay model predictions
   source(file.path("server_2_overlay", "server_2_overlay.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_csv.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_shpgdb.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_provided.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_overlayModels_base.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_renderUI.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, chdir = TRUE)
 
 
   # Create ensemble predictions
@@ -129,9 +143,9 @@ server <- function(input, output, session) {
 
   # Calculate evaluation metrics
   source(file.path("server_4_evalMetrics", "server_4_evalMetrics.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_4_evalMetrics", "server_4_evalMetrics_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_4_evalMetrics", "server_4_evalMetrics_loadData.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_4_evalMetrics", "server_4_evalMetrics_renderUI.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_4_evalMetrics", "server_4_evalMetrics_funcs.R"), local = TRUE, chdir = TRUE)
 
 
   # Make high quality maps (pretty plots)
@@ -151,16 +165,6 @@ server <- function(input, output, session) {
 
   # Manual
   # The function tags$iframe(...) is in ui.R so that the manual renders immediately
-
-
-  # General server code
-  source(file.path("server_other", "server_funcs.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_other", "server_plots.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_other", "server_plots_download.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, chdir = TRUE)
-  # server_reactiveValues.R is sourced at the top of the server code in order to initialize vals
-  source(file.path("server_other", "server_render.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_other", "server_render_tables.R"), local = TRUE, chdir = TRUE)
 }
 
 ###############################################################################
