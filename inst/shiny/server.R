@@ -28,6 +28,7 @@ library(RColorBrewer)
 library(ROCR)
 library(rlang)
 library(sf)
+library(shinyjs)
 library(stats)
 library(tmap)
 library(units)
@@ -69,8 +70,7 @@ server <- function(input, output, session) {
   session$onSessionEnded(stopApp)
 
   observeEvent(input$close_app, {
-    # js$closeWindow()
-    # rm(gfill, envir = )
+    js$closeWindow()
     stopApp(returnValue = "eSDM GUI was closed")
   })
 
