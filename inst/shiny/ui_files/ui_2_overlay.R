@@ -11,10 +11,10 @@ ui.overlay <- function() {
           width = 4,
           fluidRow(
             box(
-              title = "Load Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              title = "Import Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               checkboxInput("overlay_bound",
                             paste("Use a study area polygon as the boundary for the base geometry in the overlay process;",
-                                  "uncheck this box to remove a loaded study area polygon"),
+                                  "uncheck this box to remove an imported study area polygon"),
                             value = FALSE),
               conditionalPanel(
                 condition = "input.overlay_bound == true",
@@ -68,10 +68,10 @@ ui.overlay <- function() {
             ),
 
             box(
-              title = "Load Erasing Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              title = "Import Erasing Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               checkboxInput("overlay_land",
                             paste("Use an erasing polygon to remove are from the base geometry in the overlay process;",
-                                  "uncheck this box to remove a loaded erasing polygon"),
+                                  "uncheck this box to remove an imported erasing polygon"),
                             value = FALSE),
               conditionalPanel(
                 condition = "input.overlay_land == true",
@@ -101,7 +101,7 @@ ui.overlay <- function() {
                              "See the", tags$a("GSHHG website", href = "http://www.soest.hawaii.edu/pwessel/gshhg/"),
                              "for more information about the provided erasing polygon."),
                     fluidRow(
-                      column(6, actionButton("overlay_land_provided", "Load provided erasing polygon")),
+                      column(6, actionButton("overlay_land_provided", "Import provided erasing polygon")),
                       column(
                         width = 6,
                         tags$span(textOutput("overlay_land_prov_message"), style = "color: blue"),
@@ -169,8 +169,8 @@ ui.overlay <- function() {
           width = 8,
           fluidRow(
             box(
-              title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              ui.instructions.table.select(text.pre = "loaded", text.in = "to use as the base geometry:", sel.num = 1),
+              title = "Imported Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              ui.instructions.table.select(text.pre = "original", text.in = "to use as the base geometry:", sel.num = 1),
               conditionalPanel("input.overlay_loaded_table_stats != true", DTOutput("overlay_loaded_table")),
               conditionalPanel("input.overlay_loaded_table_stats", DTOutput("overlay_loaded_stats_table")),
               column(12, checkboxInput("overlay_loaded_table_stats", paste("Display additional information - NOTE that you can only",
@@ -187,10 +187,10 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("1) Overlay options: choose base geometry"),
-                      tags$h5("Make your selection in the 'Loaded Model Predictions' box."),
+                      tags$h5("Make your selection in the 'Imported Model Predictions' box."),
                       tags$br(),
                       tags$strong("2) Overlay options: load desired study area and erasing polygons"),
-                      tags$h5("Load these polygons in their respecitve boxes, 'Load Study Area Polygon' and 'Load Erasing Polygon'.")
+                      tags$h5("Import these polygons in their respecitve boxes, 'Import Study Area Polygon' and 'Import Erasing Polygon'.")
                     ),
                     box(
                       width = 12,
@@ -249,7 +249,7 @@ ui.overlay <- function() {
                       tags$strong("5) Perform overlay"),
                       helpText(tags$strong("It is strongly recommended to save the app environment before overlaying",
                                            "in case you are disconnected from the server during the process.")),
-                      helpText(tags$strong("Reminder: loaded study area and land polygons will be used during",
+                      helpText(tags$strong("Reminder: imported study area and land polygons will be used during",
                                            "the overlay process. This process may take several minutes.")),
                       actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base geometry"),
                       textOutput("overlay_overlay_all_text"),

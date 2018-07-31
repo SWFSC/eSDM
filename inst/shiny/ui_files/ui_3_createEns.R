@@ -103,7 +103,7 @@ ui.createEns <- function() {
                       # helpText(tags$strong("Polygon(s) with weights preview")),
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag == false",
-                        helpText("No weight polygons have been loaded")
+                        helpText("No weight polygons have been assigned")
                       ),
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag",
@@ -195,7 +195,7 @@ ui.createEns <- function() {
                             helpText(tags$strong("Pixel-level spatial weights method:"),
                                      "Overlaid predictions are multiplied by their corresponding spatial weight. These pixel-level",
                                      "spatial weights were specified by the 'Column with weight data' input",
-                                     "when each set of model predictions was initally loaded into the app.",
+                                     "when each set of model predictions was initially imported into the GUI.",
                                      "If a set of overlaid model predictions does not have pixel-level spatial weights, ",
                                      "then the row corresponding to that set will say \"No\" in the table below and",
                                      "those predictions will have a weight of one when the enseble is created"),
@@ -210,9 +210,9 @@ ui.createEns <- function() {
                             helpText(tags$strong("Weighted ensembling method:"),
                                      "Calculate the weighted mean of all corresponding predictions"),
                             helpText(tags$strong("Weight polygon(s)"),
-                                     "Load and assign weight polygon(s) to overlaid predictions.",
+                                     "Import and assign weight polygon(s) to overlaid predictions.",
                                      "Weight polygons designate area(s) in which the specified predictions will be weighted.",
-                                     "You can only assign one weight per weight polygon, but you may load",
+                                     "You can only assign one weight per weight polygon, but you may import and assign",
                                      "multiple polygons to apply unique weights to different prediction regions.",
                                      "Weight polygons may not overlap.",
                                      "All predictions not assigned a weight polygon will have a weight of one."),
@@ -252,13 +252,11 @@ ui.createEns <- function() {
                                   column(
                                     width = 6,
                                     fileInput("create_ens_weights_poly_raster_file", label.raster.upload, accept = ".tif"),
-                                    helpText("The band number is assumed to be 1 weight cannot be loaded come from the raster"),
                                     conditionalPanel("output.create_ens_weights_poly_raster_flag == false", ui.error.upload.raster)
                                   ),
                                   column(
                                     width = 5, offset = 1,
-                                    numericInput("create_ens_weights_poly_raster_weight",
-                                                 tags$h5("Weight for area covered by raster"),
+                                    numericInput("create_ens_weights_poly_raster_weight", tags$h5("Weight for area covered by raster"),
                                                  value = 1, min = 0, step = 0.1)
                                   )
                                 )
@@ -329,10 +327,10 @@ ui.createEns <- function() {
                   fluidRow(
                     box(
                       width = 12,
-                      helpText(tags$strong("Loaded weight polygons")),
+                      helpText(tags$strong("Assigned weight polygons")),
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag == false",
-                        helpText("No weight polygons have been loaded")
+                        helpText("No weight polygons have been assigned")
                       ),
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag",
@@ -375,7 +373,7 @@ ui.createEns <- function() {
             tags$br(),
             column(4, radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"),
                                    choices = list("Plot interactive preview" = 1, "Plot static preview(s)" = 2,
-                                                  "Download static preview(s)" = 3, "Remove from app" = 4,
+                                                  "Download static preview(s)" = 3, "Remove from GUI" = 4,
                                                   "Calculate predicted abundance" = 5),
                                    selected = 1)),
             column(

@@ -56,7 +56,7 @@ ui <- dashboardPage(
       id = "tabs",
       menuItem(HTML(paste0("eSDM GUI Roadmap and", "<br/>", "Load or Save Workspace")),
                tabName = "roadmap", icon = icon("road")), #icon("sitemap")
-      menuItem("Load Model Predictions", tabName = "loadModels", icon = icon("cloud-upload")),
+      menuItem("Import Model Predictions", tabName = "loadModels", icon = icon("cloud-upload")),
       menuItem("Overlay Model Predictions", tabName = "overlay", icon = icon("cogs")),
       menuItem("Create Ensemble Predictions", tabName = "createEns", icon = icon("cog")),
       menuItem("Evaluation Metrics", tabName = "evalMetrics", icon = icon("check")),

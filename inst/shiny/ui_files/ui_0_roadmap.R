@@ -12,7 +12,7 @@ ui.roadmap <- function() {
             fluidRow(
               box(
                 width = 6,
-                tags$strong("Load GUI workspace"),
+                tags$strong("Load a saved GUI workspace"),
                 fileInput("load_app_envir_file", tags$h5("Upload .RDATA file"), accept = ".RDATA"),
                 tags$span(textOutput("load_envir_text"), style = "color: blue")
               ),

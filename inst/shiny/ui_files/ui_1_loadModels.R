@@ -1,4 +1,4 @@
-### UI code for the 'Load Model Predictions' tab
+### UI code for the 'Import Model Predictions' tab
 
 ui.loadModels <- function() {
   tabItem(
@@ -8,7 +8,7 @@ ui.loadModels <- function() {
         width = 5,
         fluidRow(
           box(
-            title = "Load Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+            title = "Import Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
             selectInput("model_load_type", tags$h5("Data file type"),  choices = file.type.list2, selected = 1, width = "50%"),
             conditionalPanel(
               condition = "input.model_load_type == 1",
@@ -73,8 +73,8 @@ ui.loadModels <- function() {
               ),
               conditionalPanel(
                 condition = "output.read_model_gis_raster_flag",
-                helpText("Since loaded rasters can only have one data layer, that data is loaded as the prediction data",
-                         "and there is no weight column to select"),
+                helpText("Since imported rasters can only have one data layer, that layer is treated as the prediction data",
+                         "and there is no weight data"),
                 box(
                   width = 12,
                   fluidRow(
@@ -182,8 +182,8 @@ ui.loadModels <- function() {
           condition = "output.loadModels_display_flag",
           fluidRow(
             box(
-              title = "Loaded Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              ui.instructions.table.select(text.pre = "loaded", text.in = "with which to perform an action:"),
+              title = "Imported Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              ui.instructions.table.select(text.pre = "imported", text.in = "with which to perform an action:"),
               conditionalPanel("input.models_loaded_table_stats != true", DTOutput("models_loaded_table")),
               conditionalPanel("input.models_loaded_table_stats", DTOutput("models_loaded_table_stats")),
               column(
@@ -193,7 +193,7 @@ ui.loadModels <- function() {
                 fluidRow(
                   column(3, radioButtons("model_select_action", tags$h5("Action to perform with selected model predictions"),
                                          choices = list("Plot interactive preview" = 1, "Plot static preview(s)" = 2,
-                                                        "Download static preview(s)" = 3, "Remove from app" = 4),
+                                                        "Download static preview(s)" = 3, "Remove from GUI" = 4),
                                          selected = 1)
                   ),
                   column(

@@ -17,9 +17,9 @@ ui.evalMetrics <- function() {
           tags$br(),
           DTOutput("eval_models_table_ens_out")
         ),
-        ############################################################################### Load validation data
+        ############################################################################### Import validation data
         box(
-          title = "Load Validation Data", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
+          title = "Import Validation Data", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
           fluidRow(
             column(6, radioButtons("eval_load_type", tags$h5("Validation data file type"),
                                    choices = file.type.list1, selected = 1)),
@@ -125,7 +125,7 @@ ui.evalMetrics <- function() {
               title = "Calculate Metrics", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               conditionalPanel(
                 condition = "output.eval_display_calc_metrics_flag == false",
-                helpText("Load validation data in order to calculate metrics")
+                helpText("Import validation data in order to calculate metrics")
               ),
               conditionalPanel(
                 condition = "output.eval_display_calc_metrics_flag",
@@ -196,8 +196,7 @@ ui.evalMetrics <- function() {
                     helpText(
                       tags$p(tags$strong("RMSE decription:"), "The root mean squared error  (RMSE) is a metric that measures the",
                              "difference between predicted response variable values and observed values.",
-                             "RMSE requires count data to be loaded rather than presence/absence data.",
-                             "To calculate RMSE the process is as follows:",
+                             "RMSE requires count data rather than presence/absence data. To calculate RMSE:",
                              "for each validation data point, subtract the observed abundance from the predicted abundance and",
                              "square it. Then take the square root of the mean of all of these squared error values."),
                       "See", tags$a("this page", href = "https://en.wikipedia.org/wiki/Root-mean-square_deviation"),
