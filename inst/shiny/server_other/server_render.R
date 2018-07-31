@@ -412,8 +412,8 @@ output$pretty_plot_update_table_out <- renderDT({
 }, options = dt.list, rownames = FALSE, selection = "single")
 
 # Message
-output$pretty_plot_update_display_text <- renderText({
-  pretty_plot_update_display()
+output$pretty_plot_update_text <- renderText({
+  pretty_plot_update()
 })
 
 ### Pretty plot plot/download
@@ -422,7 +422,7 @@ output$pretty_plot_toplot_table_out <- renderDT({
   pretty_plot_toplot_table()
 }, options = dt.list, rownames = FALSE)
 
-#Error output
+# Error output
 output$pretty_plot_plot_text <- renderText({
   pretty_plot_plot()
 })

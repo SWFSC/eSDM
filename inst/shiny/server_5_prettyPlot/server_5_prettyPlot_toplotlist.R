@@ -37,6 +37,7 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
   })
 
   # Save plot parameters to reactive values
+  vals$pretty.params.update <- c(vals$pretty.params.update, pretty_plot_update_prep())
   params.list <- list(
     model.toplot = model.toplot, plot.lim = plot.lim,
     background.color = background.color,

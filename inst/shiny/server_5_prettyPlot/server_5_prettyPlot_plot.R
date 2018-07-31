@@ -40,6 +40,7 @@ pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
 # When using tmap arrange spatial plot space is filled,
 #   but a normal tmap call respects provided axis limits
 plot_pretty_top <- function(dims, idx.list, params.list) {
+  browser()
   if ((dims[1] * dims[2]) == 1) {
     k <- params.list[[1]]
     plot_pretty(

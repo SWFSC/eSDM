@@ -102,9 +102,11 @@ outputOptions(output, "pretty_display_flag", suspendWhenHidden = FALSE)
 output$pretty_params_display_flag <- reactive({
   if (input$pretty_plot_mapcontrol == 1) {
     length(unlist(pretty_plot_models_idx_list())) == 1
+
   } else if (input$pretty_plot_mapcontrol == 2) {
-    FALSE #TODO
-  } else {
+    isTruthy(input$pretty_plot_update_table_out_rows_selected)
+
+  } else { #input$pretty_plot_mapcontrol == 3
     FALSE
   }
 })

@@ -129,7 +129,6 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
       graphics::image(1, 1:col.num, t(as.matrix(1:col.num)), col = col.pal,
                       axes = FALSE, xlab = "", ylab = "")
       graphics::box(col = "black")
-      # temp <- ifelse(models.num == 1, 0.8, 1.3) # not sure why this is necessary
       graphics::axis(4, at = (0:col.num) + 0.5, labels = round(b.model, 5),
                      tick = FALSE, las = 1, cex.axis = leg.txt.cex)
     }

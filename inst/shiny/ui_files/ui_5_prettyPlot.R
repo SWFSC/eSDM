@@ -68,7 +68,8 @@ ui.prettyPlot <- function() {
                       ),
                       column(
                         width = 6,
-                        textOutput("pretty_plot_update_display_text"),
+                        actionButton("pretty_plot_update_exectue", "Update map parameters"),
+                        textOutput("pretty_plot_update_text"),
                         helpText("todo")
                       )
                     )
@@ -143,25 +144,27 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    radioButtons("pretty_plot_proj_method", NULL, #tags$h5("Overlay coordinate system"),
-                                 choices = list("Generate map in the native coordinate system of the selected SDM" = 1,
-                                                "Generate map in WGS 84 geographic coordinates" = 2,
-                                                "Select SDM with desired coordinate system" = 3,
-                                                "Enter numeric EPSG code" = 4),
-                                 selected = 1),
-                    conditionalPanel("input.pretty_plot_proj_method == 3", box(width = 12, uiOutput("pretty_plot_proj_idx_uiOut_select"))),
+                    checkboxInput("pretty_plot_proj_ll", "Generate the map in WGS 84 geographic coordinates (decimal degrees)",
+                                  value = TRUE),
                     conditionalPanel(
-                      condition = "input.pretty_plot_proj_method == 4",
-                      box(width = 12, numericInput("pretty_plot_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1))
+                      condition = "input.pretty_plot_proj_ll == false",
+                      box(
+                        width = 12,
+                        radioButtons("pretty_plot_proj_method", NULL, #tags$h5("Overlay coordinate system"),
+                                     choices = list("Generate map in the native coordinate system of the selected SDM" = 1,
+                                                    "Select SDM with desired coordinate system" = 2,
+                                                    "Enter numeric EPSG code" = 3),
+                                     selected = 1),
+                        column(
+                          width = 12,
+                          conditionalPanel("input.pretty_plot_proj_method == 2", uiOutput("pretty_plot_proj_idx_uiOut_select")),
+                          conditionalPanel(
+                            condition = "input.pretty_plot_proj_method == 3",
+                            numericInput("pretty_plot_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)
+                          )
+                        )
+                      )
                     ),
-
-                    # checkboxInput("pretty_plot_proj_ll", "Generate the map in WGS 84 geographic coordinates (decimal degrees)",
-                    #               value = TRUE),
-                    # conditionalPanel(
-                    #   condition = "input.pretty_plot_proj_ll == false",
-                    #
-                    #   uiOutput("pretty_plot_proj_idx_uiOut_select")
-                    # ),
                     helpText("Map range values have the same units as the specified coordinate system, e.g.",
                              "if the specified coordinate system is WGS 84 geographic coordinates then the values are",
                              "decimal degrees and must have a longitude range of [-180, 180] and a latitude range of [-90, 90]"),

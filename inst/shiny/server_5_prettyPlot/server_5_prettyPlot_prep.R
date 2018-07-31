@@ -30,42 +30,40 @@ pretty_plot_model_selected <- reactive({
 
 ### Get desired projection (crs object) for map
 pretty_plot_crs_selected <- reactive({
-  # if (input$pretty_plot_proj_ll) {
-  #   crs.ll
-  # } else {
-  #   st_crs(vals$models.orig[[req(as.numeric(input$pretty_plot_proj_idx))]])
-  # }
-  if (input$pretty_plot_proj_method == 1) {
-    req(pretty_plot_models_idx_count() == 1)
-    model.idx.list <- pretty_plot_models_idx_list()
-    if (!is.null(model.idx.list[[1]])) {
-      st_crs(vals$models.orig[[model.idx.list[[1]]]])
-
-    } else if (!is.null(model.idx.list[[2]])) {
-      st_crs(vals$overlaid.models[[model.idx.list[[2]]]])
-
-    } else if (!is.null(model.idx.list[[3]])) {
-      st_crs(vals$ensemble.models[[model.idx.list[[3]]]])
-
-    } else {
-      validate(need(FALSE, "Pretty plot error2"))
-    }
-
-  } else if (input$pretty_plot_proj_method == 2) {
+  if (input$pretty_plot_proj_ll) {
     crs.ll
 
-  } else if (input$pretty_plot_proj_method == 3) {
-    st_crs(vals$models.orig[[req(as.numeric(input$pretty_plot_proj_idx))]])
-
   } else {
-    x <- st_crs(input$pretty_plot_proj_epsg)
-    validate(
-      need(x[[2]],
-           paste("Error: The provided EPSG code was not recognized;",
-                 "please provide a valid code"))
-    )
+    if (input$pretty_plot_proj_method == 1) {
+      req(pretty_plot_models_idx_count() == 1)
+      model.idx.list <- pretty_plot_models_idx_list()
 
-    x
+      if (!is.null(model.idx.list[[1]])) {
+        st_crs(vals$models.orig[[model.idx.list[[1]]]])
+
+      } else if (!is.null(model.idx.list[[2]])) {
+        st_crs(vals$overlaid.models[[model.idx.list[[2]]]])
+
+      } else if (!is.null(model.idx.list[[3]])) {
+        st_crs(vals$ensemble.models[[model.idx.list[[3]]]])
+
+      } else {
+        validate(need(FALSE, "Pretty plot crs error"))
+      }
+
+    } else if (input$pretty_plot_proj_method == 2) {
+      st_crs(vals$models.orig[[req(as.numeric(input$pretty_plot_proj_idx))]])
+
+    } else {
+      x <- st_crs(input$pretty_plot_proj_epsg)
+      validate(
+        need(x[[2]],
+             paste("Error: The provided EPSG code was not recognized;",
+                   "please provide a valid code"))
+      )
+
+      x
+    }
   }
 })
 
