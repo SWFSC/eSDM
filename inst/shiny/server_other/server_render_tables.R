@@ -43,9 +43,8 @@ table_overlaid <- reactive({
 
   validate(
     need(nrow(table.out1) == nrow(overlaid.models.specs),
-         paste("You have loaded or removed original",
-               "model predictions from the app.",
-               "Please overaly the models again to use this section"))
+         paste("You have loaded or removed original predictions from the GUI.",
+               "Please overaly the predictions again to use this section"))
   )
 
   data.frame(table.out1, overlaid.models.specs, stringsAsFactors = FALSE,
@@ -68,7 +67,7 @@ table_ensembles <- reactive({
              stringsAsFactors = FALSE,
              row.names = paste("Ensemble", 1:length(vals$ensemble.method))) %>%
     purrr::set_names(
-      c("Overlaid models used", "Rescaling method", "Ensembling method",
+      c("Overlaid predictions used", "Rescaling method", "Ensembling method",
         "Weights")
     )
 })

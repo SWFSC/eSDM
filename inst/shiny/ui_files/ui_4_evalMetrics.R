@@ -7,7 +7,7 @@ ui.evalMetrics <- function() {
     conditionalPanel(
       condition = "output.eval_display_flag",
       fluidRow(
-        ############################################################################### Available model predictions
+        ############################################################################### Available predictions
         box(
           title = "Select Predictions to Evaluate", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
           ui.instructions.multipletables.select(text.in = "evaluate:"),
@@ -211,7 +211,7 @@ ui.evalMetrics <- function() {
 
         ############################################################################### Calculated metrics
         box(
-          title = "Metrics", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
+          title = "Metric Results", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
           fluidRow(
             column(
               width = 6,
@@ -227,8 +227,7 @@ ui.evalMetrics <- function() {
                 tags$br(),
                 tags$br(),
                 helpText(tags$strong("Note:"),
-                         "The downloaded Excel csv file will have both metric values and model information",
-                         "for each set of predictions.",
+                         "The downloaded Excel csv file will have both metric values and information about each set of predictions.",
                          "Ensemble predictions have different information than original and overlaid predictions,",
                          "and thus if evaluation metrics have been calculated for both ensemble predictions and",
                          "original and/or overlaid predictions then some column headers will be formatted as",

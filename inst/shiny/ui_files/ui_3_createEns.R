@@ -6,7 +6,7 @@ ui.createEns <- function() {
     conditionalPanel("output.ens_display_flag == false", ui.notice.no.pred.overlaid()),
     conditionalPanel(
       condition = "output.ens_display_flag",
-      ######################################################################### Choose overlaid models to be used in ensemble
+      ######################################################################### Choose overlaid predictions to be used in ensemble
       fluidRow(
         box(
           title = "Overlaid Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
@@ -362,7 +362,7 @@ ui.createEns <- function() {
         )
       ),
 
-      ######################################################################### Created ensemble models
+      ######################################################################### Created ensemble predictions
       conditionalPanel(
         condition = "output.ens_display_ens_flag",  # This flag checks if any ensemble predictions have been created
         fluidRow(
@@ -380,7 +380,7 @@ ui.createEns <- function() {
               width = 8,
               conditionalPanel(
                 condition = "output.ens_models_selected_flag == false",
-                tags$span(tags$h5("Select at least one set of ensemble model predictions to perform an action"), style = "color: red")
+                tags$span(tags$h5("Select at least one set of ensemble predictions to perform an action"), style = "color: red")
               ),
               conditionalPanel(
                 condition = "output.ens_models_selected_flag",

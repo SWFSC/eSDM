@@ -170,8 +170,9 @@ table_eval_metrics <- reactive({
   })
 
   data.frame(
-    "Model" = c(row.names(table.orig), row.names(table.over),
-                row.names(table.ensembles)),
+    "Predictions" = c(
+      row.names(table.orig), row.names(table.over), row.names(table.ensembles)
+    ),
     metrics.table, stringsAsFactors = FALSE
   )
 })
