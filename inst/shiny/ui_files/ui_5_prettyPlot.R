@@ -18,94 +18,126 @@ ui.prettyPlot <- function() {
         box(
           title = "Map Control", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
           fluidRow(
-            column(2, radioButtons("pretty_plot_mapcontrol", NULL,
-                                   choices = list("Add new map to to-plot list" = 1, "Update parameters of map in to-plot list" = 2,
-                                                  "Plot or download map(s) in to-plot list" = 3),
-                                   selected = 1)),
-
             column(
-              width = 10,
-              conditionalPanel("input.pretty_plot_mapcontrol == 1", tags$strong("1) Add new map to to-plot list")),
-              conditionalPanel("input.pretty_plot_mapcontrol == 2", tags$strong("2) Update parameters of map in to-plot list")),
-              conditionalPanel("input.pretty_plot_mapcontrol == 3", tags$strong("3) Plot or download map(s) in to-plot list")),
+              width = 2,
+              tags$strong("1) Select map control option"),
               fluidRow(
                 box(
                   width = 12,
-                  #-----------------------------------------------
-                  conditionalPanel(
-                    condition = "input.pretty_plot_mapcontrol == 1",
+                  radioButtons("pretty_plot_mapcontrol", NULL,
+                               choices = list("Add new map to to-plot list" = 1, "Update parameters of map in to-plot list" = 2,
+                                              "Plot or download map(s) in to-plot list" = 3),
+                               selected = 1)
+                )
+              )
+            ),
+
+            #-----------------------------------------------
+            conditionalPanel(
+              condition = "input.pretty_plot_mapcontrol == 1",
+              column(
+                width = 6,
+                tags$strong("2) Select predictions to add to the to-plot list and specify parameters below"),
+                fluidRow(
+                  box(
+                    width = 12,
+                    ui.instructions.multipletables.select(
+                      text.in = "add to the to-plot list:", sel.num = 1,
+                      text.other = "Map parameters will appear after you select a set of predictions."
+                    ),
+                    DTOutput("pretty_table_orig_out"),
+                    tags$br(),
+                    DTOutput("pretty_table_over_out"),
+                    tags$br(),
+                    DTOutput("pretty_table_ens_out")
+                  )
+                )
+              ),
+              column(
+                width = 4,
+                tags$strong("3) Specify map ID and add map to the to-plot list"),
+                fluidRow(
+                  box(
+                    width = 12,
+                    uiOutput("pretty_plot_toplot_add_id_uiOut_text"),
+                    tags$br(), tags$br(),
+                    uiOutput("pretty_plot_toplot_add_execute_uiOut_button"),
+                    textOutput("pretty_plot_toplot_add_text")
+                  )
+                )
+              )
+            ),
+            #-----------------------------------------------
+            conditionalPanel(
+              condition = "input.pretty_plot_mapcontrol == 2",
+              column(
+                width = 6,
+                tags$strong("2) Select map from to-plot list and update parameters below"),
+                fluidRow(
+                  box(
+                    width = 12,
+                    tags$h5(tags$strong("Select a map from the to-plot list to update:"),
+                            "Click on a row in the table below to select or deselect items.",
+                            "When you select a map from the to-plot list, the parameters will appear and will",
+                            "reflect the current saved parameters of that map."),
+                    DTOutput("pretty_plot_update_table_out")
+                  )
+                )
+              ),
+              column(
+                width = 4,
+                tags$strong("3) Click button to update saved parameters"),
+                fluidRow(
+                  box(
+                    width = 12,
+                    actionButton("pretty_plot_update_exectue", "Update map parameters"),
+                    textOutput("pretty_plot_update_text"),
+                    helpText("todo")
+                  )
+                )
+              )
+            ),
+            #-----------------------------------------------
+            conditionalPanel(
+              condition = "input.pretty_plot_mapcontrol == 3",
+              column(
+                width = 6,
+                tags$strong("2) Select map(s) in to-plot list to plot"),
+                fluidRow(
+                  box(
+                    width = 12,
+                    tags$h5(tags$strong("Select map(s) from the to-plot list to plot:"),
+                            "Click on a row in the table below to select or deselect items.",
+                            "Maps  will be plotted in order you select them, left to right, top to bottom"),
+                    DTOutput("pretty_plot_toplot_table_out")
+                  )
+                )
+              ),
+              column(
+                width = 4,
+                tags$strong("3) Specify plot dimensions and plot map"),
+                fluidRow(
+                  box(
+                    width = 12,
+                    fluidRow(
+                      column(4, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
+                      column(4, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0))
+                    ),
                     fluidRow(
                       column(
-                        width = 7,
-                        ui.instructions.multipletables.select(
-                          text.in = "add to the to-plot list:", sel.num = 1,
-                          text.other = "Then adjust the map parameters as desired in the boxes below and click the 'Add...' button"
-                        ),
-                        DTOutput("pretty_table_orig_out"),
-                        tags$br(),
-                        DTOutput("pretty_table_over_out"),
-                        tags$br(),
-                        DTOutput("pretty_table_ens_out")
-                      ),
-                      column(
-                        width = 5,
-                        uiOutput("pretty_plot_toplot_add_id_uiOut_text"),
-                        tags$br(), tags$br(),
-                        uiOutput("pretty_plot_toplot_add_execute_uiOut_button"),
-                        textOutput("pretty_plot_toplot_add_text")
-                      )
-                    )
-                  ),
-                  #-----------------------------------------------
-                  conditionalPanel(
-                    condition = "input.pretty_plot_mapcontrol == 2",
-                    fluidRow(
-                      column(
-                        width = 6,
-                        helpText("Select what you want to update. Values will refelct current values.",
-                                 "Click 'update' button to update parameters"),
-                        DTOutput("pretty_plot_update_table_out")
-                      ),
-                      column(
-                        width = 6,
-                        actionButton("pretty_plot_update_exectue", "Update map parameters"),
-                        textOutput("pretty_plot_update_text"),
-                        helpText("todo")
-                      )
-                    )
-                  ),
-                  #-----------------------------------------------
-                  conditionalPanel(
-                    condition = "input.pretty_plot_mapcontrol == 3",
-                    fluidRow(
-                      column(
-                        width = 6,
-                        helpText("Select what you want to plot. Maps will be plotted in order you select them,",
-                                 "left to right, top to bottom"),
-                        DTOutput("pretty_plot_toplot_table_out")
-                      ),
-                      column(
-                        width = 6,
-                        fluidRow(
-                          column(4, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
-                          column(4, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0))
-                        ),
-                        fluidRow(
-                          column(
-                            width = 12,
-                            actionButton("pretty_plot_plot_event", "Plot map"),
-                            textOutput("pretty_plot_plot_text"),
-                            helpText("Note that when plotting multiple maps at the same time,",
-                                     "the GUI will make the map fill the entire space above, and thus depending on the shape",
-                                     "of the map there may be extra white space around the colored prediction polygons/background")
-                          )
-                        )
+                        width = 12,
+                        actionButton("pretty_plot_plot_event", "Plot map"),
+                        textOutput("pretty_plot_plot_text"),
+                        helpText("Note that when plotting multiple maps at the same time,",
+                                 "the GUI will make the map fill the entire space above, and thus depending on the shape",
+                                 "of the map there may be extra white space around the colored prediction polygons/background")
                       )
                     )
                   )
                 )
               )
             )
+
             #   ################################################ Download map
             #   tags$strong("3) Download map"),
             #   fluidRow(
