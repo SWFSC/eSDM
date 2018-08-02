@@ -66,7 +66,7 @@ overlay_create_base_sf <- reactive({
   }
 
   #--------------------------------------------------------
-  # Make sure final version of base polygon is valid
+  # Ensure the final version of base polygon is valid
   if (!all(st_is_valid(base.sf))) {
     base.sf <- try(make_poly_valid(base.sf, "Pred"), silent = TRUE)
   }
@@ -77,6 +77,19 @@ overlay_create_base_sf <- reactive({
       need(inherits(base.sf, "sf"),
            "An error occurred during the overlay, please reload the eSDM app and try again")
   )
+
+  #--------------------------------------------------------
+  # Ensure sfc object class is polygon or multipolygon for faster plotting
+  if (!inherits(st_geometry(base.sf), c("sfc_POLYGON", "sfc_MULTIPOLYGON"))) {
+    base.sf2 <- st_cast(base.sf, "MULTIPOLYGON")
+
+    checks <- nrow(base.sf) == nrow(base.sf2) &
+      model_abundance(base.sf2, "Pred") == model_abundance(base.sf, "Pred")
+    if (unname(checks)) {
+      base.sf <- base.sf2
+    }
+    rm(base.sf2)
+  }
 
   #--------------------------------------------------------
   base.sf

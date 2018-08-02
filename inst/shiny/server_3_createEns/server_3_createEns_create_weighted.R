@@ -57,14 +57,16 @@ create_ens_weighted_manual <- reactive({
 
 ### Table of selected metrics
 create_ens_weights_metric_table <- reactive({
-  req(input$create_ens_weights_metric,
-      all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]]))
+  req(
+    input$create_ens_weights_metric,
+    all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]])
+  )
 
   # Get desired metric for desired overlaid models from eval metrics table
   eval.metrics <- table_eval_metrics()
 
   idx.col <- which(names(eval.metrics) == input$create_ens_weights_metric)
-  idx.row <- grep("Overlaid", eval.metrics$Model)
+  idx.row <- grep("Overlaid", eval.metrics$Predictions)
   idx.row <- idx.row[vals$eval.models.idx[[2]] %in% create_ens_overlaid_idx()]
 
   weights.table <- eval.metrics[idx.row, c(1, idx.col)]
@@ -142,6 +144,7 @@ create_ens_weights_pix_table <- reactive({
         anyNA(j), 0,
         sum(!(j %in% na_which(vals$overlaid.models[[i]]$Pred.overlaid)))
       )
+
     } else {
       "N/A"
     }
@@ -149,7 +152,7 @@ create_ens_weights_pix_table <- reactive({
 
   data.frame(paste("Overlaid", ens.which), ens.which.spatial.text,
              ens.which.spatial.text2, stringsAsFactors = FALSE) %>%
-    purrr::set_names(c("Model", "Has spatial weights",
+    purrr::set_names(c("Predictions", "Has spatial weights",
                        "Count of non-NA predictions with NA weight values"))
 })
 
