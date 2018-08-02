@@ -8,8 +8,8 @@ ui.prettyPlot <- function() {
       condition = "output.pretty_display_flag",
       fluidRow(
         box(
-          title = "", solidHeader = TRUE, status = "primary", height = 570, width = 12, align = "center", collapsed = TRUE,
-          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out"), type = 1)
+          title = "High Quality Maps", solidHeader = TRUE, status = "primary", height = 570, width = 12, align = "center",
+          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 500), type = 1)
         )
       ),
 
