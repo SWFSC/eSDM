@@ -40,7 +40,6 @@ pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
 # When using tmap arrange spatial plot space is filled,
 #   but a normal tmap call respects provided axis limits
 plot_pretty_top <- function(dims, idx.list, params.list) {
-  browser()
   if ((dims[1] * dims[2]) == 1) {
     k <- params.list[[1]]
     plot_pretty(
@@ -58,7 +57,7 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
       )
     })
 
-    do.call(tmap_arrange, c(tmap.list, dims))
+    do.call(tmap_arrange, c(tmap.list, dims, asp = list(NULL)))
   }
 }
 
@@ -79,8 +78,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
   #----------------------------------------------
   # Shape, fill (colorscheme), title, axis labels
   tmap.obj <- tm_shape(model.toplot, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
-    tm_fill(col = l1$data.name, style = "fixed", breaks = l1$data.breaks,
-            palette = l1$col.pal,
+    tm_fill(col = l1$data.name, style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
             title = "", labels = l1$leg.labs, legend.is.portrait = TRUE) +
     tm_layout(bg.color = background.color, legend.bg.color = "white",
               main.title = l3$title, main.title.position = "left",
