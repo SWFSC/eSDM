@@ -35,11 +35,6 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   overlap.perc <- input$overlay_grid_coverage / 100
 
-  # Set flag for if all of the sdms have the same sfc geometry list column
-  models.orig.sfc <- lapply(vals$models.orig, st_geometry)
-  samegeo.flag <- all(sapply(models.orig.sfc, identical, models.orig.sfc[[1]]))
-  rm(models.orig.sfc)
-
 
   #########################################################
   ### Model overlay process
@@ -116,36 +111,37 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
     #--------------------------------------------
     ### Create overlaid models
-    if (samegeo.flag) {
-      # Same-geometry overlay
-      models.overlaid <- lapply(models.preoverlay, function(i, j) {
-        incProgress(
-          0.9 / prog.total,
-          detail = "Overlaying original models"
-        )
-        sf.temp <- j %>%
-          dplyr::left_join(st_set_geometry(i, NULL), by = "Pixels") %>%
-          dplyr::select(Pred.overlaid = Pred, Weight.overlaid = Weight,
-                        Pixels) %>%
-          st_set_agr("constant")
-      }, dplyr::select(base.sf, Pixels))
+    base.pix <- dplyr::select(base.sf, Pixels)
+    models.orig.sfc <- lapply(vals$models.orig, st_geometry)
+    samegeo.flag <- sapply(models.orig.sfc[-base.idx], identical, models.orig.sfc[[base.idx]])
+    rm(models.orig.sfc)
 
-      temp.test <- sapply(models.overlaid, function(i) {
-        identical(base.sfc, st_geometry(i))
-      })
-      validate(
-        need(all(temp.test),
-             "Error: the eSDM was unable to overlay the original models")
+    models.overlaid <- mapply(function(samegeo.flag.ind, sdm, sdm.num) {
+      incProgress(
+        0.9 / prog.total,
+        detail = paste("Overlaying original model", sdm.num)
       )
 
-    } else {
-      # Standard overlay
-      models.overlaid <- mapply(function(sdm, prog.num, sdm.num) {
-        incProgress(
-          0.9 / prog.total,
-          detail = paste("Overlaying original model", sdm.num)
+      if (samegeo.flag.ind) {
+        print("same")
+        # SDM being overlaid has the SAME geometry as the base
+        sf.temp <- base.pix %>%
+          dplyr::left_join(st_set_geometry(sdm, NULL), by = "Pixels") %>%
+          dplyr::mutate(Pixels2 = 1:nrow(base.pix)) %>%
+          dplyr::select(Pred.overlaid = Pred, Weight.overlaid = Weight,
+                        Pixels = Pixels2) %>%
+          st_set_agr("constant")
+
+        validate(
+          need(identical(base.sfc, st_geometry(sf.temp)),
+               paste("Error: the eSDM was unable to overlay original model",
+                     sdm.num))
         )
 
+        sf.temp
+
+      } else {
+        # SDM being overlaid has a DIFFERENT geometry than the base
         temp <- try( #overlay.sdm() crops 'sdm' to bbox of 'base.sfc'
           eSDM::overlay_sdm(base.sfc, sdm, overlap.perc, c("Pred", "Weight")),
           silent = TRUE
@@ -161,10 +157,10 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
           dplyr::bind_cols(Pixels = 1:nrow(temp)) %>%
           dplyr::select(c(1, 2, 4, 3)) %>%
           st_set_agr("constant")
-      },
-      models.preoverlay, 2:(prog.total - 1),
-      seq(1, length(vals$models.ll))[-base.idx], SIMPLIFY = FALSE)
-    }
+      }
+    },
+    samegeo.flag, models.preoverlay,
+    seq(1, length(vals$models.ll))[-base.idx], SIMPLIFY = FALSE)
 
     incProgress(0.9 / prog.total, detail = "Finishing overlay process")
 

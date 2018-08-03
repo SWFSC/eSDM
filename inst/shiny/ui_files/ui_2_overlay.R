@@ -186,11 +186,11 @@ ui.overlay <- function() {
                   fluidRow(
                     box(
                       width = 12,
-                      tags$strong("1) Overlay options: choose base geometry"),
-                      tags$h5("Make your selection in the 'Imported Model Predictions' box."),
+                      tags$strong("1) Overlay options: base geometry"),
+                      tags$h5("Choose the base geometry in the 'Imported Model Predictions' box."),
                       tags$br(),
-                      tags$strong("2) Overlay options: load desired study area and erasing polygons"),
-                      tags$h5("Import these polygons in their respecitve boxes, 'Import Study Area Polygon' and 'Import Erasing Polygon'.")
+                      tags$strong("2) Overlay options: study area and erasing polygons"),
+                      tags$h5("Import these polygons in their respecitve boxes: 'Import Study Area Polygon' and 'Import Erasing Polygon'.")
                     ),
                     box(
                       width = 12,
