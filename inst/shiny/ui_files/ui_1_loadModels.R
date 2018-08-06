@@ -215,7 +215,8 @@ ui.loadModels <- function() {
                               column(3, radioButtons("model_preview_interactive_perc", tags$h5("Units"),
                                                      choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
                               column(9, tags$br(), tags$br(), uiOutput("model_preview_interactive_execute_uiOut_button"))
-                            )
+                            ),
+                            helpText("Note that if you are not connected to the internet then the background map will not display")
                           ),
                           ###################################### Plot static model preview(s)
                           conditionalPanel(
@@ -223,10 +224,7 @@ ui.loadModels <- function() {
                             fluidRow(
                               column(3, radioButtons("model_preview_perc", tags$h5("Units"),
                                                      choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
-                              column(
-                                width = 9,
-                                tags$br(), tags$br(),
-                                actionButton("model_preview_execute", "Preview selected model predictions")
+                              column(9, tags$br(), tags$br(), actionButton("model_preview_execute", "Preview selected model predictions")
                               )
                             )
                           ),
