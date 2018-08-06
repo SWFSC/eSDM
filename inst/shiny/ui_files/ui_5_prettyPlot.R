@@ -108,7 +108,7 @@ ui.prettyPlot <- function() {
                     width = 12,
                     tags$h5(tags$strong("Select map(s) from the to-plot list to plot:"),
                             "Click on a row in the table below to select or deselect items.",
-                            "Maps  will be plotted in order you select them, left to right, top to bottom"),
+                            "Maps will be plotted left to right, top to bottom, in order you select them"),
                     DTOutput("pretty_plot_toplot_table_out")
                   )
                 )

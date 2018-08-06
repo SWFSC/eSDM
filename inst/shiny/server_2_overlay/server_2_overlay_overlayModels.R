@@ -123,7 +123,6 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       )
 
       if (samegeo.flag.ind) {
-        print("same")
         # SDM being overlaid has the SAME geometry as the base
         sf.temp <- base.pix %>%
           dplyr::left_join(st_set_geometry(sdm, NULL), by = "Pixels") %>%

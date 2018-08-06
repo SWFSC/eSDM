@@ -13,11 +13,13 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
                "model predictions to add to to-plot list"))
   )
 
-  id.used <- pretty_plot_toplot_table()$Predictions
-  validate(
-    need(!(input$pretty_plot_toplot_add_id %in% id.used),
-         "Error: each map must have a unique ID")
-  )
+  if (isTruthy(vals$pretty.toplot.idx)) {
+    id.used <- pretty_plot_toplot_table()$ID
+    validate(
+      need(!(input$pretty_plot_toplot_add_id %in% id.used),
+           "Error: each map must have a unique ID")
+    )
+  }
 
   # Get/set plotting variables
   withProgress(message = "Processing map parameters", value = 0.5, {

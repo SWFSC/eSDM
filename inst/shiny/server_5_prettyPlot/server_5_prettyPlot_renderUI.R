@@ -241,7 +241,14 @@ output$pretty_plot_tick_lon_interval_uiOut_numeric <- renderUI({
 
   } else {
     range.diff <- input$pretty_plot_range_xmax - input$pretty_plot_range_xmin
-    if (range.diff >= 50) {
+    if (range.diff > 360) {
+      temp <- grDevices::axisTicks(
+        usr = c(input$pretty_plot_range_xmin, input$pretty_plot_range_xmax),
+        log = FALSE, nint = 5
+      )
+      val.def <- diff(temp)[1]
+
+    } else if (range.diff >= 50) {
       val.def <- 10
     } else if (range.diff >= 10) {
       val.def <- 5
@@ -285,7 +292,14 @@ output$pretty_plot_tick_lat_interval_uiOut_numeric <- renderUI({
 
   } else {
     range.diff <- input$pretty_plot_range_ymax - input$pretty_plot_range_ymin
-    if (range.diff >= 50) {
+    if (range.diff > 180) {
+      temp <- grDevices::axisTicks(
+        usr = c(input$pretty_plot_range_ymin, input$pretty_plot_range_ymax),
+        log = FALSE, nint = 5
+      )
+      val.def <- diff(temp)[1]
+
+    } else if (range.diff >= 50) {
       val.def <- 10
     } else if (range.diff >= 10) {
       val.def <- 5
@@ -318,7 +332,7 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
   # Get rid of ^ when multiplot is implemented
 
   model.idx.null <- #!pretty_plot_tables_null()
-  model.idx.list <- pretty_plot_models_idx_list()
+    model.idx.list <- pretty_plot_models_idx_list()
 
   ## Objects that are the same for multi- and single-map
   res.txt <- ifelse(input$pretty_plot_download_res == 1, "300ppi", "72ppi")

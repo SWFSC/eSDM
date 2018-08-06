@@ -36,29 +36,22 @@ pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
 
 
 ###############################################################################
+###############################################################################
 # Top-level function called within renderPlot() in server_render
 # When using tmap arrange spatial plot space is filled,
 #   but a normal tmap call respects provided axis limits
 plot_pretty_top <- function(dims, idx.list, params.list) {
-  if ((dims[1] * dims[2]) == 1) {
-    k <- params.list[[1]]
+  tmap.list <- lapply(params.list, function(k) {
     plot_pretty(
       k$model.toplot, k$plot.lim, k$background.color,
       k$list.titlelab, k$list.tick, k$list.colorscheme, k$list.legend,
       k$list.addobj
     )
+  })
 
-  } else {
-    tmap.list <- lapply(params.list, function(k) {
-      plot_pretty(
-        k$model.toplot, k$plot.lim, k$background.color,
-        k$list.titlelab, k$list.tick, k$list.colorscheme, k$list.legend,
-        k$list.addobj
-      )
-    })
-
-    do.call(tmap_arrange, c(tmap.list, dims, asp = list(NULL)))
-  }
+  # tmap_arrange call ~0.3s slower than just printing tmap object
+  # do.call(tmap_arrange, c(tmap.list, dims, asp = list(NULL)))
+  tmap_arrange(tmap.list, dims, asp = NULL)
 }
 
 
@@ -100,11 +93,21 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
   #----------------------------------------------
   # Grid lines and labels
   if (l4$inc) {
-    tmap.obj <- tmap.obj +
-      tm_grid(x = l4$x.vals, y = l4$y.vals, col = l4$grid.col,
-              lwd = l4$grid.lw, alpha = l4$grid.alpha,
-              labels.inside.frame = l4$grid.labs.in,
-              labels.size = l4$grid.labs.size)
+    if (st_is_longlat(model.toplot)) {
+      tmap.obj <- tmap.obj +
+        tm_grid(x = l4$x.vals, y = l4$y.vals, col = l4$grid.col,
+                lwd = l4$grid.lw, alpha = l4$grid.alpha,
+                labels.inside.frame = l4$grid.labs.in,
+                labels.size = l4$grid.labs.size,
+                labels.format = list(fun = function(i) parse(text = paste(i, "*degree"))))
+
+    } else {
+      tmap.obj <- tmap.obj +
+        tm_grid(x = l4$x.vals, y = l4$y.vals, col = l4$grid.col,
+                lwd = l4$grid.lw, alpha = l4$grid.alpha,
+                labels.inside.frame = l4$grid.labs.in,
+                labels.size = l4$grid.labs.size)
+    }
   }
 
 
