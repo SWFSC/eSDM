@@ -17,7 +17,7 @@ output$model_download_preview_execute <- downloadHandler(
       # plot.titles <- sapply(models.idx, function(i) {
       #   paste(vals$models.data.names[[i]][1], "|", vals$models.names[i])
       # })
-      plot.titles <- vals$models.names[models.idx]
+      plot.titles <- paste("Original", models.idx) #vals$models.names[models.idx]
       plot.dims <- multiplot_download(models.num)
 
 
@@ -78,10 +78,11 @@ output$ens_download_preview_execute <- downloadHandler(
 
       models.toplot <- vals$ensemble.models[models.idx]
       stopifnot(models.num == length(models.toplot))
-      plot.titles <- sapply(models.idx, function(i) {
-        paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
-              "|", vals$ensemble.overlaid.idx[i])
-      })
+      # plot.titles <- sapply(models.idx, function(i) {
+      #   paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
+      #         "|", vals$ensemble.overlaid.idx[i])
+      # })
+      plot.titles <- paste("Ensemble", models.idx)
       plot.dims <- multiplot_download(models.num)
 
 

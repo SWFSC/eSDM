@@ -15,8 +15,8 @@ observeEvent(input$model_preview_interactive_execute, {
   vals$models.plot.leaf.idx <- model.idx
   vals$models.plot.leaf <- list(
     model.toplot = vals$models.ll[[model.idx]], perc.num = perc.num,
-    plot.title = paste(vals$models.names[model.idx], "|",
-                       vals$models.data.names[[model.idx]][1]),
+    plot.title = paste("Original", model.idx),
+    # plot.title = paste(vals$models.names[model.idx], "|", vals$models.data.names[[model.idx]][1]),
     leg.title = ifelse(perc.num, "Relative prediction value",
                        "Absolute prediction value")
   )
@@ -36,9 +36,10 @@ observeEvent(input$model_preview_execute, {
   models.toplot <- vals$models.ll[models.idx]
   stopifnot(models.num == length(models.toplot))
 
-  plot.titles <- sapply(models.idx, function(i) {
-    paste(vals$models.names[i], "|", vals$models.data.names[[i]][1])
-  })
+  # plot.titles <- sapply(models.idx, function(i) {
+  #   paste(vals$models.names[i], "|", vals$models.data.names[[i]][1])
+  # })
+  plot.titles = paste("Original", models.idx)
 
   vals$models.plot.idx <- models.idx
   vals$models.plot <- list(
@@ -176,10 +177,11 @@ observeEvent(input$ens_preview_interactive_execute, {
   vals$ensemble.plot.leaf.idx <- model.idx
   vals$ensemble.plot.leaf <- list(
     model.toplot = model.toplot, perc.num = perc.num,
-    plot.title = paste(
-      vals$ensemble.method[model.idx], "|", vals$ensemble.rescaling[model.idx],
-      "|", vals$ensemble.overlaid.idx[model.idx]
-    ),
+    # plot.title = paste(
+    #   vals$ensemble.method[model.idx], "|", vals$ensemble.rescaling[model.idx],
+    #   "|", vals$ensemble.overlaid.idx[model.idx]
+    # ),
+    plot.title = paste("Ensemble", model.idx),
     leg.title = ifelse(
       perc.num, "Relative prediction value", "Absolute prediction value"
     )
@@ -212,10 +214,11 @@ observeEvent(input$ens_preview_execute, {
   models.toplot <- vals$ensemble.models[models.idx]
   stopifnot(models.num == length(models.toplot))
 
-  plot.titles <- sapply(models.idx, function(i) {
-    paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
-          "|", vals$ensemble.overlaid.idx[i])
-  })
+  # plot.titles <- sapply(models.idx, function(i) {
+  #   paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
+  #         "|", vals$ensemble.overlaid.idx[i])
+  # })
+  plot.titles <- paste("Ensemble", models.idx)
 
   vals$ensemble.plot.idx <- models.idx
   vals$ensemble.plot <- list(
