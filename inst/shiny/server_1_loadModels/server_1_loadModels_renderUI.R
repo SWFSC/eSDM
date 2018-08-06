@@ -42,7 +42,7 @@ output$model_csv_pred_type_uiOut_select <- renderUI({
 output$model_csv_names_weight_uiOut_select <- renderUI({
   req(read_model_csv())
   choice.input <- csv_names_choice_input()
-  choice.input <- c("N/A - No weight data" = 1, choice.input + 1)
+  choice.input <- c("N/A - No pixel-level spatial weight data" = 1, choice.input + 1)
   selectInput("model_csv_names_weight",
               tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = NULL)
@@ -107,7 +107,7 @@ output$model_gis_shp_pred_type_uiOut_select <- renderUI({
 output$model_gis_shp_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_shp())
   choice.input <- shp_names_choice_input()
-  choice.input <- c("N/A - No weight data" = 1, choice.input + 1)
+  choice.input <- c("N/A - No pixel-level spatial weight data" = 1, choice.input + 1)
   selectInput("model_gis_shp_names_weight",
               tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
@@ -153,7 +153,7 @@ output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
 output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
   choice.input <- gdb_names_choice_input()
-  choice.input <- c("N/A - No weight data" = 1, choice.input + 1)
+  choice.input <- c("N/A - No pixel-level spatial weight data" = 1, choice.input + 1)
   selectInput("model_gis_gdb_names_weight",
               tags$h5("Column with weight data (optional)"),
               choices = choice.input, selected = 1)
