@@ -1,8 +1,8 @@
-### Code for creating a boundary or land polygon from loaded csv data
+### Code for creating a study area or erasing polygon from loaded csv data
 
 
 ############################################################################
-# Boundary polygon
+# Study area polygon (aka boundary in code)
 
 ### Create sfc object with one polygon from csv points
 overlay_bound_csv <- reactive({
@@ -64,7 +64,7 @@ overlay_bound_csv <- reactive({
 
 
 ############################################################################
-# Land polygon
+# Erasing polygon (aka land in code)
 
 ### Create sfc object from csv points
 overlay_land_csv <- reactive({
@@ -79,8 +79,9 @@ overlay_land_csv <- reactive({
            c("text/csv", "application/vnd.ms-excel"),
          "Error: Selected file is not a csv file")
   )
-  csv.df <- read.csv(input$overlay_land_csv_file$datapath,
-                     stringsAsFactors = FALSE)
+  csv.df <- read.csv(
+    input$overlay_land_csv_file$datapath, stringsAsFactors = FALSE
+  )
 
   # Create sfc object for land polygon
   withProgress(message = 'Loading land polygon', value = 0.7, {

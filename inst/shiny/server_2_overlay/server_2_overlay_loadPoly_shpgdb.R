@@ -1,8 +1,8 @@
-### Code for loading a boundary or land polygon from shp or gdb source
+### Code for loading a study area or erasing polygon from shp or gdb source
 ## overlaid.gis.crs is in ...overlay_funcs.R
 
 ###############################################################################
-# Study area/boundary polygon
+# Study area (aka boundary) polygon
 
 ### Shapefile
 overlay_bound_gis_shp <- reactive({
@@ -67,7 +67,7 @@ overlay_bound_gis_gdb <- eventReactive(input$overlay_bound_gis_gdb_load, {
 
 
 ###############################################################################
-# Land polygon
+# Erasing (aka land) polygon
 
 ### Shapefile
 overlay_land_gis_shp <- reactive({

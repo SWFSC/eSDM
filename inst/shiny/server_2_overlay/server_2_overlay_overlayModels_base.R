@@ -97,9 +97,9 @@ overlay_create_base_sf <- reactive({
 
 
 ###############################################################################
-# Clip base and land by boundary poly using to minimize later computation
+# Clip base and erasing poly by study area poly to minimize later computation
 
-### Clip land polygon by boundary using st_crop()
+### Clip erasing polygon by study area using st_crop()
 # st_crop is used rather than st_intersection to avoid tiny slices of coastline
 overlay_clip_land_bound <- reactive({
   overlay.land  <- overlay_proj_land()
@@ -136,7 +136,7 @@ overlay_clip_land_bound <- reactive({
   }
 })
 
-### Clip base by boundary using st_intersection()
+### Clip base by study area using st_intersection()
 overlay_clip_base_bound <- reactive({
   base.sf <- overlay_proj_base()
   overlay.bound <- overlay_proj_bound()
@@ -164,7 +164,7 @@ overlay_clip_base_bound <- reactive({
 
 
 ###############################################################################
-# Ensure base, bound, and land polys are valid
+# Ensure base, erasing, and study area polys are valid
 
 ### Ensure base spdf is valid
 overlay_valid_base <- reactive({
@@ -185,7 +185,7 @@ overlay_valid_base <- reactive({
   base.sf
 })
 
-### Ensure boundary polygon is valid
+### Ensure study area polygon is valid
 overlay_valid_bound <- reactive({
   overlay.bound <- overlay_proj_bound()
 
@@ -203,7 +203,7 @@ overlay_valid_bound <- reactive({
   overlay.bound
 })
 
-### Ensure land polygon is valid
+### Ensure erasing polygon is valid
 overlay_valid_land <- reactive({
   overlay.land <- overlay_proj_land()
 
@@ -224,7 +224,7 @@ overlay_valid_land <- reactive({
 
 
 ###############################################################################
-# Project base, boundary poly, and land poly if necessary
+# Project base, study area poly, and erasing polys if necessary
 
 ### Output base model predictions in specified projection
 overlay_proj_base <- reactive({
@@ -242,7 +242,7 @@ overlay_proj_base <- reactive({
   }
 })
 
-### Output boundary polygon in specified projection
+### Output study area polygon in specified projection
 overlay_proj_bound <- reactive({
   overlay.bound <- vals$overlay.bound
 
@@ -262,7 +262,7 @@ overlay_proj_bound <- reactive({
   overlay.bound
 })
 
-### Output land polygon in specified projection
+### Output erasing polygon in specified projection
 overlay_proj_land <- reactive({
   system.time(overlay.land <- overlay_clip_land_llpre())
 
@@ -286,8 +286,8 @@ overlay_proj_land <- reactive({
 ###############################################################################
 # Prep functions; outputs used in multiple higher-level reactive functions
 
-### Crop land poly to base or boundary extent (plus 5 degrees) in crs.ll
-# ...so that projecting land poly doesn't take as long
+### Crop erasing poly to base or study area extent (plus 5 degrees) in crs.ll
+# ...so that projecting erasing poly doesn't take as long
 overlay_clip_land_llpre <- reactive({
   overlay.land  <- vals$overlay.land
   overlay.bound <- vals$overlay.bound
@@ -317,7 +317,7 @@ overlay_clip_land_llpre <- reactive({
 
     validate(
       need(overlay.land.clipll,
-           "Error in base creation: Issue with land prep") %then%
+           "Error in base creation: Issue with erasing poly prep") %then%
         need(length(overlay.land.clipll) > 0,
              paste("Error: The erasing polygon and specified base geometry",
                    "do not intersect"))
@@ -325,12 +325,6 @@ overlay_clip_land_llpre <- reactive({
   }
 
   st_union(overlay.land.clipll)
-
-  # if (isTruthy(overlay.land.clipll)) {
-  #   st_union(overlay.land.clipll)
-  # } else {
-  #   validate(need(FALSE, "Error in base creation: Issue with land prep"))
-  # }
 })
 
 ### Return a list with the crs.ll and orig crs versions of the base
@@ -339,12 +333,11 @@ overlay_base_pre <- reactive({
 
   validate(
     need(length(base.idx) == 1,
-         paste("Error: Please select exactly one model from the table",
+         paste("Error: Please select exactly one set of predictions from the table",
                "to use as the base"))
   )
 
   list(vals$models.ll[[base.idx]], vals$models.orig[[base.idx]])
-
 })
 
 
