@@ -30,57 +30,126 @@ read.shp.shiny <- function(file.in.list) {
 # TODO: What exactly to do if polygon can't be made valid -
 #   Return original poly along with ALERT about invalidity and possible errors if that polygon is used?
 
-make_poly_valid <- function(poly.invalid, dens.col = NA, poly.info = NA) {
+make_poly_valid <- function(poly.invalid, dens.col = NA, poly.info = NA, message.invalid = NA) {
   poly.maybe <- lwgeom::st_make_valid(poly.invalid)
 
-  if (!all(st_is_valid(poly.maybe))) {
-    stop("Could not make polygon valid")
-
+  #----------------------------------------------------------------------------
+  check1 <- !all(st_is_valid(poly.maybe))
+  if (inherits(poly.invalid, "sf")) {
+    check2 <- !identical(
+      class(st_geometry(poly.maybe)), class(st_geometry(poly.invalid))
+    )
   } else {
-    # Check that area wasn't changed much
-    area1 <- as.numeric(sum(st_area(poly.maybe)))
-    area.dif <- abs(as.numeric(sum(st_area(poly.maybe))) - area1)
-    stopifnot((area.dif / area1) < 0.01)
+    check2 <- !identical(class(poly.maybe), class(poly.invalid))
+  }
 
-    # Check that predicted abundance wasn't changed much
+  #----------------------------------------------------------------------------
+  if (check1 || check2) {
+    alert1 <- ifelse(
+      is.na(poly.info), "The polygon currently being processed is invalid.",
+      paste("The", pol.info, "polygon is invalid.")
+    )
+    if (!is.na(message.invalid)) {
+      alert1 <- paste(
+        alert1, "The error output was:<br>", message.invalid
+      )
+    }
+
+    alert2 <- paste(
+      "The GUI was unable to make the polygon valid using the st_make_valid() function",
+      "from the lwgeom package (see the lwgeom package documentation",
+      "for more details about this function).",
+      "You may attempt to still use this polygon in the GUI, particularly if the",
+      "invlaid region will be clipped later, but this is NOT recommended as the",
+      "invlaid polygon likely will cause errors in the GUI."
+    )
+
+    showModal(modalDialog(
+      title = "Important message - imported polygon is invalid and the GUI was unable to fix it",
+      HTML(paste0(alert1, "<br><br>", alert2))
+    ))
+
+    poly.invalid
+
+    #--------------------------------------------------------------------------
+  } else {
+    # Get area difference
+    area1 <- as.numeric(sum(st_area(poly.invalid)))
+    area.dif <- abs(as.numeric(sum(st_area(poly.maybe))) - area1)
+
+    area.dif.char <- sprintf(as.character(round(area.dif / 1e+06, 4)), "%3")
+    if (identical(area.dif.char, "0")) area.dif.char <- "0.000"
+
+    area.dif.perc.char <- sprintf(as.character(round((area.dif / area1) * 100, 4)), "%3")
+    if (identical(area.dif.perc.char, "0")) area.dif.perc.char <- "0.000"
+
+    # Get predicted abundance difference
     if (!is.na(dens.col)) {
       abund1 <- model.abundance(poly.invalid, dens.col)
       abund.dif <- model.abundance(poly.maybe, dens.col) - abund1
-      stopifnot((abund.dif / abund1) < 0.01)
+
+      abund.dif.char <- sprintf(as.character(round(abund.dif / 1e+06, 4)), "%3")
+      if (identical(abund.dif.char, "0")) abund.dif.char <- "0.000"
+
+      abund.dif.perc.char <- sprintf(as.character(round((abund.dif / abund1) * 100, 4)), "%3")
+      if (identical(abund.dif.perc.char, "0")) abund.dif.perc.char <- "0.000"
     }
 
 
     ###################################
     # Generate alert text to be displayed
-    alert1 <- ifelse(is.na(poly.info),
-                     "The polygon currently being processed was invalid.",
-                     paste("The", pol.info, "polygon was invalid."))
-    alert2 <- paste(
-      "The eSDM made the polygon valid using the st_make_valid() function",
-      "from the lwgeom package. Read more about this function here..."
+    alert1 <- ifelse(
+      is.na(poly.info), "The polygon currently being processed was invalid.",
+      paste("The", pol.info, "polygon was invalid.")
     )
+    if (!is.na(message.invalid)) {
+      alert1 <- paste(
+        alert1, "The error output was:<br>", message.invalid
+      )
+    }
+
+    alert2 <- paste(
+      "The GUI made the polygon valid using the st_make_valid() function",
+      "from the lwgeom package (see the lwgeom package documentation",
+      "for more details about this function).",
+      "You may safely continue using this object in the GUI as long as",
+      "you are comfortable with the change in area reported below.",
+      "You can use the preview functionality or export this polygon to ensure",
+      "that no unexpected changes to the geometry occurred."
+    )
+
     alert3 <- paste(
       "The difference between the area of the valid polygon and",
       "the area of the original polygon is",
-      round(area.dif / 1e+06, 2), "square km, which is",
-      round((area.dif / area1) * 100, 2),
+      area.dif.char,
+      "square km, which is",
+      area.dif.perc.char,
       "percent different than the area of the original polygon."
     )
+
     if (!is.na(dens.col)) {
       alert4 <- paste(
-        "The difference between the predicted abundance of the valid sdm",
-        "and the predicted abundance of the original sdm is",
-        round(abund.dif, 0), "animals, which is",
-        round((abund.dif / abund1) * 100, 2),
-        "percent different than the predicted abundance of the original sdm."
+        "The difference between the predicted abundance of the valid SDM",
+        "and the predicted abundance of the original SDM is",
+        abund.dif.char,
+        "animals, which is",
+        abund.dif.perc.char,
+        "percent different than the predicted abundance of the original SDM."
       )
     } else {
       alert4 <- NULL
     }
 
-    shinyjs::alert(
-      paste0(alert1, "\n\n", alert2, "\n\n", alert3, "\n\n", alert4)
-    )
+    # shinyjs::alert(
+    #   paste0(alert1, "\n\n", alert2, "\n\n", alert3, "\n\n", alert4)
+    # )
+
+    showModal(modalDialog(
+      title = "Important message - imported polygon was invalid but made valid",
+      HTML(paste0(
+        alert1, "<br><br>", alert2, "<br><br>", alert3, "<br><br>", alert4
+      ))
+    ))
 
     poly.maybe
   }
@@ -125,14 +194,6 @@ check_gis_crs <- function(x) {
       need(st_crs(x)$proj4string,
            "Error: GIS file does not have defined projection")
   )
-
-  # # Sort sf object by lat and then long so polygons are ordered bottom up
-  # coords <- data.frame(
-  #   idx = 1:nrow(x),
-  #   st_coordinates(suppressWarnings(st_centroid(x)))
-  # )
-  # idx.sorted <- data_sort(coords, 3, 2)$idx # Lat is primary sort
-  # x <- x[idx.sorted, ]
 
   if (identical(st_crs(x), crs.ll)) {
     list(x, x)
@@ -210,9 +271,13 @@ check_valid <- function(x, progress.detail = FALSE) {
     incProgress(0, detail = "Checking if polygons are valid")
   }
 
-  if (!isTruthy(all(st_is_valid(x)))) { #isTruthy() is for NA cases
+  x.valid <- st_is_valid(x, reason = TRUE)
+
+  if (!isTruthy(all(x.valid == "Valid Geometry"))) { #isTruthy() is for NA cases
     if (progress.detail) incProgress(0, detail = "Making polygons valid")
-    make_poly_valid(x)
+    x.message <- x.valid[x.valid != "Valid Geometry"]
+
+    make_poly_valid(x, message.invalid = x.message)
   } else {
     x
   }
@@ -220,8 +285,7 @@ check_valid <- function(x, progress.detail = FALSE) {
 
 
 #------------------------------------------------------------------------------
-check_pred_weight <- function(x, pred.idx, weight.idx, pred.na.idx,
-                              weight.na.idx) {
+check_pred_weight <- function(x, pred.idx, weight.idx, pred.na.idx, weight.na.idx) {
   stopifnot(inherits(pred.idx, c("numeric", "integer")))
   if (inherits(x, "sf")) {
     x.orig <- x
