@@ -165,8 +165,9 @@ observeEvent(input$pretty_plot_color_palette, {
 
 
 ###############################################################################
-# Coordinate grid line and labels
+# Legend
 
+# Legend position
 output$pretty_plot_legend_pos_uiOut_select <- renderUI({
   if (input$pretty_plot_legend_inout == 1) {
     choices.list <- list(
@@ -183,6 +184,17 @@ output$pretty_plot_legend_pos_uiOut_select <- renderUI({
 
   selectInput("pretty_plot_legend_pos", tags$h5("Legend position"),
               choices = choices.list, selected = 1)
+})
+
+# Legend width
+output$pretty_plot_legend_width_uiOut_numeric <- renderUI({
+  if (input$pretty_plot_legend_inout == 1) {
+    helpText("The legend width will be determined by the 'Legend text size' input")
+
+  } else {
+    numericInput("pretty_plot_legend_width", tags$h5("Legend width"),
+                 value = 0.2, min = 0.1, max = 0.5, step = 0.05)
+  }
 })
 
 

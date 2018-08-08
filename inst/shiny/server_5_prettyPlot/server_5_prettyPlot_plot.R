@@ -81,11 +81,20 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
 
   #----------------------------------------------
   # Legend
-  if (l4$inc) {
-    tmap.obj <- tmap.obj +
-      tm_legend(show = TRUE, outside = l2$out, position = l2$pos,
-                outside.position = l2$out.pos, text.size = l2$text.size,
-                frame = l2$border)
+  if (l2$inc) {
+    if (l2$out) {
+      tmap.obj <- tmap.obj +
+        tm_legend(show = TRUE, outside = TRUE, outside.position = l2$out.pos,
+                  text.size = l2$text.size, outside.size = l2$width,
+                  frame = l2$border)
+
+    } else {
+      tmap.obj <- tmap.obj +
+        tm_legend(show = TRUE, outside = FALSE, position = l2$pos,
+                  text.size = l2$text.size, width = l2$width,
+                  frame = l2$border)
+    }
+
   } else {
     tmap.obj <- tmap.obj + tm_legend(show = FALSE)
   }

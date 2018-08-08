@@ -445,7 +445,7 @@ output$pretty_plot_plot_out <- renderPlot({
   p.list <- vals$pretty.plot
   validate(
     need(p.list, "High quality map(s) will be displayed here"),
-    errorClass = "validation2"
+    errorClass = "validation3"
   )
 
   plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)

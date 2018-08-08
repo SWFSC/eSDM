@@ -30,9 +30,9 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     background.color <- input$pretty_plot_background_color
     incProgress(0.1)
 
-    list.titlelab    <- pretty_plot_titlelab_list()
     list.colorscheme <- pretty_plot_colorscheme_list()
     list.legend      <- pretty_plot_legend_list()
+    list.titlelab    <- pretty_plot_titlelab_list()
     list.tick        <- pretty_plot_tick_list()
     incProgress(0.1)
 

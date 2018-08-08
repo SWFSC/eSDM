@@ -84,13 +84,18 @@ ui <- dashboardPage(
         .shiny-output-error-validation2 {
         color: red; font-weight: normal;
         }
+      ")),
+      tags$style(HTML("
+        .shiny-output-error-validation3 {
+        color: blue; font-weight: normal;
+        }
       "))
     ),
 
     ### UI code separated by tabs
     tabItems(
       ui.roadmap(),      # eSDM Roadmap and Load or Save Session
-      ui.loadModels(),   # Load Model Predictions
+      ui.loadModels(),   # Import Model Predictions
       ui.overlay(),      # Overlay Model Predictions
       ui.createEns(),    # Create Ensemble
       ui.evalMetrics(),  # Evaluation Metrics

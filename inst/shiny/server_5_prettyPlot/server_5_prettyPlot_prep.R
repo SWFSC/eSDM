@@ -205,27 +205,34 @@ pretty_plot_legend_list <- reactive({
   if (input$pretty_plot_legend) {
     if (input$pretty_plot_legend_inout == 1) {
       leg.out <- FALSE
-      leg.pos <- NULL
-      leg.outside.pos <- switch(
+      leg.pos <- switch(
         as.numeric(input$pretty_plot_legend_pos),
         c("left", "top"), c("center", "top"), c("right", "top"),
         c("right", "center"),
         c("right", "bottom"), c("center", "bottom"), c("left", "bottom"),
         c("left", "center")
       )
+      leg.outside.pos <- NULL
+      leg.width <- 1
 
     } else{ #input$pretty_plot_legend_inout == 2
       leg.out <- TRUE
-      leg.pos <- input$pretty_plot_legend_pos
-      leg.outside.pos <- NULL
+      leg.pos <- NULL
+      leg.outside.pos <- input$pretty_plot_legend_pos
+      leg.width <- input$pretty_plot_legend_width
+
+      validate(
+        need(dplyr::between(leg.width, 0.1, 0.5),
+             "The 'Legend width' value must be between 0.1 and 0.5")
+      )
     }
 
     leg.text.size <- input$pretty_plot_legend_size
-    leg.border <- ifelse(input$pretty_plot_legend_frame, "black", FALSE)
+    leg.border    <- ifelse(input$pretty_plot_legend_frame, "black", FALSE)
 
     list(
       inc = TRUE, out = leg.out, pos = leg.pos, out.pos = leg.outside.pos,
-      text.size = leg.text.size, border = leg.border
+      text.size = leg.text.size, width = leg.width, border = leg.border
     )
 
   } else {

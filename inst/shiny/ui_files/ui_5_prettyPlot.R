@@ -128,9 +128,7 @@ ui.prettyPlot <- function() {
                         width = 12,
                         actionButton("pretty_plot_plot_event", "Plot map"),
                         textOutput("pretty_plot_plot_text"),
-                        helpText("Note that when plotting multiple maps at the same time,",
-                                 "the GUI will make the map fill the entire space above, and thus depending on the shape",
-                                 "of the map there may be extra white space around the colored prediction polygons/background")
+                        helpText("Note that plotting may take several minutes depending on map size and the number of maps being plotted")
                       )
                     )
                   )
@@ -264,32 +262,32 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    fluidRow(
-                      column(6, checkboxInput("pretty_plot_legend", "Include legend with the map", value = TRUE)),
-                      column(
-                        width = 6,
-                        conditionalPanel(
-                          condition = "input.pretty_plot_legend && input.pretty_plot_color_perc == 2",
-                          numericInput("pretty_plot_legend_round", tags$h5("Legend labels: number of decimals"),
-                                       value = 3, min = 1, step = 1)
-                        )
-                      )
-                    ),
+                    checkboxInput("pretty_plot_legend", "Include legend with the map", value = TRUE),
                     conditionalPanel(
                       condition = "input.pretty_plot_legend",
                       fluidRow(
+                        column(6, radioButtons("pretty_plot_legend_inout", tags$h5("Place legend:"),
+                                               choices = list("Inside map frame" = 1, "Outside map frame" = 2), selected = 1)),
+                        column(6, uiOutput("pretty_plot_legend_pos_uiOut_select"))
+                      ),
+                      conditionalPanel(
+                        condition = "input.pretty_plot_legend_inout == 2",
+                        helpText("Legend width is the horizontal proportion of the plot window taken up by the legend")
+                      ),
+                      fluidRow(
+                        column(6, uiOutput("pretty_plot_legend_width_uiOut_numeric")),
+                        column(6, numericInput("pretty_plot_legend_size", tags$h5("Legend text size"),
+                                               value = 1.0, min = 0.1, step = 0.1))
+                      ),
+                      fluidRow(
+                        column(6, checkboxInput("pretty_plot_legend_frame", "Include frame around legend", value = TRUE)),
                         column(
                           width = 6,
-                          radioButtons("pretty_plot_legend_inout", tags$h5("Place legend:"),
-                                       choices = list("Inside map frame" = 1, "Outside map frame" = 2), selected = 1),
-                          numericInput("pretty_plot_legend_size", tags$h5("Legend size"),
-                                       value = 0.7, min = 0.1, step = 0.1)
-                        ),
-                        column(
-                          width = 6,
-                          uiOutput("pretty_plot_legend_pos_uiOut_select"),
-                          tags$br(), tags$br(),
-                          checkboxInput("pretty_plot_legend_frame", "Include frame around legend", value = TRUE)
+                          conditionalPanel(
+                            condition = "input.pretty_plot_color_perc == 2",
+                            numericInput("pretty_plot_legend_round", tags$h5("Legend labels: number of decimals"),
+                                         value = 3, min = 1, step = 1)
+                          )
                         )
                       )
                     )
@@ -352,7 +350,7 @@ ui.prettyPlot <- function() {
                           width = 6,
                           uiOutput("pretty_plot_tick_lon_interval_uiOut_numeric"),
                           uiOutput("pretty_plot_tick_lat_interval_uiOut_numeric"),
-                          colourpicker::colourInput("pretty_plot_tick_color", tags$h5("Click to select color for coordiante grid lines"),
+                          colourpicker::colourInput("pretty_plot_tick_color", tags$h5("Click to select color for coordinate grid lines"),
                                                     value = "#D6D6D6", showColour = "background")
                         )
                       ),
