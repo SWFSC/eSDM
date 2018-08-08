@@ -428,16 +428,25 @@ output$pretty_plot_plot_text <- renderText({
 })
 
 #----------------------------------------------------------
+# Additional object section
+### Text output for adding additional object
+output$pretty_plot_addobj_add_out <- renderText(pretty_plot_addobj_add())
+
+### Text output for removing additional objects
+output$pretty_plot_addobj_remove_out <- renderText(pretty_plot_addobj_remove())
+
+### Table of 'added' additional objects
+output$pretty_plot_addobj_table_out <- renderDT({
+  pretty_plot_addobj_table()
+}, options = dt.list, rownames = FALSE)
+
+
+#----------------------------------------------------------
 # Other outputs
 
 ### Color wheel for preview of color palette
 output$pretty_plot_color_preview_plot <- renderPlot({
   pretty_plot_color_preview()
-})
-
-### Table of 'added' additional polys
-output$pretty_plot_addobj_table_out <- renderTable({
-  pretty_plot_addobj_table()
 })
 
 ### Pretty plot

@@ -383,31 +383,57 @@ ui.prettyPlot <- function() {
               ################################################## Additional polygons and points
               column(
                 width = 4,
-                tags$strong("Additional polygons or points"),
+                tags$strong("Additional objects (points or polygons)"),
                 fluidRow(
                   box(
                     width = 12,
-                    checkboxInput("pretty_plot_addobj", "Include additional polygons in map", value = FALSE),
+                    checkboxInput("pretty_plot_addobj",
+                                  "Include additional objects in map; uncheck this box to remove all additional objects",
+                                  value = FALSE),
                     conditionalPanel(
                       condition = "input.pretty_plot_addobj",
-                      uiOutput("pretty_plot_addobj_which_uiOut_message"),
+
+                      #----------------------------------------
+                      column(12, tags$h5("Loaded additional object(s)")),
                       box(
                         width = 12,
-                        tags$h5("Loaded object(s)"),
-                        tableOutput("pretty_plot_addobj_table_out")
+                        DTOutput("pretty_plot_addobj_table_out"),
+                        tags$br(), tags$br(),
+                        uiOutput("pretty_plot_addobj_remove_execute_uiOut_button"),
+                        textOutput("pretty_plot_addobj_remove_out")
                       ),
+
+                      #----------------------------------------
+                      column(12, tags$h5("New additional object")),
                       box(
                         width = 12,
-                        tags$h5("Add object"),
                         uiOutput("pretty_plot_addobj_which_uiOut_select"),
-                        fluidRow(
-                          column(6, uiOutput("pretty_plot_addobj_color_uiOut_colour")),
-                          column(6, uiOutput("pretty_plot_addobj_cex_uiOut_numeric"))
+                        conditionalPanel(
+                          condition = "input.pretty_plot_addobj_which == 4",
+                          box(
+                            width = 12,
+                            helpText("load stuff todo")
+                          )
                         ),
                         fluidRow(
-                          column(6, uiOutput("pretty_plot_addobj_order_uiOut_radio")),
-                          column(6, uiOutput("pretty_plot_addobj_execute_uiOut_button"))
-                        )
+                          column(6, uiOutput("pretty_plot_addobj_type_uiOut_radio")),
+                          column(6, radioButtons("pretty_plot_addobj_order", tags$h5("Draw object before or after SDM:"),
+                                                 choices = list("Before" = 1, "After" = 2), selected = 2))
+                        ),
+                        fluidRow(
+                          column(6, uiOutput("pretty_plot_addobj_color_ptfillcheck_uiOut_check")),
+                          column(6, uiOutput("pretty_plot_addobj_color_absbordercheck_uiOut_check"))
+                        ),
+                        fluidRow(
+                          column(6, column(12, uiOutput("pretty_plot_addobj_color_ptfill_uiOut_colour"))),
+                          column(6, column(12, uiOutput("pretty_plot_addobj_color_absborder_uiOut_colour")))
+                        ),
+                        fluidRow(
+                          column(6, uiOutput("pretty_plot_addobj_pchlty_uiOut_select")),
+                          column(6, uiOutput("pretty_plot_addobj_cexlwd_uiOut_numeric"))
+                        ),
+                        actionButton("pretty_plot_addobj_add_execute", "Add additional object"),
+                        textOutput("pretty_plot_addobj_add_out")
                       )
                     )
                   )
