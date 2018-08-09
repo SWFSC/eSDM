@@ -45,7 +45,7 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
     plot_pretty(
       k$model.toplot, k$plot.lim, k$background.color,
       k$list.titlelab, k$list.tick, k$list.colorscheme, k$list.legend,
-      k$list.addobj
+      k$list.addobj.pre, k$list.addobj.post
     )
   })
 
@@ -59,20 +59,54 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
 # Returns individual tmap objects
 plot_pretty <- function(model.toplot, plot.lim, background.color,
                         list.titlelab, list.tick, list.colorscheme,
-                        list.legend, list.addobj) {
+                        list.legend, list.addobj.pre, list.addobj.post) {
   #----------------------------------------------
   # For ease of calling / sake of space
   l1 <- list.colorscheme
   l2 <- list.legend
   l3 <- list.titlelab
   l4 <- list.tick
-  # l5 <- list.addobj
+  l5a <- list.addobj.pre
+  l5b <- list.addobj.post
+
+  #----------------------------------------------
+  # Additional objects - pre
+  if (isTruthy(l5a)) {
+    for (i in l5a) {
+      if (j$obj.text == "Validation data points") { # special due to 2 colors
+        tmap.obj <- tm_shape(j$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+          tm_dots(col = "sight", palette = c(j$col.ptfill, j$col.absborder),
+                  shape = j$pchlty, size = j$cexlwd, legend.show = FALSE)
+
+      } else if (j$obj.type == 1) { #pts
+        tmap.obj <- tm_shape(j$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+          tm_dots(col = j$col.ptfill, shape = j$pchlty, size = j$cexlwd,
+                  legend.show = FALSE)
+
+      } else { #polys
+        tmap.obj <- tm_shape(i$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+          tm_polygons(col = i$col.ptfill, border.col = i$col.absborder,
+                      alpha = ifelse(is.na(i$col.ptfill), 0, 1),
+                      lty = i$pchlty, lwd = i$cexlwd)
+      }
+    }
+  }
 
   #----------------------------------------------
   # Shape, fill (colorscheme), title, axis labels
-  tmap.obj <- tm_shape(model.toplot, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
-    tm_fill(col = l1$data.name, style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
-            title = "", labels = l1$leg.labs, legend.is.portrait = TRUE) +
+  if (exists("tmap.obj")) {
+    tmap.obj <- tmap.obj +
+      tm_shape(model.toplot) +
+      tm_fill(col = l1$data.name, style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
+              title = "", labels = l1$leg.labs, legend.is.portrait = TRUE)
+
+  } else {
+    tmap.obj <- tm_shape(model.toplot, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+      tm_fill(col = l1$data.name, style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
+              title = "", labels = l1$leg.labs, legend.is.portrait = TRUE)
+  }
+
+  tmap.obj <- tmap.obj +
     tm_layout(bg.color = background.color, legend.bg.color = "white",
               main.title = l3$title, main.title.position = "left",
               main.title.size = l3$titlecex) +
@@ -119,6 +153,31 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
     }
   }
 
+  #----------------------------------------------
+  # Additional objects - post
+  if (isTruthy(l5b)) {
+    for (j in l5b) {
+      if (j$obj.text == "Validation data points") { # special due to 2 colors
+        tmap.obj <- tmap.obj +
+          tm_shape(j$obj) +
+          tm_dots(col = "sight", palette = c(j$col.ptfill, j$col.absborder),
+                  shape = j$pchlty, size = j$cexlwd, legend.show = FALSE)
+
+      } else if (j$obj.type == 1) { #pts
+        tmap.obj <- tmap.obj +
+          tm_shape(j$obj) +
+          tm_dots(col = j$col.ptfill, shape = j$pchlty, size = j$cexlwd,
+                  legend.show = FALSE)
+
+      } else { #polys
+        tmap.obj <- tmap.obj +
+          tm_shape(j$obj) +
+          tm_polygons(col = j$col.ptfill, border.col = j$col.absborder,
+                      alpha = ifelse(is.na(j$col.ptfill), 0, 1),
+                      lty = j$pchlty, lwd = j$cexlwd)
+      }
+    }
+  }
 
   #----------------------------------------------
   tmap.obj

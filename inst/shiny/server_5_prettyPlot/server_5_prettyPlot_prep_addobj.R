@@ -2,6 +2,9 @@
 # Functions; renderUI's below
 
 #------------------------------------------------------------------------------
+#pretty_plot_addobj_list() is in sever_5_prettyPlot_prep.R
+
+#------------------------------------------------------------------------------
 observeEvent(input$pretty_plot_addobj, {
   if (!input$pretty_plot_addobj) vals$pretty.addobj <- NULL
 })
@@ -55,7 +58,7 @@ pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
       pre.sdm = input$pretty_plot_addobj_order == 1,
       col.ptfill = addobj.col.ptfill,
       col.absborder = addobj.col.absborder,
-      pchlty = input$pretty_plot_addobj_pchlty,
+      pchlty = as.numeric(input$pretty_plot_addobj_pchlty),
       cexlwd = input$pretty_plot_addobj_cexlwd
     ))
   )
@@ -357,7 +360,7 @@ output$pretty_plot_addobj_cexlwd_uiOut_numeric <- renderUI({
     "Point size", "Line width of polygon border(s)"
   )
   input.default <- switch(
-    as.numeric(input$pretty_plot_addobj_which), 1.5, 0.3, 1, 1
+    as.numeric(input$pretty_plot_addobj_which), 1.5, 0.3, 0.5, 1
   )
 
   # if (input$pretty_plot_addobj_which == 4) {

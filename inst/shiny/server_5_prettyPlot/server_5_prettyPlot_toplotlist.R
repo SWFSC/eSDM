@@ -36,12 +36,10 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     list.tick        <- pretty_plot_tick_list()
     incProgress(0.1)
 
-    list.addobj <- NULL
-    # list.addobj <- lapply(vals$pretty.addobj, function(i) {
-    #   c(obj.sfc = list(st_geometry(st_transform(i$obj, st_crs(model.toplot)))),
-    #     i[2:5])
-    # })
-    incProgress(0.3)
+    list.addobj.pre  <- pretty_plot_addobj_pre_list()
+    incProgress(0.1)
+    list.addobj.post <- pretty_plot_addobj_post_list()
+    incProgress(0.2)
   })
 
   # Save plot parameters to reactive values
@@ -51,7 +49,7 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     background.color = background.color,
     list.titlelab = list.titlelab, list.tick = list.tick,
     list.colorscheme = list.colorscheme, list.legend = list.legend,
-    list.addobj = list.addobj,
+    list.addobj.pre = list.addobj.pre, list.addobj.post = list.addobj.post,
     id = input$pretty_plot_toplot_add_id
   )
   vals$pretty.params.toplot <- c(vals$pretty.params.toplot, list(params.list))

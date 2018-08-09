@@ -286,9 +286,62 @@ pretty_plot_tick_list <- reactive({
 
 
 ###############################################################################
-### Generate list of additional polygons to plot
-pretty_plot_addpolys_list <- reactive({
+### Generate lists of additional objects to plot
+pretty_plot_addobj_pre_list <- reactive({
+  if (!isTruthy(vals$pretty.addobj)) return()
 
+  addobj.pre <- lapply(vals$pretty.addobj, function(i) {
+    if (i$pre.sdm) {
+      obj.temp <- i$obj
+      if (!identical(st_crs(obj.temp), pretty_plot_crs_selected())) {
+        obj.temp <- st_transform(obj.temp, pretty_plot_crs_selected())
+      }
+
+      obj.temp <- suppressMessages(
+        st_intersection(obj.temp, pretty_plot_range_poly()[[2]])
+      )
+
+      i$obj <- obj.temp
+      i
+    } else {
+      NA
+    }
+  })
+
+  if (length(addobj.pre) == 1) {
+    if (!isTruthy(addobj.pre[[1]])) return()
+  }
+
+  addobj.pre[!is.na(addobj.pre)]
+})
+
+
+pretty_plot_addobj_post_list <- reactive({
+  if (!isTruthy(vals$pretty.addobj)) return()
+
+  addobj.post <- lapply(vals$pretty.addobj, function(i) {
+    if (!i$pre.sdm) {
+      obj.temp <- i$obj
+      if (!identical(st_crs(obj.temp), pretty_plot_crs_selected())) {
+        obj.temp <- st_transform(obj.temp, pretty_plot_crs_selected())
+      }
+
+      obj.temp <- suppressMessages(
+        st_intersection(obj.temp, pretty_plot_range_poly()[[2]])
+      )
+
+      i$obj <- obj.temp
+      i
+    } else {
+      NA
+    }
+  })
+
+  if (length(addobj.post) == 1) {
+    if (!isTruthy(addobj.post[[1]])) return()
+  }
+
+  addobj.post[!is.na(addobj.post)]
 })
 
 ###############################################################################
