@@ -36,26 +36,43 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     list.tick        <- pretty_plot_tick_list()
     incProgress(0.1)
 
-    list.addobj.pre  <- pretty_plot_addobj_pre_list()
-    incProgress(0.1)
-    list.addobj.post <- pretty_plot_addobj_post_list()
-    incProgress(0.2)
-  })
+    if (input$pretty_plot_addobj) {
+      validate(
+        need(vals$pretty.addobj,
+             paste("Error: Please either load additional objects or uncheck",
+                   "the 'Include addition objects box'"))
+      )
 
-  # Save plot parameters to reactive values
-  vals$pretty.params.update <- c(vals$pretty.params.update, pretty_plot_update_prep())
-  params.list <- list(
-    model.toplot = model.toplot, plot.lim = plot.lim,
-    background.color = background.color,
-    list.titlelab = list.titlelab, list.tick = list.tick,
-    list.colorscheme = list.colorscheme, list.legend = list.legend,
-    list.addobj.pre = list.addobj.pre, list.addobj.post = list.addobj.post,
-    id = input$pretty_plot_toplot_add_id
-  )
-  vals$pretty.params.toplot <- c(vals$pretty.params.toplot, list(params.list))
-  vals$pretty.toplot.idx <- c(
-    vals$pretty.toplot.idx, list(pretty_plot_models_idx_list())
-  )
+      addobj.pre.bool  <- pretty_plot_addobj_preflag()
+      list.addobj.pre  <- pretty_plot_addobj_list()[addobj.pre.bool]
+      incProgress(0.1)
+      list.addobj.post <- pretty_plot_addobj_list()[!addobj.pre.bool]
+      incProgress(0.2)
+
+    } else {
+      list.addobj.pre  <- list() # To keep consistent with above behavior
+      list.addobj.post <- list()
+      incProgress(0.3)
+    }
+
+
+    # Save plot parameters to reactive values
+    vals$pretty.params.update <- c(vals$pretty.params.update, pretty_plot_update_prep())
+    vals$pretty.params.toplot <- c(
+      vals$pretty.params.toplot,
+      list(list(
+        model.toplot = model.toplot, plot.lim = plot.lim,
+        background.color = background.color,
+        list.titlelab = list.titlelab, list.tick = list.tick,
+        list.colorscheme = list.colorscheme, list.legend = list.legend,
+        list.addobj.pre = list.addobj.pre, list.addobj.post = list.addobj.post,
+        id = input$pretty_plot_toplot_add_id
+      ))
+    )
+    vals$pretty.toplot.idx <- c(
+      vals$pretty.toplot.idx, list(pretty_plot_models_idx_list())
+    )
+  })
 
   paste0("'", input$pretty_plot_toplot_add_id, "' added to to-plot list")
 })

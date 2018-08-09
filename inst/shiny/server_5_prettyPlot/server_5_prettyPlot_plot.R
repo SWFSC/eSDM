@@ -71,26 +71,25 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
 
   #----------------------------------------------
   # Additional objects - pre
-  if (isTruthy(l5a)) {
-    for (i in l5a) {
-      if (j$obj.text == "Validation data points") { # special due to 2 colors
-        tmap.obj <- tm_shape(j$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
-          tm_dots(col = "sight", palette = c(j$col.ptfill, j$col.absborder),
-                  shape = j$pchlty, size = j$cexlwd, legend.show = FALSE)
+  for (i in l5a) { #l5a will be list() if empty and thus won't enter for() loop
+    if (i$obj.text == "Validation data points") { # special due to 2 colors
+      tmap.obj <- tm_shape(i$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+        tm_dots(col = "sight", palette = c(i$col.ptfill, i$col.absborder),
+                shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
 
-      } else if (j$obj.type == 1) { #pts
-        tmap.obj <- tm_shape(j$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
-          tm_dots(col = j$col.ptfill, shape = j$pchlty, size = j$cexlwd,
-                  legend.show = FALSE)
+    } else if (i$obj.type == 1) { #pts
+      tmap.obj <- tm_shape(i$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+        tm_dots(col = i$col.ptfill, shape = i$pchlty, size = i$cexlwd,
+                legend.show = FALSE)
 
-      } else { #polys
-        tmap.obj <- tm_shape(i$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
-          tm_polygons(col = i$col.ptfill, border.col = i$col.absborder,
-                      alpha = ifelse(is.na(i$col.ptfill), 0, 1),
-                      lty = i$pchlty, lwd = i$cexlwd)
-      }
+    } else { #polys
+      tmap.obj <- tm_shape(i$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+        tm_polygons(col = i$col.ptfill, border.col = i$col.absborder,
+                    alpha = ifelse(is.na(i$col.ptfill), 0, 1),
+                    lty = i$pchlty, lwd = i$cexlwd)
     }
   }
+  rm(i)
 
   #----------------------------------------------
   # Shape, fill (colorscheme), title, axis labels
@@ -155,29 +154,28 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
 
   #----------------------------------------------
   # Additional objects - post
-  if (isTruthy(l5b)) {
-    for (j in l5b) {
-      if (j$obj.text == "Validation data points") { # special due to 2 colors
-        tmap.obj <- tmap.obj +
-          tm_shape(j$obj) +
-          tm_dots(col = "sight", palette = c(j$col.ptfill, j$col.absborder),
-                  shape = j$pchlty, size = j$cexlwd, legend.show = FALSE)
+  for (j in l5b) { #l5b will be list() if empty and thus won't enter for() loop
+    if (j$obj.text == "Validation data points") { # special due to 2 colors
+      tmap.obj <- tmap.obj +
+        tm_shape(j$obj) +
+        tm_dots(col = "sight", palette = c(j$col.ptfill, j$col.absborder),
+                shape = j$pchlty, size = j$cexlwd, legend.show = FALSE)
 
-      } else if (j$obj.type == 1) { #pts
-        tmap.obj <- tmap.obj +
-          tm_shape(j$obj) +
-          tm_dots(col = j$col.ptfill, shape = j$pchlty, size = j$cexlwd,
-                  legend.show = FALSE)
+    } else if (j$obj.type == 1) { #pts
+      tmap.obj <- tmap.obj +
+        tm_shape(j$obj) +
+        tm_dots(col = j$col.ptfill, shape = j$pchlty, size = j$cexlwd,
+                legend.show = FALSE)
 
-      } else { #polys
-        tmap.obj <- tmap.obj +
-          tm_shape(j$obj) +
-          tm_polygons(col = j$col.ptfill, border.col = j$col.absborder,
-                      alpha = ifelse(is.na(j$col.ptfill), 0, 1),
-                      lty = j$pchlty, lwd = j$cexlwd)
-      }
+    } else { #polys
+      tmap.obj <- tmap.obj +
+        tm_shape(j$obj) +
+        tm_polygons(col = j$col.ptfill, border.col = j$col.absborder,
+                    alpha = ifelse(is.na(j$col.ptfill), 0, 1),
+                    lty = j$pchlty, lwd = j$cexlwd)
     }
   }
+  rm(j)
 
   #----------------------------------------------
   tmap.obj
