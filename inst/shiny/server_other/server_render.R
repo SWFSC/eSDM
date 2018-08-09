@@ -438,7 +438,7 @@ output$pretty_plot_addobj_remove_out <- renderText(pretty_plot_addobj_remove())
 ### Table of 'added' additional objects
 output$pretty_plot_addobj_table_out <- renderDT({
   pretty_plot_addobj_table()
-}, options = dt.list, rownames = FALSE)
+}, options = dt.list, selection = "single", rownames = FALSE)
 
 
 #----------------------------------------------------------
