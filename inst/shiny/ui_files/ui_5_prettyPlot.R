@@ -424,7 +424,11 @@ ui.prettyPlot <- function() {
                                        "For polygons objects, multiple polygons may be demarcated rows with blank cells",
                                        "or cells with 'NA' entries"),
                               fileInput("pretty_plot_addobj_own_csv_file", label.csv.upload, accept = ".csv"),
-                              conditionalPanel("output.pretty_plot_addobj_own_csv_flag == false", ui.error.upload.csv)
+                              conditionalPanel("output.pretty_plot_addobj_own_csv_flag == false", ui.error.upload.csv),
+                              conditionalPanel(
+                                condition = "output.pretty_plot_addobj_own_csv_flag",
+                                tags$span(tags$h5("Object uploaded"), style = "color: blue")
+                              )
                             ),
                             # ############## File type: raster
                             # conditionalPanel(
@@ -437,24 +441,36 @@ ui.prettyPlot <- function() {
                             conditionalPanel (
                               condition = "input.pretty_plot_addobj_own_type == 2",
                               ui.instructions.upload.shp(),
-                              fileInput("pretty_plot_addobj_own_shp_files", label.shp.upload, multiple = TRUE)
-                              # conditionalPanel("output.create_ens_weights_poly_shp_flag == false", ui.error.upload.shp)
+                              fileInput("pretty_plot_addobj_own_shp_files", label.shp.upload, multiple = TRUE),
+                              conditionalPanel("output.pretty_plot_addobj_own_shp_flag == false", ui.error.upload.shp),
+                              conditionalPanel(
+                                condition = "output.pretty_plot_addobj_own_shp_flag",
+                                tags$span(tags$h5("Object uploaded"), style = "color: blue")
+                              )
                             ),
                             ############## File type: gdb
                             conditionalPanel(
                               condition = "input.pretty_plot_addobj_own_type == 3",
                               ui.instructions.upload.gdb(),
                               fluidRow(
-                                column(6, textInput("create_ens_weights_poly_gdb_path", label.gdb.path, value = ".../folder.gdb")),
-                                column(6, textInput("create_ens_weights_poly_gdb_name", label.gdb.name, value = ""))
+                                column(6, textInput("pretty_plot_addobj_own_gdb_path", label.gdb.path, value = ".../folder.gdb")),
+                                column(6, textInput("pretty_plot_addobj_own_gdb_name", label.gdb.name, value = ""))
                               ),
                               fluidRow(
-                                column(6, actionButton("create_ens_weights_poly_gdb_load", "Upload")),
-                                column(6, conditionalPanel("output.create_ens_weights_poly_gdb_flag == false", ui.error.upload.gdb))
+                                column(6, actionButton("pretty_plot_addobj_own_gdb_load", "Upload")),
+                                column(
+                                  width = 6,
+                                  conditionalPanel("output.pretty_plot_addobj_own_gdb_flag == false", ui.error.upload.gdb),
+                                  conditionalPanel(
+                                    condition = "output.pretty_plot_addobj_own_gdb_flag",
+                                    tags$span(tags$h5("Object uploaded"), style = "color: blue")
+                                  )
+                                )
                               )
                             )
                           )
                         ),
+
                         fluidRow(
                           column(6, uiOutput("pretty_plot_addobj_type_uiOut_radio")),
                           column(6, radioButtons("pretty_plot_addobj_order", tags$h5("Draw object before or after SDM:"),
@@ -473,7 +489,8 @@ ui.prettyPlot <- function() {
                           column(6, uiOutput("pretty_plot_addobj_cexlwd_uiOut_numeric"))
                         ),
                         actionButton("pretty_plot_addobj_add_execute", "Add additional object"),
-                        textOutput("pretty_plot_addobj_add_out")
+                        textOutput("pretty_plot_addobj_add_out"),
+                        helpText("Loaded additional objects will appear in the 'Loaded additional polygons' table above")
                       )
                     )
                   )

@@ -18,13 +18,16 @@ pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
   #------------------------------------
   if (input$pretty_plot_addobj_which == 4) {
     if (input$pretty_plot_addobj_own_type == 1) {
-      addobj.obj      <- pretty_plot_addobj_own_csv_process()[[1]]
-      addobj.obj.text <- pretty_plot_addobj_own_csv_process()[[2]]
+      addobj.obj      <- pretty_plot_addobj_own_csv_process()
+      addobj.obj.text <- pretty_plot_addobj_own_csv_read()[[2]]
 
-    } else {
-      # TODO
-      addobj.obj <- NULL
-      addobj.obj.text <- "personal - todo"
+    } else if (input$pretty_plot_addobj_own_type == 2) {
+      addobj.obj      <- req(pretty_plot_addobj_own_shp_process())
+      addobj.obj.text <- req(pretty_plot_addobj_own_shp_read())[[2]]
+
+    } else { #input$pretty_plot_addobj_own_type == 3
+      addobj.obj      <- req(pretty_plot_addobj_own_gdb_process())
+      addobj.obj.text <- req(pretty_plot_addobj_own_gdb_read())[[2]]
     }
 
   } else {
@@ -315,11 +318,11 @@ output$pretty_plot_addobj_cexlwd_uiOut_numeric <- renderUI({
 # User file-specific loading and processing to sf object, and their respective flags
 
 #----------------------------------------------------------
-# CSV
+# .csv
 
 ### Flag for successfully loaded file
 output$pretty_plot_addobj_own_csv_flag <- reactive({
-  !is.null(create_ens_weights_poly_csv_read())
+  isTruthy(pretty_plot_addobj_own_csv_read())
 })
 outputOptions(output, "pretty_plot_addobj_own_csv_flag",
               suspendWhenHidden = FALSE)
@@ -334,12 +337,11 @@ pretty_plot_addobj_own_csv_read <- reactive({
 
   csv.data <- read.csv(file.in$datapath, stringsAsFactors = FALSE)
 
-  return(list(file.in$name, csv.data))
+  return(list(csv.data, file.in$name))
 })
 
 pretty_plot_addobj_own_csv_process <- reactive({
-  csv.filename <- pretty_plot_addobj_own_csv_read()[[1]]
-  csv.data     <- pretty_plot_addobj_own_csv_read()[[2]]
+  csv.data     <- pretty_plot_addobj_own_csv_read()[[1]]
   csv.data[csv.data == ""] <- NA
   names(csv.data) <- c("lon", "lat")
 
@@ -368,11 +370,129 @@ pretty_plot_addobj_own_csv_process <- reactive({
 
   validate(
     need(csv.sfc,
-         paste("Error: the GUI was unable to process the provided .csv file",
-               "Please ensure that the .csv file has the longitude points",
+         paste("Error: the GUI was unable to process the provided .csv file;",
+               "please ensure that the .csv file has the longitude points",
                "in the first column, the latitude points in the second",
                "column, and that the entries are valid"))
   )
 
-  list(csv.sfc, csv.filename)
+  csv.sfc
 })
+
+
+#----------------------------------------------------------
+addobj_gis_proc_shiny <- function(gis.file, obj.type) {
+  gis.sfc <- st_geometry(gis.file)
+  gis.file <- suppressMessages(st_union(gis.file))
+  gis.sfc <- check_dateline(gis.sfc, 60, FALSE)
+
+  validate.message <- paste(
+    "Error: the GUI was unable to process the provided shapefile;",
+    "please ensure that you selected the correct object type (point vs polygon)"
+  )
+
+  if (obj.type == 1) {
+    if (!(any(grepl("POINT", class(gis.sfc))))) {
+      gis.sfc <- try(st_cast(gis.sfc, "POINT"), silent = TRUE)
+    }
+
+    validate.check <- any(grepl("POINT", class(gis.sfc)))
+
+  } else {
+    if (!(any(grepl("POLYGON", class(gis.sfc))))) {
+      gis.sfc <- try(st_cast(gis.sfc, "POLYGON"), silent = TRUE)
+    }
+    # Check that polygon(s) are valid
+    gis.sfc <- try(check_valid(gis.sfc, progress.detail = FALSE),
+                   silent = TRUE)
+
+    validate.check <- any(grepl("POLYGON", class(gis.sfc)))
+  }
+
+
+  validate(
+    need(isTruthy(gis.sfc) & validate.check,
+         paste("Error: the GUI was unable to process the provided shapefile;",
+               "please ensure that you selected the correct object type",
+               "(point vs polygon)"))
+  )
+
+  gis.sfc
+}
+
+#----------------------------------------------------------
+# GIS shp
+
+### Flag for successfully loaded file
+output$pretty_plot_addobj_own_shp_flag <- reactive({
+  isTruthy(pretty_plot_addobj_own_shp_read())
+})
+outputOptions(
+  output, "pretty_plot_addobj_own_shp_flag", suspendWhenHidden = FALSE
+)
+
+### Read/upload
+pretty_plot_addobj_own_shp_read <- reactive({
+  files.in <- req(input$pretty_plot_addobj_own_shp_files)
+
+  withProgress(message = "Uploading object", value = 0.6, {
+    gis.file.shp <- read.shp.shiny(files.in)
+    incProgress(0.4)
+    shp.name <- strsplit(files.in$name[1], "[.]")[[1]][1]
+  })
+
+  if (isTruthy(gis.file.shp)) list(gis.file.shp, shp.name) else NULL
+})
+
+### Process
+pretty_plot_addobj_own_shp_process <- reactive({
+ withProgress(message = "Processing object", value = 0.6, {
+   x <- addobj_gis_proc_shiny(
+     pretty_plot_addobj_own_shp_read()[[1]], input$pretty_plot_addobj_type
+   )
+   incProgress(0.4)
+  })
+
+  x
+})
+
+
+#----------------------------------------------------------
+# GIS gdb
+
+### Flag for successfully loaded file
+output$pretty_plot_addobj_own_gdb_flag <- reactive({
+  isTruthy(pretty_plot_addobj_own_gdb_read())
+})
+outputOptions(output, "pretty_plot_addobj_own_gdb_flag", suspendWhenHidden = FALSE)
+
+
+### Read/upload
+pretty_plot_addobj_own_gdb_read <- eventReactive(
+  input$pretty_plot_addobj_own_gdb_load,
+  {
+    gdb.path <- input$pretty_plot_addobj_own_gdb_path
+    gdb.name <- input$pretty_plot_addobj_own_gdb_name
+
+    withProgress(message = "Uploading object", value = 0.6, {
+      gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),
+                          silent = TRUE)
+      incProgress(0.6)
+    })
+
+    if (isTruthy(gis.file.gdb)) list(gis.file.gdb, gdb.name) else NULL
+  })
+
+### Process
+pretty_plot_addobj_own_gdb_process <- reactive({
+  withProgress(message = "Processing object", value = 0.6, {
+    x <- addobj_gis_proc_shiny(
+      pretty_plot_addobj_own_gdb_read()[[1]], input$pretty_plot_addobj_type
+    )
+    incProgress(0.4)
+  })
+
+  x
+})
+
+###############################################################################

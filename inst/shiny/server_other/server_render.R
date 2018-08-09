@@ -57,7 +57,7 @@ output$models_loaded_table_stats <- renderDT({
 #----------------------------------------------------------
 ### Plot/preview of loaded, original model(s)
 output$model_preview_interactive_plot <- renderLeaflet({
-  req(x <- vals$models.plot.leaf)
+  x <- req(vals$models.plot.leaf)
 
   preview_interactive(
     x$model.toplot, "Pred", x$perc.num, pal.esdm, leg.perc.esdm,
@@ -66,7 +66,7 @@ output$model_preview_interactive_plot <- renderLeaflet({
 })
 
 output$model_preview_plot <- renderPlot({
-  req(x <- vals$models.plot)
+  x <- req(vals$models.plot)
 
   multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num,
@@ -182,7 +182,7 @@ output$overlay_preview_base <- renderLeaflet({
 
 ### Preview of overlaid model predictions
 output$overlay_preview_overlaid <- renderPlot({
-  req(x <- vals$overlaid.plot)
+  x <- req(vals$overlaid.plot)
 
   multiplot_layout(
     x$models.toplot, x$data.names, x$plot.titles, 1, pal.esdm, leg.perc.esdm,
@@ -228,7 +228,7 @@ output$create_ens_weights_poly_table_out <- renderTable({
 
 ### Preview plot of weight polygons
 output$create_ens_weights_poly_preview_plot <- renderPlot({
-  req(x <- vals$ens.over.wpoly.plot)
+  x <- req(vals$ens.over.wpoly.plot)
 
   plot(x[[1]], axes = TRUE, col = "black", border = NA)
   for(sf.toplot in vals$ens.over.wpoly.sf[[x[[2]]]]) {
@@ -269,7 +269,7 @@ output$ens_remove_text <- renderUI({
 
 ### Plot interactive preview of ensemble predictions
 output$ens_preview_interactive_plot <- renderLeaflet({
-  req(x <- vals$ensemble.plot.leaf)
+  x <- req(vals$ensemble.plot.leaf)
 
   preview_interactive(
     x$model.toplot, "Pred.ens", x$perc.num, pal.esdm, leg.perc.esdm,
@@ -279,7 +279,7 @@ output$ens_preview_interactive_plot <- renderLeaflet({
 
 ### Plot preview of ensemble predictions
 output$ens_preview_plot <- renderPlot({
-  req(x <- vals$ensemble.plot)
+  x <- req(vals$ensemble.plot)
 
   multiplot_layout(
     x$models.toplot, x$data.name, x$plot.titles, x$perc.num,

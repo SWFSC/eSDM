@@ -338,7 +338,7 @@ create_ens_weights_poly_add <- eventReactive(
 
 ### Flag for successfully loaded file
 output$create_ens_weights_poly_csv_flag <- reactive({
-  !is.null(create_ens_weights_poly_csv_read())
+  isTruthy(create_ens_weights_poly_csv_read())
 })
 outputOptions(output, "create_ens_weights_poly_csv_flag",
               suspendWhenHidden = FALSE)
