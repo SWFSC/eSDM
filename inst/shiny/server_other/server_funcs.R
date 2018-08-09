@@ -214,7 +214,7 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
 
   if (progress.detail) {
     on.exit(incProgress(0, detail = ""))
-    incProgress(0, detail = "Checking if SDM spans the dateline")
+    incProgress(0, detail = "Checking if object spans the dateline")
   }
 
   x.orig <- x
@@ -222,7 +222,7 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
   dateline.flag <- FALSE
   validate(
     need(x.crs.orig$proj4string,
-         "Error: The SDM does not have a defined coordinate system")
+         "Error: The object does not have a defined coordinate system")
   )
 
   if (!grepl("proj=longlat", x.crs.orig$proj4string)) {
@@ -232,7 +232,7 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
   if (st_bbox(x)[3] > 180) {
     dateline.flag <- TRUE
     if (progress.detail) {
-      incProgress(0, detail = "SDM does span the dateline; processing now")
+      incProgress(0, detail = "Object does span the dateline; processing now")
     }
     x <- st_wrap_dateline(
       x, c("WRAPDATELINE=YES", paste0("DATELINEOFFSET=", wrap.offset))
@@ -242,13 +242,13 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
   ext <- st_bbox(x)
   validate(
     need(all(ext["xmax"] <= 180 & ext["xmin"] >= -180),
-         paste("Error: The eSDM was unable to process this SDM;",
+         paste("Error: The GUI was unable to process this object;",
                "please manually ensure that the longitude range of the",
-               "SDM is [-180, 180] and then reload the SDM into the eSDM")),
+               "object is [-180, 180] and then re-import the object into the GUI")),
     need(all(ext["ymax"] <= 90 & ext["ymin"] >= -90),
-         paste("Error: The eSDM was unable to process this SDM;",
+         paste("Error: The GUI was unable to process this object;",
                "please manually ensure that the latitude range of the",
-               "SDM is [-90, 90] and then reload the SDM into the eSDM"))
+               "object is [-90, 90] and then re-import the object into the GUI"))
   )
 
   if (dateline.flag){

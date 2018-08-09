@@ -17,9 +17,15 @@ pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
   # Prep
   #------------------------------------
   if (input$pretty_plot_addobj_which == 4) {
-    # TODO
-    addobj.obj <- NULL
-    addobj.obj.text <- "personal - todo"
+    if (input$pretty_plot_addobj_own_type == 1) {
+      addobj.obj      <- pretty_plot_addobj_own_csv_process()[[1]]
+      addobj.obj.text <- pretty_plot_addobj_own_csv_process()[[2]]
+
+    } else {
+      # TODO
+      addobj.obj <- NULL
+      addobj.obj.text <- "personal - todo"
+    }
 
   } else {
     addobj.obj <- switch(
@@ -172,30 +178,12 @@ output$pretty_plot_addobj_color_ptfillcheck_uiOut_check <- renderUI({
     )
   }
 
-  # if (input$pretty_plot_addobj_which == 4) {
-  #   temp <- ifelse(
-  #     input$pretty_plot_addobj_type == 1, "points", "polygon fill color"
-  #   )
-  #
-  #   input.lab <- paste("Make", temp, "transparent")
-  #
-  # } else {
-  #   temp <- switch(
-  #     as.numeric(input$pretty_plot_addobj_which),
-  #     "study area polygon fill color", "erasing polygon fill color",
-  #     "presence points", "WRONG"
-  #   )
-  #
-  #   input.lab <- paste("Make", temp, "transparent")
-  # }
-
   checkboxInput("pretty_plot_addobj_color_ptfillcheck", input.lab, value = FALSE)
 })
 
 #----------------------------------------------------------
 ### Point or fill color
 output$pretty_plot_addobj_color_ptfill_uiOut_colour <- renderUI({
-  # req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
   req(input$pretty_plot_addobj_color_ptfillcheck == FALSE)
 
   if (input$pretty_plot_addobj_which == 3) {
@@ -204,35 +192,13 @@ output$pretty_plot_addobj_color_ptfill_uiOut_colour <- renderUI({
   } else {
     input.lab <- ifelse(
       input$pretty_plot_addobj_type == 1,
-      "Click to select point color",
-      "Click to select polygon fill color"
+      "Click to select point color", "Click to select polygon fill color"
     )
   }
 
   input.default <- switch(
     as.numeric(input$pretty_plot_addobj_which), "red", "tan", "blue", "black"
   )
-
-  # if (input$pretty_plot_addobj_which == 4) {
-  #   temp <- ifelse(
-  #     input$pretty_plot_addobj_type == 1, "point color", "polygon fill color"
-  #   )
-  #
-  #   input.lab <- paste("Click to select", temp)
-  #   input.default <- "black"
-  #
-  # } else {
-  #   temp <- switch(
-  #     as.numeric(input$pretty_plot_addobj_which),
-  #     "study area polygon fill", "erasing polygon fill", "presence point",
-  #     "WRONG"
-  #   )
-  #
-  #   input.lab <- paste("Click to select", temp, "color")
-  #   input.default <- switch(
-  #     as.numeric(input$pretty_plot_addobj_which), "red", "tan", "blue", "pink"
-  #   )
-  # }
 
   colourpicker::colourInput(
     "pretty_plot_addobj_color_ptfill", tags$h5(input.lab),
@@ -251,16 +217,9 @@ output$pretty_plot_addobj_color_absbordercheck_uiOut_check <- renderUI({
     NULL
 
   } else {
-    # temp <- switch(
-    #   as.numeric(input$pretty_plot_addobj_which),
-    #   "study area polygon border", "erasing polygon border",
-    #   "absence points", "polygon border"
-    # )
-    # input.lab <- paste("Make", temp, "transparent")
     input.lab <- ifelse(
       input$pretty_plot_addobj_which == 3,
-      "Make absence points transparent",
-      "Make polygon border(s) transparent"
+      "Make absence points transparent", "Make polygon border(s) transparent"
     )
 
     checkboxInput("pretty_plot_addobj_color_absbordercheck", input.lab, value = FALSE)
@@ -276,13 +235,6 @@ output$pretty_plot_addobj_color_absborder_uiOut_colour <- renderUI({
     NULL
 
   } else {
-    # temp <- switch(
-    #   as.numeric(input$pretty_plot_addobj_which),
-    #   "study area polygon border", "erasing polygon border",
-    #   "absence point", "polygon border"
-    # )
-    #
-    # input.lab <- paste("Click to select", temp, "color")
     input.lab <- ifelse(
       input$pretty_plot_addobj_which == 3,
       "Click to select absence point color",
@@ -310,19 +262,10 @@ output$pretty_plot_addobj_pchlty_uiOut_select <- renderUI({
   req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
 
   # Set label based on which object
-  # if (input$pretty_plot_addobj_which == 4) {
   input.lab <- ifelse(
     input$pretty_plot_addobj_type == 1,
     "Point type", "Line type of polygon border(s)"
   )
-
-  # } else {
-  #   input.lab <- switch(
-  #     as.numeric(input$pretty_plot_addobj_which),
-  #     "Line type of study area border", "Line type of erasing polygon border",
-  #     "Type of all validation points", "WRONG"
-  #   )
-  # }
 
   # Set list of choices based on object type
   if (input$pretty_plot_addobj_type == 1) {
@@ -363,48 +306,73 @@ output$pretty_plot_addobj_cexlwd_uiOut_numeric <- renderUI({
     as.numeric(input$pretty_plot_addobj_which), 1.5, 0.3, 0.5, 1
   )
 
-  # if (input$pretty_plot_addobj_which == 4) {
-  #   input.lab <- ifelse(
-  #     input$pretty_plot_addobj_type == 1,
-  #     "Point size", "Line width of polygon border(s)"
-  #   )
-  #   input.default <- 1
-  #
-  # } else {
-  #   input.lab <- switch(
-  #     as.numeric(input$pretty_plot_addobj_which),
-  #     "Line width of study area polygon border",
-  #     "Line width of erasing polygon border",
-  #     "Size of all validation points", "WRONG"
-  #   )
-  #
-  #   input.default <- switch(
-  #     as.numeric(input$pretty_plot_addobj_which), 1.5, 0.3, 1, 100
-  #   )
-  # }
-
   numericInput("pretty_plot_addobj_cexlwd", tags$h5(input.lab),
                value = input.default, step = 0.1)
 })
 
 
-#----------------------------------------------------------
-### Draw order of additional object
-# output$pretty_plot_addobj_order_uiOut_radio <- renderUI({
-#   req(input$pretty_plot_addobj_which)
-#
-#   radioButtons("pretty_plot_addobj_order",
-#                tags$h5("Draw object before or after SDM"),
-#                choices = list("Before" = 1, "After" = 2), selected = 2)
-# })
-
-
-# #----------------------------------------------------------
-# ### Button to 'add/load' additional polygons (objects)
-# output$pretty_plot_addobj_execute_uiOut_button <- renderUI({
-#   req(input$pretty_plot_addobj_which)
-#
-#   actionButton("pretty_plot_addobj_execute", "Add additional object")
-# })
-
 ###############################################################################
+# User file-specific loading and processing to sf object, and their respective flags
+
+#----------------------------------------------------------
+# CSV
+
+### Flag for successfully loaded file
+output$pretty_plot_addobj_own_csv_flag <- reactive({
+  !is.null(create_ens_weights_poly_csv_read())
+})
+outputOptions(output, "pretty_plot_addobj_own_csv_flag",
+              suspendWhenHidden = FALSE)
+
+### Load and process
+pretty_plot_addobj_own_csv_read <- reactive({
+  file.in <- input$pretty_plot_addobj_own_csv_file
+  req(file.in)
+
+  # Ensure file extension is .csv (RStudio type, browser type)
+  if (!(file.in$type %in% c("text/csv", "application/vnd.ms-excel"))) return()
+
+  csv.data <- read.csv(file.in$datapath, stringsAsFactors = FALSE)
+
+  return(list(file.in$name, csv.data))
+})
+
+pretty_plot_addobj_own_csv_process <- reactive({
+  csv.filename <- pretty_plot_addobj_own_csv_read()[[1]]
+  csv.data     <- pretty_plot_addobj_own_csv_read()[[2]]
+  csv.data[csv.data == ""] <- NA
+  names(csv.data) <- c("lon", "lat")
+
+  if (input$pretty_plot_addobj_type == 1) {
+    # Points
+    validate(
+      need(!any(is.na(csv.data)),
+           paste("Error: for points, no entries in the longitude or",
+                 "latitude columns can be blank or 'NA'")
+      )
+    )
+
+    csv.sfc <- try(
+      st_geometry(st_as_sf(csv.data, coords = c("lon","lat"), crs = crs.ll)),
+      silent = TRUE
+    )
+
+    csv.sfc <- try(check_dateline(csv.sfc, 10, FALSE), silent = TRUE)
+    # Don't need to check validity for points
+
+  } else {
+    # Polygon(s)
+    csv.sfc <- pts_to_sfc_coords_shiny(csv.data[, 1:2], crs.ll, FALSE)
+    # ^ checks dateline and validity
+  }
+
+  validate(
+    need(csv.sfc,
+         paste("Error: the GUI was unable to process the provided .csv file",
+               "Please ensure that the .csv file has the longitude points",
+               "in the first column, the latitude points in the second",
+               "column, and that the entries are valid"))
+  )
+
+  list(csv.sfc, csv.filename)
+})

@@ -412,7 +412,47 @@ ui.prettyPlot <- function() {
                           condition = "input.pretty_plot_addobj_which == 4",
                           box(
                             width = 12,
-                            helpText("load stuff todo")
+                            selectInput("pretty_plot_addobj_own_type", tags$h5("File type"),
+                                        choices = file.type.list1, selected = 1),
+                            ############## File type: csv
+                            conditionalPanel(
+                              condition = "input.pretty_plot_addobj_own_type == 1",
+                              ui.instructions.upload.csv(),
+                              helpText("The first column must contain the longitude values, and the second column must",
+                                       "contain the latitude values. The longitudes and latitudes must",
+                                       "be in WGS 84 geographic coordinates.",
+                                       "For polygons objects, multiple polygons may be demarcated rows with blank cells",
+                                       "or cells with 'NA' entries"),
+                              fileInput("pretty_plot_addobj_own_csv_file", label.csv.upload, accept = ".csv"),
+                              conditionalPanel("output.pretty_plot_addobj_own_csv_flag == false", ui.error.upload.csv)
+                            ),
+                            # ############## File type: raster
+                            # conditionalPanel(
+                            #   condition = "input.pretty_plot_addobj_own_type == 2",
+                            #   ui.instructions.upload.raster(),
+                            #   fileInput("pretty_plot_addobj_own_raster_file", label.raster.upload, accept = ".tif")
+                            #   # conditionalPanel("output.create_ens_weights_poly_raster_flag == false", ui.error.upload.raster)
+                            # ),
+                            ############## File type: shp
+                            conditionalPanel (
+                              condition = "input.pretty_plot_addobj_own_type == 2",
+                              ui.instructions.upload.shp(),
+                              fileInput("pretty_plot_addobj_own_shp_files", label.shp.upload, multiple = TRUE)
+                              # conditionalPanel("output.create_ens_weights_poly_shp_flag == false", ui.error.upload.shp)
+                            ),
+                            ############## File type: gdb
+                            conditionalPanel(
+                              condition = "input.pretty_plot_addobj_own_type == 3",
+                              ui.instructions.upload.gdb(),
+                              fluidRow(
+                                column(6, textInput("create_ens_weights_poly_gdb_path", label.gdb.path, value = ".../folder.gdb")),
+                                column(6, textInput("create_ens_weights_poly_gdb_name", label.gdb.name, value = ""))
+                              ),
+                              fluidRow(
+                                column(6, actionButton("create_ens_weights_poly_gdb_load", "Upload")),
+                                column(6, conditionalPanel("output.create_ens_weights_poly_gdb_flag == false", ui.error.upload.gdb))
+                              )
+                            )
                           )
                         ),
                         fluidRow(
