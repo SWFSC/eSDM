@@ -1,3 +1,9 @@
+# Code relating to renderUI()'s for add object section of pretty plot
+
+###############################################################################
+# Helper function: generates labels for widgets given parameters
+
+
 ###############################################################################
 # renderUI()'s
 
@@ -68,7 +74,9 @@ output$pretty_plot_addobj_color_ptfillcheck_uiOut_check <- renderUI({
     )
   }
 
-  checkboxInput("pretty_plot_addobj_color_ptfillcheck", input.lab, value = FALSE)
+  input.default <- ifelse(input$pretty_plot_addobj_which == 1, TRUE, FALSE)
+
+  checkboxInput("pretty_plot_addobj_color_ptfillcheck", input.lab, value = input.default)
 })
 
 #----------------------------------------------------------
@@ -138,8 +146,7 @@ output$pretty_plot_addobj_color_absborder_uiOut_colour <- renderUI({
     )
 
     colourpicker::colourInput(
-      "pretty_plot_addobj_color_absborder",
-      tags$h5(input.lab),
+      "pretty_plot_addobj_color_absborder", tags$h5(input.lab),
       showColour = "background", value = input.default
     )
   }

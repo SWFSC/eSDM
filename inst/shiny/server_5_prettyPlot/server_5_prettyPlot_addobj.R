@@ -5,6 +5,7 @@
 #pretty_plot_addobj_list() is in sever_5_prettyPlot_prep.R
 
 #------------------------------------------------------------------------------
+# Remove loaded objects when section is closed
 observeEvent(input$pretty_plot_addobj, {
   if (!input$pretty_plot_addobj) vals$pretty.addobj <- NULL
 })
@@ -20,14 +21,17 @@ pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
     if (input$pretty_plot_addobj_own_type == 1) {
       addobj.obj      <- pretty_plot_addobj_own_csv_process()
       addobj.obj.text <- pretty_plot_addobj_own_csv_read()[[2]]
+      addobj.obj.own  <- 1
 
     } else if (input$pretty_plot_addobj_own_type == 2) {
       addobj.obj      <- req(pretty_plot_addobj_own_shp_process())
       addobj.obj.text <- req(pretty_plot_addobj_own_shp_read())[[2]]
+      addobj.obj.own  <- 2
 
     } else { #input$pretty_plot_addobj_own_type == 3
       addobj.obj      <- req(pretty_plot_addobj_own_gdb_process())
       addobj.obj.text <- req(pretty_plot_addobj_own_gdb_read())[[2]]
+      addobj.obj.own  <- 3
     }
 
   } else {
@@ -37,8 +41,9 @@ pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
     )
     addobj.obj.text <- switch(
       as.numeric(input$pretty_plot_addobj_which),
-      "Study area polygon", "Land polygon", "Validation data points", "WRONG"
+      "Study area polygon", "Erasing polygon", "Validation data points", "WRONG"
     )
+    addobj.obj.own  <- 1
   }
 
   #------------------------------------
@@ -63,7 +68,8 @@ pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
     list(list(
       obj = addobj.obj,
       obj.text = addobj.obj.text,
-      obj.type =input$pretty_plot_addobj_type,
+      obj.own = addobj.obj.own, #only for update
+      obj.type = input$pretty_plot_addobj_type,
       pre.sdm = input$pretty_plot_addobj_order == 1,
       col.ptfill = addobj.col.ptfill,
       col.absborder = addobj.col.absborder,
@@ -243,11 +249,11 @@ pretty_plot_addobj_own_shp_read <- reactive({
 
 ### Process
 pretty_plot_addobj_own_shp_process <- reactive({
- withProgress(message = "Processing object", value = 0.6, {
-   x <- addobj_gis_proc_shiny(
-     pretty_plot_addobj_own_shp_read()[[1]], input$pretty_plot_addobj_type
-   )
-   incProgress(0.4)
+  withProgress(message = "Processing object", value = 0.6, {
+    x <- addobj_gis_proc_shiny(
+      pretty_plot_addobj_own_shp_read()[[1]], input$pretty_plot_addobj_type
+    )
+    incProgress(0.4)
   })
 
   x

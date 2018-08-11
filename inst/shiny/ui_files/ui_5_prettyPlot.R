@@ -389,7 +389,8 @@ ui.prettyPlot <- function() {
                     width = 12,
                     checkboxInput("pretty_plot_addobj",
                                   "Include additional objects in map; uncheck this box to remove all additional objects",
-                                  value = FALSE),
+                                  value = TRUE),
+                    # TODO change ^ back to FALSE
                     conditionalPanel(
                       condition = "input.pretty_plot_addobj",
 
@@ -399,6 +400,7 @@ ui.prettyPlot <- function() {
                         width = 12,
                         DTOutput("pretty_plot_addobj_table_out"),
                         tags$br(), tags$br(),
+                        actionButton("show", "Show modal dialog"),
                         uiOutput("pretty_plot_addobj_remove_execute_uiOut_button"),
                         textOutput("pretty_plot_addobj_remove_out")
                       ),

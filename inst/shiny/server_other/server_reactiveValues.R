@@ -5,11 +5,14 @@
 ###############################################################################
 # reactiveVal's used in specific tabs
 
-### Pretty plot tabs
+### Pretty plot: number of colors
 val.pretty.color.num <- reactiveVal(value = NULL)
 
+### Pretty plot: update params of loaded additional objects
+val.pretty.addobj.update <- reactiveVal(value = NULL)
+
 ###############################################################################
-# 'Initialize' all 42 elements of vals
+# 'Initialize' all 43 elements of vals
 
 vals <- reactiveValues(
   # Objects that store loaded models and related info
