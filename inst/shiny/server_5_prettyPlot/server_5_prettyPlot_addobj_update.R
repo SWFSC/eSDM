@@ -2,15 +2,15 @@
 
 ###############################################################################
 # Show modal when button is clicked.
-observeEvent(input$show, { #TODO change to eventReactive
-  showModal(dataModal(
+observeEvent(input$pretty_plot_addobj_update_show, {
+  showModal(addobj_update_modal(
     failed = !isTruthy(input$pretty_plot_addobj_table_out_rows_selected)
   ))
 })
 
 
 ###############################################################################
-dataModal <- function(failed) {
+addobj_update_modal <- function(failed) {
   if (failed) {
     modalDialog(
       tags$div(
@@ -86,8 +86,7 @@ output$pretty_plot_addobj_update_thing_uiOut_mult <- renderUI({
     val.curr <- is.na(y$col.ptfill)
     input.lab <- ifelse(
       y$obj_type == 1,
-      "Make points transparent",
-      "Make polygon fill color transparent"
+      "Make points transparent", "Make polygon fill color transparent"
     )
     checkboxInput("pretty_plot_addobj_update_thing", input.lab, value = val.curr)
 

@@ -400,7 +400,7 @@ ui.prettyPlot <- function() {
                         width = 12,
                         DTOutput("pretty_plot_addobj_table_out"),
                         tags$br(), tags$br(),
-                        actionButton("show", "Show modal dialog"),
+                        actionButton("pretty_plot_addobj_update_show", "Update parameters"),
                         uiOutput("pretty_plot_addobj_remove_execute_uiOut_button"),
                         textOutput("pretty_plot_addobj_remove_out")
                       ),
@@ -490,7 +490,7 @@ ui.prettyPlot <- function() {
                           column(6, uiOutput("pretty_plot_addobj_pchlty_uiOut_select")),
                           column(6, uiOutput("pretty_plot_addobj_cexlwd_uiOut_numeric"))
                         ),
-                        actionButton("pretty_plot_addobj_add_execute", "Add additional object"),
+                        actionButton("pretty_plot_addobj_add_execute", "Load additional object"),
                         textOutput("pretty_plot_addobj_add_out"),
                         helpText("Loaded additional objects will appear in the 'Loaded additional polygons' table above")
                       )

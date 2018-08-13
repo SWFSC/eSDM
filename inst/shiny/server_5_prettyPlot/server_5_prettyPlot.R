@@ -104,14 +104,13 @@ output$pretty_params_display_flag <- reactive({
     length(unlist(pretty_plot_models_idx_list())) == 1
 
   } else if (input$pretty_plot_mapcontrol == 2) {
-    isTruthy(input$pretty_plot_update_table_out_rows_selected)
+    FALSE #isTruthy(input$pretty_plot_update_table_out_rows_selected)
 
   } else { #input$pretty_plot_mapcontrol == 3
     FALSE
   }
 })
 outputOptions(output, "pretty_params_display_flag", suspendWhenHidden = FALSE)
-
 
 
 ###############################################################################
@@ -136,6 +135,7 @@ pretty_plot_color_preview <- reactive({
   par(mai = c(1.02, 0.82, 0.82, 0.42))
 })
 
+
 ###############################################################################
 ### Reset background color to white
 observeEvent(input$pretty_plot_color_na_reset_execute, {
@@ -145,3 +145,22 @@ observeEvent(input$pretty_plot_color_na_reset_execute, {
 observeEvent(input$pretty_plot_background_reset_execute, {
   shinyjs::reset("pretty_plot_background_color")
 })
+
+
+###############################################################################
+choices.list.pch <- list(
+  "0: Open Square" = 0, "1: Open Circle" = 1, "2: Open Up Triangle" = 2, "3: Plus" = 3,
+  "4: X" = 4, "5: Open Diamond" = 5, "6: Open Down Triangle" = 6, "7: Square with X" = 7,
+  "8: Asterisk" = 8, "9: Diamond with Plus" = 9, "10: Circle with Plus" = 10,
+  "11: Up-Down Triangles" = 11, "12: Square with Plus" = 12, "13: Circle with X" = 13,
+  "14: Square with Up Triangle" = 14, "15: Filled Square" = 15,
+  "16: Filled Circle" = 16, "17: Filled Up Triangle" = 17, "18: Filled Diamond" = 18,
+  "19: Filled Large Circle" = 19, "20: Filled Small Circle" = 20
+)
+
+choices.list.lty <- list(
+  "Solid" = 1, "Dash" = 2, "Dot" = 3, "Dot-dash" = 4, "Long dash" = 5,
+  "Dot-long dash" = 6
+)
+
+###############################################################################

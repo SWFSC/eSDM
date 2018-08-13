@@ -2,7 +2,64 @@
 
 ###############################################################################
 # Helper function: generates labels for widgets given parameters
+# "Object type" = 1, "Draw object before or after SDM" = 2,
+# "Make polygon fill color transparent" = 3,
+# "Polygon fill color" = 4,
+# "Make polygon border(s) transparent" = 5,
+# "Polygon border color" = 6,
+# "Line type of polygon border(s)" = 7,
+# "Line width of polygon border(s)" = 8
+addobj_render_lab <- function(ui.which, addobj.which, addobj.type = NULL) {
+  #--------------------------------------------------------
+  if (ui.which == 3) {
+    if (addobj.which == 3) {
+      "Make presence points transparent"
+    } else {
+      ifelse(
+        addobj.type == 1,
+        "Make points transparent", "Make polygon fill color transparent"
+      )
+    }
 
+    #------------------------------------------------------
+  } else if (ui.which == 4) {
+    if (addobj.which == 3) {
+      "Click to select presence point color"
+    } else {
+      ifelse(
+        addobj.type == 1,
+        "Click to select point color", "Click to select polygon fill color"
+      )
+    }
+
+    #------------------------------------------------------
+  } else if (ui.which == 5) {
+    ifelse(
+      addobj.which == 3,
+      "Make absence points transparent", "Make polygon border(s) transparent"
+    )
+
+    #------------------------------------------------------
+  } else if (ui.which == 6) {
+    ifelse(
+      addobj.which == 3,
+      "Click to select absence point color",
+      "Click to select polygon border color"
+    )
+
+    #------------------------------------------------------
+  } else if (ui.which == 7) {
+    ifelse(addobj.type == 1, "Point type", "Line type of polygon border(s)")
+
+    #------------------------------------------------------
+  } else if (ui.which == 8) {
+    ifelse(addobj.type == 1, "Point size", "Line width of polygon border(s)")
+
+    #------------------------------------------------------
+  } else {
+    validate(need(FALSE, "addobj_render_lab() input issue"))
+  }
+}
 
 ###############################################################################
 # renderUI()'s
@@ -18,26 +75,21 @@ output$pretty_plot_addobj_remove_execute_uiOut_button <- renderUI({
 
 
 #------------------------------------------------------------------------------
-### Select widget for including other polygons
+### 0: Select widget for including other polygons
 output$pretty_plot_addobj_which_uiOut_select <- renderUI({
-  choices.list <- list("Import new object" = 4)
-
-  if (isTruthy(vals$eval.data)) {
-    choices.list <- c("Validation points" = 3, choices.list)
-  }
-  if (isTruthy(vals$overlay.land)) {
-    choices.list <- c("Erasing polygon" = 2, choices.list)
-  }
-  if (isTruthy(vals$overlay.bound)) {
-    choices.list <- c("Study area polygon" = 1, choices.list)
-  }
+  choices.list <- list("Study area polygon" = 1, "Erasing polygon" = 2,
+                       "Validation points" = 3)
+  x <- c(
+    sapply(list(vals$overlay.bound, vals$overlay.land, vals$eval.data), isTruthy)
+  )
+  choices.list <- c(choices.list[x], "Import new object" = 4)
 
   selectInput("pretty_plot_addobj_which", tags$h5("Add polygon to map"),
               choices = choices.list, selected = NULL)
 })
 
 #------------------------------------------------------------------------------
-### Object type
+### 1: Object type
 output$pretty_plot_addobj_type_uiOut_radio <- renderUI({
   req(input$pretty_plot_addobj_which)
 
@@ -59,41 +111,26 @@ output$pretty_plot_addobj_type_uiOut_radio <- renderUI({
 })
 
 #------------------------------------------------------------------------------
-### Point or fill color transparent checkbox
+### 3: Point or fill color transparent checkbox
 output$pretty_plot_addobj_color_ptfillcheck_uiOut_check <- renderUI({
   req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
 
-  if (input$pretty_plot_addobj_which == 3) {
-    input.lab <- "Make absence points transparent"
-
-  } else {
-    input.lab <- ifelse(
-      input$pretty_plot_addobj_type == 1,
-      "Make points transparent",
-      "Make polygon fill color transparent"
-    )
-  }
-
+  input.lab <- addobj_render_lab(
+    3, input$pretty_plot_addobj_which, input$pretty_plot_addobj_type
+  )
   input.default <- ifelse(input$pretty_plot_addobj_which == 1, TRUE, FALSE)
 
   checkboxInput("pretty_plot_addobj_color_ptfillcheck", input.lab, value = input.default)
 })
 
 #----------------------------------------------------------
-### Point or fill color
+### 4: Point or fill color
 output$pretty_plot_addobj_color_ptfill_uiOut_colour <- renderUI({
   req(input$pretty_plot_addobj_color_ptfillcheck == FALSE)
 
-  if (input$pretty_plot_addobj_which == 3) {
-    input.lab <- "Click to select present point color"
-
-  } else {
-    input.lab <- ifelse(
-      input$pretty_plot_addobj_type == 1,
-      "Click to select point color", "Click to select polygon fill color"
-    )
-  }
-
+  input.lab <- addobj_render_lab(
+    4, input$pretty_plot_addobj_which, input$pretty_plot_addobj_type
+  )
   input.default <- switch(
     as.numeric(input$pretty_plot_addobj_which), "red", "tan", "blue", "black"
   )
@@ -107,7 +144,7 @@ output$pretty_plot_addobj_color_ptfill_uiOut_colour <- renderUI({
 
 #----------------------------------------------------------
 #----------------------------------------------------------
-### Validation absence point or border color transparent checkbox
+### 5: Validation absence point or border color transparent checkbox
 output$pretty_plot_addobj_color_absbordercheck_uiOut_check <- renderUI({
   req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
 
@@ -115,17 +152,14 @@ output$pretty_plot_addobj_color_absbordercheck_uiOut_check <- renderUI({
     NULL
 
   } else {
-    input.lab <- ifelse(
-      input$pretty_plot_addobj_which == 3,
-      "Make absence points transparent", "Make polygon border(s) transparent"
-    )
+    input.lab <- addobj_render_lab(5, input$pretty_plot_addobj_which)
 
     checkboxInput("pretty_plot_addobj_color_absbordercheck", input.lab, value = FALSE)
   }
 })
 
 #----------------------------------------------------------
-### Validation absence point or border color
+### 6: Validation absence point or border color
 output$pretty_plot_addobj_color_absborder_uiOut_colour <- renderUI({
   req(input$pretty_plot_addobj_color_absbordercheck == FALSE)
 
@@ -133,13 +167,7 @@ output$pretty_plot_addobj_color_absborder_uiOut_colour <- renderUI({
     NULL
 
   } else {
-    input.lab <- ifelse(
-      input$pretty_plot_addobj_which == 3,
-      "Click to select absence point color",
-      "Click to select polygon border color"
-    )
-
-
+    input.lab <- addobj_render_lab(6, input$pretty_plot_addobj_which)
     input.default <- switch(
       as.numeric(input$pretty_plot_addobj_which),
       "red", "black", "red", "black"
@@ -154,34 +182,19 @@ output$pretty_plot_addobj_color_absborder_uiOut_colour <- renderUI({
 
 
 #------------------------------------------------------------------------------
-### Point type / line type
+### 7: Point type / line type
 output$pretty_plot_addobj_pchlty_uiOut_select <- renderUI({
   req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
 
-  # Set label based on which object
-  input.lab <- ifelse(
-    input$pretty_plot_addobj_type == 1,
-    "Point type", "Line type of polygon border(s)"
-  )
+  input.lab <- addobj_render_lab(7, NULL, input$pretty_plot_addobj_type)
 
   # Set list of choices based on object type
   if (input$pretty_plot_addobj_type == 1) {
-    choices.list <- list(
-      "0: Open Square" = 0, "1: Open Circle" = 1, "2: Open Up Triangle" = 2, "3: Plus" = 3,
-      "4: X" = 4, "5: Open Diamond" = 5, "6: Open Down Triangle" = 6, "7: Square with X" = 7,
-      "8: Asterisk" = 8, "9: Diamond with Plus" = 9, "10: Circle with Plus" = 10,
-      "11: Up-Down Triangles" = 11, "12: Square with Plus" = 12, "13: Circle with X" = 13,
-      "14: Square with Up Triangle" = 14, "15: Filled Square" = 15,
-      "16: Filled Circle" = 16, "17: Filled Up Triangle" = 17, "18: Filled Diamond" = 18,
-      "19: Filled Large Circle" = 19, "20: Filled Small Circle" = 20
-    )
+    choices.list <- choices.list.pch
     choices.selected <- 19
 
   } else {
-    choices.list <- list(
-      "Solid" = 1, "Dash" = 2, "Dot" = 3, "Dot-dash" = 4, "Long dash" = 5,
-      "Dot-long dash" = 6
-    )
+    choices.list <- choices.list.lty
     choices.selected <- 1
   }
 
@@ -191,14 +204,11 @@ output$pretty_plot_addobj_pchlty_uiOut_select <- renderUI({
 
 
 #------------------------------------------------------------------------------
-### Point size / line width
+### 8: Point size / line width
 output$pretty_plot_addobj_cexlwd_uiOut_numeric <- renderUI({
   req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
 
-  input.lab <- ifelse(
-    input$pretty_plot_addobj_type == 1,
-    "Point size", "Line width of polygon border(s)"
-  )
+  input.lab <- addobj_render_lab(8, NULL, input$pretty_plot_addobj_type)
   input.default <- switch(
     as.numeric(input$pretty_plot_addobj_which), 1.5, 0.3, 0.5, 1
   )
