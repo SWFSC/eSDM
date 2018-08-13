@@ -324,7 +324,7 @@ output$eval_models_table_ens_out <- renderDT({
 output$eval_data_message <- renderText({
   req(vals$eval.data)
   paste(
-    "Validation data loaded; data type:",
+    "Validation data successfully imported; data type:",
     ifelse(vals$eval.data.specs[2] == 1, "'count'", "'presence/absence'")
   )
 })
@@ -334,7 +334,6 @@ output$eval_csv_data_text <- renderText(eval_data_csv())
 
 output$eval_data_gis_text <- renderText({
   req(vals$eval.data.gis.info[[3]] == input$eval_load_type)
-
   eval_data_gis()
 })
 

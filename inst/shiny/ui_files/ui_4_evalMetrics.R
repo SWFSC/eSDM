@@ -20,6 +20,8 @@ ui.evalMetrics <- function() {
         ############################################################################### Import validation data
         box(
           title = "Import Validation Data", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
+          tags$h5("Note that the GUI can only store one set of validation data at a time.", style = "color: blue;"),
+          helpText("Importing validation data will overwrite any previously imported validation data."),
           fluidRow(
             column(6, radioButtons("eval_load_type", tags$h5("Validation data file type"),
                                    choices = file.type.list1, selected = 1)),
