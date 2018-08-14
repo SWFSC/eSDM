@@ -448,6 +448,23 @@ output$pretty_plot_color_preview_plot <- renderPlot({
   pretty_plot_color_preview()
 })
 
+
+#----------------------------------------------------------
+# Pretty plot plot display
+###
+output$pretty_plot_display <- renderUI({
+  box(
+    title = "High Quality Maps", solidHeader = TRUE, status = "primary", width = 12, align = "center",
+    height = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["height"], 4 * 96) + 60,
+    shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out"), type = 1)
+  )
+})
+
+### Pretty plot dimension warnings
+output$pretty_plot_plot_dim_warnings_out <- renderText({
+  pretty_plot_plot_dim_warnings()
+})
+
 ### Pretty plot
 # Running plotOutput() within a renderUI() didn't work because of issues with
 #   passing plot width and heigh from reactiveValues

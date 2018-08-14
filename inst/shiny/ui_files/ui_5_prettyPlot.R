@@ -7,10 +7,7 @@ ui.prettyPlot <- function() {
     conditionalPanel(
       condition = "output.pretty_display_flag",
       fluidRow(
-        box(
-          title = "High Quality Maps", solidHeader = TRUE, status = "primary", height = 570, width = 12, align = "center",
-          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out"), type = 1)
-        )
+        uiOutput("pretty_plot_display")
       ),
 
       ################################################################# Map Control
@@ -128,6 +125,7 @@ ui.prettyPlot <- function() {
                       column(5, numericInput("pretty_plot_width_inch", tags$h5("Plot width (in)"), value = 8, step = 1, min = 1)),
                       column(5, numericInput("pretty_plot_height_inch", tags$h5("Plot height (in)"), value = 4, step = 1, min = 1))
                     ),
+                    tags$span(textOutput("pretty_plot_plot_dim_warnings_out"), style = "color: red;"),
                     actionButton("pretty_plot_plot_event", "Plot map"),
                     textOutput("pretty_plot_plot_text"),
                     helpText("Note that plotting may take several minutes depending on map size and the number of maps being plotted")

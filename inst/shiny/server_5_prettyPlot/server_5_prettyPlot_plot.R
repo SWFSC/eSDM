@@ -5,6 +5,21 @@
 
 
 ###############################################################################
+#
+pretty_plot_plot_dim_warnings <- reactive({
+  plot.width  <- input$pretty_plot_width_inch * 96
+  x <- session$clientData$output_pretty_plot_plot_out_width
+
+  if (x < plot.width) {
+    paste(
+      "Warning: The user-specififed 'Plot width (in)' is larger than current the plot window,",
+      "and thus some of the plots might not be properly displayed within the plot window"
+    )
+  } else {
+    ""
+  }
+})
+
 # Set reactive values that will then be plotted in server_render
 pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
   req(vals$pretty.params.toplot)
@@ -14,6 +29,7 @@ pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
   plot.ncol <- input$pretty_plot_ncol
   plot.width  <- input$pretty_plot_width_inch * 96
   plot.height <- input$pretty_plot_height_inch * 96
+
 
   validate(
     need(plot.which,
