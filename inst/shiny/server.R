@@ -1,5 +1,5 @@
-### server.R for the Ensemble Tool for Species Distribution Modeling (eSDM) GUI
-# Designed by Sam Woodman
+### server.R for Ensemble tool for predictions from Species Distribution Models (eSDM) GUI
+# Author: Sam Woodman
 
 
 ###############################################################################
