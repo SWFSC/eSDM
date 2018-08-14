@@ -388,17 +388,17 @@ ui.prettyPlot <- function() {
                   box(
                     width = 12,
                     checkboxInput("pretty_plot_addobj",
-                                  "Include additional objects in map; uncheck this box to remove all additional objects",
-                                  value = TRUE),
-                    # TODO change ^ back to FALSE
+                                  "Include additional objects in map; uncheck this box to remove all loaded additional objects",
+                                  value = FALSE),
                     conditionalPanel(
                       condition = "input.pretty_plot_addobj",
 
                       #----------------------------------------
-                      # column(12, tags$h5("Loaded additional object(s)")),
-                      column(12, helpText(tags$strong("Loaded additional object(s)"))),
+                      # column(12, tags$strong("Loaded additional object(s)")),
+                      # column(12, helpText(tags$strong("Loaded additional object(s)"))),
                       box(
                         width = 12,
+                        tags$strong("Loaded additional object(s)"),
                         tags$h5("Select loaded object to update its parameters or remove it from the GUI"),
                         DTOutput("pretty_plot_addobj_table_out"),
                         tags$br(), tags$br(),
@@ -408,10 +408,11 @@ ui.prettyPlot <- function() {
                       ),
 
                       #----------------------------------------
-                      # column(12, tags$h5("New additional object")),
-                      column(12, helpText(tags$strong("New additional object"))),
+                      # column(12, tags$strong("New additional object")),
+                      # column(12, helpText(tags$strong("New additional object"))),
                       box(
                         width = 12,
+                        tags$strong("New additional object"),
                         uiOutput("pretty_plot_addobj_which_uiOut_select"),
                         conditionalPanel(
                           condition = "input.pretty_plot_addobj_which == 4",

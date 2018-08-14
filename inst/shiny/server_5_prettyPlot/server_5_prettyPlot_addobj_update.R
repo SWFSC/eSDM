@@ -40,7 +40,8 @@ addobj_update_modal <- function(failed) {
       ),
       actionButton("pretty_plot_addobj_update_execute", "Save parameter"),
       tags$br(), tags$br(), tags$br(),
-      tags$h5("Saved parameters for selected additional object. The color values are displayed as hexadecimals."),
+      tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
+              "otherwise they are displayed as hexadecimals."),
       tableOutput("pretty_plot_addobj_update_table_out"),
 
       footer = tagList(actionButton("pretty_plot_addobj_update_done", "Done"))
