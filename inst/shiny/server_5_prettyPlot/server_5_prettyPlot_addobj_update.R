@@ -13,12 +13,10 @@ observeEvent(input$pretty_plot_addobj_update_show, {
 addobj_update_modal <- function(failed) {
   if (failed) {
     modalDialog(
-      tags$div(
-        tags$strong("You must select a row from the 'Loaded additional objects table"),
-        tags$br(),
-        tags$h5("Click 'Cancel' to close this window and then select a row from the table"),
-        style = "color: red;"
-      ),
+      tags$strong("Error: You must select a row from the 'Loaded additional objects' table",
+                  style = "color: red;"),
+      tags$br(),
+      tags$h5("Click 'Cancel' to close this window and then select a row from the table"),
       footer = tagList(modalButton("Cancel"))
     )
 

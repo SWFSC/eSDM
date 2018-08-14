@@ -64,10 +64,19 @@ addobj_render_lab <- function(ui.which, addobj.which, addobj.type = NULL) {
 
 #------------------------------------------------------------------------------
 ### Button widget to remove additional polygon
+output$pretty_plot_addobj_update_show_uiOut_button <- renderUI({
+  req(vals$pretty.addobj)
+  actionButton("pretty_plot_addobj_update_show",
+               "Update parameters of selected object")
+})
+
+
+#------------------------------------------------------------------------------
+### Button widget to remove additional polygon
 output$pretty_plot_addobj_remove_execute_uiOut_button <- renderUI({
   req(vals$pretty.addobj)
   actionButton("pretty_plot_addobj_remove_execute",
-               "Remove selected additional object")
+               "Remove selected object")
 })
 
 
@@ -82,7 +91,8 @@ output$pretty_plot_addobj_which_uiOut_select <- renderUI({
   )
   choices.list <- c(choices.list[choices.list.bool], "Import new object" = 4)
 
-  selectInput("pretty_plot_addobj_which", tags$h5("Add polygon to map"),
+  selectInput("pretty_plot_addobj_which",
+              tags$h5("Select object to add, then specify desired parameters"),
               choices = choices.list, selected = NULL)
 })
 

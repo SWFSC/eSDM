@@ -355,7 +355,7 @@ ui.prettyPlot <- function() {
                             width = 6,
                             uiOutput("pretty_plot_tick_lon_interval_uiOut_numeric"),
                             uiOutput("pretty_plot_tick_lat_interval_uiOut_numeric"),
-                            numericInput("pretty_plot_tick_alpha", tags$h5("Grid line transparency (alpha value)"),
+                            numericInput("pretty_plot_tick_alpha", tags$h5("Grid line transparency (1: solid; 0: transparent)"),
                                          value = 1.0, min = 0, max = 1, step = 0.1)
                           )
                         )
@@ -395,18 +395,21 @@ ui.prettyPlot <- function() {
                       condition = "input.pretty_plot_addobj",
 
                       #----------------------------------------
-                      column(12, tags$h5("Loaded additional object(s)")),
+                      # column(12, tags$h5("Loaded additional object(s)")),
+                      column(12, helpText(tags$strong("Loaded additional object(s)"))),
                       box(
                         width = 12,
+                        tags$h5("Select loaded object to update its parameters or remove it from the GUI"),
                         DTOutput("pretty_plot_addobj_table_out"),
                         tags$br(), tags$br(),
-                        actionButton("pretty_plot_addobj_update_show", "Update parameters"),
+                        uiOutput("pretty_plot_addobj_update_show_uiOut_button"),
                         uiOutput("pretty_plot_addobj_remove_execute_uiOut_button"),
                         textOutput("pretty_plot_addobj_remove_out")
                       ),
 
                       #----------------------------------------
-                      column(12, tags$h5("New additional object")),
+                      # column(12, tags$h5("New additional object")),
+                      column(12, helpText(tags$strong("New additional object"))),
                       box(
                         width = 12,
                         uiOutput("pretty_plot_addobj_which_uiOut_select"),

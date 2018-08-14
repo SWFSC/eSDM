@@ -89,7 +89,7 @@ pretty_plot_addobj_remove <- eventReactive(input$pretty_plot_addobj_remove_execu
   x <- input$pretty_plot_addobj_table_out_rows_selected
 
   validate(
-    need(x, "Error: A loaded additional object must be selected to remove")
+    need(x, "Error: You must select a row from the 'Loaded additional objects' table")
   )
 
   vals$pretty.addobj <- vals$pretty.addobj[-x]
