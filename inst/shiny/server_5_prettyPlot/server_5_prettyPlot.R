@@ -159,8 +159,8 @@ choices.list.pch <- list(
 )
 
 choices.list.lty <- list(
-  "Solid" = 1, "Dash" = 2, "Dot" = 3, "Dot-dash" = 4, "Long dash" = 5,
-  "Dot-long dash" = 6
+  "1: Solid" = 1, "2: Dash" = 2, "3: Dot" = 3, "4: Dot-dash" = 4,
+  "5: Long dash" = 5, "6: Dot-long dash" = 6
 )
 
 ###############################################################################

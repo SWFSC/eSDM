@@ -289,7 +289,7 @@ pretty_plot_tick_list <- reactive({
 ### Generate lists of additional objects to plot
 # Functions assume they are only called when an additional object is loaded
 pretty_plot_addobj_preflag <- reactive({
-  sapply(req(vals$pretty.addobj), function(i) i$pre.sdm)
+  sapply(req(vals$pretty.addobj), function(i) i$obj.order == 1)
 })
 
 

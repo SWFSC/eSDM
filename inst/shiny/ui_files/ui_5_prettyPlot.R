@@ -120,8 +120,8 @@ ui.prettyPlot <- function() {
                   box(
                     width = 12,
                     fluidRow(
-                      column(4, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
-                      column(4, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0))
+                      column(5, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
+                      column(6, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0))
                     ),
                     fluidRow(
                       column(
@@ -475,8 +475,10 @@ ui.prettyPlot <- function() {
 
                         fluidRow(
                           column(6, uiOutput("pretty_plot_addobj_type_uiOut_radio")),
-                          column(6, radioButtons("pretty_plot_addobj_order", tags$h5("Draw object before or after SDM:"),
-                                                 choices = list("Before" = 1, "After" = 2), selected = 2))
+                          column(6, radioButtons("pretty_plot_addobj_order", tags$h5("Object draw order:"),
+                                                 choices = list("Draw object behind SDM" = 1,
+                                                                "Draw object in front of SDM" = 2),
+                                                 selected = 2))
                         ),
                         fluidRow(
                           column(6, uiOutput("pretty_plot_addobj_color_ptfillcheck_uiOut_check")),

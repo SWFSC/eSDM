@@ -175,15 +175,17 @@ output$pretty_plot_legend_pos_uiOut_select <- renderUI({
       "Bottom right" = 5, "Bottom center" = 6, "Bottom left" = 7,
       "Center left" = 8
     )
+    choices.sel <- 3
 
   } else { #input$pretty_plot_legend_inout == 2
     choices.list <- list(
       "Right" = "right", "Bottom" = "bottom", "Left" = "left", "Top" = "top"
     )
+    choices.sel <- 1
   }
 
   selectInput("pretty_plot_legend_pos", tags$h5("Legend position"),
-              choices = choices.list, selected = 1)
+              choices = choices.list, selected = choices.sel)
 })
 
 # Legend width

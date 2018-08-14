@@ -1,12 +1,10 @@
 # Code relating to renderUI()'s for add object section of pretty plot
 
 ###############################################################################
-# Helper function: generates labels for widgets given parameters
+# Helper function: generates labels for widgets given various parameters
 # "Object type" = 1, "Draw object before or after SDM" = 2,
-# "Make polygon fill color transparent" = 3,
-# "Polygon fill color" = 4,
-# "Make polygon border(s) transparent" = 5,
-# "Polygon border color" = 6,
+# "Make polygon fill color transparent" = 3, "Polygon fill color" = 4,
+# "Make polygon border(s) transparent" = 5, "Polygon border color" = 6,
 # "Line type of polygon border(s)" = 7,
 # "Line width of polygon border(s)" = 8
 addobj_render_lab <- function(ui.which, addobj.which, addobj.type = NULL) {
@@ -68,7 +66,6 @@ addobj_render_lab <- function(ui.which, addobj.which, addobj.type = NULL) {
 ### Button widget to remove additional polygon
 output$pretty_plot_addobj_remove_execute_uiOut_button <- renderUI({
   req(vals$pretty.addobj)
-
   actionButton("pretty_plot_addobj_remove_execute",
                "Remove selected additional object")
 })
@@ -77,12 +74,13 @@ output$pretty_plot_addobj_remove_execute_uiOut_button <- renderUI({
 #------------------------------------------------------------------------------
 ### 0: Select widget for including other polygons
 output$pretty_plot_addobj_which_uiOut_select <- renderUI({
-  choices.list <- list("Study area polygon" = 1, "Erasing polygon" = 2,
-                       "Validation points" = 3)
-  x <- c(
+  choices.list <- list(
+    "Study area polygon" = 1, "Erasing polygon" = 2, "Validation points" = 3
+  )
+  choices.list.bool <- c(
     sapply(list(vals$overlay.bound, vals$overlay.land, vals$eval.data), isTruthy)
   )
-  choices.list <- c(choices.list[x], "Import new object" = 4)
+  choices.list <- c(choices.list[choices.list.bool], "Import new object" = 4)
 
   selectInput("pretty_plot_addobj_which", tags$h5("Add polygon to map"),
               choices = choices.list, selected = NULL)
@@ -198,8 +196,9 @@ output$pretty_plot_addobj_pchlty_uiOut_select <- renderUI({
     choices.selected <- 1
   }
 
-  selectInput("pretty_plot_addobj_pchlty", tags$h5(input.lab),
-              choices = choices.list, selected = choices.selected)
+  selectizeInput("pretty_plot_addobj_pchlty", tags$h5(input.lab),
+                 choices = choices.list, selected = choices.selected,
+                 multiple = FALSE)
 })
 
 

@@ -69,8 +69,9 @@ pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
       obj = addobj.obj,
       obj.text = addobj.obj.text,
       obj.own = addobj.obj.own, #only for update
+      obj.which = input$pretty_plot_addobj_which, #only for update
       obj.type = input$pretty_plot_addobj_type,
-      pre.sdm = input$pretty_plot_addobj_order == 1,
+      obj.order = input$pretty_plot_addobj_order,
       col.ptfill = addobj.col.ptfill,
       col.absborder = addobj.col.absborder,
       pchlty = as.numeric(input$pretty_plot_addobj_pchlty),
@@ -106,14 +107,14 @@ pretty_plot_addobj_table <- reactive({
     errorClass = "validation2"
   )
 
-  # TODO: add more data columns in table?
   x <- data.frame(do.call(
     rbind, lapply(vals$pretty.addobj, function(i) {
-      c(i$obj.text, ifelse(i$obj.type == 1, "Point", "Polygon"), i$pre.sdm)
+      c(i$obj.text, ifelse(i$obj.type == 1, "Point", "Polygon"),
+        ifelse(i$obj.order == 1, "Behind SDM", "In front of SDM"))
     })
   ), stringsAsFactors = FALSE)
 
-  purrr::set_names(x, c("Object", "Object type", "Draw before SDM"))
+  purrr::set_names(x, c("Object", "Object type", "Draw order"))
 })
 
 
