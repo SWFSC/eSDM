@@ -12,10 +12,14 @@ pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
   plot.which <- input$pretty_plot_toplot_table_out_rows_selected
   plot.nrow <- input$pretty_plot_nrow
   plot.ncol <- input$pretty_plot_ncol
+  plot.width  <- input$pretty_plot_width_inch * 96
+  plot.height <- input$pretty_plot_height_inch * 96
 
   validate(
     need(plot.which,
-         "Error: Select at least one item from the to-plot list to plot"),
+         "Error: Select at least one item from the to-plot list to plot")
+  )
+  validate(
     need(inherits(plot.nrow, "integer") & inherits(plot.ncol, "integer"),
          paste("Error: 'Number of rows' and 'Number of columns'",
                "must be whole numbers")) %then%
@@ -24,9 +28,19 @@ pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
                  "greater than or equal to the number of items",
                  "selected from the to-plot list to plot"))
   )
+  validate(
+    need(inherits(plot.width, c("integer", "numeric")) &
+           inherits(plot.height, c("integer", "numeric")),
+         paste("Error: 'Plot width (in)' and 'Plot height (in)'",
+               "must be numbers")) %then%
+      need(plot.width > 0 & plot.height > 0,
+           paste("Error: 'Plot width (in)' and 'Plot height (in)' must both",
+                 "be greater than 0"))
+  )
 
   vals$pretty.plot <- list(
-    dims = c(nrow = plot.nrow, ncol = plot.ncol),
+    dims = c(nrow = plot.nrow, ncol = plot.ncol,
+             width = plot.width, height = plot.height),
     idx.list = vals$pretty.toplot.idx[plot.which],
     params.list = vals$pretty.params.toplot[plot.which]
   )
@@ -51,7 +65,7 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
 
   # tmap_arrange call ~0.3s slower than just printing tmap object
   # do.call(tmap_arrange, c(tmap.list, dims, asp = list(NULL)))
-  tmap_arrange(tmap.list, dims, asp = NULL)
+  tmap_arrange(tmap.list, dims[1:2], asp = NULL)
 }
 
 

@@ -449,14 +449,19 @@ output$pretty_plot_color_preview_plot <- renderPlot({
 })
 
 ### Pretty plot
-output$pretty_plot_plot_out <- renderPlot({
-  p.list <- vals$pretty.plot
-  validate(
-    need(p.list, "High quality map(s) will be displayed here"),
-    errorClass = "validation3"
-  )
+# Running plotOutput() within a renderUI() didn't work because of issues with
+#   passing plot width and heigh from reactiveValues
+observe({
+  output$pretty_plot_plot_out <- renderPlot({
+    p.list <- vals$pretty.plot
+    validate(
+      need(p.list, "High quality map(s) will be displayed here"),
+      errorClass = "validation3"
+    )
 
-  plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
+    plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
+  }, width = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["width"], 8 * 96),
+  height = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["height"], 4 * 96))
 })
 
 

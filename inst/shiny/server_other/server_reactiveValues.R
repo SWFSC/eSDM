@@ -17,7 +17,7 @@ val.pretty.addobj.update <- reactiveVal(value = NULL)
 vals <- reactiveValues(
   # Objects that store loaded models and related info
   models.ll             = list(),  # List of models; crs is crs.ll
-  models.orig           = list(),  #List of models; crs is crs of predictions when loaded
+  models.orig           = list(),  # List of models; crs is crs of predictions when loaded
   models.names          = NULL,    # Vector of model names
   models.data.names     = NULL,    # List of vectors of model, error, and weights names
   models.pred.type      = NULL,    # Vector of prediction type (absolute vs relative)

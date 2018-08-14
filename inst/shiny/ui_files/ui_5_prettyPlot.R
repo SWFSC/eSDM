@@ -9,7 +9,7 @@ ui.prettyPlot <- function() {
       fluidRow(
         box(
           title = "High Quality Maps", solidHeader = TRUE, status = "primary", height = 570, width = 12, align = "center",
-          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out", height = 500), type = 1)
+          shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out"), type = 1)
         )
       ),
 
@@ -109,7 +109,8 @@ ui.prettyPlot <- function() {
                     tags$h5(tags$strong("Select map(s) from the to-plot list to plot:"),
                             "Click on a row in the table below to select or deselect items.",
                             "Maps will be plotted left to right, top to bottom, in order you select them"),
-                    DTOutput("pretty_plot_toplot_table_out")
+                    DTOutput("pretty_plot_toplot_table_out"),
+                    helpText(NULL)
                   )
                 )
               ),
@@ -120,17 +121,16 @@ ui.prettyPlot <- function() {
                   box(
                     width = 12,
                     fluidRow(
-                      column(5, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 0)),
-                      column(6, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 0))
+                      column(5, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 1)),
+                      column(5, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 1))
                     ),
                     fluidRow(
-                      column(
-                        width = 12,
-                        actionButton("pretty_plot_plot_event", "Plot map"),
-                        textOutput("pretty_plot_plot_text"),
-                        helpText("Note that plotting may take several minutes depending on map size and the number of maps being plotted")
-                      )
-                    )
+                      column(5, numericInput("pretty_plot_width_inch", tags$h5("Plot width (in)"), value = 8, step = 1, min = 1)),
+                      column(5, numericInput("pretty_plot_height_inch", tags$h5("Plot height (in)"), value = 4, step = 1, min = 1))
+                    ),
+                    actionButton("pretty_plot_plot_event", "Plot map"),
+                    textOutput("pretty_plot_plot_text"),
+                    helpText("Note that plotting may take several minutes depending on map size and the number of maps being plotted")
                   )
                 )
               )
