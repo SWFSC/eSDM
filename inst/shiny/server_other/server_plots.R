@@ -14,11 +14,12 @@ observeEvent(input$model_preview_interactive_execute, {
 
   vals$models.plot.leaf.idx <- model.idx
   vals$models.plot.leaf <- list(
-    model.toplot = vals$models.ll[[model.idx]], perc.num = perc.num,
-    plot.title = paste("Original", model.idx),
-    # plot.title = paste(vals$models.names[model.idx], "|", vals$models.data.names[[model.idx]][1]),
-    leg.title = ifelse(perc.num, "Relative prediction value",
-                       "Absolute prediction value")
+    model.toplot = vals$models.ll[[model.idx]],
+    plot.title = paste("Original", model.idx), perc.num = perc.num,
+    pal = switch(perc.num, pal.esdm, pal.esdm.alt),
+    leg.title = switch(
+      perc.num, "Relative prediction value", "Absolute prediction value"
+    )
   )
 })
 
@@ -31,20 +32,17 @@ observeEvent(input$model_preview_execute, {
   perc.num <- as.numeric(input$model_preview_perc)
   models.idx <- as.numeric(input$models_loaded_table_rows_selected)
   models.num <- length(models.idx)
-  pal <- switch(perc.num, pal.esdm, pal.esdm.alt)
 
   models.toplot <- vals$models.ll[models.idx]
   stopifnot(models.num == length(models.toplot))
 
-  # plot.titles <- sapply(models.idx, function(i) {
-  #   paste(vals$models.names[i], "|", vals$models.data.names[[i]][1])
-  # })
   plot.titles = paste("Original", models.idx)
 
   vals$models.plot.idx <- models.idx
   vals$models.plot <- list(
     models.toplot = models.toplot, data.name = rep("Pred", models.num),
-    plot.titles = plot.titles, perc.num = perc.num, pal = pal,
+    plot.titles = plot.titles, perc.num = perc.num,
+    pal = switch(perc.num, pal.esdm, pal.esdm.alt),
     plot.dims = multiplot_inapp(models.num)
   )
 })
@@ -162,6 +160,18 @@ observeEvent(input$overlay_preview_overlaid_execute, {
 # Create Ensembles tab
 
 #################################################
+### Preview overlaid model predictions with assigned weight polygons
+observeEvent(input$create_ens_weights_poly_preview_execute, {
+  req(vals$ens.over.wpoly.filename)
+  overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
+
+  vals$ens.over.wpoly.plot <- list(
+    st_geometry(vals$overlaid.models[[overlaid.which]]), overlaid.which
+  )
+})
+
+
+#################################################
 ### Generate interactive preview of ensemble predictions to display in-app
 observeEvent(input$ens_preview_interactive_execute, {
   req(length(vals$ensemble.models) > 0)
@@ -176,27 +186,11 @@ observeEvent(input$ens_preview_interactive_execute, {
 
   vals$ensemble.plot.leaf.idx <- model.idx
   vals$ensemble.plot.leaf <- list(
-    model.toplot = model.toplot, perc.num = perc.num,
-    # plot.title = paste(
-    #   vals$ensemble.method[model.idx], "|", vals$ensemble.rescaling[model.idx],
-    #   "|", vals$ensemble.overlaid.idx[model.idx]
-    # ),
-    plot.title = paste("Ensemble", model.idx),
-    leg.title = ifelse(
+    model.toplot = model.toplot, plot.title = paste("Ensemble", model.idx),
+    perc.num = perc.num, pal = switch(perc.num, pal.esdm, pal.esdm.alt),
+    leg.title = switch(
       perc.num, "Relative prediction value", "Absolute prediction value"
     )
-  )
-})
-
-
-#################################################
-### Preview overlaid model predictions with assigned weight polygons
-observeEvent(input$create_ens_weights_poly_preview_execute, {
-  req(vals$ens.over.wpoly.filename)
-  overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
-
-  vals$ens.over.wpoly.plot <- list(
-    st_geometry(vals$overlaid.models[[overlaid.which]]), overlaid.which
   )
 })
 
@@ -209,21 +203,17 @@ observeEvent(input$ens_preview_execute, {
   perc.num <- as.numeric(input$ens_preview_perc)
   models.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
   models.num <- length(models.idx)
-  pal <- switch(perc.num, pal.esdm, pal.esdm.alt)
 
   models.toplot <- vals$ensemble.models[models.idx]
   stopifnot(models.num == length(models.toplot))
 
-  # plot.titles <- sapply(models.idx, function(i) {
-  #   paste(vals$ensemble.method[i], "|", vals$ensemble.rescaling[i],
-  #         "|", vals$ensemble.overlaid.idx[i])
-  # })
   plot.titles <- paste("Ensemble", models.idx)
 
   vals$ensemble.plot.idx <- models.idx
   vals$ensemble.plot <- list(
     models.toplot = models.toplot, data.name = rep("Pred.ens", models.num),
-    plot.titles = plot.titles, perc.num = perc.num, pal = pal,
+    plot.titles = plot.titles, perc.num = perc.num,
+    pal = switch(perc.num, pal.esdm, pal.esdm.alt),
     plot.dims = multiplot_inapp(models.num)
   )
 })

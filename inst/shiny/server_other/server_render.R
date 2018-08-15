@@ -60,8 +60,8 @@ output$model_preview_interactive_plot <- renderLeaflet({
   x <- req(vals$models.plot.leaf)
 
   preview_interactive(
-    x$model.toplot, "Pred", x$perc.num, pal.esdm, leg.perc.esdm,
-    x$plot.title, x$leg.title
+    x$model.toplot, "Pred", x$plot.title, x$perc.num, x$pal, leg.perc.esdm,
+    x$leg.title
   )
 })
 
@@ -272,8 +272,8 @@ output$ens_preview_interactive_plot <- renderLeaflet({
   x <- req(vals$ensemble.plot.leaf)
 
   preview_interactive(
-    x$model.toplot, "Pred.ens", x$perc.num, pal.esdm, leg.perc.esdm,
-    x$plot.title, x$leg.title
+    x$model.toplot, "Pred.ens", x$plot.title, x$perc.num, x$pal, leg.perc.esdm,
+    x$leg.title
   )
 })
 

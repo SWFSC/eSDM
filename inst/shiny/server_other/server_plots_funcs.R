@@ -74,7 +74,6 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
                              leg.txt.cex = 1) {
 
   # -------------------------------------------------------
-  # TODO long-term: make more flexible for use as stand-alone function
   stopifnot(
     is.list(models.toplot),
     length(models.toplot) == length(data.names),
@@ -87,9 +86,13 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
   # -------------------------------------------------------
   models.num <- length(models.toplot)
   col.num <- length(col.pal)
+  col.num.leg <- col.num + 1
+  col.pal.leg <- c("gray", col.pal)
   layout.num <- plot.nrow * plot.ncol
   models.layout.diff <- layout.num - models.num
 
+  # -------------------------------------------------------
+  # Create layout based on inputs
   if (perc.num == 1) {
     mat.num <- do.call(c, lapply(0:(plot.nrow - 1), function(i) {
       c((plot.ncol * i) + 1:plot.ncol, layout.num + 1)
@@ -122,15 +125,21 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
         from = min(data.vec, na.rm = TRUE), to = max(data.vec, na.rm = TRUE),
         length.out = 11
       )
+      b.model.lab <- format(round(b.model, 3), justify = "right")
 
       opar <- par(mai = c(0.3, 0, 0.2, 1))
       on.exit(par(opar), add = TRUE)
 
-      graphics::image(1, 1:col.num, t(as.matrix(1:col.num)), col = col.pal,
-                      axes = FALSE, xlab = "", ylab = "")
+      graphics::image(
+        1, 1:col.num.leg, t(as.matrix(1:col.num.leg)), col = col.pal.leg,
+        axes = FALSE, xlab = "", ylab = ""
+      )
       graphics::box(col = "black")
-      graphics::axis(4, at = (0:col.num) + 0.5, labels = round(b.model, 5),
-                     tick = FALSE, las = 1, cex.axis = leg.txt.cex)
+      graphics::axis(
+        4, at = c(1, (1:col.num.leg) + 0.5),
+        labels = c("NA", b.model.lab),
+        tick = FALSE, las = 1, cex.axis = leg.txt.cex
+      )
     }
   }
 
@@ -144,11 +153,15 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
     opar <- par(mai = c(0.3, 0, 0.2, 1))
     on.exit(par(opar), add = TRUE)
 
-    graphics::image(0.6, 1:col.num, t(as.matrix(1:col.num)), col = col.pal,
-                    axes = FALSE, xlab = "", ylab = "")
+    graphics::image(
+      0.6, 1:col.num.leg, t(as.matrix(1:col.num.leg)), col = col.pal.leg,
+      axes = FALSE, xlab = "", ylab = ""
+    )
     graphics::box(col = "black")
-    graphics::axis(4, at = 1:col.num, labels = leg.labels, tick = FALSE,
-                   las = 1, cex.axis = leg.txt.cex)
+    graphics::axis(
+      4, at = 1:col.num.leg, labels = c("NA", leg.labels),
+      tick = FALSE, las = 1, cex.axis = leg.txt.cex
+    )
   }
 }
 
@@ -167,7 +180,6 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
       breaks = b.model, pal = col.pal, key.pos = NULL, reset = FALSE,
       main = title.ll, cex.main = main.cex, cex.axis = axis.cex
     )
-    #graticule = st_crs(sdm.ll),
 
   } else {
     b.model <- seq(
@@ -181,14 +193,19 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
       main = title.ll, cex.main = main.cex, cex.axis = axis.cex
     )
   }
+
+  if (anyNA(data.vec)) {
+    sdm.na <- st_geometry(sdm.ll)[is.na(data.vec)]
+    plot(sdm.na, add = TRUE, border = NA, col = "gray")
+
+  }
 }
 
 
 ###############################################################################
 # Generate leaflet plot of provided sf object
-preview_interactive <- function(sdm.ll, data.name, perc, col.pal,
-                                leg.labels = NULL, title.ll = NULL,
-                                leg.title = NULL) {
+preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
+                                col.pal, leg.labels = NULL, leg.title = NULL) {
   stopifnot(
     inherits(sdm.ll, "sf"),
     !is.null(sdm.ll[data.name]),
@@ -226,25 +243,34 @@ preview_interactive <- function(sdm.ll, data.name, perc, col.pal,
   # perc-specific parts of leaflet map
   if (perc == 1) {
     b.model <- breaks_calc(data.vec)
-    binpal <- colorBin(col.pal, data.vec, bins = b.model, na.color = "grey")
+    binpal <- colorBin(col.pal, data.vec, bins = b.model, na.color = "gray")
 
     leaf.all %>%
       addPolygons(
         stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8) %>%
       addLegend(
-        "topright", title = leg.title, colors = c(col.pal, "grey"),
-        labels = c(leg.labels, "NA"), opacity = 1)
+        "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
+        labels = c(rev(leg.labels), "NA"), opacity = 1)
 
   } else {
     binpal <- colorBin(col.pal, data.vec, bins = 10, pretty = FALSE,
-                       na.color = "grey")
+                       na.color = "gray")
+    data.breaks.vals <- format(round(seq(
+      max(data.vec, na.rm = TRUE), min(data.vec, na.rm = TRUE), length.out = 11
+    ), 3), justify = "right")
+    data.breaks.labs <- paste(
+      data.breaks.vals[2:11], "-", data.breaks.vals[1:10]
+    )
 
     leaf.all %>%
       addPolygons(
         stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8) %>%
       addLegend(
-        "topright", title = leg.title, pal = binpal, values = ~data.vec,
-        opacity = 1)
+        "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
+        labels = c(data.breaks.labs, "NA") , opacity = 1)
+    # addLegend(
+    #   "topright", title = leg.title, pal = binpal, values = ~data.vec,
+    #   opacity = 1)
   }
 }
 
