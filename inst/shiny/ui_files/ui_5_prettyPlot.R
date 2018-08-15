@@ -24,7 +24,8 @@ ui.prettyPlot <- function() {
                   radioButtons("pretty_plot_mapcontrol", NULL,
                                choices = list("Add new map to to-plot list" = 1, "Update parameters of map in to-plot list" = 2,
                                               "Plot or download map(s) in to-plot list" = 3),
-                               selected = 1)
+                               selected = 2)
+                  # TODO: change ^ back to 1
                 )
               )
             ),
@@ -74,9 +75,8 @@ ui.prettyPlot <- function() {
                   box(
                     width = 12,
                     tags$h5(tags$strong("Select a map from the to-plot list to update:"),
-                            "Click on a row in the table below to select or deselect items.",
-                            "When you select a map from the to-plot list, the parameters will appear and will",
-                            "reflect the current saved parameters of that map."),
+                            "Click on a row in the table below to select or deselect an item.",
+                            "Then click the 'Update map parameters' button in the next box."),
                     DTOutput("pretty_plot_update_table_out")
                   )
                 )
@@ -87,8 +87,7 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    actionButton("pretty_plot_update_exectue", "Update map parameters"),
-                    textOutput("pretty_plot_update_text"),
+                    actionButton("pretty_plot_update_toplot_show", "Update map parameters"),
                     helpText("todo")
                   )
                 )
@@ -159,27 +158,6 @@ ui.prettyPlot <- function() {
                 )
               )
             )
-
-            #   ################################################ Download map
-            #   tags$strong("3) Download map"),
-            #   fluidRow(
-            #     box(
-            #       width = 12,
-            #       tags$h5("The map displayed above will be the map that is downloaded"),
-            #       fluidRow(
-            #         column(3, radioButtons("pretty_plot_download_res", tags$h5("Resolution"),
-            #                                choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-            #                                selected = 1)),
-            #         column(2, radioButtons("pretty_plot_download_format", tags$h5("Image file format"),
-            #                                choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
-            #                                selected = 3)),
-            #         column(6, uiOutput("pretty_plot_download_name_uiOut_text"))
-            #       ),
-            #       tags$br(),
-            #       downloadButton("pretty_plot_download_execute", "Download map")
-            #     )
-            #   )
-            # )
           )
         )
       ),

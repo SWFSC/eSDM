@@ -12,54 +12,100 @@ observeEvent(input$pretty_plot_mapcontrol, {
 
 
 ###############################################################################
-# Collects all widget values when map is added to to-plot list
-pretty_plot_update_prep <- reactive({
-  list(
-    proj.ll     = input$pretty_plot_proj_ll,
-    proj.method = input$pretty_plot_proj_method,
-    proj.idx    = input$pretty_plot_proj_idx,
-    proj.epsg   = input$pretty_plot_proj_epsg,
-    range.xmin  = input$pretty_plot_range_xmin,
-    range.xmax  = input$pretty_plot_range_xmax,
-    range.ymin  = input$pretty_plot_range_ymin,
-    range.ymax  = input$pretty_plot_range_ymax,
+###############################################################################
+# Code for modal dialog window for updating params of saved maps
 
-    color.bg = input$pretty_plot_background_color,
-    cs.type  = input$pretty_plot_color_perc,
-    cs.pal   = input$pretty_plot_color_palette,
-    cs.num   = input$pretty_plot_color_num
-  )
+###############################################################################
+# Show modal when button is clicked.
+observeEvent(input$pretty_plot_update_toplot_show, {
+  showModal(toplot_update_modal(
+    failed = !isTruthy(input$pretty_plot_update_table_out_rows_selected)
+  ))
 })
 
 
 ###############################################################################
-# Update widgets to reflect current parameter values
-pretty_plot_update <- eventReactive(
-  input$pretty_plot_update_table_out_rows_selected,
-  {
-    validate(
-      need(input$pretty_plot_update_table_out_rows_selected,
-           "Please select a map from the to-plot list to update parameters")
+toplot_update_modal <- function(failed) {
+  if (failed) {
+    modalDialog(
+      tags$strong("Error: You must select a row from the table",
+                  style = "color: red;"),
+      tags$br(),
+      tags$h5("Click 'Cancel' to close this window and then select a row from the table"),
+      footer = tagList(modalButton("Cancel"))
     )
 
-    # browser()
-    x <- vals$pretty.params.update
+  } else {
+    x <- req(input$pretty_plot_update_table_out_rows_selected)
+    val.pretty.toplot.update(vals$pretty.params.toplot[[x]])
 
-    updateCheckboxInput(session, "pretty_plot_proj_ll", selected = x$proj.ll)
-    updateRadioButtons(session, "pretty_plot_proj_method", selected = x$proj.method)
-    updateSelectInput(session, "pretty_plot_proj_idx", selected = x$proj.idx)
-    updateNumericInput(session, "pretty_plot_proj_epsg", selected = x$proj.epsg)
-    updateNumericInput(session, "pretty_plot_range_xmin", selected = x$range.xmin)
-    updateNumericInput(session, "pretty_plot_range_xmax", selected = x$range.xmax)
-    updateNumericInput(session, "pretty_plot_range_ymin", selected = x$range.ymin)
-    updateNumericInput(session, "pretty_plot_range_ymax", selected = x$range.ymax)
+    modalDialog(
+      tags$h4("Stufff"),
+      tags$h5("Select the parameter you wish to update and change it as desired in the window that appears.",
+              "Then click 'Save parameter', and the newly saved parameter will be updated in the table below.",
+              "After the table reflects the desired parameter values, click 'Done'."),
+      tags$br(),
+      tags$strong(paste("Map ID:", vals$pretty.params.toplot[[x]]$id)),
+      fluidRow(
+        column(6, uiOutput("pretty_plot_toplot_update_which_uiOut_select"))
+        # column(
+        #   width = 6,
+        #   uiOutput("pretty_plot_addobj_update_thing_uiOut_mult"),
+        #   uiOutput("pretty_plot_addobj_update_thing2_uiOut_mult")
+        # )
+      ),
+      # actionButton("pretty_plot_addobj_update_execute", "Save parameter"),
+      # tags$br(), tags$br(), tags$br(),
+      # tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
+      #         "otherwise they are displayed as hexadecimals."),
+      # tableOutput("pretty_plot_addobj_update_table_out"),
 
-    ""
+      footer = tagList(actionButton("pretty_plot_toplot_update_done", "Done"))
+    )
   }
-)
+}
 
 
 ###############################################################################
+# renderUI()'s
 
+### Main selection dropdown
+output$pretty_plot_toplot_update_which_uiOut_select <- renderUI({
+  choices.list <- list(
+    "Map coordinate system and range" = 1,
+    "Background color and prediction color scheme" = 2,
+    "Legend" = 3,
+    "Title and axis labels" = 4,
+    "Coordinate grid lines and labels" = 5,
+    "Additional objects (points or polygons)" = 6
+  )
+
+  selectInput("pretty_plot_toplot_update_which",
+              tags$h5("Choose parameter section"),
+              choices = choices.list, selected = 1)
+})
+
+### Selection dropdown for specific parameters
+output$pretty_plot_toplot_update_which_param_uiOut_select <- renderUI({
+  req(input$pretty_plot_toplot_update_which)
+
+  selectInput("pretty_plot_toplot_update_which_param",
+              tags$h5("Choose parameter to update"),
+              choices = list("TODO" = 1), selected = 1)
+})
+
+
+
+###############################################################################
+# Final processing step and close modal
+observeEvent(input$pretty_plot_toplot_update_done, {
+  removeModal()
+
+  # z <- req(input$pretty_plot_addobj_update_which)
+  # x <- input$pretty_plot_addobj_table_out_rows_selected
+  #
+  # vals$pretty.addobj[[x]] <- val.pretty.addobj.update()
+  # val.pretty.addobj.update(NULL)
+})
 
 ###############################################################################

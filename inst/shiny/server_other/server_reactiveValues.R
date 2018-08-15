@@ -11,6 +11,9 @@ val.pretty.color.num <- reactiveVal(value = NULL)
 ### Pretty plot: update params of loaded additional objects
 val.pretty.addobj.update <- reactiveVal(value = NULL)
 
+### Pretty plot: update params of saved maps (to-plot list items)
+val.pretty.toplot.update <- reactiveVal(value = NULL)
+
 ###############################################################################
 # 'Initialize' all 43 elements of vals
 

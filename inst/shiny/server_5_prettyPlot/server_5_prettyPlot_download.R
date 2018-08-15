@@ -1,8 +1,8 @@
-### Download plots from 'High Quality Maps' tab
+# Download plots from 'High Quality Maps' tab
 
 
 ###############################################################################
-### Download handler - High Quality Maps
+# Download handler - High Quality Maps
 output$pretty_plot_download_execute <- downloadHandler(
   filename = function() input$pretty_plot_download_name,
 
