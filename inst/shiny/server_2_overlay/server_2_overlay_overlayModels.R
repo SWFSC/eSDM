@@ -334,16 +334,16 @@ overlay_base_idx <- reactive({
 ###############################################################################
 overlay_studyarea_land_message <- reactive({
   if (isTruthy(vals$overlay.land) & isTruthy(vals$overlay.bound)) {
-    "Both a study area polygon and a land area polygon were used"
+    "Both a study area polygon and an erasing polygon were used"
 
   } else if (isTruthy(vals$overlay.bound)) {
-    "Only a study area area polygon was used"
+    "Only a study area polygon was used"
 
   } else if (isTruthy(vals$overlay.land)) {
-    "Only a land area polygon was used"
+    "Only an erasing polygon was used"
 
   } else {
-    "Neither a land area polygon and a study area polygon were used"
+    "Neither a study area polygon nor an erasing polygon were used"
   }
 })
 

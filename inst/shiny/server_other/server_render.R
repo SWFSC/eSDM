@@ -156,7 +156,7 @@ output$overlay_overlaid_models_message <- renderUI({
     tags$br(),
     paste("1) Using the geometry of the",
           paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
-          "SDM as the base grid"),
+          "SDM as the base geometry"),
     tags$br(),
     paste("2)", vals$overlay.info[[2]]) ,
     tags$br(),
