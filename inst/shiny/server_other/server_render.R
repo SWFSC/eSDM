@@ -439,7 +439,6 @@ output$pretty_plot_addobj_table_out <- renderDT({
   pretty_plot_addobj_table()
 }, options = dt.list, selection = "single", rownames = FALSE)
 
-
 #----------------------------------------------------------
 # Other outputs
 
@@ -447,7 +446,6 @@ output$pretty_plot_addobj_table_out <- renderDT({
 output$pretty_plot_color_preview_plot <- renderPlot({
   pretty_plot_color_preview()
 })
-
 
 #----------------------------------------------------------
 # Pretty plot plot display
@@ -478,7 +476,8 @@ observe({
 
     plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
   }, width = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["width"], 8 * 96),
-  height = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["height"], 4 * 96))
+  height = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["height"], 4 * 96),
+  res = 98)
 })
 
 

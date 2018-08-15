@@ -98,7 +98,7 @@ ui.prettyPlot <- function() {
             conditionalPanel(
               condition = "input.pretty_plot_mapcontrol == 3",
               column(
-                width = 6,
+                width = 5,
                 tags$strong("2) Select map(s) in to-plot list to plot"),
                 fluidRow(
                   box(
@@ -112,23 +112,49 @@ ui.prettyPlot <- function() {
                 )
               ),
               column(
-                width = 4,
-                tags$strong("3) Specify plot dimensions and plot map"),
+                width = 5,
+                tags$strong("3) Specify plot dimensions and plot or download map"),
                 fluidRow(
                   box(
                     width = 12,
-                    fluidRow(
-                      column(5, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 1)),
-                      column(5, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 1))
+                    conditionalPanel(
+                      condition = "output.pretty_display_toplot_flag == false",
+                      tags$h5("You must add maps to the to-plot list to use this section", style = "color: red;")
                     ),
-                    fluidRow(
-                      column(5, numericInput("pretty_plot_width_inch", tags$h5("Plot width (in)"), value = 8, step = 1, min = 1)),
-                      column(5, numericInput("pretty_plot_height_inch", tags$h5("Plot height (in)"), value = 4, step = 1, min = 1))
-                    ),
-                    tags$span(textOutput("pretty_plot_plot_dim_warnings_out"), style = "color: red;"),
-                    actionButton("pretty_plot_plot_event", "Plot map"),
-                    textOutput("pretty_plot_plot_text"),
-                    helpText("Note that plotting may take several minutes depending on map size and the number of maps being plotted")
+                    conditionalPanel(
+                      condition = "output.pretty_display_toplot_flag",
+                      fluidRow(
+                        column(3, numericInput("pretty_plot_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 1)),
+                        column(3, numericInput("pretty_plot_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 1)),
+                        column(3, numericInput("pretty_plot_width_inch", tags$h5("Plot width (inches)"), value = 8, step = 1, min = 1)),
+                        column(3, numericInput("pretty_plot_height_inch", tags$h5("Plot height (inches)"), value = 8, step = 1, min = 1))
+                      ),
+                      tags$br(),
+                      fluidRow(
+                        box(
+                          width = 6,
+                          helpText("Note that plotting may take several minutes depending on the number of maps and their size"),
+                          tags$span(textOutput("pretty_plot_plot_dim_warnings_out"), style = "color: red;"),
+                          actionButton("pretty_plot_plot_event", "Plot map"),
+                          textOutput("pretty_plot_plot_text")
+                        ),
+                        box(
+                          width = 6,
+                          tags$h5("The downloaded maps will have the dimensions specified above"),
+                          fluidRow(
+                            column(6, radioButtons("pretty_plot_download_res", tags$h5("Resolution"),
+                                                   choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
+                                                   selected = 1)),
+                            column(6, radioButtons("pretty_plot_download_format", tags$h5("Image file format"),
+                                                   choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
+                                                   selected = 3))
+                          ),
+                          uiOutput("pretty_plot_download_name_uiOut_text"),
+                          tags$br(),
+                          uiOutput("pretty_plot_download_execute_uiOut_download")
+                        )
+                      )
+                    )
                   )
                 )
               )

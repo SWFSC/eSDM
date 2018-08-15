@@ -2,43 +2,120 @@
 
 
 ###############################################################################
-
 ### Download handler - High Quality Maps
 output$pretty_plot_download_execute <- downloadHandler(
   filename = function() input$pretty_plot_download_name,
 
   content = function(file) {
     withProgress(message = "Downloading high quality map", value = 0.4, {
-      req(p.list <- vals$pretty.plot.list)
+      #----------------------------------------------------
+      plot.which  <- input$pretty_plot_toplot_table_out_rows_selected
+      plot.nrow   <- input$pretty_plot_nrow
+      plot.ncol   <- input$pretty_plot_ncol
+      plot.width  <- input$pretty_plot_width_inch
+      plot.height <- input$pretty_plot_height_inch
+
+      req(
+        plot.which, (plot.nrow * plot.ncol) >= length(plot.which),
+        plot.width > 0, plot.height > 0
+      )
 
       plot.res <- ifelse(input$pretty_plot_download_res == "1", 300, 72)
-      pdf.res  <- ifelse(input$pretty_plot_download_res == "1", 15, 7)
       plot.format <- input$pretty_plot_download_format
       incProgress(0.2)
 
-      if (plot.format == 1) {
-        jpeg(file, width = 12, height = 12, units = 'in', res = plot.res,
-             quality = 150)
-        plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
-        dev.off()
 
-      } else if (plot.format == 2) {
-        pdf(file, width = pdf.res, height = pdf.res)
-        plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
-        dev.off()
+      #----------------------------------------------------
+      # Check that file extension is as expected
+      ext.curr <- switch(
+        as.numeric(input$pretty_plot_download_format), ".jpg", ".pdf", ".png"
+      )
+      req(substr_right(file, 4) == ext.curr)
 
-      } else if (plot.format == 3) {
-        png(file, width = 12, height = 12, units = "in", res = plot.res)
-        plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
-        dev.off()
 
-      } else {
-        validate(need(FALSE, "Error: pretty plot download"))
-      }
+      #----------------------------------------------------
+      dims.vec <- c(
+        nrow = plot.nrow, ncol = plot.ncol, width = plot.width,
+        height = plot.height
+      )
+
+      tmap.todownload <- plot_pretty_top(
+        dims.vec, vals$pretty.toplot.idx[plot.which],
+        vals$pretty.params.toplot[plot.which]
+      )
+
+
+      #----------------------------------------------------
+      esdm.tmap_options.orig <- tmap_options()$show.messages
+      tmap_options(show.messages = FALSE)
+
+      tmap_save(
+        tmap.todownload, file, dpi = plot.res,
+        width = plot.width, height = plot.height, units = "in"
+      )
       incProgress(0.4)
+
+      tmap_options(show.messages = esdm.tmap_options.orig)
+      rm(esdm.tmap_options.orig)
+
+      #----------------------------------------------------
     })
   }
 )
 
+
+###############################################################################
+# renderUI()'s
+
+### Filename
+output$pretty_plot_download_name_uiOut_text <- renderUI({
+  req(vals$pretty.params.toplot)
+
+  maps.selected <- input$pretty_plot_toplot_table_out_rows_selected
+
+  res.txt <- ifelse(input$pretty_plot_download_res == 1, "300ppi", "72ppi")
+  file.ext <- switch(
+    input$pretty_plot_download_format,
+    "1" = ".jpg", "2" = ".pdf", "3" = ".png"
+  )
+
+  if (length(maps.selected) == 1) {
+    id.txt <- paste(
+      unlist(strsplit(vals$pretty.params.toplot[[1]]$id, " ")), collapse = "_"
+    )
+    f.val <- paste0("eSDM_", id.txt, res.txt, file.ext)
+
+  } else {
+    f.val <- paste0("eSDM_map_", res.txt, file.ext)
+  }
+
+  textInput("pretty_plot_download_name", tags$h5("File name"), value = f.val)
+})
+
+### Button
+output$pretty_plot_download_execute_uiOut_download <- renderUI({
+  req(vals$pretty.params.toplot)
+
+  row.sel.len <- length(input$pretty_plot_toplot_table_out_rows_selected)
+  plot.nrow <- input$pretty_plot_nrow
+  plot.ncol <- input$pretty_plot_ncol
+
+  validate(
+    need(row.sel.len > 0,
+         "Select at least one item from the to-plot list to download a map")
+    %then%
+      need(inherits(plot.nrow, "integer") & inherits(plot.ncol, "integer"),
+           paste("'Number of rows' and 'Number of columns'",
+                 "must be whole numbers to download a map"))
+    %then%
+      need((plot.nrow * plot.ncol) >= row.sel.len,
+           paste("'Number of rows' * 'Number of columns' must be",
+                 "greater than or equal to the number of items",
+                 "selected from the to-plot list to plot to download a map")),
+    errorClass = "validation2"
+  )
+
+  downloadButton("pretty_plot_download_execute", "Download map")
+})
 
 ###############################################################################

@@ -67,7 +67,9 @@ jscode <- "shinyjs.closeWindow = function() { window.close(); }"
 server <- function(input, output, session) {
   ###############################################
   ### Quit GUI
-  session$onSessionEnded(stopApp)
+  session$onSessionEnded(function() {
+    stopApp(returnValue = "eSDM GUI was closed")
+  })
 
   observeEvent(input$close_app, {
     # js$closeWindow()

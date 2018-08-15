@@ -5,7 +5,7 @@
 # Reactive plotting functions
 
 ###########################################################
-### Add data to pretty plotreactive variables
+### Add data to pretty plot reactive variables
 pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
   validate(
     need(pretty_plot_models_idx_count() > 0,

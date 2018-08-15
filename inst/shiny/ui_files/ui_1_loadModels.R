@@ -200,7 +200,7 @@ ui.loadModels <- function() {
                     width = 8, offset = 1,
                     conditionalPanel(
                       condition = "output.loaded_models_selected_flag == false",
-                      tags$span(tags$h5("Select at least one set of model predictions to perform an action"), style = "color: red")
+                      tags$h5("Select at least one set of original predictions to perform an action", style = "color: red")
                     ),
                     conditionalPanel(
                       condition = "output.loaded_models_selected_flag",

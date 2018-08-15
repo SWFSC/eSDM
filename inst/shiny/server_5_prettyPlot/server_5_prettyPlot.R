@@ -98,7 +98,8 @@ output$pretty_display_flag <- reactive({
 })
 outputOptions(output, "pretty_display_flag", suspendWhenHidden = FALSE)
 
-### Flag for number of model predictions are selected to pretty plot
+### Flag for whether or not to display parameter widgets
+# TODO remove?
 output$pretty_params_display_flag <- reactive({
   if (input$pretty_plot_mapcontrol == 1) {
     length(unlist(pretty_plot_models_idx_list())) == 1
@@ -111,6 +112,12 @@ output$pretty_params_display_flag <- reactive({
   }
 })
 outputOptions(output, "pretty_params_display_flag", suspendWhenHidden = FALSE)
+
+### Flag for if any object have been added to to-plot list
+output$pretty_display_toplot_flag <- reactive({
+  isTruthy(vals$pretty.params.toplot)
+})
+outputOptions(output, "pretty_display_toplot_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################

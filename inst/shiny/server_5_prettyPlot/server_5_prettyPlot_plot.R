@@ -8,7 +8,7 @@
 #
 pretty_plot_plot_dim_warnings <- reactive({
   plot.width  <- input$pretty_plot_width_inch * 96
-  x <- session$clientData$output_pretty_plot_plot_out_width
+  x <- req(session$clientData$output_pretty_plot_plot_out_width)
 
   if (x < plot.width) {
     paste(
@@ -24,16 +24,16 @@ pretty_plot_plot_dim_warnings <- reactive({
 pretty_plot_plot <- eventReactive(input$pretty_plot_plot_event, {
   req(vals$pretty.params.toplot)
 
-  plot.which <- input$pretty_plot_toplot_table_out_rows_selected
-  plot.nrow <- input$pretty_plot_nrow
-  plot.ncol <- input$pretty_plot_ncol
+  plot.which  <- input$pretty_plot_toplot_table_out_rows_selected
+  plot.nrow   <- input$pretty_plot_nrow
+  plot.ncol   <- input$pretty_plot_ncol
   plot.width  <- input$pretty_plot_width_inch * 96
   plot.height <- input$pretty_plot_height_inch * 96
 
 
   validate(
     need(plot.which,
-         "Error: Select at least one item from the to-plot list to plot")
+         "Error: Select at least one item from the to-plot list to plot a map")
   )
   validate(
     need(inherits(plot.nrow, "integer") & inherits(plot.ncol, "integer"),

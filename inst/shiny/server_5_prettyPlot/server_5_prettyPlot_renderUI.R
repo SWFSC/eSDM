@@ -335,65 +335,7 @@ output$pretty_plot_tick_lat_interval_uiOut_numeric <- renderUI({
 
 
 ###############################################################################
-### Generate defualt filename for downloaded map
-output$pretty_plot_download_name_uiOut_text <- renderUI({
-  # req(pretty_plot_models_idx_count() == 0)
-  # Uncomment ^ when multiplot is implemented
-
-  validate(need(FALSE, "Need to fix this"))
-
-  req(pretty_plot_models_idx_count() == 1)
-  # Get rid of ^ when multiplot is implemented
-
-  model.idx.null <- #!pretty_plot_tables_null()
-    model.idx.list <- pretty_plot_models_idx_list()
-
-  ## Objects that are the same for multi- and single-map
-  res.txt <- ifelse(input$pretty_plot_download_res == 1, "300ppi", "72ppi")
-  file.ext <- switch(input$pretty_plot_download_format,
-                     "1" = ".jpeg", "2" = ".pdf", "3" = ".png")
-
-  ## Determine if map is a multi- or single-map and name as appropriate
-  if (length(unlist(model.idx.list)) > 1) {
-    # Multi
-    f.val <- paste0("eSDM_multi_", res.txt, file.ext)
-
-  } else {
-    # Single
-    table.selected <- which(model.idx.null)
-    idx.selected <- model.idx.list[[table.selected]]
-
-    if (table.selected %in% c(1, 2)) {
-      # Original or overlaid model predictions
-      prefix <- ifelse(which(model.idx.null) == 1, "Original", "Overlaid")
-      model.name <- vals$models.names[[idx.selected]]
-      pred.name <- vals$models.data.names[[idx.selected]][1]
-
-      f.val <- paste0("eSDM_", prefix, "_", model.name, "__", pred.name, "__",
-                      res.txt, file.ext)
-    } else {
-      # Ensemble model predictions
-      ens.method.txt <- switch(vals$ensemble.method[idx.selected],
-                               "Unweighted" = "UnW_", "Weighted" = "W_")
-      ens.weights.txt <- vals$ensemble.weights[idx.selected]
-      ens.weights.txt <- ifelse(is.na(ens.weights.txt), "",
-                                paste0(gsub(", ", "+", ens.weights.txt), "_"))
-      ens.rescale.txt <- vals$ensemble.rescaling[idx.selected]
-      ens.rescale.txt <- ifelse(
-        grepl("Abund", ens.rescale.txt),
-        paste0("Abund", strsplit(ens.rescale.txt, ": ")[[1]][2], "_"),
-        switch(ens.rescale.txt, "None" = "None_", "Normalization" = "Norm_",
-               "Standardization" = "Stand_", "Sum to 1" = "Sumto1_")
-      )
-      ens.idx.txt <- vals$ensemble.overlaid.idx[idx.selected]
-      ens.idx.txt <- paste0(gsub(", ", "+", ens.idx.txt), "_")
-
-      f.val <- paste0("eSDM_", ens.method.txt, ens.weights.txt, ens.rescale.txt,
-                      ens.idx.txt, res.txt, file.ext)
-    }
-  }
-
-  textInput("pretty_plot_download_name", tags$h5("File name"), value = f.val)
-})
+# Download
+# Located in 'server_5_prettyPlot_download.R'
 
 ###############################################################################
