@@ -285,7 +285,11 @@ ui.overlay <- function() {
                       ),
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 2",
-                        uiOutput("overlay_preview_overlaid_models_uiOut_selectize"),
+                        fluidRow(
+                          column(6, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")),
+                          column(4, offset = 1, radioButtons("overlay_preview_overlaid_models_perc", tags$h5("Units"),
+                                                             choices = list("Percentages" = 1, "Values" = 2), selected = 1))
+                        ),
                         uiOutput("overlay_preview_overlaid_execute_uiOut_button")
                       )
                     )

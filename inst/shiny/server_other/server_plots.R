@@ -138,6 +138,7 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
 #################################################
 ### Generate preview of overlaid model predictions to plot in-app
 observeEvent(input$overlay_preview_overlaid_execute, {
+  perc.num <- as.numeric(input$overlay_preview_overlaid_models_perc)
   overlaid.idx <- as.numeric(input$overlay_preview_overlaid_models)
   models.toplot <- vals$overlaid.models[overlaid.idx]
   models.num <- length(models.toplot)
@@ -147,7 +148,9 @@ observeEvent(input$overlay_preview_overlaid_execute, {
   vals$overlaid.plot <- list(
     models.toplot = models.toplot,
     data.names = rep("Pred.overlaid", models.num),
-    plot.titles = plot.titles, plot.dims = multiplot_inapp(models.num)
+    plot.titles = plot.titles, perc.num = perc.num,
+    pal = switch(perc.num, pal.esdm, pal.esdm.alt),
+    plot.dims = multiplot_inapp(models.num)
   )
 })
 

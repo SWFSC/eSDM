@@ -27,8 +27,14 @@ multiplot_inapp <- function(x) {
 
   leg.lcm <- 3.0
   leg.txt.cex <- ifelse(x == 1, 0.8, 1.3)
+  if (x == 1) {
+    leg.mai <- c(0.42, 0, 0.24, 1)
+  } else {
+    leg.mai <- c(0.27, 0, 0.16, 1)
+  }
 
-  c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex)
+  c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex,
+    leg.mai)
 }
 
 
@@ -61,8 +67,10 @@ multiplot_download <- function(x) {
 
   leg.lcm <- 2.9
   leg.txt.cex <- 0.7
+  leg.mai <- c(0.3, 0, 0.2, 1)
 
-  c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex)
+  c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex,
+    leg.mai)
 }
 
 
@@ -70,8 +78,8 @@ multiplot_download <- function(x) {
 # Plot layout of sf objects given number of rows and columns + other plot info
 multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
                              col.pal, leg.labels, plot.ncol, plot.nrow,
-                             axis.cex.curr, main.cex.curr, leg.width = 3,
-                             leg.txt.cex = 1) {
+                             axis.cex.curr, main.cex.curr, leg.width,
+                             leg.txt.cex, leg.mai) {
 
   # -------------------------------------------------------
   stopifnot(
@@ -127,7 +135,7 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
       )
       b.model.lab <- format(round(b.model, 3), justify = "right")
 
-      opar <- par(mai = c(0.3, 0, 0.2, 1))
+      opar <- par(mai = leg.mai)
       on.exit(par(opar), add = TRUE)
 
       graphics::image(
@@ -150,7 +158,7 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
       for (j in 1:models.layout.diff) graphics::plot.new()
     }
 
-    opar <- par(mai = c(0.3, 0, 0.2, 1))
+    opar <- par(mai = leg.mai)
     on.exit(par(opar), add = TRUE)
 
     graphics::image(
