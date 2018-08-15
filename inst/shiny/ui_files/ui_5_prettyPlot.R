@@ -223,17 +223,14 @@ ui.prettyPlot <- function() {
                   box(
                     width = 12,
                     fluidRow(
-                      column(6, colourpicker::colourInput("pretty_plot_background_color",
-                                                          tags$h5("Click to select background color"),
+                      column(6, colourpicker::colourInput("pretty_plot_background_color", tags$h5("Click to select background color"),
                                                           showColour = "background")),
                       column(
                         width = 6,
                         checkboxInput("pretty_plot_na_color_check", "Make NA predictions transparent", value = TRUE),
                         conditionalPanel(
                           condition = "input.pretty_plot_na_color_check == false",
-                          column(12, colourpicker::colourInput("pretty_plot_na_color",
-                                                               tags$h5("Click to select color of NA predictions"),
-                                                               showColour = "background", value = "black"))
+                          column(12, uiOutput("pretty_plot_na_color_uiOut_colour"))
                         )
                       )
                     ),

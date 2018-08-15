@@ -87,6 +87,21 @@ output$pretty_plot_range_ymax_uiOut_num <- renderUI({
 ###############################################################################
 # Color scheme inputs
 
+### Color of NA predictions
+output$pretty_plot_na_color_uiOut_colour <- renderUI({
+  x <- st_set_geometry(pretty_plot_model_toplot(), NULL)[, 1]
+
+  validate(
+    need(anyNA(x), "The selected predictions do not have any NA predictions"),
+    errorClass = "validation2"
+  )
+
+  colourpicker::colourInput(
+    "pretty_plot_na_color", tags$h5("Click to select color of NA predictions"),
+    showColour = "background", value = "gray"
+  )
+})
+
 ### Color palette
 # If 'plot predictions as percentages' is selected, then remove some options
 output$pretty_plot_color_palette_uiOut_select <- renderUI({
