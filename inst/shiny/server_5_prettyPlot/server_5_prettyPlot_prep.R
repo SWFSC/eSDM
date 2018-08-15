@@ -172,6 +172,13 @@ pretty_plot_colorscheme_list <- reactive({
   data.name <- switch(data.which, "Pred", "Pred.overlaid", "Pred.ens")
   x.df <- st_set_geometry(x, NULL)[, data.name]
 
+  ### NA color
+  if (input$pretty_plot_na_color_check) {
+    col.na <- NULL
+  } else {
+    col.na <- input$pretty_plot_na_color
+  }
+
   ### Determine data break points and legend labels
   if (perc) {
     # Percentages
@@ -194,7 +201,7 @@ pretty_plot_colorscheme_list <- reactive({
   ### Return list
   list(
     data.name = data.name, data.breaks = data.breaks, col.pal = color.palette,
-    leg.labs = labels.lab.pretty
+    col.na = col.na, leg.labs = labels.lab.pretty
   )
 })
 

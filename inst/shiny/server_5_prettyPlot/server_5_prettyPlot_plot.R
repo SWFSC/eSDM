@@ -128,12 +128,14 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
       tm_shape(model.toplot) +
       tm_fill(col = l1$data.name, border.col = "transparent",
               style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
+              colorNA = l1$col.na, textNA = "NA", showNA = NA,
               title = "", labels = l1$leg.labs, legend.is.portrait = TRUE)
 
   } else {
     tmap.obj <- tm_shape(model.toplot, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
       tm_fill(col = l1$data.name, border.col = "transparent",
               style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
+              colorNA = l1$col.na, textNA = "NA", showNA = NA,
               title = "", labels = l1$leg.labs, legend.is.portrait = TRUE)
   }
 

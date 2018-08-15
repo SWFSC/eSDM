@@ -144,24 +144,36 @@ pretty_plot_color_preview <- reactive({
 
 
 ###############################################################################
-### Reset background color to white
-observeEvent(input$pretty_plot_color_na_reset_execute, {
-  shinyjs::reset("pretty_plot_color_na")
+### Reset colourInput()'s when 'transparent' checkboxes are checked
+observeEvent(input$pretty_plot_na_color_check, {
+  if (input$pretty_plot_na_color_check) {
+    shinyjs::reset("pretty_plot_na_color")
+  }
 })
 
-observeEvent(input$pretty_plot_background_reset_execute, {
-  shinyjs::reset("pretty_plot_background_color")
+observeEvent(input$pretty_plot_addobj_color_ptfillcheck, {
+  if (input$pretty_plot_addobj_color_ptfillcheck) {
+    shinyjs::reset("pretty_plot_addobj_color_ptfill")
+  }
+})
+
+observeEvent(input$pretty_plot_addobj_color_absbordercheck, {
+  if (input$pretty_plot_addobj_color_absbordercheck) {
+    shinyjs::reset("pretty_plot_addobj_color_absborder")
+  }
 })
 
 
 ###############################################################################
 choices.list.pch <- list(
-  "0: Open Square" = 0, "1: Open Circle" = 1, "2: Open Up Triangle" = 2, "3: Plus" = 3,
-  "4: X" = 4, "5: Open Diamond" = 5, "6: Open Down Triangle" = 6, "7: Square with X" = 7,
-  "8: Asterisk" = 8, "9: Diamond with Plus" = 9, "10: Circle with Plus" = 10,
-  "11: Up-Down Triangles" = 11, "12: Square with Plus" = 12, "13: Circle with X" = 13,
-  "14: Square with Up Triangle" = 14, "15: Filled Square" = 15,
-  "16: Filled Circle" = 16, "17: Filled Up Triangle" = 17, "18: Filled Diamond" = 18,
+  "0: Open Square" = 0, "1: Open Circle" = 1, "2: Open Up Triangle" = 2,
+  "3: Plus" = 3, "4: X" = 4, "5: Open Diamond" = 5,
+  "6: Open Down Triangle" = 6, "7: Square with X" = 7, "8: Asterisk" = 8,
+  "9: Diamond with Plus" = 9, "10: Circle with Plus" = 10,
+  "11: Up-Down Triangles" = 11, "12: Square with Plus" = 12,
+  "13: Circle with X" = 13, "14: Square with Up Triangle" = 14,
+  "15: Filled Square" = 15, "16: Filled Circle" = 16,
+  "17: Filled Up Triangle" = 17, "18: Filled Diamond" = 18,
   "19: Filled Large Circle" = 19, "20: Filled Small Circle" = 20
 )
 

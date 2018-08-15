@@ -132,7 +132,7 @@ output$pretty_plot_addobj_color_ptfillcheck_uiOut_check <- renderUI({
 })
 
 #----------------------------------------------------------
-### 4: Point or fill color
+### 4: Point or fill color; reset to default when (3) is checked
 output$pretty_plot_addobj_color_ptfill_uiOut_colour <- renderUI({
   req(input$pretty_plot_addobj_color_ptfillcheck == FALSE)
 
@@ -167,7 +167,7 @@ output$pretty_plot_addobj_color_absbordercheck_uiOut_check <- renderUI({
 })
 
 #----------------------------------------------------------
-### 6: Validation absence point or border color
+### 6: Validation absence point or border color; reset to default when (5) is checked
 output$pretty_plot_addobj_color_absborder_uiOut_colour <- renderUI({
   req(input$pretty_plot_addobj_color_absbordercheck == FALSE)
 
