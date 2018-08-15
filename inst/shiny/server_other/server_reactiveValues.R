@@ -15,7 +15,7 @@ val.pretty.addobj.update <- reactiveVal(value = NULL)
 val.pretty.toplot.update <- reactiveVal(value = NULL)
 
 ###############################################################################
-# 'Initialize' all 43 elements of vals
+# 'Initialize' all 42 elements of vals
 
 vals <- reactiveValues(
   # Objects that store loaded models and related info
@@ -68,7 +68,6 @@ vals <- reactiveValues(
 
   # Objects that store data for high quality (pretty) plots
   pretty.addobj        = NULL,     # List of objects and descriptor strings to be plotted
-  pretty.params.update = NULL,     # List of lists of parameters for updating widgets
   pretty.params.toplot = NULL,     # List of lists of parameters to use to create high quality plots
   pretty.toplot.idx    = NULL,     # List of (table, idx, id) pairs of predictions in to-plot list
   pretty.plot          = NULL      # List of plot dimensions, pretty.toplot.idx, and pretty.params.list
@@ -142,7 +141,6 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     vals$eval.metrics.names <- vals.save[["eval.metrics.names"]]
 
     vals$pretty.addobj        <- vals.save[["pretty.addobj"]]
-    vals$pretty.params.update <- vals.save[["pretty.params.update"]]
     vals$pretty.params.toplot <- vals.save[["pretty.params.toplot"]]
     vals$pretty.toplot.idx    <- vals.save[["pretty.toplot.idx"]]
     vals$pretty.plot          <- vals.save[["pretty.plot"]]
@@ -252,17 +250,18 @@ observe({
   vals$eval.metrics
   vals$eval.metrics.names
   vals$pretty.addobj
-  vals$pretty.params.update
   vals$pretty.params.toplot
   vals$pretty.toplot.idx
   vals$pretty.plot
 
-  if (length(reactiveValuesToList(vals)) != 43) {
-    browser()
 
+  if (length(reactiveValuesToList(vals)) != 42) {
+    #TODO? Change this to a modal whose button closes the app?
     shinyjs::alert(paste(
       "There was an error in the eSDM GUI data storage and processing;",
       "please restart the GUI and report this as an issue."
     ))
+
+    browser() #TODO: remove
   }
 })

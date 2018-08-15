@@ -1,6 +1,5 @@
 # Code for updating parameters of maps in pretty plot to-plot list
 
-
 ###############################################################################
 # Clear data table selections whenever map control option is changed
 observeEvent(input$pretty_plot_mapcontrol, {
@@ -39,6 +38,14 @@ toplot_update_modal <- function(failed) {
     x <- req(input$pretty_plot_update_table_out_rows_selected)
     val.pretty.toplot.update(vals$pretty.params.toplot[[x]])
 
+    choices.list.main <- list(
+      "Map coordinate system and range" = 1,
+      "Background color and prediction color scheme" = 2,
+      "Legend" = 3, "Title and axis labels" = 4,
+      "Coordinate grid lines and labels" = 5,
+      "Additional objects (points or polygons)" = 6
+    )
+
     modalDialog(
       tags$h4("Stufff"),
       tags$h5("Select the parameter you wish to update and change it as desired in the window that appears.",
@@ -47,7 +54,8 @@ toplot_update_modal <- function(failed) {
       tags$br(),
       tags$strong(paste("Map ID:", vals$pretty.params.toplot[[x]]$id)),
       fluidRow(
-        column(6, uiOutput("pretty_plot_toplot_update_which_uiOut_select"))
+        column(6, selectInput("pretty_plot_toplot_update_which", tags$h5("Choose parameter section"),
+                              choices = choices.list.main, selected = 1))
         # column(
         #   width = 6,
         #   uiOutput("pretty_plot_addobj_update_thing_uiOut_mult"),
@@ -58,9 +66,10 @@ toplot_update_modal <- function(failed) {
       # tags$br(), tags$br(), tags$br(),
       # tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
       #         "otherwise they are displayed as hexadecimals."),
-      # tableOutput("pretty_plot_addobj_update_table_out"),
+      tableOutput("pretty_plot_toplot_update_table_out"),
 
-      footer = tagList(actionButton("pretty_plot_toplot_update_done", "Done"))
+      footer = tagList(actionButton("pretty_plot_toplot_update_done", "Done")),
+      size = "m" #'size = "l"' for large
     )
   }
 }
@@ -69,31 +78,37 @@ toplot_update_modal <- function(failed) {
 ###############################################################################
 # renderUI()'s
 
-### Main selection dropdown
-output$pretty_plot_toplot_update_which_uiOut_select <- renderUI({
-  choices.list <- list(
-    "Map coordinate system and range" = 1,
-    "Background color and prediction color scheme" = 2,
-    "Legend" = 3,
-    "Title and axis labels" = 4,
-    "Coordinate grid lines and labels" = 5,
-    "Additional objects (points or polygons)" = 6
-  )
-
-  selectInput("pretty_plot_toplot_update_which",
-              tags$h5("Choose parameter section"),
-              choices = choices.list, selected = 1)
-})
-
 ### Selection dropdown for specific parameters
 output$pretty_plot_toplot_update_which_param_uiOut_select <- renderUI({
-  req(input$pretty_plot_toplot_update_which)
+  input$pretty_plot_toplot_update_which
 
   selectInput("pretty_plot_toplot_update_which_param",
               tags$h5("Choose parameter to update"),
               choices = list("TODO" = 1), selected = 1)
 })
 
+
+### Table display current parameters
+output$pretty_plot_toplot_update_table_out <- renderTable({
+  x <- req(input$pretty_plot_update_table_out_rows_selected)
+  val.pretty.toplot.update()
+
+  if (input$pretty_plot_toplot_update_which == 1) {
+    browser()
+    params.names <- c(
+      "Map coordinate system", "Longitude minimum", "Longitude maximum",
+      "Latitude minimum", "Latitude maximum"
+    )
+    parmas.vals <- c(
+      ifelse(
+vals$pretty.params.update
+      )
+    )
+
+  } else {
+    validate(need(FALSE, "Not ready yet"))
+  }
+})
 
 
 ###############################################################################

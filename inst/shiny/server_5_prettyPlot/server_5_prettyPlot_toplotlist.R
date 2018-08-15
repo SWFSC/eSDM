@@ -57,7 +57,6 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
 
 
     # Save plot parameters to reactive values
-    # vals$pretty.params.update <- c(vals$pretty.params.update, pretty_plot_update_prep())
     vals$pretty.params.toplot <- c(
       vals$pretty.params.toplot,
       list(list(
