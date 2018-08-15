@@ -284,7 +284,7 @@ ui.prettyPlot <- function() {
                                                  value = 1.0, min = 0.1, step = 0.1))
                         ),
                         fluidRow(
-                          column(6, checkboxInput("pretty_plot_legend_frame", "Include frame around legend", value = TRUE)),
+                          column(6, checkboxInput("pretty_plot_legend_frame", "Include black frame around legend", value = TRUE)),
                           column(
                             width = 6,
                             conditionalPanel(

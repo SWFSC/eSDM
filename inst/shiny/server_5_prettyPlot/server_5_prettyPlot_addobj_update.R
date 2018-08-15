@@ -25,6 +25,7 @@ addobj_update_modal <- function(failed) {
     val.pretty.addobj.update(vals$pretty.addobj[[x]])
 
     modalDialog(
+      tags$h4("Additional object parameter update window"),
       tags$h5("Select the parameter you wish to update and change it as desired in the window that appears.",
               "Then click 'Save parameter', and the newly saved parameter will be updated in the table below.",
               "After the table reflects the desired parameter values, click 'Done'."),

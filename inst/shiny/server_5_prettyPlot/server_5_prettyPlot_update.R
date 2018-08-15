@@ -39,18 +39,18 @@ toplot_update_modal <- function(failed) {
     val.pretty.toplot.update(vals$pretty.params.toplot[[x]])
 
     choices.list.main <- list(
-      "Map coordinate system and range" = 1,
-      "Background color and prediction color scheme" = 2,
-      "Legend" = 3, "Title and axis labels" = 4,
-      "Coordinate grid lines and labels" = 5,
-      "Additional objects (points or polygons)" = 6
+      "Map coordinate system and range" = 1, "Background color and prediction color scheme" = 2,
+      "Legend" = 3, "Title and axis labels" = 4, "Coordinate grid lines and labels" = 5,
+      "Additional objects (points or polygons)" = 6, "Map ID" = 7
     )
 
     modalDialog(
-      tags$h4("Stufff"),
+      tags$h4("High quality map parameter update window"),
       tags$h5("Select the parameter you wish to update and change it as desired in the window that appears.",
               "Then click 'Save parameter', and the newly saved parameter will be updated in the table below.",
               "After the table reflects the desired parameter values, click 'Done'."),
+      tags$h5("Note that you cannot update the map coordinate system or prediction color scheme of a saved map;",
+              "to change these parameters you must create a new map."),
       tags$br(),
       tags$strong(paste("Map ID:", vals$pretty.params.toplot[[x]]$id)),
       fluidRow(
@@ -90,24 +90,71 @@ output$pretty_plot_toplot_update_which_param_uiOut_select <- renderUI({
 
 ### Table display current parameters
 output$pretty_plot_toplot_update_table_out <- renderTable({
-  x <- req(input$pretty_plot_update_table_out_rows_selected)
-  val.pretty.toplot.update()
+  y <- req(val.pretty.toplot.update())
 
+  browser()
+  #--------------------------------------------------------
   if (input$pretty_plot_toplot_update_which == 1) {
-    browser()
     params.names <- c(
-      "Map coordinate system", "Longitude minimum", "Longitude maximum",
-      "Latitude minimum", "Latitude maximum"
+      "Longitude minimum", "Longitude maximum", "Latitude minimum",
+      "Latitude maximum"
     )
-    parmas.vals <- c(
-      ifelse(
-vals$pretty.params.update
-      )
-    )
+    params.vals <- y$plot.lim
 
-  } else {
+    #------------------------------------------------------
+  } else if(input$pretty_plot_toplot_update_which == 2) {
+    params.names <- c("Background color", "Prediction color scheme")
+    params.vals <- c(y$background.color, "N/A: cannot update")
+
+    #------------------------------------------------------
+  } else if(input$pretty_plot_toplot_update_which == 3) {
+    y.leg <- y$list.legend
+    params.names <- c(
+      "Include legend",
+      "Place legend",
+      "Legend position",
+      "Legend width",
+      "Legend text size",
+      "Include black frame around legend",
+      "Legend labels: number of decimals"
+    )
+    if (y.leg$inc) {
+      params.vals <- c(
+        y.leg$inc,
+        ifelse(y.leg$out, "Outside map frame", "Inside map frame"),
+        "TODO",
+        "TODO",
+        y.leg$text.size,
+        ifelse(y.leg$border == "black", TRUE, FALSE),
+        "N/A: cannot update"
+      )
+
+    } else {
+      params.vals <- c(y.leg$inc, rep("N/A: no legend", 5))
+    }
+
+    #------------------------------------------------------
+  } else if(input$pretty_plot_toplot_update_which == 4) {
     validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if(input$pretty_plot_toplot_update_which == 5) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if(input$pretty_plot_toplot_update_which == 6) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else { #input$pretty_plot_toplot_update_which == 7
+    params.names <- "Map ID"
+    params.vals <- y$id
+
   }
+
+  data.frame(
+    Name = params.names, Values = params.vals, stringsAsFactors = FALSE
+  )
 })
 
 
