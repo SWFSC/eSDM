@@ -141,7 +141,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
 
   tmap.obj <- tmap.obj +
     tm_layout(bg.color = background.color, legend.bg.color = "white",
-              main.title = l3$title, main.title.position = "left",
+              main.title = l3$title, main.title.position = "center",
               main.title.size = l3$titlecex) +
     tm_xlab(l3$xlab, l3$labcex) +
     tm_ylab(l3$ylab, l3$labcex)
@@ -174,7 +174,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
         tm_grid(x = l4$x.vals, y = l4$y.vals, col = l4$grid.col,
                 lwd = l4$grid.lw, alpha = l4$grid.alpha,
                 labels.inside.frame = l4$grid.labs.in,
-                labels.size = l4$grid.labs.size,
+                labels.size = l4$grid.labs.size, labels.rot = c(0, 90),
                 labels.format = list(fun = function(i) parse(text = paste(i, "*degree"))))
 
     } else {
@@ -182,7 +182,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
         tm_grid(x = l4$x.vals, y = l4$y.vals, col = l4$grid.col,
                 lwd = l4$grid.lw, alpha = l4$grid.alpha,
                 labels.inside.frame = l4$grid.labs.in,
-                labels.size = l4$grid.labs.size)
+                labels.size = l4$grid.labs.size, labels.rot = c(0, 90))
     }
   }
 
