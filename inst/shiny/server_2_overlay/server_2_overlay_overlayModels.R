@@ -1,7 +1,28 @@
+# Code for the overlay process and accompanying actions
+
+###############################################################################
+### Modal displayed when overlay button clicked
+observeEvent(input$overlay_create_overlaid_models_modal, {
+  showModal(modalDialog(
+    title = "Do you want to save your workspace before overlaying?",
+    tags$h5("The overlay process can take several minutes,",
+            "and if you are not running the GUI locally the server might time out and you might lose your session progress.",
+            "Thus, it is recommended that you save your workspace before overlaying"),
+
+    footer = tagList(
+      modalButton("Cancel overlay to save workspace"),
+      actionButton("overlay_create_overlaid_models", "Proceed with overlay")
+    )
+  ))
+})
+
+
 ###############################################################################
 ### Where the overlay magic aka science happens
 
 overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
+  removeModal()
+
   #########################################################
   ### Reset/hide reactive values, preview plots, and eval metrics
   validate(

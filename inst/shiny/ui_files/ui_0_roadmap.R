@@ -52,6 +52,7 @@ ui.roadmap <- function() {
           )
         )
       ),
+
       column(
         width = 6,
         fluidRow(

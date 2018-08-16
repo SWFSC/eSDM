@@ -253,7 +253,8 @@ ui.overlay <- function() {
                                            "in case you are disconnected from the server during the process.")),
                       helpText(tags$strong("Reminder: imported study area and land polygons will be used during",
                                            "the overlay process. This process may take several minutes.")),
-                      actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base geometry"),
+                      actionButton("overlay_create_overlaid_models_modal", "Overlay all predictions onto the specified base geometry"),
+                      # actionButton("overlay_create_overlaid_models", "Overlay all predictions onto the specified base geometry"),
                       textOutput("overlay_overlay_all_text"),
                       tags$br(),
                       tags$span(uiOutput("overlay_overlaid_models_message"), style = "color: blue")
