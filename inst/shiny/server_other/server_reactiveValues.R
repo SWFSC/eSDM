@@ -47,7 +47,7 @@ vals <- reactiveValues(
   ens.over.wpoly.coverage = NULL,  # List of overlap perc for weight to be applied; index corresponds to overlaid pred index
   ens.over.wpoly.plot     = NULL,  # Plot info of currently previewed weighted polygons
 
-  # Objects that store spdfs of and data on created ensembles
+  # Objects that store created ensembles and their data
   ensemble.models        = list(), # Ensemble model predictions
   ensemble.method        = NULL,   # Vector of ensembling methods used
   ensemble.weights       = NULL,   # Strings of weights used (if any)

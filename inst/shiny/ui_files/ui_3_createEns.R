@@ -10,6 +10,7 @@ ui.createEns <- function() {
       fluidRow(
         box(
           title = "Overlaid Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+          tags$span(textOutput("create_ens_base_message"), style = "color: blue;"),
           conditionalPanel(
             condition = "input.create_ens_table_subset == false",
             tags$h5(tags$strong("Select overlaid model predictions to ensemble:"),

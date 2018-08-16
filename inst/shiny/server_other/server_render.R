@@ -197,6 +197,18 @@ output$overlay_preview_overlaid <- renderPlot({
 ##### Create Ensembles tab #####
 
 #----------------------------------------------------------
+# Message about base grid
+output$create_ens_base_message <- renderText({
+  req(length(vals$overlaid.models) > 0)
+
+  paste(
+    "Overlaid models were created using the geometry of the",
+    paste0("'", vals$overlay.info[[1]], "'"), "SDM as the base geometry.",
+    "See the 'Overlay' tab for other overlay information."
+  )
+})
+
+#----------------------------------------------------------
 # Tables
 
 ### Display table of overlaid predictions and info

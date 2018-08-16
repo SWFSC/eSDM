@@ -50,7 +50,10 @@ observeEvent(input$export_table_ens_out_rows_selected, {
 
 ### Flag for if any models are loaded
 output$export_flag <- reactive({
-  (length(vals$models.ll) != 0) | (length(vals$ensemble.models) != 0)
+  list.models.all <- list(
+    vals$models.ll, vals$overlaid.models, vals$ensemble.models
+  )
+  any(sapply(list.models.all, length) > 0)
 })
 outputOptions(output, "export_flag", suspendWhenHidden = FALSE)
 
