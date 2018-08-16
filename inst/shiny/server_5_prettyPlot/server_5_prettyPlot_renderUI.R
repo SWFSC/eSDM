@@ -3,12 +3,12 @@
 
 ###############################################################################
 # Map control widgets
-output$pretty_plot_toplot_add_execute_uiOut_button <- renderUI({
-  req(pretty_plot_models_idx_count() == 1)
-
-  actionButton("pretty_plot_toplot_add_execute",
-               "Add specified info to to-plot list")
-})
+# output$pretty_plot_toplot_add_execute_uiOut_button <- renderUI({
+#   req(pretty_plot_models_idx_count() == 1)
+#
+#   actionButton("pretty_plot_toplot_add_execute",
+#                "Add specified info to to-plot list")
+# })
 output$pretty_plot_toplot_remove_execute_uiOut_button <- renderUI({
   req(pretty_plot_toplot_table())
 

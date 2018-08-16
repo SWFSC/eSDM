@@ -204,7 +204,7 @@ output$create_ens_base_message <- renderText({
   paste(
     "Overlaid models were created using the geometry of the",
     paste0("'", vals$overlay.info[[1]], "'"), "SDM as the base geometry.",
-    "See the 'Overlay' tab for other overlay information."
+    "See the 'Overlay Model Predictions' tab for other overlay information."
   )
 })
 

@@ -84,15 +84,21 @@ output$pretty_plot_addobj_remove_execute_uiOut_button <- renderUI({
 ### 0: Select widget for including other polygons
 output$pretty_plot_addobj_which_uiOut_select <- renderUI({
   choices.list <- list(
-    "Study area polygon" = 1, "Erasing polygon" = 2, "Validation points" = 3
+    "Study area polygon (previously loaded in 'Overlay' tab)" = 1,
+    "Erasing polygon (previously loaded in 'Overlay' tab)" = 2,
+    "Validation points (previously loaded in 'Evaluation Metrics' tab)" = 3
   )
-  choices.list.bool <- c(
-    sapply(list(vals$overlay.bound, vals$overlay.land, vals$eval.data), isTruthy)
+  choices.list.bool <- sapply(
+    list(vals$overlay.bound, vals$overlay.land, vals$eval.data), isTruthy
   )
-  choices.list <- c(choices.list[choices.list.bool], "Import new object" = 4)
+  choices.list <- c(choices.list[choices.list.bool], "Upload new object" = 4)
 
-  selectInput("pretty_plot_addobj_which",
-              tags$h5("Select object to add, then specify desired parameters"),
+  input.lab <- paste(
+    "Either select previously loaded object or upload new object.",
+    "Then, specify the desired plot parameters and load the additional object."
+  )
+
+  selectInput("pretty_plot_addobj_which", tags$h5(input.lab),
               choices = choices.list, selected = NULL)
 })
 

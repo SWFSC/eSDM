@@ -58,8 +58,11 @@ ui.prettyPlot <- function() {
                   box(
                     width = 12,
                     uiOutput("pretty_plot_toplot_add_id_uiOut_text"),
-                    tags$br(), tags$br(),
-                    uiOutput("pretty_plot_toplot_add_execute_uiOut_button"),
+                    tags$br(),
+                    helpText("Note that most pretty plot parameters (including loaded additional objects)",
+                             "will stay the same unless changed by user, even when a different set of predictions is selected"),
+                    # uiOutput("pretty_plot_toplot_add_execute_uiOut_button"),
+                    actionButton("pretty_plot_toplot_add_execute", "Add specified info to to-plot list"),
                     textOutput("pretty_plot_toplot_add_text")
                   )
                 )

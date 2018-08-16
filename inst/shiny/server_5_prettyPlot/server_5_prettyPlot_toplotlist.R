@@ -23,6 +23,14 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
 
   # Get/set plotting variables
   withProgress(message = "Processing map parameters", value = 0.5, {
+    if (input$pretty_plot_addobj) { # to get check earlier
+      validate(
+        need(vals$pretty.addobj,
+             paste("Error: Please either load additional objects or uncheck",
+                   "the 'Include addition objects box'"))
+      )
+    }
+
     model.toplot <- suppressMessages(
       st_intersection(pretty_plot_model_toplot(), pretty_plot_range_poly()[[2]])
     )
@@ -37,12 +45,6 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     incProgress(0.1)
 
     if (input$pretty_plot_addobj) {
-      validate(
-        need(vals$pretty.addobj,
-             paste("Error: Please either load additional objects or uncheck",
-                   "the 'Include addition objects box'"))
-      )
-
       addobj.pre.bool  <- pretty_plot_addobj_preflag()
       list.addobj.pre  <- pretty_plot_addobj_list()[addobj.pre.bool]
       incProgress(0.1)
@@ -50,7 +52,7 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
       incProgress(0.2)
 
     } else {
-      list.addobj.pre  <- list() # To keep consistent with above behavior
+      list.addobj.pre  <- list()
       list.addobj.post <- list()
       incProgress(0.3)
     }
