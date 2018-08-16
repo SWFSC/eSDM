@@ -183,15 +183,15 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     models.overlaid.all <- models.overlaid.all[models.order]
 
     # Get model specs
-    specs.list <- mapply(function(n, p) {
+    specs.list <- mapply(function(n, p, idx) {
       if (p == 1) {
-        n.abund <- unname(round(model_abundance(n, "Pred.overlaid")))
+        n.abund <- unname(round(eSDM::model_abundance(n, "Pred.overlaid")))
       } else {
         n.abund <- "N/A"
       }
-      list(c(base.specs[1], nrow(n), sum(!is.na(n$Pred.overlaid)),
-             n.abund, base.specs[5]))
-    }, models.overlaid.all, vals$models.pred.type)
+      list(c(as.character(table_orig()[idx, ]), base.specs[1], nrow(n),
+             sum(!is.na(n$Pred.overlaid)), n.abund, base.specs[5]))
+    }, models.overlaid.all, vals$models.pred.type, 1:models.num)
 
 
     #--------------------------------------------
@@ -199,8 +199,10 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     # All done here so that all error checks happen before storage
     vals$overlay.base.sfc <- base.sfc
     vals$overlay.crs <- overlay_crs()
-    vals$overlay.info <- list(base.idx, overlay_studyarea_land_message(),
-                              overlay_crs_message(), overlap.perc)
+    vals$overlay.info <- list( #base.idx,
+      vals$models.names[base.idx], overlay_studyarea_land_message(),
+      overlay_crs_message(), overlap.perc
+    )
 
     vals$overlaid.models <- models.overlaid.all
     vals$overlaid.models.specs <- specs.list
@@ -231,7 +233,6 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 ###############################################################################
 ### Reset  applicable vals elements before creating new overlaid things
-### Is a function rather than reactive so that it runs every time
 overlay_reset <- function() {
   vals$overlay.crs           <- NULL
   vals$overlay.info          <- NULL
@@ -245,34 +246,26 @@ overlay_reset <- function() {
   vals$ens.over.wpoly.coverage <- NULL
   vals$ens.over.wpoly.plot     <- NULL
 
-  vals$ensemble.models       <- list()
-  vals$ensemble.method       <- NULL
-  vals$ensemble.weights      <- NULL
-  vals$ensemble.rescaling    <- NULL
-  vals$ensemble.overlaid.idx <- NULL
-  vals$ensemble.plot         <- NULL
-  vals$ensemble.plot.idx  <- NULL
+  vals$ensemble.models        <- list()
+  vals$ensemble.method        <- NULL
+  vals$ensemble.weights       <- NULL
+  vals$ensemble.rescaling     <- NULL
+  vals$ensemble.overlaid.idx  <- NULL
+  vals$ensemble.plot.leaf     <- NULL
+  vals$ensemble.plot.leaf.idx <- NULL
+  vals$ensemble.plot          <- NULL
+  vals$ensemble.plot.idx      <- NULL
 
-  # Could make this so it only removes overlaid metrics
-  # TODO: make smarter
-  if (!is.null(vals$eval.models.idx)) {
-    if (!is.null(vals$eval.models.idx[[2]])){
+  # TODO: Could make this so it only removes overlaid metrics
+  if (isTruthy(vals$eval.models.idx)) {
+    if (isTruthy(vals$eval.models.idx[[2]])){
       vals$eval.models.idx    <- NULL
       vals$eval.metrics       <- NULL
       vals$eval.metrics.names <- NULL
     }
   }
 
-  # Reset pretty vals if an overlaid or ensemble model was plotted
-  if (!is.null(vals$pretty.plotted.idx)) {
-    browser()
-    if (any(idx %in% vals$pretty.plotted.idx[[2]]) |
-        any(idx %in% vals$pretty.plotted.idx[[3]])) {
-      # shinyjs::hide("pretty_plot_plot", time = 0)
-      vals$pretty.params.list <- NULL
-      vals$pretty.plotted.idx <- NULL
-    }
-  }
+  # Does not reset any saved pretty map info
 
   TRUE
 }
@@ -315,9 +308,12 @@ overlay_crs_message <- reactive({
     switch(
       as.numeric(input$overlay_proj_method),
       "In WGS 84 geographic coordinates",
-      paste("In the coordinate system of the",
-            paste0("'", vals$models.names[as.numeric(req(input$overlay_proj_sdm))], "'"),
-            "SDM"),
+      paste(
+        "In the coordinate system of the",
+        paste0(
+          "'", vals$models.names[as.numeric(req(input$overlay_proj_sdm))], "'"
+        ), "SDM"
+      ),
       paste("In the coordinate system of EPSG code", input$overlay_proj_epsg)
     )
   }

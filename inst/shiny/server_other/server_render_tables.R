@@ -38,17 +38,9 @@ table_orig_stats <- reactive({
 table_overlaid <- reactive({
   if (length(vals$overlaid.models) == 0) return()
 
-  table.out1 <- table_orig()
-  overlaid.models.specs <- t(as.data.frame(vals$overlaid.models.specs))
-
-  validate(
-    need(nrow(table.out1) == nrow(overlaid.models.specs),
-         paste("You have loaded or removed original predictions from the GUI.",
-               "Please overaly the predictions again to use this section"))
-  )
-
-  data.frame(table.out1, overlaid.models.specs, stringsAsFactors = FALSE,
-             row.names = paste("Overlaid", 1:nrow(table.out1))) %>%
+  data.frame(t(as.data.frame(vals$overlaid.models.specs)),
+             stringsAsFactors = FALSE,
+             row.names = paste("Overlaid", seq_along(vals$overlaid.models))) %>%
     purrr::set_names(
       c("SDM filename", "Predictions", "Weights", "Prediction type",
         "Resolution", "Cell count", "Non-NA prediction count", "Abundance",

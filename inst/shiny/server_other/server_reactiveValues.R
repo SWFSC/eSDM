@@ -69,7 +69,7 @@ vals <- reactiveValues(
   # Objects that store data for high quality (pretty) plots
   pretty.addobj        = NULL,     # List of objects and descriptor strings to be plotted
   pretty.params.toplot = NULL,     # List of lists of parameters to use to create high quality plots
-  pretty.toplot.idx    = NULL,     # List of (table, idx, id) pairs of predictions in to-plot list
+  pretty.toplot.idx    = NULL,     # List of lists of 3 elements (2 NULL, 1 an idx) representing the 3 tables
   pretty.plot          = NULL      # List of plot dimensions, pretty.toplot.idx, and pretty.params.list
 )
 
@@ -159,14 +159,10 @@ load_envir <- eventReactive(input$load_app_envir_file, {
       updateCheckboxInput(session, "overlay_land", value = FALSE)
     }
 
-    # Reset other inputs as necessary
-    # TODO
-    # shiny js::reset()
+    # TODO Set widget as necessary
 
     incProgress(0.1)
   })
-
-  Sys.sleep(0.5)
 
   paste("Workspace loaded from", file.load$name)
 })
@@ -182,6 +178,7 @@ output$save_app_envir <- downloadHandler(
   filename = function() {
     input$save_app_envir_name
   },
+
   content = function(file) {
     withProgress(message = "Preparing workspace to be saved", value = 0.3, {
       # Reset plot info

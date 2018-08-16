@@ -115,13 +115,13 @@ output$overlay_bound_gis_gdb_message <- renderText({
   "A study area polygon is loaded"
 })
 
-### Land polygon error outputs
+### Erasing polygon error outputs
 output$overlay_land_prov_text    <- renderText(overlay_land_prov())
 output$overlay_land_csv_text     <- renderText(overlay_land_csv())
 output$overlay_land_gis_shp_text <- renderText(overlay_land_gis_shp())
 output$overlay_land_gis_gdb_text <- renderText(overlay_land_gis_gdb())
 
-### Land polygon loaded messages
+### Erasing polygon loaded messages
 output$overlay_land_prov_message <- renderText({
   req(vals$overlay.land)
   "An erasing polygon is loaded"
@@ -155,7 +155,7 @@ output$overlay_overlaid_models_message <- renderUI({
     "Overlaid models have been created using the following overlay options:",
     tags$br(),
     paste("1) Using the geometry of the",
-          paste0("'", vals$models.names[vals$overlay.info[[1]]], "'"),
+          paste0("'", vals$overlay.info[[1]], "'"),
           "SDM as the base geometry"),
     tags$br(),
     paste("2)", vals$overlay.info[[2]]) ,
