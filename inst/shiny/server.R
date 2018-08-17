@@ -76,6 +76,14 @@ server <- function(input, output, session) {
     stopApp(returnValue = "eSDM GUI was closed")
   })
 
+  observe({
+    print(paste(
+      req(session$clientData$output_model_preview_plot_width),
+      req(session$clientData$output_model_preview_plot_height),
+      collapse = " - "
+    ))
+  })
+
   ###############################################
   ### Source general and tab-specific server code
 
@@ -86,7 +94,7 @@ server <- function(input, output, session) {
   source(file.path("server_other", "server_plots_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_reactiveValues.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_render.R"), local = TRUE, chdir = TRUE)
-  source(file.path("server_other", "server_render_tables.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_tables.R"), local = TRUE, chdir = TRUE)
 
 
   # Roadmap: download sample data
