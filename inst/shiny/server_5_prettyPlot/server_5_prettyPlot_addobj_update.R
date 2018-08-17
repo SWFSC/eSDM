@@ -2,9 +2,9 @@
 
 ###############################################################################
 # Show modal when button is clicked.
-observeEvent(input$pretty_plot_addobj_update_show, {
+observeEvent(input$pretty_addobj_update_show, {
   showModal(addobj_update_modal(
-    failed = !isTruthy(input$pretty_plot_addobj_table_out_rows_selected)
+    failed = !isTruthy(input$pretty_addobj_table_out_rows_selected)
   ))
 })
 
@@ -21,7 +21,7 @@ addobj_update_modal <- function(failed) {
     )
 
   } else {
-    x <- req(input$pretty_plot_addobj_table_out_rows_selected)
+    x <- req(input$pretty_addobj_table_out_rows_selected)
     val.pretty.addobj.update(vals$pretty.addobj[[x]])
 
     modalDialog(
@@ -32,20 +32,20 @@ addobj_update_modal <- function(failed) {
       tags$br(),
       tags$strong(paste("Polygon:", vals$pretty.addobj[[x]]$obj.text)),
       fluidRow(
-        column(6, uiOutput("pretty_plot_addobj_update_which_uiOut_select")),
+        column(6, uiOutput("pretty_addobj_update_which_uiOut_select")),
         column(
           width = 6,
-          uiOutput("pretty_plot_addobj_update_thing_uiOut_mult"),
-          uiOutput("pretty_plot_addobj_update_thing2_uiOut_mult")
+          uiOutput("pretty_addobj_update_thing_uiOut_mult"),
+          uiOutput("pretty_addobj_update_thing2_uiOut_mult")
         )
       ),
-      actionButton("pretty_plot_addobj_update_execute", "Save parameter"),
+      actionButton("pretty_addobj_update_execute", "Save parameter"),
       tags$br(), tags$br(), tags$br(),
       tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
               "otherwise they are displayed as hexadecimals."),
-      tableOutput("pretty_plot_addobj_update_table_out"),
+      tableOutput("pretty_addobj_update_table_out"),
 
-      footer = tagList(actionButton("pretty_plot_addobj_update_done", "Done"))
+      footer = tagList(actionButton("pretty_addobj_update_done", "Done"))
     )
   }
 }
@@ -54,7 +54,7 @@ addobj_update_modal <- function(failed) {
 ###############################################################################
 #------------------------------------------------------------------------------
 # Get names of parameter widgets for selections and table
-pretty_plot_addobj_update_names <- reactive({
+pretty_addobj_update_names <- reactive({
   y <- req(val.pretty.addobj.update())
 
   lab.col1 <- ifelse(
@@ -74,13 +74,13 @@ pretty_plot_addobj_update_names <- reactive({
 
 #------------------------------------------------------------------------------
 # renderUI() for which parameter to update
-output$pretty_plot_addobj_update_which_uiOut_select <- renderUI({
+output$pretty_addobj_update_which_uiOut_select <- renderUI({
   y <- val.pretty.addobj.update()
 
   choices.list <- as.list(1:6)
-  names(choices.list) <- req(pretty_plot_addobj_update_names())
+  names(choices.list) <- req(pretty_addobj_update_names())
 
-  selectInput("pretty_plot_addobj_update_which",
+  selectInput("pretty_addobj_update_which",
               tags$h5("Choose parameter to update"),
               choices = choices.list, selected = 1)
 })
@@ -88,9 +88,9 @@ output$pretty_plot_addobj_update_which_uiOut_select <- renderUI({
 
 #------------------------------------------------------------------------------
 # renderUI() for 'update' widget #1
-output$pretty_plot_addobj_update_thing_uiOut_mult <- renderUI({
+output$pretty_addobj_update_thing_uiOut_mult <- renderUI({
   y <- req(val.pretty.addobj.update())
-  z <- req(input$pretty_plot_addobj_update_which)
+  z <- req(input$pretty_addobj_update_which)
 
   if (z == 1) {
     #-------------------------------------------------
@@ -98,7 +98,7 @@ output$pretty_plot_addobj_update_thing_uiOut_mult <- renderUI({
       helpText("You cannot change the object type for a", y$obj.text)
 
     } else {
-      radioButtons("pretty_plot_addobj_update_thing", tags$h5("Object type:"),
+      radioButtons("pretty_addobj_update_thing", tags$h5("Object type:"),
                    choices = list("Point(s)" = 1, "Polygon(s)" = 2),
                    selected = y$obj.type)
     }
@@ -106,7 +106,7 @@ output$pretty_plot_addobj_update_thing_uiOut_mult <- renderUI({
     #-------------------------------------------------
   } else if (z == 2) {
     val.curr <- y$obj.order
-    radioButtons("pretty_plot_addobj_update_thing", tags$h5("Object draw order:"),
+    radioButtons("pretty_addobj_update_thing", tags$h5("Object draw order:"),
                  choices = list("Draw object behind SDM" = 1,
                                 "Draw object in front of SDM" = 2),
                  selected = val.curr)
@@ -114,7 +114,7 @@ output$pretty_plot_addobj_update_thing_uiOut_mult <- renderUI({
   } else if (z == 3) {
     val.curr <- is.na(y$col.ptfill)
     input.lab <- addobj_render_lab(3, y$obj.which, y$obj.type)
-    checkboxInput("pretty_plot_addobj_update_thing", input.lab, value = val.curr)
+    checkboxInput("pretty_addobj_update_thing", input.lab, value = val.curr)
 
     #-------------------------------------------------
   }  else if (z == 4) {
@@ -125,7 +125,7 @@ output$pretty_plot_addobj_update_thing_uiOut_mult <- renderUI({
     } else {
       val.curr <- is.na(y$col.absborder)
       input.lab <- addobj_render_lab(5, y$obj.which, y$obj.type)
-      checkboxInput("pretty_plot_addobj_update_thing", input.lab, value = val.curr)
+      checkboxInput("pretty_addobj_update_thing", input.lab, value = val.curr)
     }
 
     #-------------------------------------------------
@@ -140,7 +140,7 @@ output$pretty_plot_addobj_update_thing_uiOut_mult <- renderUI({
       choices.list <- choices.list.lty
     }
 
-    selectizeInput("pretty_plot_addobj_update_thing", tags$h5(input.lab),
+    selectizeInput("pretty_addobj_update_thing", tags$h5(input.lab),
                    choices = choices.list, selected = val.curr,
                    multiple = FALSE)
 
@@ -149,7 +149,7 @@ output$pretty_plot_addobj_update_thing_uiOut_mult <- renderUI({
     val.curr <- y$cexlwd
     input.lab <- addobj_render_lab(8, NULL, y$obj.type)
 
-    numericInput("pretty_plot_addobj_update_thing", tags$h5(input.lab),
+    numericInput("pretty_addobj_update_thing", tags$h5(input.lab),
                  value = val.curr, step = 0.1)
 
     #-------------------------------------------------
@@ -161,20 +161,20 @@ output$pretty_plot_addobj_update_thing_uiOut_mult <- renderUI({
 
 #------------------------------------------------------------------------------
 # renderUI() for 'update' widget #2: colourInput's for when not transparent
-output$pretty_plot_addobj_update_thing2_uiOut_mult <- renderUI({
+output$pretty_addobj_update_thing2_uiOut_mult <- renderUI({
   y <- req(val.pretty.addobj.update())
-  z <- req(input$pretty_plot_addobj_update_which)
+  z <- req(input$pretty_addobj_update_which)
 
   req(z %in% 3:4)
-  req(is.logical(input$pretty_plot_addobj_update_thing))
-  req(!input$pretty_plot_addobj_update_thing)
+  req(is.logical(input$pretty_addobj_update_thing))
+  req(!input$pretty_addobj_update_thing)
 
   if (z == 3) {
     val.curr <- y$col.ptfill
     input.lab <- addobj_render_lab(4, y$obj.which, y$obj.type)
 
     colourpicker::colourInput(
-      "pretty_plot_addobj_update_thing2", tags$h5(input.lab),
+      "pretty_addobj_update_thing2", tags$h5(input.lab),
       showColour = "background", value = val.curr
     )
 
@@ -184,7 +184,7 @@ output$pretty_plot_addobj_update_thing2_uiOut_mult <- renderUI({
     input.lab <- addobj_render_lab(6, y$obj.which, y$obj.type)
 
     colourpicker::colourInput(
-      "pretty_plot_addobj_update_thing2", tags$h5(input.lab),
+      "pretty_addobj_update_thing2", tags$h5(input.lab),
       showColour = "background", value = val.curr
     )
   }
@@ -192,12 +192,12 @@ output$pretty_plot_addobj_update_thing2_uiOut_mult <- renderUI({
 
 
 ###############################################################################
-output$pretty_plot_addobj_update_table_out <- renderTable({
-  x <- req(input$pretty_plot_addobj_table_out_rows_selected)
+output$pretty_addobj_update_table_out <- renderTable({
+  x <- req(input$pretty_addobj_table_out_rows_selected)
   y <- req(val.pretty.addobj.update())
 
   data.frame(
-    "Name" =  pretty_plot_addobj_update_names(),
+    "Name" =  pretty_addobj_update_names(),
     "Value" = c(
       ifelse(y$obj.type == 1, "Point(s)", "Polygon(s)"),
       ifelse(y$obj.order == 1, "Behind SDM", "In front of SDM"),
@@ -215,42 +215,42 @@ output$pretty_plot_addobj_update_table_out <- renderTable({
 
 
 ###############################################################################
-observeEvent(input$pretty_plot_addobj_update_execute, {
-  z <- req(input$pretty_plot_addobj_update_which)
+observeEvent(input$pretty_addobj_update_execute, {
+  z <- req(input$pretty_addobj_update_which)
   y <- val.pretty.addobj.update()
 
-  if (z == 1 & isTruthy(input$pretty_plot_addobj_update_thing)) {
-    if (y$obj.type != input$pretty_plot_addobj_update_thing) {
+  if (z == 1 & isTruthy(input$pretty_addobj_update_thing)) {
+    if (y$obj.type != input$pretty_addobj_update_thing) {
       y$col.absborder <- NA
-      y$pchlty <- ifelse(input$pretty_plot_addobj_update_thing == 1, 19, 1)
+      y$pchlty <- ifelse(input$pretty_addobj_update_thing == 1, 19, 1)
     }
-    y$obj.type <- input$pretty_plot_addobj_update_thing
+    y$obj.type <- input$pretty_addobj_update_thing
 
   } else if (z == 2) {
-    y$obj.order <- input$pretty_plot_addobj_update_thing
+    y$obj.order <- input$pretty_addobj_update_thing
 
   } else  if (z == 3) {
-    if (input$pretty_plot_addobj_update_thing) {
+    if (input$pretty_addobj_update_thing) {
       y$col.ptfill <- NA
     } else {
-      y$col.ptfill <- input$pretty_plot_addobj_update_thing2
+      y$col.ptfill <- input$pretty_addobj_update_thing2
     }
 
   } else  if (z == 4) {
-    if (input$pretty_plot_addobj_update_thing) {
+    if (input$pretty_addobj_update_thing) {
       y$col.absborder <- NA
     } else {
-      y$col.absborder <- input$pretty_plot_addobj_update_thing2
+      y$col.absborder <- input$pretty_addobj_update_thing2
     }
 
   } else  if (z == 5) {
-    y$pchlty <- as.numeric(input$pretty_plot_addobj_update_thing)
+    y$pchlty <- as.numeric(input$pretty_addobj_update_thing)
 
   } else  if (z == 6) {
-    y$cexlwd <- input$pretty_plot_addobj_update_thing
+    y$cexlwd <- input$pretty_addobj_update_thing
 
   } else {
-    validate(need(FALSE, "pretty_plot_addobj_update_execute error"))
+    validate(need(FALSE, "pretty_addobj_update_execute error"))
   }
 
   val.pretty.addobj.update(y)
@@ -258,11 +258,11 @@ observeEvent(input$pretty_plot_addobj_update_execute, {
 
 
 ###############################################################################
-observeEvent(input$pretty_plot_addobj_update_done, {
+observeEvent(input$pretty_addobj_update_done, {
   removeModal()
 
-  z <- req(input$pretty_plot_addobj_update_which)
-  x <- input$pretty_plot_addobj_table_out_rows_selected
+  z <- req(input$pretty_addobj_update_which)
+  x <- input$pretty_addobj_table_out_rows_selected
 
   vals$pretty.addobj[[x]] <- val.pretty.addobj.update()
   val.pretty.addobj.update(NULL)

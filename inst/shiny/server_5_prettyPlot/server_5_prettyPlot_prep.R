@@ -9,10 +9,10 @@
 # Return list of [which tables have selected rows, a 3 element list of the...
 # ...rows selected in those tables, a 3 element list of selected spdfs]
 # '3 element lists' correspond to the 3 tables
-pretty_plot_model_selected <- reactive({
-  req(pretty_plot_models_idx_count() == 1)
+pretty_model_selected <- reactive({
+  req(pretty_models_idx_count() == 1)
 
-  model.idx.list <- pretty_plot_models_idx_list()
+  model.idx.list <- pretty_models_idx_list()
   if (!is.null(model.idx.list[[1]])) {
     vals$models.orig[[model.idx.list[[1]]]]
 
@@ -29,14 +29,14 @@ pretty_plot_model_selected <- reactive({
 
 
 ### Get desired projection (crs object) for map
-pretty_plot_crs_selected <- reactive({
-  if (input$pretty_plot_proj_ll) {
+pretty_crs_selected <- reactive({
+  if (input$pretty_proj_ll) {
     crs.ll
 
   } else {
-    if (input$pretty_plot_proj_method == 1) {
-      req(pretty_plot_models_idx_count() == 1)
-      model.idx.list <- pretty_plot_models_idx_list()
+    if (input$pretty_proj_method == 1) {
+      req(pretty_models_idx_count() == 1)
+      model.idx.list <- pretty_models_idx_list()
 
       if (!is.null(model.idx.list[[1]])) {
         st_crs(vals$models.orig[[model.idx.list[[1]]]])
@@ -51,11 +51,11 @@ pretty_plot_crs_selected <- reactive({
         validate(need(FALSE, "Pretty plot crs error"))
       }
 
-    } else if (input$pretty_plot_proj_method == 2) {
-      st_crs(vals$models.orig[[req(as.numeric(input$pretty_plot_proj_idx))]])
+    } else if (input$pretty_proj_method == 2) {
+      st_crs(vals$models.orig[[req(as.numeric(input$pretty_proj_idx))]])
 
     } else {
-      x <- st_crs(input$pretty_plot_proj_epsg)
+      x <- st_crs(input$pretty_proj_epsg)
       validate(
         need(x[[2]],
              paste("Error: The provided EPSG code was not recognized;",
@@ -71,9 +71,9 @@ pretty_plot_crs_selected <- reactive({
 ### Return list of: (table idx, pred idx, currently selected model predictions)
 # Currently only one model can be plotted so function just gets only model
 # In the future, this function would be used to get model specified by user
-pretty_plot_model_toplot <- reactive({
-  model.selected <- pretty_plot_model_selected()
-  crs.selected <- pretty_plot_crs_selected()
+pretty_model_toplot <- reactive({
+  model.selected <- pretty_model_selected()
+  crs.selected <- pretty_crs_selected()
 
   if (identical(st_crs(model.selected), crs.selected)) {
     model.selected
@@ -86,17 +86,17 @@ pretty_plot_model_toplot <- reactive({
 ###############################################################################
 ### Compile plot limits, and create a boundary box with which to clip model
 ### Return list of (plot limits, boundary box poly)
-pretty_plot_range_poly <- reactive({
+pretty_range_poly <- reactive({
   plot.lim <- c(
-    input$pretty_plot_range_xmin, input$pretty_plot_range_xmax,
-    input$pretty_plot_range_ymin, input$pretty_plot_range_ymax
+    input$pretty_range_xmin, input$pretty_range_xmax,
+    input$pretty_range_ymin, input$pretty_range_ymax
   )
 
   poly.x <- plot.lim[c(1, 1, 2, 2, 1)]
   poly.y <- plot.lim[c(3, 4, 4, 3, 3)]
 
   plot.lim.poly <- st_sfc(
-    st_polygon(list(cbind(poly.x, poly.y))), crs = pretty_plot_crs_selected()
+    st_polygon(list(cbind(poly.x, poly.y))), crs = pretty_crs_selected()
   )
 
   list(plot.lim, plot.lim.poly)
@@ -107,11 +107,11 @@ pretty_plot_range_poly <- reactive({
 # Color scheme of predictions
 
 ### Process inputs and return list with num of colors and color palette to use
-pretty_plot_colorscheme_palette_num <- reactive({
-  req(input$pretty_plot_color_palette)
+pretty_colorscheme_palette_num <- reactive({
+  req(input$pretty_color_palette)
 
-  perc <- input$pretty_plot_color_perc == 1
-  color.palette.idx <- input$pretty_plot_color_palette
+  perc <- input$pretty_color_perc == 1
+  color.palette.idx <- input$pretty_color_palette
 
   if (perc) {
     color.num <- 10
@@ -161,22 +161,22 @@ pretty_plot_colorscheme_palette_num <- reactive({
 
 
 # Generate list that specifies color scheme things
-pretty_plot_colorscheme_list <- reactive({
+pretty_colorscheme_list <- reactive({
   ### Get reactive elements
-  perc <- input$pretty_plot_color_perc == 1
-  color.palette <- pretty_plot_colorscheme_palette_num()[[1]]
-  color.num     <- pretty_plot_colorscheme_palette_num()[[2]]
+  perc <- input$pretty_color_perc == 1
+  color.palette <- pretty_colorscheme_palette_num()[[1]]
+  color.num     <- pretty_colorscheme_palette_num()[[2]]
 
-  x <- pretty_plot_model_toplot()
-  data.which <- pretty_plot_table_row_idx()[1]
+  x <- pretty_model_toplot()
+  data.which <- pretty_table_row_idx()[1]
   data.name <- switch(data.which, "Pred", "Pred.overlaid", "Pred.ens")
   x.df <- st_set_geometry(x, NULL)[, data.name]
 
   ### NA color
-  if (input$pretty_plot_na_color_check) {
+  if (input$pretty_na_color_check) {
     col.na <- NULL
   } else {
-    col.na <- input$pretty_plot_na_color
+    col.na <- input$pretty_na_color
   }
 
   ### Determine data break points and legend labels
@@ -191,7 +191,7 @@ pretty_plot_colorscheme_list <- reactive({
       min(x.df, na.rm = TRUE), max(x.df, na.rm = TRUE),
       length.out = (color.num + 1)
     )
-    data.breaks.labs <- round(data.breaks, input$pretty_plot_legend_round)
+    data.breaks.labs <- round(data.breaks, input$pretty_legend_round)
     labels.lab.pretty <- paste(
       head(data.breaks.labs, -1), tail(data.breaks.labs, -1),
       sep = " - "
@@ -208,12 +208,12 @@ pretty_plot_colorscheme_list <- reactive({
 
 ###############################################################################
 ### Generate list of legend arguments
-pretty_plot_legend_list <- reactive({
-  if (input$pretty_plot_legend) {
-    if (input$pretty_plot_legend_inout == 1) {
+pretty_legend_list <- reactive({
+  if (input$pretty_legend) {
+    if (input$pretty_legend_inout == 1) {
       leg.out <- FALSE
       leg.pos <- switch(
-        as.numeric(input$pretty_plot_legend_pos),
+        as.numeric(input$pretty_legend_pos),
         c("left", "top"), c("center", "top"), c("right", "top"),
         c("right", "center"),
         c("right", "bottom"), c("center", "bottom"), c("left", "bottom"),
@@ -222,11 +222,11 @@ pretty_plot_legend_list <- reactive({
       leg.outside.pos <- NULL
       leg.width <- 1
 
-    } else{ #input$pretty_plot_legend_inout == 2
+    } else{ #input$pretty_legend_inout == 2
       leg.out <- TRUE
       leg.pos <- NULL
-      leg.outside.pos <- input$pretty_plot_legend_pos
-      leg.width <- input$pretty_plot_legend_width
+      leg.outside.pos <- input$pretty_legend_pos
+      leg.width <- input$pretty_legend_width
 
       validate(
         need(dplyr::between(leg.width, 0.1, 0.5),
@@ -234,8 +234,8 @@ pretty_plot_legend_list <- reactive({
       )
     }
 
-    leg.text.size <- input$pretty_plot_legend_size
-    leg.border    <- ifelse(input$pretty_plot_legend_frame, "black", FALSE)
+    leg.text.size <- input$pretty_legend_size
+    leg.border    <- ifelse(input$pretty_legend_frame, "black", FALSE)
 
     list(
       inc = TRUE, out = leg.out, pos = leg.pos, out.pos = leg.outside.pos,
@@ -252,42 +252,42 @@ pretty_plot_legend_list <- reactive({
 # Section 2
 ###############################################################################
 # Title and axis labels
-pretty_plot_titlelab_list <- reactive({
+pretty_titlelab_list <- reactive({
   list(
-    title = input$pretty_plot_title, xlab = input$pretty_plot_xlab,
-    ylab = input$pretty_plot_ylab, titlecex = input$pretty_plot_title_cex,
-    labcex = input$pretty_plot_lab_cex
+    title = input$pretty_title, xlab = input$pretty_xlab,
+    ylab = input$pretty_ylab, titlecex = input$pretty_title_cex,
+    labcex = input$pretty_lab_cex
   )
 })
 
 
 ###############################################################################
 ### Generate list of coordinate grid line and label info
-pretty_plot_tick_list <- reactive({
+pretty_tick_list <- reactive({
   lon.grid.vals <- seq(
-    from = input$pretty_plot_tick_lon_start,
-    to = input$pretty_plot_range_xmax,
-    by = input$pretty_plot_tick_lon_interval
+    from = input$pretty_tick_lon_start,
+    to = input$pretty_range_xmax,
+    by = input$pretty_tick_lon_interval
   )
 
   lat.grid.vals <- seq(
-    from = input$pretty_plot_tick_lat_start,
-    to = input$pretty_plot_range_ymax,
-    by = input$pretty_plot_tick_lat_interval
+    from = input$pretty_tick_lat_start,
+    to = input$pretty_range_ymax,
+    by = input$pretty_tick_lat_interval
   )
 
   grid.labs.size <- ifelse(
-    input$pretty_plot_tick_label_inc, input$pretty_plot_tick_label_size, 0
+    input$pretty_tick_label_inc, input$pretty_tick_label_size, 0
   )
 
   list(
-    inc = input$pretty_plot_tick,
+    inc = input$pretty_tick,
     x.vals = lon.grid.vals, y.vals = lat.grid.vals,
-    grid.lw = input$pretty_plot_tick_lw,
-    grid.alpha = input$pretty_plot_tick_alpha,
-    grid.col = input$pretty_plot_tick_color,
+    grid.lw = input$pretty_tick_lw,
+    grid.alpha = input$pretty_tick_alpha,
+    grid.col = input$pretty_tick_color,
     grid.labs.size = grid.labs.size,
-    grid.labs.in = input$pretty_plot_tick_label_inout == 1
+    grid.labs.in = input$pretty_tick_label_inout == 1
   )
 })
 
@@ -295,19 +295,19 @@ pretty_plot_tick_list <- reactive({
 ###############################################################################
 ### Generate lists of additional objects to plot
 # Functions assume they are only called when an additional object is loaded
-pretty_plot_addobj_preflag <- reactive({
+pretty_addobj_preflag <- reactive({
   sapply(req(vals$pretty.addobj), function(i) i$obj.order == 1)
 })
 
 
-pretty_plot_addobj_list <- reactive({
+pretty_addobj_list <- reactive({
   lapply(req(vals$pretty.addobj), function(i) {
-    if (!identical(st_crs(i$obj), pretty_plot_crs_selected())) {
-      i$obj <- st_transform(i$obj, pretty_plot_crs_selected())
+    if (!identical(st_crs(i$obj), pretty_crs_selected())) {
+      i$obj <- st_transform(i$obj, pretty_crs_selected())
     }
 
     i$obj <- suppressMessages(
-      st_intersection(i$obj, pretty_plot_range_poly()[[2]])
+      st_intersection(i$obj, pretty_range_poly()[[2]])
     )
 
     i

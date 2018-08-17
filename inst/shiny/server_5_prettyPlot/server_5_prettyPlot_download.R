@@ -3,32 +3,32 @@
 
 ###############################################################################
 # Download handler - High Quality Maps
-output$pretty_plot_download_execute <- downloadHandler(
-  filename = function() input$pretty_plot_download_name,
+output$pretty_download_execute <- downloadHandler(
+  filename = function() input$pretty_download_name,
 
   content = function(file) {
     withProgress(message = "Downloading high quality map", value = 0.4, {
       #----------------------------------------------------
-      plot.which  <- input$pretty_plot_toplot_table_out_rows_selected
-      plot.nrow   <- input$pretty_plot_nrow
-      plot.ncol   <- input$pretty_plot_ncol
-      plot.width  <- input$pretty_plot_width_inch
-      plot.height <- input$pretty_plot_height_inch
+      plot.which  <- input$pretty_toplot_table_out_rows_selected
+      plot.nrow   <- input$pretty_nrow
+      plot.ncol   <- input$pretty_ncol
+      plot.width  <- input$pretty_width_inch
+      plot.height <- input$pretty_height_inch
 
       req(
         plot.which, (plot.nrow * plot.ncol) >= length(plot.which),
         plot.width > 0, plot.height > 0
       )
 
-      plot.res <- ifelse(input$pretty_plot_download_res == "1", 300, 72)
-      plot.format <- input$pretty_plot_download_format
+      plot.res <- ifelse(input$pretty_download_res == "1", 300, 72)
+      plot.format <- input$pretty_download_format
       incProgress(0.2)
 
 
       #----------------------------------------------------
       # Check that file extension is as expected
       ext.curr <- switch(
-        as.numeric(input$pretty_plot_download_format), ".jpg", ".pdf", ".png"
+        as.numeric(input$pretty_download_format), ".jpg", ".pdf", ".png"
       )
       req(substr_right(file, 4) == ext.curr)
 
@@ -68,14 +68,14 @@ output$pretty_plot_download_execute <- downloadHandler(
 # renderUI()'s
 
 ### Filename
-output$pretty_plot_download_name_uiOut_text <- renderUI({
+output$pretty_download_name_uiOut_text <- renderUI({
   req(vals$pretty.params.toplot)
 
-  maps.selected <- input$pretty_plot_toplot_table_out_rows_selected
+  maps.selected <- input$pretty_toplot_table_out_rows_selected
 
-  res.txt <- ifelse(input$pretty_plot_download_res == 1, "300ppi", "72ppi")
+  res.txt <- ifelse(input$pretty_download_res == 1, "300ppi", "72ppi")
   file.ext <- switch(
-    input$pretty_plot_download_format,
+    input$pretty_download_format,
     "1" = ".jpg", "2" = ".pdf", "3" = ".png"
   )
 
@@ -89,16 +89,16 @@ output$pretty_plot_download_name_uiOut_text <- renderUI({
     f.val <- paste0("eSDM_map_", res.txt, file.ext)
   }
 
-  textInput("pretty_plot_download_name", tags$h5("File name"), value = f.val)
+  textInput("pretty_download_name", tags$h5("File name"), value = f.val)
 })
 
 ### Button
-output$pretty_plot_download_execute_uiOut_download <- renderUI({
+output$pretty_download_execute_uiOut_download <- renderUI({
   req(vals$pretty.params.toplot)
 
-  row.sel.len <- length(input$pretty_plot_toplot_table_out_rows_selected)
-  plot.nrow <- input$pretty_plot_nrow
-  plot.ncol <- input$pretty_plot_ncol
+  row.sel.len <- length(input$pretty_toplot_table_out_rows_selected)
+  plot.nrow <- input$pretty_nrow
+  plot.ncol <- input$pretty_ncol
 
   validate(
     need(row.sel.len > 0,
@@ -115,7 +115,7 @@ output$pretty_plot_download_execute_uiOut_download <- renderUI({
     errorClass = "validation2"
   )
 
-  downloadButton("pretty_plot_download_execute", "Download map")
+  downloadButton("pretty_download_execute", "Download map")
 })
 
 ###############################################################################

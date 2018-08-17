@@ -409,78 +409,78 @@ output$pretty_table_ens_out <- renderDT({
 
 ### Pretty plot manage to-plot
 # Add map output
-output$pretty_plot_toplot_add_text <- renderText({
-  pretty_plot_toplot_add()
+output$pretty_toplot_add_text <- renderText({
+  pretty_toplot_add()
 })
 # Remove map output
-# output$pretty_plot_toplot_remove_text <- renderText({
-#   pretty_plot_toplot_remove()
+# output$pretty_toplot_remove_text <- renderText({
+#   pretty_toplot_remove()
 # })
 
 ### Pretty plot update
 # Table
-output$pretty_plot_update_table_out <- renderDT({
-  pretty_plot_toplot_table()
+output$pretty_update_table_out <- renderDT({
+  pretty_toplot_table()
 }, options = dt.list, rownames = FALSE, selection = "single")
 
 # Message
-output$pretty_plot_update_text <- renderText({
-  pretty_plot_update()
+output$pretty_update_text <- renderText({
+  pretty_update()
 })
 
 ### Pretty plot plot/download
 # Table
-output$pretty_plot_toplot_table_out <- renderDT({
-  pretty_plot_toplot_table()
+output$pretty_toplot_table_out <- renderDT({
+  pretty_toplot_table()
 }, options = dt.list, rownames = FALSE)
 
 # Error output
-output$pretty_plot_plot_text <- renderText({
-  pretty_plot_plot()
+output$pretty_plot_text <- renderText({
+  pretty_plot()
 })
 
 #----------------------------------------------------------
 # Additional object section
 ### Text output for adding additional object
-output$pretty_plot_addobj_add_out <- renderText(pretty_plot_addobj_add())
+output$pretty_addobj_add_out <- renderText(pretty_addobj_add())
 
 ### Text output for removing additional objects
-output$pretty_plot_addobj_remove_out <- renderText(pretty_plot_addobj_remove())
+output$pretty_addobj_remove_out <- renderText(pretty_addobj_remove())
 
 ### Table of 'added' additional objects
-output$pretty_plot_addobj_table_out <- renderDT({
-  pretty_plot_addobj_table()
+output$pretty_addobj_table_out <- renderDT({
+  pretty_addobj_table()
 }, options = dt.list, selection = "single", rownames = FALSE)
 
 #----------------------------------------------------------
 # Other outputs
 
 ### Color wheel for preview of color palette
-output$pretty_plot_color_preview_plot <- renderPlot({
-  pretty_plot_color_preview()
+output$pretty_color_preview_plot <- renderPlot({
+  pretty_color_preview()
 })
 
 #----------------------------------------------------------
 # Pretty plot plot display
 ###
-output$pretty_plot_display <- renderUI({
+output$pretty_display <- renderUI({
   box(
     title = "High Quality Maps", solidHeader = TRUE, status = "primary", width = 12, align = "center",
     height = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["height"], 4 * 96) + 60,
-    shinycssloaders::withSpinner(plotOutput("pretty_plot_plot_out"), type = 1)
+    shinycssloaders::withSpinner(plotOutput("pretty_plot_out"), type = 1)
   )
 })
 
 ### Pretty plot dimension warnings
-output$pretty_plot_plot_dim_warnings_out <- renderText({
-  pretty_plot_plot_dim_warnings()
+output$pretty_plot_dim_warnings_out <- renderText({
+  pretty_plot_dim_warnings()
 })
 
 ### Pretty plot
 # Running plotOutput() within a renderUI() didn't work because of issues with
 #   passing plot width and heigh from reactiveValues
 observe({
-  output$pretty_plot_plot_out <- renderPlot({
+  output$pretty_plot_out <- renderPlot({
     p.list <- vals$pretty.plot
     validate(
       need(p.list, "High quality map(s) will be displayed here"),

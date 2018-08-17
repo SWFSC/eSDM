@@ -64,25 +64,25 @@ addobj_render_lab <- function(ui.which, addobj.which, addobj.type = NULL) {
 
 #------------------------------------------------------------------------------
 ### Button widget to remove additional polygon
-output$pretty_plot_addobj_update_show_uiOut_button <- renderUI({
+output$pretty_addobj_update_show_uiOut_button <- renderUI({
   req(vals$pretty.addobj)
-  actionButton("pretty_plot_addobj_update_show",
+  actionButton("pretty_addobj_update_show",
                "Update parameters of selected object")
 })
 
 
 #------------------------------------------------------------------------------
 ### Button widget to remove additional polygon
-output$pretty_plot_addobj_remove_execute_uiOut_button <- renderUI({
+output$pretty_addobj_remove_execute_uiOut_button <- renderUI({
   req(vals$pretty.addobj)
-  actionButton("pretty_plot_addobj_remove_execute",
+  actionButton("pretty_addobj_remove_execute",
                "Remove selected object")
 })
 
 
 #------------------------------------------------------------------------------
 ### 0: Select widget for including other polygons
-output$pretty_plot_addobj_which_uiOut_select <- renderUI({
+output$pretty_addobj_which_uiOut_select <- renderUI({
   choices.list <- list(
     "Study area polygon (previously loaded in 'Overlay' tab)" = 1,
     "Erasing polygon (previously loaded in 'Overlay' tab)" = 2,
@@ -98,20 +98,20 @@ output$pretty_plot_addobj_which_uiOut_select <- renderUI({
     "Then, specify the desired plot parameters and load the additional object."
   )
 
-  selectInput("pretty_plot_addobj_which", tags$h5(input.lab),
+  selectInput("pretty_addobj_which", tags$h5(input.lab),
               choices = choices.list, selected = NULL)
 })
 
 #------------------------------------------------------------------------------
 ### 1: Object type
-output$pretty_plot_addobj_type_uiOut_radio <- renderUI({
-  req(input$pretty_plot_addobj_which)
+output$pretty_addobj_type_uiOut_radio <- renderUI({
+  req(input$pretty_addobj_which)
 
-  if (input$pretty_plot_addobj_which == 4) {
+  if (input$pretty_addobj_which == 4) {
     choices.list <- list("Point(s)" = 1, "Polygon(s)" = 2)
     choices.selected <- 1
 
-  } else if (input$pretty_plot_addobj_which == 3) {
+  } else if (input$pretty_addobj_which == 3) {
     choices.list <- list("Point(s)" = 1)
     choices.selected <- 1
 
@@ -120,37 +120,37 @@ output$pretty_plot_addobj_type_uiOut_radio <- renderUI({
     choices.selected <- 2
   }
 
-  radioButtons("pretty_plot_addobj_type", tags$h5("Object type:"),
+  radioButtons("pretty_addobj_type", tags$h5("Object type:"),
                choices = choices.list, selected = choices.selected)
 })
 
 #------------------------------------------------------------------------------
 ### 3: Point or fill color transparent checkbox
-output$pretty_plot_addobj_color_ptfillcheck_uiOut_check <- renderUI({
-  req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
+output$pretty_addobj_color_ptfillcheck_uiOut_check <- renderUI({
+  req(input$pretty_addobj_which, input$pretty_addobj_type)
 
   input.lab <- addobj_render_lab(
-    3, input$pretty_plot_addobj_which, input$pretty_plot_addobj_type
+    3, input$pretty_addobj_which, input$pretty_addobj_type
   )
-  input.default <- ifelse(input$pretty_plot_addobj_which == 1, TRUE, FALSE)
+  input.default <- ifelse(input$pretty_addobj_which == 1, TRUE, FALSE)
 
-  checkboxInput("pretty_plot_addobj_color_ptfillcheck", input.lab, value = input.default)
+  checkboxInput("pretty_addobj_color_ptfillcheck", input.lab, value = input.default)
 })
 
 #----------------------------------------------------------
 ### 4: Point or fill color; reset to default when (3) is checked
-output$pretty_plot_addobj_color_ptfill_uiOut_colour <- renderUI({
-  req(input$pretty_plot_addobj_color_ptfillcheck == FALSE)
+output$pretty_addobj_color_ptfill_uiOut_colour <- renderUI({
+  req(input$pretty_addobj_color_ptfillcheck == FALSE)
 
   input.lab <- addobj_render_lab(
-    4, input$pretty_plot_addobj_which, input$pretty_plot_addobj_type
+    4, input$pretty_addobj_which, input$pretty_addobj_type
   )
   input.default <- switch(
-    as.numeric(input$pretty_plot_addobj_which), "red", "tan", "blue", "black"
+    as.numeric(input$pretty_addobj_which), "red", "tan", "blue", "black"
   )
 
   colourpicker::colourInput(
-    "pretty_plot_addobj_color_ptfill", tags$h5(input.lab),
+    "pretty_addobj_color_ptfill", tags$h5(input.lab),
     showColour = "background", value = input.default
   )
 })
@@ -159,36 +159,36 @@ output$pretty_plot_addobj_color_ptfill_uiOut_colour <- renderUI({
 #----------------------------------------------------------
 #----------------------------------------------------------
 ### 5: Validation absence point or border color transparent checkbox
-output$pretty_plot_addobj_color_absbordercheck_uiOut_check <- renderUI({
-  req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
+output$pretty_addobj_color_absbordercheck_uiOut_check <- renderUI({
+  req(input$pretty_addobj_which, input$pretty_addobj_type)
 
-  if (input$pretty_plot_addobj_which == 4 & input$pretty_plot_addobj_type == 1) {
+  if (input$pretty_addobj_which == 4 & input$pretty_addobj_type == 1) {
     NULL
 
   } else {
-    input.lab <- addobj_render_lab(5, input$pretty_plot_addobj_which)
+    input.lab <- addobj_render_lab(5, input$pretty_addobj_which)
 
-    checkboxInput("pretty_plot_addobj_color_absbordercheck", input.lab, value = FALSE)
+    checkboxInput("pretty_addobj_color_absbordercheck", input.lab, value = FALSE)
   }
 })
 
 #----------------------------------------------------------
 ### 6: Validation absence point or border color; reset to default when (5) is checked
-output$pretty_plot_addobj_color_absborder_uiOut_colour <- renderUI({
-  req(input$pretty_plot_addobj_color_absbordercheck == FALSE)
+output$pretty_addobj_color_absborder_uiOut_colour <- renderUI({
+  req(input$pretty_addobj_color_absbordercheck == FALSE)
 
-  if (input$pretty_plot_addobj_which == 4 & input$pretty_plot_addobj_type == 1) {
+  if (input$pretty_addobj_which == 4 & input$pretty_addobj_type == 1) {
     NULL
 
   } else {
-    input.lab <- addobj_render_lab(6, input$pretty_plot_addobj_which)
+    input.lab <- addobj_render_lab(6, input$pretty_addobj_which)
     input.default <- switch(
-      as.numeric(input$pretty_plot_addobj_which),
+      as.numeric(input$pretty_addobj_which),
       "red", "black", "red", "black"
     )
 
     colourpicker::colourInput(
-      "pretty_plot_addobj_color_absborder", tags$h5(input.lab),
+      "pretty_addobj_color_absborder", tags$h5(input.lab),
       showColour = "background", value = input.default
     )
   }
@@ -197,13 +197,13 @@ output$pretty_plot_addobj_color_absborder_uiOut_colour <- renderUI({
 
 #------------------------------------------------------------------------------
 ### 7: Point type / line type
-output$pretty_plot_addobj_pchlty_uiOut_select <- renderUI({
-  req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
+output$pretty_addobj_pchlty_uiOut_select <- renderUI({
+  req(input$pretty_addobj_which, input$pretty_addobj_type)
 
-  input.lab <- addobj_render_lab(7, NULL, input$pretty_plot_addobj_type)
+  input.lab <- addobj_render_lab(7, NULL, input$pretty_addobj_type)
 
   # Set list of choices based on object type
-  if (input$pretty_plot_addobj_type == 1) {
+  if (input$pretty_addobj_type == 1) {
     choices.list <- choices.list.pch
     choices.selected <- 19
 
@@ -212,7 +212,7 @@ output$pretty_plot_addobj_pchlty_uiOut_select <- renderUI({
     choices.selected <- 1
   }
 
-  selectizeInput("pretty_plot_addobj_pchlty", tags$h5(input.lab),
+  selectizeInput("pretty_addobj_pchlty", tags$h5(input.lab),
                  choices = choices.list, selected = choices.selected,
                  multiple = FALSE)
 })
@@ -220,15 +220,15 @@ output$pretty_plot_addobj_pchlty_uiOut_select <- renderUI({
 
 #------------------------------------------------------------------------------
 ### 8: Point size / line width
-output$pretty_plot_addobj_cexlwd_uiOut_numeric <- renderUI({
-  req(input$pretty_plot_addobj_which, input$pretty_plot_addobj_type)
+output$pretty_addobj_cexlwd_uiOut_numeric <- renderUI({
+  req(input$pretty_addobj_which, input$pretty_addobj_type)
 
-  input.lab <- addobj_render_lab(8, NULL, input$pretty_plot_addobj_type)
+  input.lab <- addobj_render_lab(8, NULL, input$pretty_addobj_type)
   input.default <- switch(
-    as.numeric(input$pretty_plot_addobj_which), 1.5, 0.3, 0.5, 1
+    as.numeric(input$pretty_addobj_which), 1.5, 0.3, 0.5, 1
   )
 
-  numericInput("pretty_plot_addobj_cexlwd", tags$h5(input.lab),
+  numericInput("pretty_addobj_cexlwd", tags$h5(input.lab),
                value = input.default, step = 0.1)
 })
 

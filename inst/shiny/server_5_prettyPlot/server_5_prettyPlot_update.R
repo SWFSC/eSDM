@@ -2,11 +2,11 @@
 
 ###############################################################################
 # Clear data table selections whenever map control option is changed
-observeEvent(input$pretty_plot_mapcontrol, {
+observeEvent(input$pretty_mapcontrol, {
   dataTableProxy("pretty_table_orig_out") %>% selectRows(list())
   dataTableProxy("pretty_table_over_out") %>% selectRows(list())
   dataTableProxy("pretty_table_ens_out") %>% selectRows(list())
-  dataTableProxy("pretty_plot_update_table_out") %>% selectRows(list())
+  dataTableProxy("pretty_update_table_out") %>% selectRows(list())
 })
 
 
@@ -16,9 +16,9 @@ observeEvent(input$pretty_plot_mapcontrol, {
 
 ###############################################################################
 # Show modal when button is clicked.
-observeEvent(input$pretty_plot_update_toplot_show, {
+observeEvent(input$pretty_update_toplot_show, {
   showModal(toplot_update_modal(
-    failed = !isTruthy(input$pretty_plot_update_table_out_rows_selected)
+    failed = !isTruthy(input$pretty_update_table_out_rows_selected)
   ))
 })
 
@@ -35,7 +35,7 @@ toplot_update_modal <- function(failed) {
     )
 
   } else {
-    x <- req(input$pretty_plot_update_table_out_rows_selected)
+    x <- req(input$pretty_update_table_out_rows_selected)
     val.pretty.toplot.update(vals$pretty.params.toplot[[x]])
 
     choices.list.main <- list(
@@ -54,21 +54,21 @@ toplot_update_modal <- function(failed) {
       tags$br(),
       tags$strong(paste("Map ID:", vals$pretty.params.toplot[[x]]$id)),
       fluidRow(
-        column(6, selectInput("pretty_plot_toplot_update_which", tags$h5("Choose parameter section"),
+        column(6, selectInput("pretty_toplot_update_which", tags$h5("Choose parameter section"),
                               choices = choices.list.main, selected = 1))
         # column(
         #   width = 6,
-        #   uiOutput("pretty_plot_addobj_update_thing_uiOut_mult"),
-        #   uiOutput("pretty_plot_addobj_update_thing2_uiOut_mult")
+        #   uiOutput("pretty_addobj_update_thing_uiOut_mult"),
+        #   uiOutput("pretty_addobj_update_thing2_uiOut_mult")
         # )
       ),
-      # actionButton("pretty_plot_addobj_update_execute", "Save parameter"),
+      # actionButton("pretty_addobj_update_execute", "Save parameter"),
       # tags$br(), tags$br(), tags$br(),
       # tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
       #         "otherwise they are displayed as hexadecimals."),
-      tableOutput("pretty_plot_toplot_update_table_out"),
+      tableOutput("pretty_toplot_update_table_out"),
 
-      footer = tagList(actionButton("pretty_plot_toplot_update_done", "Done")),
+      footer = tagList(actionButton("pretty_toplot_update_done", "Done")),
       size = "m" #'size = "l"' for large
     )
   }
@@ -79,22 +79,22 @@ toplot_update_modal <- function(failed) {
 # renderUI()'s
 
 ### Selection dropdown for specific parameters
-output$pretty_plot_toplot_update_which_param_uiOut_select <- renderUI({
-  input$pretty_plot_toplot_update_which
+output$pretty_toplot_update_which_param_uiOut_select <- renderUI({
+  input$pretty_toplot_update_which
 
-  selectInput("pretty_plot_toplot_update_which_param",
+  selectInput("pretty_toplot_update_which_param",
               tags$h5("Choose parameter to update"),
               choices = list("TODO" = 1), selected = 1)
 })
 
 
 ### Table display current parameters
-output$pretty_plot_toplot_update_table_out <- renderTable({
+output$pretty_toplot_update_table_out <- renderTable({
   y <- req(val.pretty.toplot.update())
 
   browser()
   #--------------------------------------------------------
-  if (input$pretty_plot_toplot_update_which == 1) {
+  if (input$pretty_toplot_update_which == 1) {
     params.names <- c(
       "Longitude minimum", "Longitude maximum", "Latitude minimum",
       "Latitude maximum"
@@ -102,12 +102,12 @@ output$pretty_plot_toplot_update_table_out <- renderTable({
     params.vals <- y$plot.lim
 
     #------------------------------------------------------
-  } else if(input$pretty_plot_toplot_update_which == 2) {
+  } else if(input$pretty_toplot_update_which == 2) {
     params.names <- c("Background color", "Prediction color scheme")
     params.vals <- c(y$background.color, "N/A: cannot update")
 
     #------------------------------------------------------
-  } else if(input$pretty_plot_toplot_update_which == 3) {
+  } else if(input$pretty_toplot_update_which == 3) {
     y.leg <- y$list.legend
     params.names <- c(
       "Include legend",
@@ -134,19 +134,19 @@ output$pretty_plot_toplot_update_table_out <- renderTable({
     }
 
     #------------------------------------------------------
-  } else if(input$pretty_plot_toplot_update_which == 4) {
+  } else if(input$pretty_toplot_update_which == 4) {
     validate(need(FALSE, "Not ready yet"))
 
     #------------------------------------------------------
-  } else if(input$pretty_plot_toplot_update_which == 5) {
+  } else if(input$pretty_toplot_update_which == 5) {
     validate(need(FALSE, "Not ready yet"))
 
     #------------------------------------------------------
-  } else if(input$pretty_plot_toplot_update_which == 6) {
+  } else if(input$pretty_toplot_update_which == 6) {
     validate(need(FALSE, "Not ready yet"))
 
     #------------------------------------------------------
-  } else { #input$pretty_plot_toplot_update_which == 7
+  } else { #input$pretty_toplot_update_which == 7
     params.names <- "Map ID"
     params.vals <- y$id
 
@@ -160,11 +160,11 @@ output$pretty_plot_toplot_update_table_out <- renderTable({
 
 ###############################################################################
 # Final processing step and close modal
-observeEvent(input$pretty_plot_toplot_update_done, {
+observeEvent(input$pretty_toplot_update_done, {
   removeModal()
 
-  # z <- req(input$pretty_plot_addobj_update_which)
-  # x <- input$pretty_plot_addobj_table_out_rows_selected
+  # z <- req(input$pretty_addobj_update_which)
+  # x <- input$pretty_addobj_table_out_rows_selected
   #
   # vals$pretty.addobj[[x]] <- val.pretty.addobj.update()
   # val.pretty.addobj.update(NULL)

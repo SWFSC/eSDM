@@ -6,24 +6,24 @@
 
 ###########################################################
 ### Add data to pretty plot reactive variables
-pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
+pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
   validate(
-    need(pretty_plot_models_idx_count() > 0,
+    need(pretty_models_idx_count() > 0,
          paste("Error: Please select at least one set of",
                "model predictions to add to to-plot list"))
   )
 
   if (isTruthy(vals$pretty.toplot.idx)) {
-    id.used <- pretty_plot_toplot_table()$ID
+    id.used <- pretty_toplot_table()$ID
     validate(
-      need(!(input$pretty_plot_toplot_add_id %in% id.used),
+      need(!(input$pretty_toplot_add_id %in% id.used),
            "Error: each map must have a unique ID")
     )
   }
 
   # Get/set plotting variables
   withProgress(message = "Processing map parameters", value = 0.5, {
-    if (input$pretty_plot_addobj) { # to get check earlier
+    if (input$pretty_addobj) { # to get check earlier
       validate(
         need(vals$pretty.addobj,
              paste("Error: Please either load additional objects or uncheck",
@@ -32,23 +32,23 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
     }
 
     model.toplot <- suppressMessages(
-      st_intersection(pretty_plot_model_toplot(), pretty_plot_range_poly()[[2]])
+      st_intersection(pretty_model_toplot(), pretty_range_poly()[[2]])
     )
-    plot.lim <- pretty_plot_range_poly()[[1]]
-    background.color <- input$pretty_plot_background_color
+    plot.lim <- pretty_range_poly()[[1]]
+    background.color <- input$pretty_background_color
     incProgress(0.1)
 
-    list.colorscheme <- pretty_plot_colorscheme_list()
-    list.legend      <- pretty_plot_legend_list()
-    list.titlelab    <- pretty_plot_titlelab_list()
-    list.tick        <- pretty_plot_tick_list()
+    list.colorscheme <- pretty_colorscheme_list()
+    list.legend      <- pretty_legend_list()
+    list.titlelab    <- pretty_titlelab_list()
+    list.tick        <- pretty_tick_list()
     incProgress(0.1)
 
-    if (input$pretty_plot_addobj) {
-      addobj.pre.bool  <- pretty_plot_addobj_preflag()
-      list.addobj.pre  <- pretty_plot_addobj_list()[addobj.pre.bool]
+    if (input$pretty_addobj) {
+      addobj.pre.bool  <- pretty_addobj_preflag()
+      list.addobj.pre  <- pretty_addobj_list()[addobj.pre.bool]
       incProgress(0.1)
-      list.addobj.post <- pretty_plot_addobj_list()[!addobj.pre.bool]
+      list.addobj.post <- pretty_addobj_list()[!addobj.pre.bool]
       incProgress(0.2)
 
     } else {
@@ -67,21 +67,21 @@ pretty_plot_toplot_add <- eventReactive(input$pretty_plot_toplot_add_execute, {
         list.titlelab = list.titlelab, list.tick = list.tick,
         list.colorscheme = list.colorscheme, list.legend = list.legend,
         list.addobj.pre = list.addobj.pre, list.addobj.post = list.addobj.post,
-        id = input$pretty_plot_toplot_add_id
+        id = input$pretty_toplot_add_id
       ))
     )
     vals$pretty.toplot.idx <- c(
-      vals$pretty.toplot.idx, list(pretty_plot_models_idx_list())
+      vals$pretty.toplot.idx, list(pretty_models_idx_list())
     )
   })
 
-  paste0("'", input$pretty_plot_toplot_add_id, "' added to to-plot list")
+  paste0("'", input$pretty_toplot_add_id, "' added to to-plot list")
 })
 
 
 ###########################################################
 ### Table
-pretty_plot_toplot_table <- reactive({
+pretty_toplot_table <- reactive({
   validate(
     need(vals$pretty.toplot.idx,
          "No maps have been added to the to-plot list"),
@@ -105,10 +105,10 @@ pretty_plot_toplot_table <- reactive({
 
 ###########################################################
 ### Remove stuff from list
-# pretty_plot_toplot_remove <- eventReactive(input$pretty_plot_toplot_remove_execute, {
+# pretty_toplot_remove <- eventReactive(input$pretty_toplot_remove_execute, {
 #   req(vals$pretty.params.list)
 #
-#   x <- input$pretty_plot_toplot_table_out_rows_selected
+#   x <- input$pretty_toplot_table_out_rows_selected
 #   validate(
 #     need(x, "Error: Select at least one row from the to-plot list to remove")
 #   )

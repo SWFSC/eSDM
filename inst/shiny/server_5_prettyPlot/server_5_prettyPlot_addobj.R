@@ -2,62 +2,62 @@
 # Functions; renderUI's below
 
 #------------------------------------------------------------------------------
-#pretty_plot_addobj_list() is in sever_5_prettyPlot_prep.R
+#pretty_addobj_list() is in sever_5_prettyPlot_prep.R
 
 #------------------------------------------------------------------------------
 # Remove loaded objects when section is closed
-observeEvent(input$pretty_plot_addobj, {
-  if (!input$pretty_plot_addobj) vals$pretty.addobj <- NULL
+observeEvent(input$pretty_addobj, {
+  if (!input$pretty_addobj) vals$pretty.addobj <- NULL
 })
 
 
 #------------------------------------------------------------------------------
 ### Add additional poly information to reactive values
-pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
+pretty_addobj_add <- eventReactive(input$pretty_addobj_add_execute, {
   #--------------------------------------------------------
   # Prep
   #------------------------------------
-  if (input$pretty_plot_addobj_which == 4) {
-    if (input$pretty_plot_addobj_own_type == 1) {
-      addobj.obj      <- pretty_plot_addobj_own_csv_process()
-      addobj.obj.text <- pretty_plot_addobj_own_csv_read()[[2]]
+  if (input$pretty_addobj_which == 4) {
+    if (input$pretty_addobj_own_type == 1) {
+      addobj.obj      <- pretty_addobj_own_csv_process()
+      addobj.obj.text <- pretty_addobj_own_csv_read()[[2]]
       addobj.obj.own  <- 1
 
-    } else if (input$pretty_plot_addobj_own_type == 2) {
-      addobj.obj      <- req(pretty_plot_addobj_own_shp_process())
-      addobj.obj.text <- req(pretty_plot_addobj_own_shp_read())[[2]]
+    } else if (input$pretty_addobj_own_type == 2) {
+      addobj.obj      <- req(pretty_addobj_own_shp_process())
+      addobj.obj.text <- req(pretty_addobj_own_shp_read())[[2]]
       addobj.obj.own  <- 2
 
-    } else { #input$pretty_plot_addobj_own_type == 3
-      addobj.obj      <- req(pretty_plot_addobj_own_gdb_process())
-      addobj.obj.text <- req(pretty_plot_addobj_own_gdb_read())[[2]]
+    } else { #input$pretty_addobj_own_type == 3
+      addobj.obj      <- req(pretty_addobj_own_gdb_process())
+      addobj.obj.text <- req(pretty_addobj_own_gdb_read())[[2]]
       addobj.obj.own  <- 3
     }
 
   } else {
     addobj.obj <- switch(
-      as.numeric(input$pretty_plot_addobj_which),
+      as.numeric(input$pretty_addobj_which),
       vals$overlay.bound, vals$overlay.land, vals$eval.data, NULL
     )
     addobj.obj.text <- switch(
-      as.numeric(input$pretty_plot_addobj_which),
+      as.numeric(input$pretty_addobj_which),
       "Study area polygon", "Erasing polygon", "Validation data points", "WRONG"
     )
     addobj.obj.own  <- 1
   }
 
   #------------------------------------
-  if (input$pretty_plot_addobj_color_ptfillcheck) {
+  if (input$pretty_addobj_color_ptfillcheck) {
     addobj.col.ptfill <- NA
   } else {
-    addobj.col.ptfill <- input$pretty_plot_addobj_color_ptfill
+    addobj.col.ptfill <- input$pretty_addobj_color_ptfill
   }
 
   #------------------------------------
-  if (input$pretty_plot_addobj_color_absbordercheck) {
+  if (input$pretty_addobj_color_absbordercheck) {
     addobj.col.absborder <- NA
   } else {
-    addobj.col.absborder <- input$pretty_plot_addobj_color_absborder
+    addobj.col.absborder <- input$pretty_addobj_color_absborder
   }
 
 
@@ -69,13 +69,13 @@ pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
       obj = addobj.obj,
       obj.text = addobj.obj.text,
       obj.own = addobj.obj.own, #only for update
-      obj.which = input$pretty_plot_addobj_which, #only for update
-      obj.type = input$pretty_plot_addobj_type,
-      obj.order = input$pretty_plot_addobj_order,
+      obj.which = input$pretty_addobj_which, #only for update
+      obj.type = input$pretty_addobj_type,
+      obj.order = input$pretty_addobj_order,
       col.ptfill = addobj.col.ptfill,
       col.absborder = addobj.col.absborder,
-      pchlty = as.numeric(input$pretty_plot_addobj_pchlty),
-      cexlwd = input$pretty_plot_addobj_cexlwd
+      pchlty = as.numeric(input$pretty_addobj_pchlty),
+      cexlwd = input$pretty_addobj_cexlwd
     ))
   )
 
@@ -85,8 +85,8 @@ pretty_plot_addobj_add <- eventReactive(input$pretty_plot_addobj_add_execute, {
 
 #------------------------------------------------------------------------------
 ### Remove loaded additional polygon
-pretty_plot_addobj_remove <- eventReactive(input$pretty_plot_addobj_remove_execute, {
-  x <- input$pretty_plot_addobj_table_out_rows_selected
+pretty_addobj_remove <- eventReactive(input$pretty_addobj_remove_execute, {
+  x <- input$pretty_addobj_table_out_rows_selected
 
   validate(
     need(x, "Error: You must select a row from the 'Loaded additional objects' table")
@@ -101,7 +101,7 @@ pretty_plot_addobj_remove <- eventReactive(input$pretty_plot_addobj_remove_execu
 
 #------------------------------------------------------------------------------
 ### Display table for 'added' additional polygons
-pretty_plot_addobj_table <- reactive({
+pretty_addobj_table <- reactive({
   validate(
     need(vals$pretty.addobj, "No additional objects have been loaded"),
     errorClass = "validation2"
@@ -125,15 +125,15 @@ pretty_plot_addobj_table <- reactive({
 # .csv
 
 ### Flag for successfully loaded file
-output$pretty_plot_addobj_own_csv_flag <- reactive({
-  isTruthy(pretty_plot_addobj_own_csv_read())
+output$pretty_addobj_own_csv_flag <- reactive({
+  isTruthy(pretty_addobj_own_csv_read())
 })
-outputOptions(output, "pretty_plot_addobj_own_csv_flag",
+outputOptions(output, "pretty_addobj_own_csv_flag",
               suspendWhenHidden = FALSE)
 
 ### Load and process
-pretty_plot_addobj_own_csv_read <- reactive({
-  file.in <- input$pretty_plot_addobj_own_csv_file
+pretty_addobj_own_csv_read <- reactive({
+  file.in <- input$pretty_addobj_own_csv_file
   req(file.in)
 
   # Ensure file extension is .csv (RStudio type, browser type)
@@ -144,12 +144,12 @@ pretty_plot_addobj_own_csv_read <- reactive({
   return(list(csv.data, file.in$name))
 })
 
-pretty_plot_addobj_own_csv_process <- reactive({
-  csv.data     <- pretty_plot_addobj_own_csv_read()[[1]]
+pretty_addobj_own_csv_process <- reactive({
+  csv.data     <- pretty_addobj_own_csv_read()[[1]]
   csv.data[csv.data == ""] <- NA
   names(csv.data) <- c("lon", "lat")
 
-  if (input$pretty_plot_addobj_type == 1) {
+  if (input$pretty_addobj_type == 1) {
     # Points
     validate(
       need(!any(is.na(csv.data)),
@@ -228,16 +228,16 @@ addobj_gis_proc_shiny <- function(gis.file, obj.type) {
 # GIS shp
 
 ### Flag for successfully loaded file
-output$pretty_plot_addobj_own_shp_flag <- reactive({
-  isTruthy(pretty_plot_addobj_own_shp_read())
+output$pretty_addobj_own_shp_flag <- reactive({
+  isTruthy(pretty_addobj_own_shp_read())
 })
 outputOptions(
-  output, "pretty_plot_addobj_own_shp_flag", suspendWhenHidden = FALSE
+  output, "pretty_addobj_own_shp_flag", suspendWhenHidden = FALSE
 )
 
 ### Read/upload
-pretty_plot_addobj_own_shp_read <- reactive({
-  files.in <- req(input$pretty_plot_addobj_own_shp_files)
+pretty_addobj_own_shp_read <- reactive({
+  files.in <- req(input$pretty_addobj_own_shp_files)
 
   withProgress(message = "Uploading object", value = 0.6, {
     gis.file.shp <- read.shp.shiny(files.in)
@@ -249,10 +249,10 @@ pretty_plot_addobj_own_shp_read <- reactive({
 })
 
 ### Process
-pretty_plot_addobj_own_shp_process <- reactive({
+pretty_addobj_own_shp_process <- reactive({
   withProgress(message = "Processing object", value = 0.6, {
     x <- addobj_gis_proc_shiny(
-      pretty_plot_addobj_own_shp_read()[[1]], input$pretty_plot_addobj_type
+      pretty_addobj_own_shp_read()[[1]], input$pretty_addobj_type
     )
     incProgress(0.4)
   })
@@ -265,18 +265,18 @@ pretty_plot_addobj_own_shp_process <- reactive({
 # GIS gdb
 
 ### Flag for successfully loaded file
-output$pretty_plot_addobj_own_gdb_flag <- reactive({
-  isTruthy(pretty_plot_addobj_own_gdb_read())
+output$pretty_addobj_own_gdb_flag <- reactive({
+  isTruthy(pretty_addobj_own_gdb_read())
 })
-outputOptions(output, "pretty_plot_addobj_own_gdb_flag", suspendWhenHidden = FALSE)
+outputOptions(output, "pretty_addobj_own_gdb_flag", suspendWhenHidden = FALSE)
 
 
 ### Read/upload
-pretty_plot_addobj_own_gdb_read <- eventReactive(
-  input$pretty_plot_addobj_own_gdb_load,
+pretty_addobj_own_gdb_read <- eventReactive(
+  input$pretty_addobj_own_gdb_load,
   {
-    gdb.path <- input$pretty_plot_addobj_own_gdb_path
-    gdb.name <- input$pretty_plot_addobj_own_gdb_name
+    gdb.path <- input$pretty_addobj_own_gdb_path
+    gdb.name <- input$pretty_addobj_own_gdb_name
 
     withProgress(message = "Uploading object", value = 0.6, {
       gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),
@@ -288,10 +288,10 @@ pretty_plot_addobj_own_gdb_read <- eventReactive(
   })
 
 ### Process
-pretty_plot_addobj_own_gdb_process <- reactive({
+pretty_addobj_own_gdb_process <- reactive({
   withProgress(message = "Processing object", value = 0.6, {
     x <- addobj_gis_proc_shiny(
-      pretty_plot_addobj_own_gdb_read()[[1]], input$pretty_plot_addobj_type
+      pretty_addobj_own_gdb_read()[[1]], input$pretty_addobj_type
     )
     incProgress(0.4)
   })

@@ -50,7 +50,7 @@ observeEvent(input$pretty_table_ens_out_rows_selected, {
 # these funcs
 
 ### Return list of selected rows (SDMS to plot)
-pretty_plot_models_idx_list <- reactive({
+pretty_models_idx_list <- reactive({
   list(
     input$pretty_table_orig_out_rows_selected,
     input$pretty_table_over_out_rows_selected,
@@ -59,7 +59,7 @@ pretty_plot_models_idx_list <- reactive({
 })
 
 ### Returns vector of two numbers: table in which table is selected and idx of selected row
-pretty_plot_table_row_idx <- reactive({
+pretty_table_row_idx <- reactive({
   row.list <- list(
     input$pretty_table_orig_out_rows_selected,
     input$pretty_table_over_out_rows_selected,
@@ -74,7 +74,7 @@ pretty_plot_table_row_idx <- reactive({
 })
 
 ### Returns number of selected rows (SDMs to plot)
-pretty_plot_models_idx_count <- reactive({
+pretty_models_idx_count <- reactive({
   row.list <- list(
     input$pretty_table_orig_out_rows_selected,
     input$pretty_table_over_out_rows_selected,
@@ -100,13 +100,13 @@ outputOptions(output, "pretty_display_flag", suspendWhenHidden = FALSE)
 ### Flag for whether or not to display parameter widgets
 # TODO remove?
 output$pretty_params_display_flag <- reactive({
-  if (input$pretty_plot_mapcontrol == 1) {
-    length(unlist(pretty_plot_models_idx_list())) == 1
+  if (input$pretty_mapcontrol == 1) {
+    length(unlist(pretty_models_idx_list())) == 1
 
-  } else if (input$pretty_plot_mapcontrol == 2) {
-    FALSE #isTruthy(input$pretty_plot_update_table_out_rows_selected)
+  } else if (input$pretty_mapcontrol == 2) {
+    FALSE #isTruthy(input$pretty_update_table_out_rows_selected)
 
-  } else { #input$pretty_plot_mapcontrol == 3
+  } else { #input$pretty_mapcontrol == 3
     FALSE
   }
 })
@@ -121,14 +121,14 @@ outputOptions(output, "pretty_display_toplot_flag", suspendWhenHidden = FALSE)
 
 ###############################################################################
 ### Preview of selected color palette and number of colors
-pretty_plot_color_preview <- reactive({
-  color.palette <- pretty_plot_colorscheme_palette_num()[[1]]
-  color.num     <- pretty_plot_colorscheme_palette_num()[[2]]
+pretty_color_preview <- reactive({
+  color.palette <- pretty_colorscheme_palette_num()[[1]]
+  color.num     <- pretty_colorscheme_palette_num()[[2]]
   color.labels  <- color.num:1
-  # if (!input$pretty_plot_color_na_transparent) {
+  # if (!input$pretty_color_na_transparent) {
   #   color.labels <- c("NA", color.labels)
   #   color.num <- color.num + 1
-  #   color.palette <- c(input$pretty_plot_color_na ,color.palette)
+  #   color.palette <- c(input$pretty_color_na ,color.palette)
   # }
 
   # Set plot margins to minimal for top, right, and bottom to fill space
@@ -144,21 +144,21 @@ pretty_plot_color_preview <- reactive({
 
 ###############################################################################
 ### Reset colourInput()'s when 'transparent' checkboxes are checked
-observeEvent(input$pretty_plot_na_color_check, {
-  if (input$pretty_plot_na_color_check) {
-    shinyjs::reset("pretty_plot_na_color")
+observeEvent(input$pretty_na_color_check, {
+  if (input$pretty_na_color_check) {
+    shinyjs::reset("pretty_na_color")
   }
 })
 
-observeEvent(input$pretty_plot_addobj_color_ptfillcheck, {
-  if (input$pretty_plot_addobj_color_ptfillcheck) {
-    shinyjs::reset("pretty_plot_addobj_color_ptfill")
+observeEvent(input$pretty_addobj_color_ptfillcheck, {
+  if (input$pretty_addobj_color_ptfillcheck) {
+    shinyjs::reset("pretty_addobj_color_ptfill")
   }
 })
 
-observeEvent(input$pretty_plot_addobj_color_absbordercheck, {
-  if (input$pretty_plot_addobj_color_absbordercheck) {
-    shinyjs::reset("pretty_plot_addobj_color_absborder")
+observeEvent(input$pretty_addobj_color_absbordercheck, {
+  if (input$pretty_addobj_color_absbordercheck) {
+    shinyjs::reset("pretty_addobj_color_absborder")
   }
 })
 
