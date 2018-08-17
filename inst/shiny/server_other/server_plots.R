@@ -97,8 +97,12 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
       addPolygons(
         data = st_geometry(model.toplot),
         stroke = TRUE, color = "black", fillColor = "lightskyblue",
-        fillOpacity = 0.8, group = "Base geometry") %>%
-      mapview::addMouseCoordinates(style = "basic")
+        fillOpacity = 0.8, group = "Base geometry")
+
+    if (requireNamespace("mapview", quietly = TRUE)) {
+      leaf.map <- leaf.map %>% mapview::addMouseCoordinates(style = "basic")
+    }
+
     overlay.groups <- "Base geometry"
     incProgress(0.5)
 

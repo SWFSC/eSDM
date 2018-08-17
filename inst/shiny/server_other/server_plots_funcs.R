@@ -231,7 +231,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
   #--------------------------------------------------------
   # Common parts of leaflet map
-  leaf.all <- leaflet(sdm.ll) %>%
+  leaf.map <- leaflet(sdm.ll) %>%
     addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
     addTiles(group = "OpenStreetMap") %>%
     addProviderTiles(providers$Esri.WorldImagery, group = "ESRI Topo") %>%
@@ -239,13 +239,14 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
       tags$h5(title.ll), layerId = "SDM name", position = "bottomleft") %>%
     addLayersControl(
       baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
-      # overlayGroups = c("SDM name"),
       position = "bottomright",
       options = layersControlOptions(collapsed = FALSE)) %>%
-    # addGraticule(interval = 5) %>%
     setView(
-      lng = sdm.cent[1], lat = sdm.cent[2], zoom = 5) %>%
-    mapview::addMouseCoordinates(style = "basic")
+      lng = sdm.cent[1], lat = sdm.cent[2], zoom = 5)
+
+  if (requireNamespace("mapview", quietly = TRUE)) {
+    leaf.map <- leaf.map %>% mapview::addMouseCoordinates(style = "basic")
+  }
 
   #--------------------------------------------------------
   # perc-specific parts of leaflet map
@@ -253,7 +254,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
     b.model <- breaks_calc(data.vec)
     binpal <- colorBin(col.pal, data.vec, bins = b.model, na.color = "gray")
 
-    leaf.all %>%
+    leaf.map %>%
       addPolygons(
         stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8) %>%
       addLegend(
@@ -270,7 +271,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
       data.breaks.vals[2:11], "-", data.breaks.vals[1:10]
     )
 
-    leaf.all %>%
+    leaf.map %>%
       addPolygons(
         stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8) %>%
       addLegend(
