@@ -27,10 +27,10 @@ observeEvent(input$pretty_update_toplot_show, {
 toplot_update_modal <- function(failed) {
   if (failed) {
     modalDialog(
-      tags$strong("Error: You must select a row from the table",
+      tags$strong("Error: You must select a saved map to update",
                   style = "color: red;"),
       tags$br(),
-      tags$h5("Click 'Cancel' to close this window and then select a row from the table"),
+      tags$h5("Click 'Cancel' to close this window and then select a row from the saved map table"),
       footer = tagList(modalButton("Cancel"))
     )
 
@@ -45,7 +45,7 @@ toplot_update_modal <- function(failed) {
     )
 
     modalDialog(
-      tags$h4("High quality map parameter update window"),
+      tags$h4("Saved map parameter update window"),
       tags$h5("Select the parameter you wish to update and change it as desired in the window that appears.",
               "Then click 'Save parameter', and the newly saved parameter will be updated in the table below.",
               "After the table reflects the desired parameter values, click 'Done'."),

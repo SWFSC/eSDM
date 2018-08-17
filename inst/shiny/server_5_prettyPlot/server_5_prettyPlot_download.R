@@ -102,7 +102,7 @@ output$pretty_download_execute_uiOut_download <- renderUI({
 
   validate(
     need(row.sel.len > 0,
-         "Select at least one item from the to-plot list to download a map")
+         "Select at least one saved map to download")
     %then%
       need(inherits(plot.nrow, "integer") & inherits(plot.ncol, "integer"),
            paste("'Number of rows' and 'Number of columns'",
@@ -110,12 +110,11 @@ output$pretty_download_execute_uiOut_download <- renderUI({
     %then%
       need((plot.nrow * plot.ncol) >= row.sel.len,
            paste("'Number of rows' * 'Number of columns' must be",
-                 "greater than or equal to the number of items",
-                 "selected from the to-plot list to plot to download a map")),
+                 "greater than or equal to the number of selected map(s)")),
     errorClass = "validation2"
   )
 
-  downloadButton("pretty_download_execute", "Download map")
+  downloadButton("pretty_download_execute", "Download map(s)")
 })
 
 ###############################################################################

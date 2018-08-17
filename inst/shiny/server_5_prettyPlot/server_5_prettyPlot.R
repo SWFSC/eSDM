@@ -98,17 +98,8 @@ output$pretty_display_flag <- reactive({
 outputOptions(output, "pretty_display_flag", suspendWhenHidden = FALSE)
 
 ### Flag for whether or not to display parameter widgets
-# TODO remove?
 output$pretty_params_display_flag <- reactive({
-  if (input$pretty_mapcontrol == 1) {
-    length(unlist(pretty_models_idx_list())) == 1
-
-  } else if (input$pretty_mapcontrol == 2) {
-    FALSE #isTruthy(input$pretty_update_table_out_rows_selected)
-
-  } else { #input$pretty_mapcontrol == 3
-    FALSE
-  }
+  input$pretty_mapcontrol == 1 & length(unlist(pretty_models_idx_list())) == 1
 })
 outputOptions(output, "pretty_params_display_flag", suspendWhenHidden = FALSE)
 

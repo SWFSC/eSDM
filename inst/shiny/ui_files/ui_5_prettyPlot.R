@@ -22,8 +22,8 @@ ui.prettyPlot <- function() {
                 box(
                   width = 12,
                   radioButtons("pretty_mapcontrol", NULL,
-                               choices = list("Add new map to to-plot list" = 1, "Update parameters of map in to-plot list" = 2,
-                                              "Plot or download map(s) in to-plot list" = 3),
+                               choices = list("Save new map" = 1, "Update parameters of saved map" = 2,
+                                              "Plot or download saved map(s)" = 3),
                                selected = 1)
                   # TODO: change ^ back to 1
                 )
@@ -35,12 +35,12 @@ ui.prettyPlot <- function() {
               condition = "input.pretty_mapcontrol == 1",
               column(
                 width = 6,
-                tags$strong("2) Select predictions to add to the to-plot list and specify parameters below"),
+                tags$strong("2) Select predictions and specify parameters below"),
                 fluidRow(
                   box(
                     width = 12,
                     ui.instructions.multipletables.select(
-                      text.in = "add to the to-plot list:", sel.num = 1,
+                      text.in = "map:", sel.num = 1,
                       text.other = "Map parameters will appear after you select a set of predictions."
                     ),
                     DTOutput("pretty_table_orig_out"),
@@ -53,7 +53,7 @@ ui.prettyPlot <- function() {
               ),
               column(
                 width = 4,
-                tags$strong("3) Specify map ID and add map to the to-plot list"),
+                tags$strong("3) Specify map ID and save map"),
                 fluidRow(
                   box(
                     width = 12,
@@ -62,7 +62,7 @@ ui.prettyPlot <- function() {
                     helpText("Note that most pretty plot parameters (including loaded additional objects)",
                              "will stay the same unless changed by user, even when a different set of predictions is selected"),
                     # uiOutput("pretty_toplot_add_execute_uiOut_button"),
-                    actionButton("pretty_toplot_add_execute", "Add specified info to to-plot list"),
+                    actionButton("pretty_toplot_add_execute", "Save map"),
                     textOutput("pretty_toplot_add_text")
                   )
                 )
@@ -72,26 +72,32 @@ ui.prettyPlot <- function() {
             conditionalPanel(
               condition = "input.pretty_mapcontrol == 2",
               column(
-                width = 6,
-                tags$strong("2) Select map from to-plot list and update parameters below"),
+                width = 5,
+                tags$strong("2) Select saved map to update"),
                 fluidRow(
                   box(
                     width = 12,
-                    tags$h5(tags$strong("Select a map from the to-plot list to update:"),
-                            "Click on a row in the table below to select or deselect an item.",
-                            "Then click the 'Update map parameters' button in the next box."),
+                    tags$h5("Click on a row in the table below to select or deselect an item.",
+                            "Then click the 'Update saved map parameters' button in the next box."),
                     DTOutput("pretty_update_table_out")
                   )
                 )
               ),
               column(
-                width = 4,
-                tags$strong("3) Click button to update saved parameters"),
+                width = 5,
+                tags$strong("3) Update saved map parameters"),
                 fluidRow(
                   box(
                     width = 12,
-                    actionButton("pretty_update_toplot_show", "Update map parameters"),
-                    helpText("todo")
+                    conditionalPanel(
+                      condition = "output.pretty_display_toplot_flag == false",
+                      tags$h5("You must have saved at least one map to use this section", style = "color: red;")
+                    ),
+                    conditionalPanel(
+                      condition = "output.pretty_display_toplot_flag",
+                      actionButton("pretty_update_toplot_show", "Update saved map parameters"),
+                      helpText("todo")
+                    )
                   )
                 )
               )
@@ -101,12 +107,11 @@ ui.prettyPlot <- function() {
               condition = "input.pretty_mapcontrol == 3",
               column(
                 width = 5,
-                tags$strong("2) Select map(s) in to-plot list to plot"),
+                tags$strong("2) Select saved map(s) to plot or download"),
                 fluidRow(
                   box(
                     width = 12,
-                    tags$h5(tags$strong("Select map(s) from the to-plot list to plot:"),
-                            "Click on a row in the table below to select or deselect items.",
+                    tags$h5("Click on a row in the table below to select or deselect items.",
                             "Maps will be plotted left to right, top to bottom, in order you select them"),
                     DTOutput("pretty_toplot_table_out"),
                     helpText(NULL)
@@ -115,13 +120,13 @@ ui.prettyPlot <- function() {
               ),
               column(
                 width = 5,
-                tags$strong("3) Specify plot dimensions and plot or download map"),
+                tags$strong("3) Specify plot dimensions and plot or download map(s)"),
                 fluidRow(
                   box(
                     width = 12,
                     conditionalPanel(
                       condition = "output.pretty_display_toplot_flag == false",
-                      tags$h5("You must add maps to the to-plot list to use this section", style = "color: red;")
+                      tags$h5("You must have saved at least one map to use this section", style = "color: red;")
                     ),
                     conditionalPanel(
                       condition = "output.pretty_display_toplot_flag",
@@ -135,14 +140,15 @@ ui.prettyPlot <- function() {
                       fluidRow(
                         box(
                           width = 6,
-                          helpText("Note that plotting may take several minutes depending on the number of maps and their size"),
+                          helpText("The plot will have the dimensions specified above.", tags$br(),
+                                   "Note that plotting may take several minutes depending on the number of maps and their size"),
                           tags$span(textOutput("pretty_plot_dim_warnings_out"), style = "color: red;"),
-                          actionButton("pretty_plot_event", "Plot map"),
+                          actionButton("pretty_plot_event", "Plot map(s)"),
                           textOutput("pretty_plot_text")
                         ),
                         box(
                           width = 6,
-                          tags$h5("The downloaded maps will have the dimensions specified above"),
+                          helpText("The downloaded image will have the dimensions specified above."),
                           fluidRow(
                             column(6, radioButtons("pretty_download_res", tags$h5("Resolution"),
                                                    choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),

@@ -1,4 +1,5 @@
 ### Code for 'High Quality Maps' tab for adding parameters to reactive values
+# maps 'toplot' aka saved maps. 'toplot' used in various names
 
 
 ###############################################################################
@@ -10,7 +11,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
   validate(
     need(pretty_models_idx_count() > 0,
          paste("Error: Please select at least one set of",
-               "model predictions to add to to-plot list"))
+               "predictions to map"))
   )
 
   if (isTruthy(vals$pretty.toplot.idx)) {
@@ -75,7 +76,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     )
   })
 
-  paste0("'", input$pretty_toplot_add_id, "' added to to-plot list")
+  paste0("Saved map '", input$pretty_toplot_add_id, "'")
 })
 
 
@@ -84,7 +85,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
 pretty_toplot_table <- reactive({
   validate(
     need(vals$pretty.toplot.idx,
-         "No maps have been added to the to-plot list"),
+         "No maps have been saved"),
     errorClass = "validation2"
   )
 

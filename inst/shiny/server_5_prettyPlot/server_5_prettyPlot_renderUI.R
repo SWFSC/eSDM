@@ -3,17 +3,11 @@
 
 ###############################################################################
 # Map control widgets
-# output$pretty_toplot_add_execute_uiOut_button <- renderUI({
-#   req(pretty_models_idx_count() == 1)
-#
-#   actionButton("pretty_toplot_add_execute",
-#                "Add specified info to to-plot list")
-# })
 output$pretty_toplot_remove_execute_uiOut_button <- renderUI({
   req(pretty_toplot_table())
 
   actionButton("pretty_toplot_remove_execute",
-               "Remove selected item(s) from to-plot list")
+               "Remove selected saved maps")
 })
 
 output$pretty_toplot_add_id_uiOut_text <- renderUI({
@@ -30,7 +24,7 @@ output$pretty_toplot_add_id_uiOut_text <- renderUI({
     val.default <- paste(val.default, "ID")
   }
 
-  textInput("pretty_toplot_add_id", tags$h5("ID of map within to-plot list"),
+  textInput("pretty_toplot_add_id", tags$h5("Saved map ID"),
             value = val.default)
 })
 
