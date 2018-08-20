@@ -91,6 +91,9 @@ ui <- dashboardPage(
         }
       "))
     ),
+    tags$head(
+      tags$style(HTML("hr {border-top: 1px solid #D6D6D6;}"))
+    ),
 
     ### UI code separated by tabs
     tabItems(

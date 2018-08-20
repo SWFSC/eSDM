@@ -42,6 +42,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     list.colorscheme <- pretty_colorscheme_list()
     list.legend      <- pretty_legend_list()
     list.titlelab    <- pretty_titlelab_list()
+    list.margin      <- pretty_margin_list()
     list.tick        <- pretty_tick_list()
     incProgress(0.1)
 
@@ -65,7 +66,8 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       list(list(
         model.toplot = model.toplot, plot.lim = plot.lim,
         background.color = background.color,
-        list.titlelab = list.titlelab, list.tick = list.tick,
+        list.titlelab = list.titlelab, list.margin = list.margin,
+        list.tick = list.tick,
         list.colorscheme = list.colorscheme, list.legend = list.legend,
         list.addobj.pre = list.addobj.pre, list.addobj.post = list.addobj.post,
         id = input$pretty_toplot_add_id

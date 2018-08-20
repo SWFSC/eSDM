@@ -286,31 +286,28 @@ ui.prettyPlot <- function() {
                     checkboxInput("pretty_legend", "Include legend with the map", value = TRUE),
                     conditionalPanel(
                       condition = "input.pretty_legend",
-                      box(
-                        width = 12,
-                        fluidRow(
-                          column(6, radioButtons("pretty_legend_inout", tags$h5("Place legend:"),
-                                                 choices = list("Inside map frame" = 1, "Outside map frame" = 2), selected = 1)),
-                          column(6, uiOutput("pretty_legend_pos_uiOut_select"))
-                        ),
-                        conditionalPanel(
-                          condition = "input.pretty_legend_inout == 2",
-                          helpText("Legend width is the horizontal proportion of the plot window taken up by the legend")
-                        ),
-                        fluidRow(
-                          column(6, uiOutput("pretty_legend_width_uiOut_numeric")),
-                          column(6, numericInput("pretty_legend_size", tags$h5("Legend text size"),
-                                                 value = 1.0, min = 0.1, step = 0.1))
-                        ),
-                        fluidRow(
-                          column(6, checkboxInput("pretty_legend_frame", "Include black frame around legend", value = TRUE)),
-                          column(
-                            width = 6,
-                            conditionalPanel(
-                              condition = "input.pretty_color_perc == 2",
-                              numericInput("pretty_legend_round", tags$h5("Legend labels: number of decimals"),
-                                           value = 3, min = 1, step = 1)
-                            )
+                      fluidRow(
+                        column(6, radioButtons("pretty_legend_inout", tags$h5("Place legend:"),
+                                               choices = list("Inside map frame" = 1, "Outside map frame" = 2), selected = 1)),
+                        column(6, uiOutput("pretty_legend_pos_uiOut_select"))
+                      ),
+                      conditionalPanel(
+                        condition = "input.pretty_legend_inout == 2",
+                        helpText("Legend width is the horizontal proportion of the plot window taken up by the legend")
+                      ),
+                      fluidRow(
+                        column(6, uiOutput("pretty_legend_width_uiOut_numeric")),
+                        column(6, numericInput("pretty_legend_size", tags$h5("Legend text size"),
+                                               value = 1.0, min = 0.1, step = 0.1))
+                      ),
+                      fluidRow(
+                        column(6, checkboxInput("pretty_legend_frame", "Include black frame around legend", value = TRUE)),
+                        column(
+                          width = 6,
+                          conditionalPanel(
+                            condition = "input.pretty_color_perc == 2",
+                            numericInput("pretty_legend_round", tags$h5("Legend labels: number of decimals"),
+                                         value = 3, min = 1, step = 1)
                           )
                         )
                       )
@@ -327,10 +324,10 @@ ui.prettyPlot <- function() {
           box(
             title = "Map Parameters - Section 2", solidHeader = FALSE, status = "warning", width = 12, collapsible = TRUE,
             fluidRow(
-              ################################################## Title and axis labels
+              ################################################## Title, axis labels, and margins
               column(
                 width = 4,
-                tags$strong("Title and axis labels"),
+                tags$strong("Title, axis labels, and margins"),
                 fluidRow(
                   box(
                     width = 12,
@@ -346,11 +343,29 @@ ui.prettyPlot <- function() {
                                              value = 1.3, step = 0.1)),
                       column(6, numericInput("pretty_lab_cex", tags$h5("Axis label size (value is relative to 1)"),
                                              value = 1, step = 0.1))
+                    ),
+                    tags$hr(),
+                    helpText("'Inner margin' refers to the space between the map and the map frame.",
+                             "'Outer margin' refers to the space between the map frame and the plot window.",
+                             "Margins can be used for creating whitespace for coordinate labels",
+                             "or the legend if it is inside the map frame"),
+                    fluidRow(
+                      column(
+                        width = 6,
+                        numericInput("pretty_margin_in1", tags$h5("Inner margin - bottom"), value = 0, min = 0, step = 0.01),
+                        numericInput("pretty_margin_in2", tags$h5("Inner margin - left"), value = 0, min = 0, step = 0.01),
+                        numericInput("pretty_margin_out", tags$h5("Outer margin"), value = 0.02, min = 0, step = 0.01)
+                      ),
+                      column(
+                        width = 6,
+                        numericInput("pretty_margin_in3", tags$h5("Inner margin - top"), value = 0, min = 0, step = 0.01),
+                        numericInput("pretty_margin_in4", tags$h5("Inner margin - right"), value = 0, min = 0, step = 0.01)
+                      )
                     )
                   )
                 )
               ),
-              ################################################## Tick marks and tick labels
+              ################################################## Coordinate grid lines and labels
               column(
                 width = 4,
                 tags$strong("Coordinate grid lines and labels"),
@@ -360,41 +375,35 @@ ui.prettyPlot <- function() {
                     checkboxInput("pretty_tick", "Include coordinate grid lines", value = TRUE),
                     conditionalPanel(
                       condition = "input.pretty_tick",
-                      box(
-                        width = 12,
-                        helpText("Size and width values are relative to 1 (the default size)"),
-                        fluidRow(
-                          column(
-                            width = 6,
-                            uiOutput("pretty_tick_lon_start_uiOut_numeric"),
-                            uiOutput("pretty_tick_lat_start_uiOut_numeric"),
-                            numericInput("pretty_tick_lw", tags$h5("Grid line width"), value = 1.0, min = 0.1, step = 0.1),
-                            colourpicker::colourInput("pretty_tick_color", tags$h5("Click to select color for coordinate grid lines"),
-                                                      value = "#D6D6D6", showColour = "background")
-                          ),
-                          column(
-                            width = 6,
-                            uiOutput("pretty_tick_lon_interval_uiOut_numeric"),
-                            uiOutput("pretty_tick_lat_interval_uiOut_numeric"),
-                            numericInput("pretty_tick_alpha", tags$h5("Grid line transparency (1: solid; 0: transparent)"),
-                                         value = 1.0, min = 0, max = 1, step = 0.1)
-                          )
+                      helpText("Size and width values are relative to 1 (the default size).",
+                               "Grid line start and interval units are the same as the specified coordinate system units"),
+                      fluidRow(
+                        column(
+                          width = 6,
+                          uiOutput("pretty_tick_lon_start_uiOut_numeric"),
+                          uiOutput("pretty_tick_lat_start_uiOut_numeric"),
+                          numericInput("pretty_tick_lw", tags$h5("Grid line width"), value = 1.0, min = 0.1, step = 0.1),
+                          colourpicker::colourInput("pretty_tick_color", tags$h5("Click to select color for coordinate grid lines"),
+                                                    value = "#D6D6D6", showColour = "background")
+                        ),
+                        column(
+                          width = 6,
+                          uiOutput("pretty_tick_lon_interval_uiOut_numeric"),
+                          uiOutput("pretty_tick_lat_interval_uiOut_numeric"),
+                          numericInput("pretty_tick_alpha", tags$h5("Grid line transparency (1: solid; 0: transparent)"),
+                                       value = 1.0, min = 0, max = 1, step = 0.1)
                         )
-                      )
-                    ),
-                    conditionalPanel(
-                      condition = "input.pretty_tick",
-                      checkboxInput("pretty_tick_label_inc", tags$h5("Include coordinate labels"), value = TRUE),
+                      ),
+                      tags$hr(),
+                      checkboxInput("pretty_tick_label_inc", "Include coordinate labels", value = TRUE),
                       conditionalPanel(
                         condition = "input.pretty_tick_label_inc",
-                        box(
-                          width = 12,
-                          fluidRow(
-                            column(6, radioButtons("pretty_tick_label_inout", tags$h5("Coordinate label location"),
-                                                   choices = list("Inside frame" = 1, "Outside frame" = 2), selected = 1)),
-                            column(6, numericInput("pretty_tick_label_size", tags$h5("Coordinate label size"),
-                                                   value = 1.0, min = 0.1, step = 0.1))
-                          )
+                        helpText("If you want coordinate labels without the grid lines, then set 'Grid line transparency' to 0"),
+                        fluidRow(
+                          column(6, radioButtons("pretty_tick_label_inout", tags$h5("Coordinate label location"),
+                                                 choices = list("Inside frame" = 1, "Outside frame" = 2), selected = 1)),
+                          column(6, numericInput("pretty_tick_label_size", tags$h5("Coordinate label size"),
+                                                 value = 1.0, min = 0.1, step = 0.1))
                         )
                       )
                     )

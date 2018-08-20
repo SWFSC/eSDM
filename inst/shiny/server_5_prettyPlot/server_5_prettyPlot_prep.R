@@ -262,6 +262,16 @@ pretty_titlelab_list <- reactive({
 
 
 ###############################################################################
+
+pretty_margin_list <- reactive({
+  list(
+    input$pretty_margin_in1, input$pretty_margin_in2, input$pretty_margin_in3,
+    input$pretty_margin_in4, input$pretty_margin_out
+  )
+})
+
+
+###############################################################################
 ### Generate list of coordinate grid line and label info
 pretty_tick_list <- reactive({
   lon.grid.vals <- seq(

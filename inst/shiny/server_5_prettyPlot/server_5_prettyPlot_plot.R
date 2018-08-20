@@ -74,8 +74,8 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
   tmap.list <- lapply(params.list, function(k) {
     plot_pretty(
       k$model.toplot, k$plot.lim, k$background.color,
-      k$list.titlelab, k$list.tick, k$list.colorscheme, k$list.legend,
-      k$list.addobj.pre, k$list.addobj.post
+      k$list.colorscheme, k$list.legend, k$list.titlelab, k$list.margin,
+      k$list.tick, k$list.addobj.pre, k$list.addobj.post
     )
   })
 
@@ -88,13 +88,15 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
 ###############################################################################
 # Returns individual tmap objects
 plot_pretty <- function(model.toplot, plot.lim, background.color,
-                        list.titlelab, list.tick, list.colorscheme,
-                        list.legend, list.addobj.pre, list.addobj.post) {
+                        list.colorscheme, list.legend, list.titlelab,
+                        list.margin, list.tick,
+                        list.addobj.pre, list.addobj.post) {
   #----------------------------------------------
   # For ease of calling / sake of space
   l1 <- list.colorscheme
   l2 <- list.legend
   l3 <- list.titlelab
+  l3b <- unlist(list.margin)
   l4 <- list.tick
   l5a <- list.addobj.pre
   l5b <- list.addobj.post
@@ -142,7 +144,8 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
   tmap.obj <- tmap.obj +
     tm_layout(bg.color = background.color, legend.bg.color = "white",
               main.title = l3$title, main.title.position = "center",
-              main.title.size = l3$titlecex) +
+              main.title.size = l3$titlecex,
+              inner.margins = l3b[1:4], outer.margins = l3b[5]) +
     tm_xlab(l3$xlab, l3$labcex) +
     tm_ylab(l3$ylab, l3$labcex)
 
