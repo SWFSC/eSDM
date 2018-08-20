@@ -188,11 +188,11 @@ ui.overlay <- function() {
                   fluidRow(
                     box(
                       width = 12,
-                      tags$strong("1) Overlay options: base geometry"),
-                      tags$h5("Choose the base geometry in the 'Imported Model Predictions' box."),
+                      tags$strong("1) Overlay options: study area and erasing polygons"),
+                      tags$h5("Import these polygons in their respecitve boxes: 'Import Study Area Polygon' and 'Import Erasing Polygon'."),
                       tags$br(),
-                      tags$strong("2) Overlay options: study area and erasing polygons"),
-                      tags$h5("Import these polygons in their respecitve boxes: 'Import Study Area Polygon' and 'Import Erasing Polygon'.")
+                      tags$strong("2) Overlay options: base geometry"),
+                      tags$h5("Choose the base geometry in the 'Imported Model Predictions' box.")
                     ),
                     box(
                       width = 12,
@@ -249,8 +249,6 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("5) Perform overlay"),
-                      helpText(tags$strong("It is strongly recommended to save the app environment before overlaying",
-                                           "in case you are disconnected from the server during the process.")),
                       helpText(tags$strong("Reminder: imported study area and land polygons will be used during",
                                            "the overlay process. This process may take several minutes.")),
                       actionButton("overlay_create_overlaid_models_modal", "Overlay all predictions onto the specified base geometry"),
