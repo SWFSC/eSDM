@@ -346,7 +346,8 @@ ui.prettyPlot <- function() {
                     ),
                     tags$hr(),
                     helpText("'Inner margin' refers to the space between the map and the map frame.",
-                             "'Outer margin' refers to the space between the map frame and the plot window.",
+                             "'Outer margin' refers to the space between the map frame and the plot window;",
+                             "'Outer margins' will be overwritten if more than one map is being plotted.",
                              "Margins can be used for creating whitespace for coordinate labels",
                              "or the legend if it is inside the map frame"),
                     fluidRow(

@@ -80,8 +80,11 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
   })
 
   # tmap_arrange call ~0.3s slower than just printing tmap object
-  # do.call(tmap_arrange, c(tmap.list, dims, asp = list(NULL)))
-  tmap_arrange(tmap.list, dims[1:2], asp = NULL)
+  if (length(tmap.list) == 1) {
+    tmap.list[[1]]
+  } else {
+    tmap_arrange(tmap.list, dims[1:2], asp = NULL)
+  }
 }
 
 
