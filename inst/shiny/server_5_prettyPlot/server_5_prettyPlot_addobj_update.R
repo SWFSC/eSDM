@@ -35,7 +35,7 @@ addobj_update_modal <- function(failed) {
         column(6, uiOutput("pretty_addobj_update_which_uiOut_select")),
         column(
           width = 6,
-          uiOutput("pretty_addobj_update_thing_uiOut_mult"),
+          uiOutput("pretty_addobj_update_thing1_uiOut_mult"),
           uiOutput("pretty_addobj_update_thing2_uiOut_mult")
         )
       ),
@@ -88,7 +88,7 @@ output$pretty_addobj_update_which_uiOut_select <- renderUI({
 
 #------------------------------------------------------------------------------
 # renderUI() for 'update' widget #1
-output$pretty_addobj_update_thing_uiOut_mult <- renderUI({
+output$pretty_addobj_update_thing1_uiOut_mult <- renderUI({
   y <- req(val.pretty.addobj.update())
   z <- req(input$pretty_addobj_update_which)
 
@@ -98,7 +98,7 @@ output$pretty_addobj_update_thing_uiOut_mult <- renderUI({
       helpText("You cannot change the object type for a", y$obj.text)
 
     } else {
-      radioButtons("pretty_addobj_update_thing", tags$h5("Object type:"),
+      radioButtons("pretty_addobj_update_thing1", tags$h5("Object type:"),
                    choices = list("Point(s)" = 1, "Polygon(s)" = 2),
                    selected = y$obj.type)
     }
@@ -106,7 +106,7 @@ output$pretty_addobj_update_thing_uiOut_mult <- renderUI({
     #-------------------------------------------------
   } else if (z == 2) {
     val.curr <- y$obj.order
-    radioButtons("pretty_addobj_update_thing", tags$h5("Object draw order:"),
+    radioButtons("pretty_addobj_update_thing1", tags$h5("Object draw order:"),
                  choices = list("Draw object behind SDM" = 1,
                                 "Draw object in front of SDM" = 2),
                  selected = val.curr)
@@ -114,7 +114,7 @@ output$pretty_addobj_update_thing_uiOut_mult <- renderUI({
   } else if (z == 3) {
     val.curr <- is.na(y$col.ptfill)
     input.lab <- addobj_render_lab(3, y$obj.which, y$obj.type)
-    checkboxInput("pretty_addobj_update_thing", input.lab, value = val.curr)
+    checkboxInput("pretty_addobj_update_thing1", input.lab, value = val.curr)
 
     #-------------------------------------------------
   }  else if (z == 4) {
@@ -125,7 +125,7 @@ output$pretty_addobj_update_thing_uiOut_mult <- renderUI({
     } else {
       val.curr <- is.na(y$col.absborder)
       input.lab <- addobj_render_lab(5, y$obj.which, y$obj.type)
-      checkboxInput("pretty_addobj_update_thing", input.lab, value = val.curr)
+      checkboxInput("pretty_addobj_update_thing1", input.lab, value = val.curr)
     }
 
     #-------------------------------------------------
@@ -140,7 +140,7 @@ output$pretty_addobj_update_thing_uiOut_mult <- renderUI({
       choices.list <- choices.list.lty
     }
 
-    selectizeInput("pretty_addobj_update_thing", tags$h5(input.lab),
+    selectizeInput("pretty_addobj_update_thing1", tags$h5(input.lab),
                    choices = choices.list, selected = val.curr,
                    multiple = FALSE)
 
@@ -149,7 +149,7 @@ output$pretty_addobj_update_thing_uiOut_mult <- renderUI({
     val.curr <- y$cexlwd
     input.lab <- addobj_render_lab(8, NULL, y$obj.type)
 
-    numericInput("pretty_addobj_update_thing", tags$h5(input.lab),
+    numericInput("pretty_addobj_update_thing1", tags$h5(input.lab),
                  value = val.curr, step = 0.1)
 
     #-------------------------------------------------

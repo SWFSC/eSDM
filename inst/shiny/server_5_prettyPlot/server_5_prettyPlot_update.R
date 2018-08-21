@@ -55,17 +55,20 @@ toplot_update_modal <- function(failed) {
       tags$strong(paste("Map ID:", vals$pretty.params.toplot[[x]]$id)),
       fluidRow(
         column(6, selectInput("pretty_toplot_update_which", tags$h5("Choose parameter section"),
-                              choices = choices.list.main, selected = 1))
-        # column(
-        #   width = 6,
-        #   uiOutput("pretty_addobj_update_thing_uiOut_mult"),
-        #   uiOutput("pretty_addobj_update_thing2_uiOut_mult")
-        # )
+                              choices = choices.list.main, selected = 1)),
+        column(6, uiOutput("pretty_toplot_update_which_param_uiOut_select"))
       ),
-      # actionButton("pretty_addobj_update_execute", "Save parameter"),
-      # tags$br(), tags$br(), tags$br(),
-      # tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
-      #         "otherwise they are displayed as hexadecimals."),
+      box(
+        width = 12,
+        fluidRow(
+          column(6, uiOutput("pretty_toplot_update_thing1_uiOut_mult")),
+          column(6, uiOutput("pretty_toplot_update_thing2_uiOut_mult"))
+        )
+      ),
+      actionButton("pretty_toplot_update_execute", "Save parameter"),
+      tags$br(), tags$br(), tags$br(),
+      tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
+              "otherwise they are displayed as hexadecimals."),
       tableOutput("pretty_toplot_update_table_out"),
 
       footer = tagList(actionButton("pretty_toplot_update_done", "Done")),
@@ -78,36 +81,164 @@ toplot_update_modal <- function(failed) {
 ###############################################################################
 # renderUI()'s
 
+#------------------------------------------------------------------------------
 ### Selection dropdown for specific parameters
 output$pretty_toplot_update_which_param_uiOut_select <- renderUI({
-  input$pretty_toplot_update_which
+  choices.list.names <- req(pretty_toplot_update_table())$Name
+  choices.list <- seq_along(choices.list.names)
+  names(choices.list) <- choices.list.names
 
   selectInput("pretty_toplot_update_which_param",
               tags$h5("Choose parameter to update"),
-              choices = list("TODO" = 1), selected = 1)
+              choices = choices.list, selected = 1)
 })
 
 
+#------------------------------------------------------------------------------
+# renderUI() #1
+output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
+  y <- req(val.pretty.toplot.update())
+  z <- input$pretty_toplot_update_which
+  z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
+  z.names <- req(pretty_toplot_update_table())$Name
+
+  if (z == 1) {
+    if (z2 == 1) {
+      tags$h5("Cannot update this parameter", style = "color: red;")
+    } else {
+      z2 <- z2 - 1
+      z.names <- z.names[2:5]
+      val.curr <- y$plot.lim[z2]
+      numericInput("pretty_toplot_update_thing1", tags$h5(z.names[z2]),
+                   value = val.curr)
+    }
+
+    #------------------------------------------------------
+  } else if (z == 2) {
+    if (z2 == 1) {
+      val.curr <- y$background.color
+      input.lab <- "Click to select background color"
+      colourpicker::colourInput(
+        "pretty_toplot_update_thing1", tags$h5(input.lab),
+        showColour = "background", value = val.curr
+      )
+
+    } else if (z2 == 2) {
+      val.curr <- is.null(y$list.colorscheme$col.na)
+      input.lab <- "Make NA predictions transparent"
+      checkboxInput("pretty_toplot_update_thing1", input.lab, value = val.curr)
+
+    } else {
+      tags$h5("Cannot update this parameter", style = "color: red;")
+    }
+
+    #------------------------------------------------------
+  } else if (z == 3) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if (z == 4) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if (z == 5) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if (z == 6) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else { #z == 7
+    val.curr <- y$id
+    textInput("pretty_toplot_update_thing1", tags$h5("Map ID"),
+              value = val.curr)
+  }
+})
+
+
+#------------------------------------------------------------------------------
+# renderUI() #2
+output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
+  y <- req(val.pretty.toplot.update())
+  z <- input$pretty_toplot_update_which
+  z2 <- req(input$pretty_toplot_update_which_param)
+
+  if (z == 1) {
+    req(NULL)
+
+    #------------------------------------------------------
+  } else if (z == 2) {
+    if (z2 == 2) {
+      req(input$pretty_toplot_update_thing1)
+      req(!input$pretty_toplot_update_thing1)
+
+      val.curr <- y$list.colorscheme$col.na
+      input.lab <- "Click to select color of NA predictions"
+
+      colourpicker::colourInput(
+        "pretty_toplot_update_thing2", tags$h5(input.lab),
+        showColour = "background", value = val.curr
+      )
+
+      #-------------------------------------------------
+    }
+
+    #------------------------------------------------------
+  } else if (z == 3) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if (z == 4) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if (z == 5) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if (z == 6) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else { #z == 7
+    req(NULL)
+  }
+})
+
+
+#------------------------------------------------------------------------------
 ### Table display current parameters
 output$pretty_toplot_update_table_out <- renderTable({
-  y <- req(val.pretty.toplot.update())
+  pretty_toplot_update_table()
+})
 
-  browser()
+pretty_toplot_update_table <- reactive({
+  y <- req(val.pretty.toplot.update())
+  z <- input$pretty_toplot_update_which
+
   #--------------------------------------------------------
-  if (input$pretty_toplot_update_which == 1) {
+  if (z == 1) {
     params.names <- c(
+      "Coordinate system",
       "Longitude minimum", "Longitude maximum", "Latitude minimum",
       "Latitude maximum"
     )
-    params.vals <- y$plot.lim
+    params.vals <- c("N/A: cannot update", y$plot.lim)
 
     #------------------------------------------------------
-  } else if(input$pretty_toplot_update_which == 2) {
-    params.names <- c("Background color", "Prediction color scheme")
-    params.vals <- c(y$background.color, "N/A: cannot update")
+  } else if (z == 2) {
+    params.names <- c(
+      "Background color", "NA prediction color", "Prediction color scheme"
+    )
+    temp <- y$list.colorscheme$col.na
+    params.vals <- c(
+      y$background.color, ifelse(is.null(temp), "Transparent", temp),
+      "N/A: cannot update"
+    )
 
     #------------------------------------------------------
-  } else if(input$pretty_toplot_update_which == 3) {
+  } else if (z == 3) {
     y.leg <- y$list.legend
     params.names <- c(
       "Include legend",
@@ -134,19 +265,19 @@ output$pretty_toplot_update_table_out <- renderTable({
     }
 
     #------------------------------------------------------
-  } else if(input$pretty_toplot_update_which == 4) {
+  } else if (z == 4) {
     validate(need(FALSE, "Not ready yet"))
 
     #------------------------------------------------------
-  } else if(input$pretty_toplot_update_which == 5) {
+  } else if (z == 5) {
     validate(need(FALSE, "Not ready yet"))
 
     #------------------------------------------------------
-  } else if(input$pretty_toplot_update_which == 6) {
+  } else if (z == 6) {
     validate(need(FALSE, "Not ready yet"))
 
     #------------------------------------------------------
-  } else { #input$pretty_toplot_update_which == 7
+  } else { #z == 7
     params.names <- "Map ID"
     params.vals <- y$id
 

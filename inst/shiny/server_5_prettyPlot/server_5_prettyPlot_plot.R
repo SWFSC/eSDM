@@ -127,7 +127,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
   rm(i)
 
   #----------------------------------------------
-  # Shape, fill (colorscheme), title, axis labels
+  # Shape, fill (colorscheme), title, axis labels, margins
   if (exists("tmap.obj")) {
     tmap.obj <- tmap.obj +
       tm_shape(model.toplot) +
