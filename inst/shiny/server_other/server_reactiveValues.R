@@ -82,10 +82,11 @@ load_envir <- eventReactive(input$load_app_envir_file, {
   req(input$load_app_envir_file)
 
   file.load <- input$load_app_envir_file
+  file.load.ext <- substr_right(input$load_app_envir_file$name, 6)
   validate(
-    need((substr_right(input$load_app_envir_file$name, 6) == ".RDATA" &
+    need((file.load.ext %in% c(".RDATA", ".RData") &
             input$load_app_envir_file$type == ""),
-         "Error: Please load a file with the extension '.RDATA'")
+         "Error: Please load a file with the extension '.RDATA' or '.RData'")
   )
 
   withProgress(message = "Loading saved workspace", value = 0.4, {
