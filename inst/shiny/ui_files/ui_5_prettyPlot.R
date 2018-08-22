@@ -399,7 +399,7 @@ ui.prettyPlot <- function() {
                       checkboxInput("pretty_tick_label_inc", "Include coordinate labels", value = TRUE),
                       conditionalPanel(
                         condition = "input.pretty_tick_label_inc",
-                        helpText("If you want coordinate labels without the grid lines, then set 'Grid line transparency' to 0"),
+                        helpText("To include coordinate labels without grid lines, set 'Grid line transparency' to 0"),
                         fluidRow(
                           column(6, radioButtons("pretty_tick_label_inout", tags$h5("Coordinate label location"),
                                                  choices = list("Inside frame" = 1, "Outside frame" = 2), selected = 1)),

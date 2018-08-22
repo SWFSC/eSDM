@@ -25,8 +25,10 @@ toplot_update_modal <- function(failed) {
     val.pretty.toplot.update(vals$pretty.params.toplot[[x]])
 
     choices.list.main <- list(
-      "Map coordinate system and range" = 1, "Background color and prediction color scheme" = 2,
-      "Legend" = 3, "Title and axis labels" = 4, "Coordinate grid lines and labels" = 5,
+      "Map coordinate system and range" = 1,
+      "Background color and prediction color scheme" = 2,
+      "Legend" = 3, "Title, axis labels, and margins" = 4,
+      "Coordinate grid lines and labels" = 5,
       "Additional objects (points or polygons)" = 6, "Map ID" = 7
     )
 
@@ -71,7 +73,8 @@ toplot_update_modal <- function(failed) {
 #------------------------------------------------------------------------------
 ### Selection dropdown for specific parameters
 output$pretty_toplot_update_which_param_uiOut_select <- renderUI({
-  choices.list.names <- req(pretty_toplot_update_table())$Name
+  input$pretty_toplot_update_which
+  isolate(choices.list.names <- req(pretty_toplot_update_table())$Name)
   choices.list <- seq_along(choices.list.names)
   names(choices.list) <- choices.list.names
 
@@ -88,16 +91,16 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
   z <- input$pretty_toplot_update_which
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
   z.names <- req(pretty_toplot_update_table())$Name
+  z.vals <- req(pretty_toplot_update_table())$Values
 
   #--------------------------------------------------------
   if (z == 1) {
     if (z2 == 1) {
       tags$h5("Cannot update this parameter", style = "color: red;")
     } else {
-      z2 <- z2 - 1
-      z.names <- z.names[2:5]
-      val.curr <- y$plot.lim[z2]
-      numericInput("pretty_toplot_update_thing1", tags$h5(z.names[z2]),
+      val.curr <- y$plot.lim[z2 - 1]
+      input.lab <- z.names[z2]
+      numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
                    value = val.curr)
     }
 
@@ -129,57 +132,122 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
       val.curr <- y.leg$inc
       checkboxInput("pretty_toplot_update_thing1", input.lab, value = val.curr)
 
-    } else if (z2 == 2) {
-      val.curr <- ifelse(y.leg$out, 2, 1)
-      radioButtons("pretty_toplot_update_thing1", tags$h5(input.lab),
-                   choices = list("Inside map frame" = 1, "Outside map frame" = 2),
-                   selected = val.curr)
+    } else if (z2 == 7 ) {
+      tags$h5("Cannot update this parameter", style = "color: red;")
 
-    } else if (z2 == 3) {
-      if (!y.leg$out) {
-        choices.list <- choices.list.pos
-        val.curr <- which(sapply(list.pos.vals, function(i) identical(i, y.leg$pos)))
-
-      } else { #y.leg$out
-        choices.list <- choices.list.posout
-        val.curr <- y.leg$out.pos
-      }
-
-      selectInput("pretty_toplot_update_thing1", tags$h5(input.lab),
-                  choices = choices.list, selected = val.curr)
-
-    } else if (z2 == 4) {
-      if (!y.leg$out) {
-        tags$h5("N/A: only applies when legend outside map frame",
-                style = "color: red;")
-      } else {
-        val.curr <- y.leg$width
-        numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
-                     value = val.curr, min = 0.1, max = 0.5, step = 0.05)
-      }
-
-    } else if (z2 == 5) {
-      val.curr <- y.leg$text.size
-      numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
-                   value = val.curr, min = 0.1, step = 0.1)
-
-    } else if (z2 == 6) {
-      val.curr <- ifelse(y.leg$border == "black", TRUE, FALSE)
-      checkboxInput("pretty_toplot_update_thing1", input.lab, value = val.curr)
+    } else if (!y.leg$inc) {
+      tags$h5("N/A - legend not included", style = "color: red;")
 
     } else {
-      tags$h5("Cannot update this parameter", style = "color: red;")
+      if (z2 == 2) {
+        val.curr <- ifelse(y.leg$out, 2, 1)
+        radioButtons("pretty_toplot_update_thing1", tags$h5(input.lab),
+                     choices = list("Inside map frame" = 1, "Outside map frame" = 2),
+                     selected = val.curr)
+
+      } else if (z2 == 3) {
+        if (!y.leg$out) {
+          choices.list <- choices.list.pos
+          val.curr <- which(sapply(list.pos.vals, function(i) identical(i, y.leg$pos)))
+
+        } else { #y.leg$out
+          choices.list <- choices.list.posout
+          val.curr <- y.leg$out.pos
+        }
+
+        selectInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                    choices = choices.list, selected = val.curr)
+
+      } else if (z2 == 4) {
+        if (!y.leg$out) {
+          tags$h5("N/A: only applies when legend outside map frame",
+                  style = "color: red;")
+        } else {
+          val.curr <- y.leg$width
+          numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                       value = val.curr, min = 0.1, max = 0.5, step = 0.05)
+        }
+
+      } else if (z2 == 5) {
+        val.curr <- y.leg$text.size
+        numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                     value = val.curr, min = 0.1, step = 0.1)
+
+      } else if (z2 == 6) {
+        val.curr <- ifelse(y.leg$border == "black", TRUE, FALSE)
+        checkboxInput("pretty_toplot_update_thing1", input.lab, value = val.curr)
+
+      }
     }
-
-
 
     #------------------------------------------------------
   } else if (z == 4) {
-    validate(need(FALSE, "Not ready yet"))
+    if (z2 %in% 1:3) {
+      val.curr <- y$list.titlelab[[z2]]
+      input.lab <- z.names[[z2]]
+      textInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                value = val.curr)
+
+    } else if (z2 %in% 4:5) {
+      val.curr <- y$list.titlelab[[z2]]
+      input.lab <- z.names[[z2]]
+      numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                   value = val.curr, step = 0.1)
+
+    } else {
+      val.curr <- y$list.margin[[z2 - 5]]
+      input.lab <- z.names[z2]
+      numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                   value = val.curr, step = 0.01)
+    }
 
     #------------------------------------------------------
   } else if (z == 5) {
-    validate(need(FALSE, "Not ready yet"))
+    y.t <- y$list.tick
+    input.lab <- z.names[z2]
+    val.curr <- z.vals[z2]
+
+    if (z2 == 1 ) {
+      checkboxInput("pretty_toplot_update_thing1", input.lab,
+                    value = as.logical(val.curr))
+
+    } else if (!y.t$inc) {
+      tags$h5("N/A: coordinate grid lines not included", style = "color: red;")
+
+    } else {
+      if (z2 %in% 2:7) {
+        step.curr <- ifelse(z2 %in% 2:5, 5, 0.1)
+        min.curr <- ifelse(z2 %in% 2:5, NA, 0)
+        max.curr <- ifelse(z2 == 7, 1, NA)
+        numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                     value = as.numeric(val.curr), step = step.curr,
+                     min = min.curr, max = max.curr)
+
+      } else if (z2 == 8) {
+        colourpicker::colourInput(
+          "pretty_toplot_update_thing1", tags$h5(input.lab),
+          showColour = "background", value = val.curr
+        )
+
+      } else if (z2 == 9) {
+        checkboxInput("pretty_toplot_update_thing1", input.lab, value = as.logical(val.curr))
+
+      } else if (y.t$grid.labs.size == 0) {
+        tags$h5("N/A: coordinate labels not included", style = "color: red;")
+
+      } else {
+        if (z2 == 10) {
+          val.curr <- ifelse(y.t$grid.labs.in, 1, 2)
+          radioButtons("pretty_toplot_update_thing1", tags$h5(input.lab),
+                       choices = list("Inside frame" = 1, "Outside frame" = 2),
+                       selected = val.curr)
+
+        } else { #z2 == 11
+          numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                       value = as.numeric(val.curr), min = 0.1, step = 0.1)
+        }
+      }
+    }
 
     #------------------------------------------------------
   } else if (z == 6) {
@@ -201,11 +269,7 @@ output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
   z <- input$pretty_toplot_update_which
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
 
-  if (z == 1) {
-    req(NULL)
-
-    #------------------------------------------------------
-  } else if (z == 2 & z2 == 2) {
+  if (z == 2 & z2 == 2) {
     req(is.logical(input$pretty_toplot_update_thing1))
     req(!input$pretty_toplot_update_thing1)
 
@@ -218,23 +282,11 @@ output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
     )
 
     #------------------------------------------------------
-  } else if (z == 3) {
-    req(NULL)
-
-    #------------------------------------------------------
-  } else if (z == 4) {
-    validate(need(FALSE, "Not ready yet"))
-
-    #------------------------------------------------------
-  } else if (z == 5) {
-    validate(need(FALSE, "Not ready yet"))
-
-    #------------------------------------------------------
   } else if (z == 6) {
     validate(need(FALSE, "Not ready yet"))
 
     #------------------------------------------------------
-  } else { #z == 7
+  } else { #z %in% c(1, 3, 4, 5, 7)
     req(NULL)
   }
 })
@@ -294,16 +346,46 @@ pretty_toplot_update_table <- reactive({
       )
 
     } else {
-      params.vals <- c(y.leg$inc, rep("N/A: no legend", 6))
+      params.vals <- c(y.leg$inc, rep("N/A: legend not included", 6))
     }
 
     #------------------------------------------------------
   } else if (z == 4) {
-    validate(need(FALSE, "Not ready yet"))
+    params.names <- c(
+      "Title", "X-axis label", "Y-axis label", "Title size", "Axis label size",
+      "Inner margin - bottom", "Inner margin - left", "Inner margin - top",
+      "Inner margin - right", "Outer margin"
+    )
+    params.vals <- c(
+      unname(unlist(y$list.titlelab)), unname(unlist(y$list.margin))
+    )
 
     #------------------------------------------------------
   } else if (z == 5) {
-    validate(need(FALSE, "Not ready yet"))
+    y.t <- y$list.tick
+    params.names <- c(
+      "Include coordinate grid lines",
+      "Longitude grid line start", "Longitude grid line interval",
+      "Latitude grid line start", "Latitude grid line interval",
+      "Grid line width", "Grid line transparency (1: solid; 0: transparent)",
+      "Coordinate grid line color", "Include coordinate labels",
+      "Coordinate label location", "Coordinate label size"
+    )
+    if (y.t$inc) {
+      y.t.labinc <- y.t$grid.labs.size > 0
+      params.vals <- c(
+        TRUE, y.t$x.vals[1], y.t$x.vals[2] - y.t$x.vals[1],
+        y.t$y.vals[1], y.t$y.vals[2] - y.t$y.vals[1],
+        y.t$grid.lw, y.t$grid.alpha, y.t$grid.col, y.t.labinc,
+        ifelse(y.t.labinc, ifelse(y.t$grid.labs.in, "Inside frame", "Outside frame"),
+               "N/A: coordinate labels not included"),
+        ifelse(y.t.labinc, y.t$grid.labs.size, "N/A: coordinate labels not included")
+      )
+    } else {
+      params.vals <- c(
+        FALSE, rep("N/A: coordinate grid lines not included", 10)
+      )
+    }
 
     #------------------------------------------------------
   } else if (z == 6) {
@@ -386,11 +468,44 @@ observeEvent(input$pretty_toplot_update_execute, {
 
     #------------------------------------------------------
   } else if (z == 4) {
-    validate(need(FALSE, "Not ready yet"))
+    if (z2 %in% 1:5) {
+      y$list.titlelab[[z2]] <- input$pretty_toplot_update_thing1
+    } else {
+      y$list.margin[[z2 - 5]] <- input$pretty_toplot_update_thing1
+    }
 
     #------------------------------------------------------
   } else if (z == 5) {
-    validate(need(FALSE, "Not ready yet"))
+    y.t <- y$list.tick
+    if (z2 == 1) {
+      y.t$inc <- input$pretty_toplot_update_thing1
+
+    } else if (z2 %in% 2:5) {
+      browser()
+      # TODO
+
+    } else if (z2 == 6) {
+      y.t$grid.lw <- input$pretty_toplot_update_thing1
+
+    } else if (z2 == 7) {
+      y.t$grid.alpha <- input$pretty_toplot_update_thing1
+
+    } else if (z2 == 8) {
+      y.t$grid.col <- input$pretty_toplot_update_thing1
+
+    } else if (z2 == 9) {
+      if (!(input$pretty_toplot_update_thing1 & y.t$grid.labs.size != 0)) {
+        y.t$grid.labs.size <- ifelse(input$pretty_toplot_update_thing1, 1, 0)
+      }
+
+    } else if (z2 == 10) {
+      y.t$grid.labs.in <- input$pretty_toplot_update_thing1 == 1
+
+    } else { #z2 == 11
+      y.t$grid.labs.size <- input$pretty_toplot_update_thing1
+    }
+
+    y$list.tick <- y.t
 
     #------------------------------------------------------
   } else if (z == 6) {
