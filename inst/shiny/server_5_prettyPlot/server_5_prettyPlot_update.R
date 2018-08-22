@@ -48,6 +48,7 @@ toplot_update_modal <- function(failed) {
       ),
       box(
         width = 12,
+        textOutput("pretty_toplot_update_message_uiOut_text"),
         fluidRow(
           column(6, uiOutput("pretty_toplot_update_thing1_uiOut_mult")),
           column(6, uiOutput("pretty_toplot_update_thing2_uiOut_mult"))
@@ -81,6 +82,31 @@ output$pretty_toplot_update_which_param_uiOut_select <- renderUI({
   selectInput("pretty_toplot_update_which_param",
               tags$h5("Choose parameter to update"),
               choices = choices.list, selected = 1)
+})
+
+
+#------------------------------------------------------------------------------
+# renderUI() #0: message
+output$pretty_toplot_update_message_uiOut_text <- renderText({
+  y <- req(val.pretty.toplot.update())
+  z <- input$pretty_toplot_update_which
+  z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
+  z.names <- req(pretty_toplot_update_table())$Name
+  z.vals <- req(pretty_toplot_update_table())$Values
+
+  if (z == 5 & z2 == 2) {
+    paste("Please ensure that the 'Longitude start value' is between",
+          "the specified longitude limits:",
+          paste(y$plot.lim[1:2], collapse = " and "))
+
+  }  else if (z == 5 & z2 == 3) {
+    paste("Please ensure that the 'Latitude start value' is between",
+          "the specified latitude limits:",
+          paste(y$plot.lim[3:4], collapse = " and "))
+
+  } else {
+    NULL
+  }
 })
 
 
@@ -215,34 +241,42 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
       tags$h5("N/A: coordinate grid lines not included", style = "color: red;")
 
     } else {
-      if (z2 %in% 2:7) {
-        step.curr <- ifelse(z2 %in% 2:5, 5, 0.1)
-        min.curr <- ifelse(z2 %in% 2:5, NA, 0)
-        max.curr <- ifelse(z2 == 7, 1, NA)
+      if (z2 == 2) {
+        input.lab <- "Longitude grid line start"
         numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
-                     value = as.numeric(val.curr), step = step.curr,
-                     min = min.curr, max = max.curr)
+                     value = y.t$x.vals[1], step = 5)
 
-      } else if (z2 == 8) {
+      } else if (z2 == 3) {
+        input.lab <- "Latitude grid line start"
+        numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                     value = y.t$y.vals[1], step = 5)
+
+      } else if (z2 %in% 4:5) {
+        max.curr <- ifelse(z2 == 5, 1, NA)
+        numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                     value = as.numeric(val.curr), step = 0.1,
+                     min = 0, max = max.curr)
+
+      } else if (z2 == 6) {
         colourpicker::colourInput(
           "pretty_toplot_update_thing1", tags$h5(input.lab),
           showColour = "background", value = val.curr
         )
 
-      } else if (z2 == 9) {
+      } else if (z2 == 7) {
         checkboxInput("pretty_toplot_update_thing1", input.lab, value = as.logical(val.curr))
 
       } else if (y.t$grid.labs.size == 0) {
         tags$h5("N/A: coordinate labels not included", style = "color: red;")
 
       } else {
-        if (z2 == 10) {
+        if (z2 == 8) {
           val.curr <- ifelse(y.t$grid.labs.in, 1, 2)
           radioButtons("pretty_toplot_update_thing1", tags$h5(input.lab),
                        choices = list("Inside frame" = 1, "Outside frame" = 2),
                        selected = val.curr)
 
-        } else { #z2 == 11
+        } else { #z2 == 9
           numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
                        value = as.numeric(val.curr), min = 0.1, step = 0.1)
         }
@@ -282,12 +316,28 @@ output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
     )
 
     #------------------------------------------------------
+  } else if (z == 5) {
+    y.t <- y$list.tick
+    if (z2 == 2) {
+      val.curr <- y.t$x.vals[2] - y.t$x.vals[1]
+      input.lab <- "Longitude grid line interval"
+      numericInput("pretty_toplot_update_thing2", tags$h5(input.lab),
+                   value = val.curr, step = 5)
+    } else if (z2 == 3) {
+      val.curr <- y.t$y.vals[2] - y.t$y.vals[1]
+      input.lab <- "Latitude grid line interval"
+      numericInput("pretty_toplot_update_thing2", tags$h5(input.lab),
+                   value = val.curr, step = 5)
+    } else {
+      NULL
+    }
+
   } else if (z == 6) {
     validate(need(FALSE, "Not ready yet"))
 
     #------------------------------------------------------
   } else { #z %in% c(1, 3, 4, 5, 7)
-    req(NULL)
+    NULL
   }
 })
 
@@ -365,8 +415,9 @@ pretty_toplot_update_table <- reactive({
     y.t <- y$list.tick
     params.names <- c(
       "Include coordinate grid lines",
-      "Longitude grid line start", "Longitude grid line interval",
-      "Latitude grid line start", "Latitude grid line interval",
+      # "Longitude grid line start", "Longitude grid line interval",
+      # "Latitude grid line start", "Latitude grid line interval",
+      "Longitude grid line locations", "Latitude grid line locations",
       "Grid line width", "Grid line transparency (1: solid; 0: transparent)",
       "Coordinate grid line color", "Include coordinate labels",
       "Coordinate label location", "Coordinate label size"
@@ -374,8 +425,9 @@ pretty_toplot_update_table <- reactive({
     if (y.t$inc) {
       y.t.labinc <- y.t$grid.labs.size > 0
       params.vals <- c(
-        TRUE, y.t$x.vals[1], y.t$x.vals[2] - y.t$x.vals[1],
-        y.t$y.vals[1], y.t$y.vals[2] - y.t$y.vals[1],
+        TRUE, paste(y.t$x.vals, collapse = ", "), paste(y.t$y.vals, collapse = ", "),
+        # y.t$x.vals[1], y.t$x.vals[2] - y.t$x.vals[1],
+        # y.t$y.vals[1], y.t$y.vals[2] - y.t$y.vals[1],
         y.t$grid.lw, y.t$grid.alpha, y.t$grid.col, y.t.labinc,
         ifelse(y.t.labinc, ifelse(y.t$grid.labs.in, "Inside frame", "Outside frame"),
                "N/A: coordinate labels not included"),
@@ -383,7 +435,7 @@ pretty_toplot_update_table <- reactive({
       )
     } else {
       params.vals <- c(
-        FALSE, rep("N/A: coordinate grid lines not included", 10)
+        FALSE, rep("N/A: coordinate grid lines not included", 8)
       )
     }
 
@@ -480,28 +532,38 @@ observeEvent(input$pretty_toplot_update_execute, {
     if (z2 == 1) {
       y.t$inc <- input$pretty_toplot_update_thing1
 
-    } else if (z2 %in% 2:5) {
-      browser()
-      # TODO
+    } else if (z2 == 2) {
+      req(input$pretty_toplot_update_thing1 < y$plot.lim[2])
+      y.t$x.vals <- seq(
+        from = input$pretty_toplot_update_thing1, to = y$plot.lim[2],
+        by = req(input$pretty_toplot_update_thing2)
+      )
 
-    } else if (z2 == 6) {
+    } else if (z2 == 3) {
+      req(input$pretty_toplot_update_thing1 < y$plot.lim[4])
+      y.t$y.vals <- seq(
+        from = input$pretty_toplot_update_thing1, to = y$plot.lim[4],
+        by = req(input$pretty_toplot_update_thing2)
+      )
+
+    } else if (z2 == 4) {
       y.t$grid.lw <- input$pretty_toplot_update_thing1
 
-    } else if (z2 == 7) {
+    } else if (z2 == 5) {
       y.t$grid.alpha <- input$pretty_toplot_update_thing1
 
-    } else if (z2 == 8) {
+    } else if (z2 == 6) {
       y.t$grid.col <- input$pretty_toplot_update_thing1
 
-    } else if (z2 == 9) {
+    } else if (z2 == 7) {
       if (!(input$pretty_toplot_update_thing1 & y.t$grid.labs.size != 0)) {
         y.t$grid.labs.size <- ifelse(input$pretty_toplot_update_thing1, 1, 0)
       }
 
-    } else if (z2 == 10) {
+    } else if (z2 == 8) {
       y.t$grid.labs.in <- input$pretty_toplot_update_thing1 == 1
 
-    } else { #z2 == 11
+    } else { #z2 == 9
       y.t$grid.labs.size <- input$pretty_toplot_update_thing1
     }
 

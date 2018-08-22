@@ -354,12 +354,12 @@ ui.prettyPlot <- function() {
                       column(
                         width = 6,
                         numericInput("pretty_margin_in1", tags$h5("Inner margin - bottom"), value = 0, min = 0, step = 0.01),
-                        numericInput("pretty_margin_in2", tags$h5("Inner margin - left"), value = 0, min = 0, step = 0.01),
+                        numericInput("pretty_margin_in3", tags$h5("Inner margin - top"), value = 0, min = 0, step = 0.01),
                         numericInput("pretty_margin_out", tags$h5("Outer margin"), value = 0.02, min = 0, step = 0.01)
                       ),
                       column(
                         width = 6,
-                        numericInput("pretty_margin_in3", tags$h5("Inner margin - top"), value = 0, min = 0, step = 0.01),
+                        numericInput("pretty_margin_in2", tags$h5("Inner margin - left"), value = 0, min = 0, step = 0.01),
                         numericInput("pretty_margin_in4", tags$h5("Inner margin - right"), value = 0, min = 0, step = 0.01)
                       )
                     )
