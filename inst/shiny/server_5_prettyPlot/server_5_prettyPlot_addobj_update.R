@@ -261,7 +261,6 @@ observeEvent(input$pretty_addobj_update_execute, {
 observeEvent(input$pretty_addobj_update_done, {
   removeModal()
 
-  z <- req(input$pretty_addobj_update_which)
   x <- input$pretty_addobj_table_out_rows_selected
 
   vals$pretty.addobj[[x]] <- val.pretty.addobj.update()

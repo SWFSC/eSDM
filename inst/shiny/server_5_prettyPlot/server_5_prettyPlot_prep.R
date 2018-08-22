@@ -212,17 +212,11 @@ pretty_legend_list <- reactive({
   if (input$pretty_legend) {
     if (input$pretty_legend_inout == 1) {
       leg.out <- FALSE
-      leg.pos <- switch(
-        as.numeric(input$pretty_legend_pos),
-        c("left", "top"), c("center", "top"), c("right", "top"),
-        c("right", "center"),
-        c("right", "bottom"), c("center", "bottom"), c("left", "bottom"),
-        c("left", "center")
-      )
+      leg.pos <- list.pos.vals[[as.numeric(input$pretty_legend_pos)]]
       leg.outside.pos <- NULL
       leg.width <- 1
 
-    } else{ #input$pretty_legend_inout == 2
+    } else { #input$pretty_legend_inout == 2
       leg.out <- TRUE
       leg.pos <- NULL
       leg.outside.pos <- input$pretty_legend_pos
@@ -243,7 +237,11 @@ pretty_legend_list <- reactive({
     )
 
   } else {
-    list(inc = FALSE)
+    # defaults for others params included for sake of update
+    list(
+      inc = FALSE, out = FALSE, pos = list.pos.vals[[3]], out.pos = NULL,
+      text.size = 1, width = 1, border = "black"
+    )
   }
 })
 

@@ -86,8 +86,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
 ### Table
 pretty_toplot_table <- reactive({
   validate(
-    need(vals$pretty.toplot.idx,
-         "No maps have been saved"),
+    need(vals$pretty.toplot.idx, "No maps have been saved"),
     errorClass = "validation2"
   )
 

@@ -179,17 +179,11 @@ observeEvent(input$pretty_color_palette, {
 # Legend position
 output$pretty_legend_pos_uiOut_select <- renderUI({
   if (input$pretty_legend_inout == 1) {
-    choices.list <- list(
-      "Top left" = 1, "Top center" = 2, "Top right" = 3, "Center right" = 4,
-      "Bottom right" = 5, "Bottom center" = 6, "Bottom left" = 7,
-      "Center left" = 8
-    )
+    choices.list <- choices.list.pos
     choices.sel <- 3
 
   } else { #input$pretty_legend_inout == 2
-    choices.list <- list(
-      "Right" = "right", "Bottom" = "bottom", "Left" = "left", "Top" = "top"
-    )
+    choices.list <- choices.list.posout
     choices.sel <- 1
   }
 

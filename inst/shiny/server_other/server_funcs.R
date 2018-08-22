@@ -424,6 +424,16 @@ mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) {
   }
 }
 
+# Capitalize first letter of first element of string
+esdm_simple_cap <- function(x, all = FALSE) {
+  if (all) {
+    s <- strsplit(x, " ")[[1]]
+    paste0(toupper(substring(s, 1,1)), substring(s, 2), collapse = " ")
+  } else {
+    paste0(toupper(substring(x, 1,1)), substring(x, 2), collapse = " ")
+  }
+}
+
 
 ###############################################################################
 ###############################################################################

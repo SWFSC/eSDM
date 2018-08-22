@@ -1,17 +1,3 @@
-# Code for updating parameters of maps in pretty plot to-plot list
-
-###############################################################################
-# Clear data table selections whenever map control option is changed
-observeEvent(input$pretty_mapcontrol, {
-  dataTableProxy("pretty_table_orig_out") %>% selectRows(list())
-  dataTableProxy("pretty_table_over_out") %>% selectRows(list())
-  dataTableProxy("pretty_table_ens_out") %>% selectRows(list())
-  dataTableProxy("pretty_update_table_out") %>% selectRows(list())
-})
-
-
-###############################################################################
-###############################################################################
 # Code for modal dialog window for updating params of saved maps
 
 ###############################################################################
@@ -66,6 +52,7 @@ toplot_update_modal <- function(failed) {
         )
       ),
       actionButton("pretty_toplot_update_execute", "Save parameter"),
+      uiOutput("pretty_toplot_update_temp_out_text"),
       tags$br(), tags$br(), tags$br(),
       tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
               "otherwise they are displayed as hexadecimals."),
@@ -102,6 +89,7 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
   z.names <- req(pretty_toplot_update_table())$Name
 
+  #--------------------------------------------------------
   if (z == 1) {
     if (z2 == 1) {
       tags$h5("Cannot update this parameter", style = "color: red;")
@@ -134,7 +122,55 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
 
     #------------------------------------------------------
   } else if (z == 3) {
-    validate(need(FALSE, "Not ready yet"))
+    y.leg <- y$list.legend
+    input.lab <- z.names[z2]
+
+    if (z2 == 1) {
+      val.curr <- y.leg$inc
+      checkboxInput("pretty_toplot_update_thing1", input.lab, value = val.curr)
+
+    } else if (z2 == 2) {
+      val.curr <- ifelse(y.leg$out, 2, 1)
+      radioButtons("pretty_toplot_update_thing1", tags$h5(input.lab),
+                   choices = list("Inside map frame" = 1, "Outside map frame" = 2), selected = 1)
+
+    } else if (z2 == 3) {
+      if (!y.leg$out) {
+        choices.list <- choices.list.pos
+        val.curr <- which(sapply(list.pos.vals, function(i) identical(i, y.leg$pos)))
+
+      } else { #y.leg$out
+        choices.list <- choices.list.posout
+        val.curr <- y.leg$out.pos
+      }
+
+      selectInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                  choices = choices.list, selected = val.curr)
+
+    } else if (z2 == 4) {
+      if (!y.leg$out) {
+        tags$h5("N/A: only applies when legend outside map frame",
+                style = "color: red;")
+      } else {
+        val.curr <- y.leg$width
+        numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                     value = val.curr, min = 0.1, max = 0.5, step = 0.05)
+      }
+
+    } else if (z2 == 5) {
+      val.curr <- y.leg$text.size
+      numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                   value = val.curr, min = 0.1, step = 0.1)
+
+    } else if (z2 == 6) {
+      val.curr <- ifelse(y.leg$border == "black", TRUE, FALSE)
+      checkboxInput("pretty_toplot_update_thing1", input.lab, value = val.curr)
+
+    } else {
+      tags$h5("Cannot update this parameter", style = "color: red;")
+    }
+
+
 
     #------------------------------------------------------
   } else if (z == 4) {
@@ -162,31 +198,27 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
 output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
   y <- req(val.pretty.toplot.update())
   z <- input$pretty_toplot_update_which
-  z2 <- req(input$pretty_toplot_update_which_param)
+  z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
 
   if (z == 1) {
     req(NULL)
 
     #------------------------------------------------------
-  } else if (z == 2) {
-    if (z2 == 2) {
-      req(input$pretty_toplot_update_thing1)
-      req(!input$pretty_toplot_update_thing1)
+  } else if (z == 2 & z2 == 2) {
+    req(input$pretty_toplot_update_thing1)
+    req(!input$pretty_toplot_update_thing1)
 
-      val.curr <- y$list.colorscheme$col.na
-      input.lab <- "Click to select color of NA predictions"
+    val.curr <- y$list.colorscheme$col.na
+    input.lab <- "Click to select color of NA predictions"
 
-      colourpicker::colourInput(
-        "pretty_toplot_update_thing2", tags$h5(input.lab),
-        showColour = "background", value = val.curr
-      )
-
-      #-------------------------------------------------
-    }
+    colourpicker::colourInput(
+      "pretty_toplot_update_thing2", tags$h5(input.lab),
+      showColour = "background", value = val.curr
+    )
 
     #------------------------------------------------------
   } else if (z == 3) {
-    validate(need(FALSE, "Not ready yet"))
+    req(NULL)
 
     #------------------------------------------------------
   } else if (z == 4) {
@@ -207,7 +239,7 @@ output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
 })
 
 
-#------------------------------------------------------------------------------
+###############################################################################
 ### Table display current parameters
 output$pretty_toplot_update_table_out <- renderTable({
   pretty_toplot_update_table()
@@ -241,27 +273,27 @@ pretty_toplot_update_table <- reactive({
   } else if (z == 3) {
     y.leg <- y$list.legend
     params.names <- c(
-      "Include legend",
-      "Place legend",
-      "Legend position",
-      "Legend width",
-      "Legend text size",
-      "Include black frame around legend",
+      "Include legend", "Place legend:", "Legend position", "Legend width",
+      "Legend text size", "Include black frame around legend",
       "Legend labels: number of decimals"
     )
     if (y.leg$inc) {
+      param.pos <- ifelse(
+        y.leg$out,
+        esdm_simple_cap(y.leg$out.pos),
+        names(choices.list.pos)[which(sapply(list.pos.vals, function(i) identical(i, y.leg$pos)))]
+      )
+
       params.vals <- c(
-        y.leg$inc,
-        ifelse(y.leg$out, "Outside map frame", "Inside map frame"),
-        "TODO",
-        "TODO",
-        y.leg$text.size,
-        ifelse(y.leg$border == "black", TRUE, FALSE),
+        y.leg$inc, ifelse(y.leg$out, "Outside map frame", "Inside map frame"),
+        param.pos,
+        ifelse(y.leg$out, y.leg$width, "N/A: only applies when legend outside map frame"),
+        y.leg$text.size, ifelse(y.leg$border == "black", TRUE, FALSE),
         "N/A: cannot update"
       )
 
     } else {
-      params.vals <- c(y.leg$inc, rep("N/A: no legend", 5))
+      params.vals <- c(y.leg$inc, rep("N/A: no legend", 6))
     }
 
     #------------------------------------------------------
@@ -290,15 +322,100 @@ pretty_toplot_update_table <- reactive({
 
 
 ###############################################################################
+# Update reactiveVal within modal
+# Modals can't do eventReactive()
+observeEvent(input$pretty_toplot_update_execute, {
+  y <- req(val.pretty.toplot.update())
+  z <- input$pretty_toplot_update_which
+  z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
+
+  if (z == 1 & z2 != 1) {
+    y$plot.lim[z2 - 1] <- req(input$pretty_toplot_update_thing1)
+
+    #------------------------------------------------------
+  } else if (z == 2) {
+    if (z2 == 1) {
+      y$background.color <- input$pretty_toplot_update_thing1
+
+    } else if (z2 == 2) {
+      if (input$pretty_toplot_update_thing1) {
+        y$list.colorscheme$col.na <- NULL
+      } else {
+        y$list.colorscheme$col.na <- input$pretty_toplot_update_thing2
+      }
+    }
+
+    #------------------------------------------------------
+  } else if (z == 3) {
+    y.leg <- y$list.legend
+    if (z2 == 1) {
+      y.leg$inc <- input$pretty_toplot_update_thing1
+
+    } else if (z2 == 2) {
+      if (input$pretty_toplot_update_thing1 == 1) {
+        y.leg$out <- FALSE
+        if (is.null(y.leg$pos)) y.leg$pos - c("right", "top")
+        y.leg$out.pos <- NULL
+        y.leg$width <- 1
+      } else {
+        y.leg$out <- TRUE
+        y.leg$pos <- NULL
+        if (is.null(y.leg$out.pos)) y.leg$out.pos - "right"
+        if (y.leg$width > 0.5) y.leg$width <- 0.2
+      }
+
+    } else if (z2 == 3) {
+      if (!y.leg$out) {
+        y.leg$pos <- list.pos.vals[[as.numeric(input$pretty_toplot_update_thing1)]]
+      } else {
+        y.leg$out.pos <- input$pretty_toplot_update_thing1
+      }
+
+    } else if (z2 == 4) {
+      if (y.leg$out) y.leg$width <- input$pretty_toplot_update_thing1
+
+
+    } else if (z2 == 5) {
+      y$text.size <- input$pretty_toplot_update_thing1
+
+    } else if (z2 == 6) {
+      y.leg$border <- ifelse(input$pretty_toplot_update_thing1, "black", FALSE)
+    }
+
+    y$list.legend <- y.leg
+
+    #------------------------------------------------------
+  } else if (z == 4) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if (z == 5) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else if (z == 6) {
+    validate(need(FALSE, "Not ready yet"))
+
+    #------------------------------------------------------
+  } else { #z == 7
+    y$id <- req(input$pretty_toplot_update_thing1)
+  }
+
+
+  #--------------------------------------------------------
+  val.pretty.toplot.update(y)
+})
+
+
+###############################################################################
 # Final processing step and close modal
 observeEvent(input$pretty_toplot_update_done, {
   removeModal()
 
-  # z <- req(input$pretty_addobj_update_which)
-  # x <- input$pretty_addobj_table_out_rows_selected
-  #
-  # vals$pretty.addobj[[x]] <- val.pretty.addobj.update()
-  # val.pretty.addobj.update(NULL)
+  x <- req(input$pretty_update_table_out_rows_selected)
+
+  vals$pretty.params.toplot[[x]] <- val.pretty.toplot.update()
+  val.pretty.toplot.update(NULL)
 })
 
 ###############################################################################

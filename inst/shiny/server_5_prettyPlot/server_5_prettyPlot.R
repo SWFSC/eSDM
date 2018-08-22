@@ -111,6 +111,16 @@ outputOptions(output, "pretty_display_toplot_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
+# Clear data table selections whenever map control option is changed
+observeEvent(input$pretty_mapcontrol, {
+  dataTableProxy("pretty_table_orig_out") %>% selectRows(list())
+  dataTableProxy("pretty_table_over_out") %>% selectRows(list())
+  dataTableProxy("pretty_table_ens_out") %>% selectRows(list())
+  dataTableProxy("pretty_update_table_out") %>% selectRows(list())
+})
+
+
+###############################################################################
 ### Preview of selected color palette and number of colors
 pretty_color_preview <- reactive({
   color.palette <- pretty_colorscheme_palette_num()[[1]]
@@ -170,6 +180,23 @@ choices.list.pch <- list(
 choices.list.lty <- list(
   "1: Solid" = 1, "2: Dash" = 2, "3: Dot" = 3, "4: Dot-dash" = 4,
   "5: Long dash" = 5, "6: Dot-long dash" = 6
+)
+
+choices.list.posout <- list(
+  "Right" = "right", "Bottom" = "bottom", "Left" = "left", "Top" = "top"
+)
+
+choices.list.pos <- list(
+  "Top left" = 1, "Top center" = 2, "Top right" = 3, "Center right" = 4,
+  "Bottom right" = 5, "Bottom center" = 6, "Bottom left" = 7,
+  "Center left" = 8
+)
+
+list.pos.vals <- list(
+  c("left", "top"), c("center", "top"), c("right", "top"),
+  c("right", "center"),
+  c("right", "bottom"), c("center", "bottom"), c("left", "bottom"),
+  c("left", "center")
 )
 
 ###############################################################################
