@@ -211,7 +211,8 @@ create_sf_csv_sfc <- reactive({
     #####################################
     ### d) Perform final checks
     # Ensure that sf object is in -180 to 180 longitude range
-    sf.temp.ll <- check_dateline(sf.temp.ll)
+    print("no check dateline")
+    # sf.temp.ll <- check_dateline(sf.temp.ll, progress.detail = TRUE)
     sf.temp.ll <- check_valid(sf.temp.ll, progress.detail = TRUE)
     incProgress(0.3)
 

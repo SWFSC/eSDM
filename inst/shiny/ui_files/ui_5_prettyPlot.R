@@ -287,7 +287,7 @@ ui.prettyPlot <- function() {
                     conditionalPanel(
                       condition = "input.pretty_legend",
                       fluidRow(
-                        column(6, radioButtons("pretty_legend_inout", tags$h5("Place legend:"),
+                        column(6, radioButtons("pretty_legend_inout", tags$h5("Legend location"),
                                                choices = list("Inside map frame" = 1, "Outside map frame" = 2), selected = 1)),
                         column(6, uiOutput("pretty_legend_pos_uiOut_select"))
                       ),

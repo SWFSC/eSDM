@@ -132,7 +132,8 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
     } else if (z2 == 2) {
       val.curr <- ifelse(y.leg$out, 2, 1)
       radioButtons("pretty_toplot_update_thing1", tags$h5(input.lab),
-                   choices = list("Inside map frame" = 1, "Outside map frame" = 2), selected = 1)
+                   choices = list("Inside map frame" = 1, "Outside map frame" = 2),
+                   selected = val.curr)
 
     } else if (z2 == 3) {
       if (!y.leg$out) {
@@ -205,7 +206,7 @@ output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
 
     #------------------------------------------------------
   } else if (z == 2 & z2 == 2) {
-    req(input$pretty_toplot_update_thing1)
+    req(is.logical(input$pretty_toplot_update_thing1))
     req(!input$pretty_toplot_update_thing1)
 
     val.curr <- y$list.colorscheme$col.na
@@ -273,7 +274,7 @@ pretty_toplot_update_table <- reactive({
   } else if (z == 3) {
     y.leg <- y$list.legend
     params.names <- c(
-      "Include legend", "Place legend:", "Legend position", "Legend width",
+      "Include legend", "Legend location", "Legend position", "Legend width",
       "Legend text size", "Include black frame around legend",
       "Legend labels: number of decimals"
     )
@@ -322,8 +323,7 @@ pretty_toplot_update_table <- reactive({
 
 
 ###############################################################################
-# Update reactiveVal within modal
-# Modals can't do eventReactive()
+# Update reactiveVal within modal; modals can't do eventReactive()
 observeEvent(input$pretty_toplot_update_execute, {
   y <- req(val.pretty.toplot.update())
   z <- input$pretty_toplot_update_which
@@ -354,13 +354,13 @@ observeEvent(input$pretty_toplot_update_execute, {
     } else if (z2 == 2) {
       if (input$pretty_toplot_update_thing1 == 1) {
         y.leg$out <- FALSE
-        if (is.null(y.leg$pos)) y.leg$pos - c("right", "top")
+        if (is.null(y.leg$pos)) y.leg$pos <- c("right", "top")
         y.leg$out.pos <- NULL
         y.leg$width <- 1
       } else {
         y.leg$out <- TRUE
         y.leg$pos <- NULL
-        if (is.null(y.leg$out.pos)) y.leg$out.pos - "right"
+        if (is.null(y.leg$out.pos)) y.leg$out.pos <- "right"
         if (y.leg$width > 0.5) y.leg$width <- 0.2
       }
 
@@ -376,7 +376,7 @@ observeEvent(input$pretty_toplot_update_execute, {
 
 
     } else if (z2 == 5) {
-      y$text.size <- input$pretty_toplot_update_thing1
+      y.leg$text.size <- input$pretty_toplot_update_thing1
 
     } else if (z2 == 6) {
       y.leg$border <- ifelse(input$pretty_toplot_update_thing1, "black", FALSE)
