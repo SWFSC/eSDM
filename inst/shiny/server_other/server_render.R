@@ -413,9 +413,9 @@ output$pretty_toplot_add_text <- renderText({
   pretty_toplot_add()
 })
 # Remove map output
-# output$pretty_toplot_remove_text <- renderText({
-#   pretty_toplot_remove()
-# })
+output$pretty_toplot_remove_text <- renderText({
+  pretty_toplot_remove()
+})
 
 ### Pretty plot update
 # Table

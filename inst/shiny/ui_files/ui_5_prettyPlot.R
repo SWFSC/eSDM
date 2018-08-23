@@ -22,7 +22,7 @@ ui.prettyPlot <- function() {
                 box(
                   width = 12,
                   radioButtons("pretty_mapcontrol", NULL,
-                               choices = list("Save new map" = 1, "Update parameters of saved map" = 2,
+                               choices = list("Save new map" = 1, "Update saved map parameters" = 2,
                                               "Plot or download saved map(s)" = 3),
                                selected = 1)
                   # TODO: change ^ back to 1
@@ -96,7 +96,9 @@ ui.prettyPlot <- function() {
                     conditionalPanel(
                       condition = "output.pretty_display_toplot_flag",
                       actionButton("pretty_update_toplot_show", "Update saved map parameters"),
-                      helpText("todo")
+                      tags$br(), tags$br(),
+                      actionButton("pretty_toplot_remove_execute", "Remove saved map parameters"),
+                      textOutput("pretty_toplot_remove_text")
                     )
                   )
                 )

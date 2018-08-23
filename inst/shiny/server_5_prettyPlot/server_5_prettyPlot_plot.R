@@ -33,7 +33,7 @@ pretty_plot <- eventReactive(input$pretty_plot_event, {
 
   validate(
     need(plot.which,
-         "Error: Select at least one item from the to-plot list to plot a map")
+         "Error: You must select at least one saved map to plot")
   )
   validate(
     need(inherits(plot.nrow, "integer") & inherits(plot.ncol, "integer"),

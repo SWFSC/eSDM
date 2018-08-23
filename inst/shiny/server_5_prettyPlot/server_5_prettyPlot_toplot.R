@@ -107,22 +107,22 @@ pretty_toplot_table <- reactive({
 
 ###########################################################
 ### Remove stuff from list
-# pretty_toplot_remove <- eventReactive(input$pretty_toplot_remove_execute, {
-#   req(vals$pretty.params.list)
-#
-#   x <- input$pretty_toplot_table_out_rows_selected
-#   validate(
-#     need(x, "Error: Select at least one row from the to-plot list to remove")
-#   )
-#
-#   vals$pretty.params.list <- vals$pretty.params.list[-x]
-#   vals$pretty.toplot.idx <- vals$pretty.toplot.idx[-x]
-#
-#   if (length(vals$pretty.params.list) == 0) vals$pretty.params.list <- NULL
-#   if (length(vals$pretty.toplot.idx) == 0) vals$pretty.toplot.idx <- NULL
-#
-#   ""
-# })
+pretty_toplot_remove <- eventReactive(input$pretty_toplot_remove_execute, {
+  req(vals$pretty.params.toplot)
+
+  x <- input$pretty_update_table_out_rows_selected
+  validate(
+    need(x, "Error: You must select a saved map to remove")
+  )
+
+  vals$pretty.params.toplot <- vals$pretty.params.toplot[-x]
+  vals$pretty.toplot.idx <- vals$pretty.toplot.idx[-x]
+
+  if (length(vals$pretty.params.toplot) == 0) vals$pretty.params.toplot <- NULL
+  if (length(vals$pretty.toplot.idx) == 0) vals$pretty.toplot.idx <- NULL
+
+  ""
+})
 
 
 
