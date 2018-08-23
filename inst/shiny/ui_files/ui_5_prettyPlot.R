@@ -60,7 +60,6 @@ ui.prettyPlot <- function() {
                     tags$br(),
                     helpText("Note that most pretty plot parameters (including loaded additional objects)",
                              "will stay the same unless changed by user, even when a different set of predictions is selected"),
-                    # uiOutput("pretty_toplot_add_execute_uiOut_button"),
                     actionButton("pretty_toplot_add_execute", "Save map"),
                     textOutput("pretty_toplot_add_text")
                   )
