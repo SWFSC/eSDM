@@ -25,7 +25,6 @@ ui.prettyPlot <- function() {
                                choices = list("Save new map" = 1, "Update saved map parameters" = 2,
                                               "Plot or download saved map(s)" = 3),
                                selected = 1)
-                  # TODO: change ^ back to 1
                 )
               )
             ),
@@ -95,10 +94,14 @@ ui.prettyPlot <- function() {
                     ),
                     conditionalPanel(
                       condition = "output.pretty_display_toplot_flag",
-                      actionButton("pretty_update_toplot_show", "Update saved map parameters"),
-                      tags$br(), tags$br(),
-                      actionButton("pretty_toplot_remove_execute", "Remove saved map parameters"),
-                      textOutput("pretty_toplot_remove_text")
+                      fluidRow(
+                        column(6, actionButton("pretty_update_toplot_show", "Update saved map parameters")),
+                        column(
+                          width = 6,
+                          actionButton("pretty_toplot_remove_execute", "Remove saved map"),
+                          textOutput("pretty_toplot_remove_text")
+                        )
+                      )
                     )
                   )
                 )
@@ -133,10 +136,16 @@ ui.prettyPlot <- function() {
                     conditionalPanel(
                       condition = "output.pretty_display_toplot_flag",
                       fluidRow(
-                        column(3, numericInput("pretty_nrow", tags$h5("Number of rows"), value = 1, step = 1, min = 1)),
-                        column(3, numericInput("pretty_ncol", tags$h5("Number of columns"), value = 1, step = 1, min = 1)),
-                        column(3, numericInput("pretty_width_inch", tags$h5("Plot width (inches)"), value = 8, step = 1, min = 1)),
-                        column(3, numericInput("pretty_height_inch", tags$h5("Plot height (inches)"), value = 8, step = 1, min = 1))
+                        column(3, tags$h5("Number of rows")),
+                        column(3, tags$h5("Number of columns")),
+                        column(3, tags$h5("Plot width (inches)")),
+                        column(3, tags$h5("Plot height (inches)"))
+                      ),
+                      fluidRow( # to keep all input boxes on the same line
+                        column(3, numericInput("pretty_nrow", NULL, value = 1, step = 1, min = 1)),
+                        column(3, numericInput("pretty_ncol", NULL, value = 1, step = 1, min = 1)),
+                        column(3, numericInput("pretty_width_inch", NULL, value = 8, step = 1, min = 1)),
+                        column(3, numericInput("pretty_height_inch", NULL, value = 8, step = 1, min = 1))
                       ),
                       tags$br(),
                       fluidRow(
@@ -259,22 +268,7 @@ ui.prettyPlot <- function() {
                         tags$span(tags$h5("Color scheme preview"), style = "text-align: right"),
                         plotOutput("pretty_color_preview_plot", width = "85px", height =  "250px")
                       )
-                    )#,
-                    # checkboxInput("pretty_color_na_transparent", "Color NA predictions as transparent", value = TRUE),
-                    # conditionalPanel(
-                    #   condition = "input.pretty_color_na_transparent == false",
-                    #   fluidRow(
-                    #     column(
-                    #       width = 6,
-                    #       colourpicker::colourInput("pretty_color_na", tags$h5("Click to select color for NA predictions"),
-                    #                                 showColour = "background", value = "grey")),
-                    #     column(
-                    #       width = 6,
-                    #       tags$br(), tags$br(),
-                    #       actionButton("pretty_color_na_reset_execute", "Reset NA color to white")
-                    #     )
-                    #   )
-                    # )
+                    )
                   )
                 )
               ),
@@ -427,8 +421,6 @@ ui.prettyPlot <- function() {
                       condition = "input.pretty_addobj",
 
                       #----------------------------------------
-                      # column(12, tags$strong("Loaded additional object(s)")),
-                      # column(12, helpText(tags$strong("Loaded additional object(s)"))),
                       box(
                         width = 12,
                         tags$strong("Loaded additional object(s)"),
@@ -436,13 +428,12 @@ ui.prettyPlot <- function() {
                         DTOutput("pretty_addobj_table_out"),
                         tags$br(), tags$br(),
                         uiOutput("pretty_addobj_update_show_uiOut_button"),
+                        tags$br(), tags$br(),
                         uiOutput("pretty_addobj_remove_execute_uiOut_button"),
                         textOutput("pretty_addobj_remove_out")
                       ),
 
                       #----------------------------------------
-                      # column(12, tags$strong("New additional object")),
-                      # column(12, helpText(tags$strong("New additional object"))),
                       box(
                         width = 12,
                         tags$strong("New additional object"),
@@ -469,13 +460,6 @@ ui.prettyPlot <- function() {
                                 tags$span(tags$h5("Object uploaded"), style = "color: blue")
                               )
                             ),
-                            # ############## File type: raster
-                            # conditionalPanel(
-                            #   condition = "input.pretty_addobj_own_type == 2",
-                            #   ui.instructions.upload.raster(),
-                            #   fileInput("pretty_addobj_own_raster_file", label.raster.upload, accept = ".tif")
-                            #   # conditionalPanel("output.create_ens_weights_poly_raster_flag == false", ui.error.upload.raster)
-                            # ),
                             ############## File type: shp
                             conditionalPanel (
                               condition = "input.pretty_addobj_own_type == 2",
@@ -541,7 +525,6 @@ ui.prettyPlot <- function() {
           )
         )
         ################################################################# End of Map Parameters - Section 2
-
       )
     )
   )
