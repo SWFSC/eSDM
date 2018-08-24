@@ -7,6 +7,7 @@
 
 # Clicked to other tabs
 val.tabs <- reactiveVal(value = FALSE)
+val.load <- reactiveVal(value = FALSE)
 
 # Pretty ploy
 ### Number of colors

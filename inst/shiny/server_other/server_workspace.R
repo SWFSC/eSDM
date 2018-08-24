@@ -42,19 +42,65 @@ output$save_app_envir <- downloadHandler(
 
 
 ###############################################################################
-### Load data
-observe(load_envir()) # So loading happens even if user left first page
+# Load data
 
-load_envir <- eventReactive(input$load_app_envir_file, {
+#------------------------------------------------------------------------------
+observeEvent(input$tabs, val.tabs(TRUE), ignoreInit = TRUE)
+
+observeEvent(input$workspace_load, {
+  removeModal()
+  val.load(!val.load())
+})
+
+
+#------------------------------------------------------------------------------
+observeEvent(input$load_app_envir_file, {
   req(input$load_app_envir_file)
 
   file.load <- input$load_app_envir_file
   file.load.ext <- substr_right(input$load_app_envir_file$name, 6)
-  validate(
-    need((file.load.ext %in% c(".RDATA", ".RData") &
-            input$load_app_envir_file$type == ""),
-         "Error: Please load a file with the extension '.RDATA' or '.RData'")
-  )
+  temp <- file.load.ext %in% c(".RDATA", ".RData") &
+    input$load_app_envir_file$type == ""
+
+  if (val.tabs() | !temp) {
+    showModal(load_workspace_modal(failed = !temp))
+  } else {
+    val.load(!val.load())
+  }
+})
+
+
+#------------------------------------------------------------------------------
+load_workspace_modal <- function(failed = FALSE) {
+  if (failed) {
+    modalDialog(
+      tags$strong("Error: Please load a file with the extension '.RDATA' or '.RData'",
+                  "and ensure that this file contains a workspace saved using the eSDM GUI",
+                  style = "color: red;"),
+      tags$br(),
+      footer = tagList(modalButton("Cancel"))
+    )
+
+  } else {
+    modalDialog(
+      title = "Do you want to save your current workspace before loading a new one?",
+      tags$h5("Loading a new workspace will overwrite your current workspace.",
+              "If you wish to save your current workspace first, click 'Cancel'.",
+              "If you wish to proceed with loading the workspace from the specified",
+              "file, click 'Proceed'"),
+
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("workspace_load", "Proceed")
+      )
+    )
+  }
+}
+
+
+#------------------------------------------------------------------------------
+load_envir <- eventReactive(val.load(), {
+  file.load <-  req(input$load_app_envir_file)
 
   withProgress(message = "Loading saved workspace", value = 0.4, {
     load(file.load$datapath)
@@ -128,6 +174,12 @@ load_envir <- eventReactive(input$load_app_envir_file, {
       updateCheckboxInput(session, "overlay_land", value = FALSE)
     }
 
+    if (any(sapply(vals$ens.over.wpoly.filename, isTruthy))) {
+      updateCheckboxInput(session, "create_ens_reg", value = TRUE)
+    } else {
+      updateCheckboxInput(session, "create_ens_reg", value = FALSE)
+    }
+
     if (isTruthy(vals$pretty.addobj)) {
       updateCheckboxInput(session, "pretty_addobj", value = TRUE)
     } else {
@@ -140,6 +192,7 @@ load_envir <- eventReactive(input$load_app_envir_file, {
   })
 
   paste("Workspace loaded from", file.load$name)
-})
+}, ignoreInit = TRUE)
+
 
 ###############################################################################
