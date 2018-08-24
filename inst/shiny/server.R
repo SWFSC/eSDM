@@ -94,6 +94,7 @@ server <- function(input, output, session) {
   source(file.path("server_other", "server_reactiveValues.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_render.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_tables.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_other", "server_workspace.R"), local = TRUE, chdir = TRUE)
 
 
   # Roadmap: download sample data

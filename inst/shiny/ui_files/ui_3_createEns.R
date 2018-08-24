@@ -144,7 +144,7 @@ ui.createEns <- function() {
                         conditionalPanel(
                           condition = "input.create_ens_reg_type == 1",
                           ui.instructions.upload.csv(),
-                          ui.instructions.poly.csv(),
+                          ui.instructions.poly.csv.single(),
                           ui.instructions.ens.weightpoly0(),
                           fluidRow(
                             column(6, fileInput("create_ens_reg_csv_file", label.csv.upload, accept = ".csv")),

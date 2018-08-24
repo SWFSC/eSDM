@@ -197,7 +197,6 @@ create_ens_reg_add <- eventReactive(
       # .csv filetype
       poly.filename <- create_ens_reg_csv_process()[[2]]
       poly.sfc      <- create_ens_reg_csv_process()[[1]]
-      req(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
         input$create_ens_reg_csv_weight == 0,
         NA, input$create_ens_reg_csv_weight
@@ -207,7 +206,6 @@ create_ens_reg_add <- eventReactive(
       # .tif filetype
       poly.filename <- create_ens_reg_raster_read()[[2]]
       poly.sfc      <- create_ens_reg_raster_read()[[1]]
-      req(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
         input$create_ens_reg_raster_weight == 0,
         NA, input$create_ens_reg_raster_weight
@@ -217,7 +215,6 @@ create_ens_reg_add <- eventReactive(
       # .shp filetype
       poly.filename <- create_ens_reg_shp_read()[[2]]
       poly.sfc      <- create_ens_reg_shp_read()[[1]]
-      req(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
         input$create_ens_reg_shp_weight == 0,
         NA, input$create_ens_reg_shp_weight
@@ -227,12 +224,20 @@ create_ens_reg_add <- eventReactive(
       # .gdb filetype
       poly.filename <- create_ens_reg_gdb_read()[[2]]
       poly.sfc      <- create_ens_reg_gdb_read()[[1]]
-      req(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
         input$create_ens_reg_gdb_weight == 0,
         NA, input$create_ens_reg_gdb_weight
       )
     }
+
+    validate(
+      need(inherits(poly.sfc, "sfc"),
+           paste("Error: There was an error loading the weight polygon;",
+                 "please make sure the polygon is formatted correctly")) %then%
+        need(length(poly.sfc) == 1,
+             paste("Error: A weight polygon can only consist of one polygon;",
+                   "please ensure that your file only has one polygon"))
+    )
 
     poly.sf <- st_sf(Weight = weight.val, geometry = poly.sfc, agr = "constant")
     rm(poly.sfc)

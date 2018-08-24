@@ -4,24 +4,6 @@
 ###############################################################################
 # 'Create Ensemble Predictions' box, other widgets
 
-# ### Widget with options for rescaling
-# output$create_ens_rescale_type_uiOut_radio <- renderUI({
-#   if (input$create_ens_table_subset) {
-#     models.which <- input$create_ens_datatable_rows_selected
-#   } else {
-#     models.which <- seq_along(vals$overlaid.models)
-#   }
-#   req(length(models.which) >= 2)
-#
-#   pred.type <- vals$models.pred.type[models.which]
-#
-#   choices.list <- list("None" = 1, "Abundance" = 2, "Normalization" = 3,
-#                        "Standardization" = 4, "Sum to 1" = 5)
-#   if (!all(pred.type == "1")) choices.list <- choices.list[2:5]
-#
-#   radioButtons("create_ens_rescale_type", NULL,
-#                choices = choices.list, selected = choices.list[[1]])
-# })
 create_ens_rescale_type_helper <- reactive({
   if (input$create_ens_table_subset) {
     models.which <- input$create_ens_datatable_rows_selected

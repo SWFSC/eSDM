@@ -24,7 +24,7 @@ ui.overlay <- function() {
                   conditionalPanel(
                     condition = "input.overlay_bound_file_type == 1",
                     ui.instructions.upload.csv(),
-                    ui.instructions.poly.csv(),
+                    ui.instructions.poly.csv.single(),
                     fluidRow(
                       column(6, fileInput("overlay_bound_csv_file", label.csv.upload, accept = ".csv")),
                       column(

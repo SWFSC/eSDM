@@ -119,8 +119,12 @@ ui.instructions.pred.shp.gdb <- function() {
 
 #######################################
 ### Loading csv polygons
+ui.instructions.poly.csv.single <- function() {
+  helpText("The first column must contain the longitude values, and the second column must contain the latitude values.",
+           "The longitudes and latitudes must be in WGS 84 geographic coordinates and in the range [-180, 180].")
+}
 ui.instructions.poly.csv <- function() {
-  helpText("The first column must contain the longitude values,  and the second column must contain the latitude values.",
+  helpText("The first column must contain the longitude values, and the second column must contain the latitude values.",
            "The longitudes and latitudes must be in WGS 84 geographic coordinates and in the range [-180, 180].",
            "Multiple polygons may be demarcated rows with blank cells or cells with 'NA' entries.")
 }
