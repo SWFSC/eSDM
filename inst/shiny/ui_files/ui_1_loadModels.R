@@ -250,7 +250,8 @@ ui.loadModels <- function() {
                           ###################################### Remove model(s)
                           conditionalPanel(
                             condition = "input.model_select_action == 4",
-                            actionButton("model_remove_execute", "Remove selected model predictions")
+                            actionButton("model_remove_execute", "Remove selected model predictions"),
+                            textOutput("model_remove_text")
                           )
                         )
                       )

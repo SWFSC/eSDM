@@ -55,6 +55,10 @@ output$models_loaded_table_stats <- renderDT({
 }, options = dt.list, selection = "none")
 
 #----------------------------------------------------------
+# Remove loaded models
+output$model_remove_text <- renderText(model_remove())
+
+#----------------------------------------------------------
 ### Plot/preview of loaded, original model(s)
 output$model_preview_interactive_plot <- renderLeaflet({
   x <- req(vals$models.plot.leaf)
@@ -276,9 +280,7 @@ output$ens_datatable_ensembles <- renderDT({
 options = dt.list)
 
 ### Remove ensemble error output
-output$ens_remove_text <- renderUI({
-  HTML(ens_remove())
-})
+output$ens_remove_text <- renderText(ens_remove())
 
 ### Plot interactive preview of ensemble predictions
 output$ens_preview_interactive_plot <- renderLeaflet({

@@ -21,7 +21,7 @@ outputOptions(output, "loaded_models_selected_flag", suspendWhenHidden = FALSE)
 
 ###############################################################################
 ### Delete selected model
-observeEvent(input$model_remove_execute, {
+model_remove <- eventReactive(input$model_remove_execute, {
   idx <- as.numeric(input$models_loaded_table_rows_selected)
   req(length(idx) > 0)
 
@@ -87,24 +87,7 @@ observeEvent(input$model_remove_execute, {
     }
   }
 
-  ### If these predictions were pretty-plotted, reset and hide pretty plot
-  ### Else, adjust vals idx
-  if (isTruthy(vals$pretty.toplot.idx)) {
-    browser()
-    if (any(idx %in% vals$pretty.toplot.idx[[1]])) {
-      vals$pretty.params.list <- NULL
-      vals$pretty.toplot.idx <- NULL
-    } else {
-      idx.adjust <- sapply(vals$pretty.toplot.idx[[1]], function(i) {
-        sum(idx < i)
-      })
-      vals$pretty.toplot.idx[[1]] <- vals$pretty.toplot.idx[[1]] - idx.adjust
-      validate(
-        need(all(vals$pretty.toplot.idx[[1]] > 0),
-             "Error: While deleting 1+ original model(s), error 2")
-      )
-    }
-  }
+  ""
 })
 
 

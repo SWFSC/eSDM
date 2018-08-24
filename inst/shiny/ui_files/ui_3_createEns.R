@@ -432,7 +432,7 @@ ui.createEns <- function() {
                     conditionalPanel(
                       condition = "input.ens_select_action == 4",
                       actionButton("ens_remove_execute", "Remove selected ensemble predictions"),
-                      uiOutput("ens_remove_text")
+                      textOutput("ens_remove_text")
                     ),
                     ####################################### Calculate abundance of ensemble(s)
                     conditionalPanel(
