@@ -42,30 +42,60 @@ toplot_update_modal <- function(failed) {
       tags$br(),
       tags$strong(paste("Map ID:", vals$pretty.params.toplot[[x]]$id)),
       fluidRow(
-        column(6, selectInput("pretty_toplot_update_which", tags$h5("Choose parameter section"),
-                              choices = choices.list.main, selected = 1)),
-        column(6, uiOutput("pretty_toplot_update_which_param_uiOut_select"))
-      ),
-      box(
-        width = 12,
-        textOutput("pretty_toplot_update_message_uiOut_text"),
-        fluidRow(
-          column(6, uiOutput("pretty_toplot_update_thing1_uiOut_mult")),
-          column(6, uiOutput("pretty_toplot_update_thing2_uiOut_mult"))
+        column(width = 6,
+               selectInput("pretty_toplot_update_which", tags$h5("Choose parameter section"),
+                           choices = choices.list.main, selected = 1),
+               tags$br(), tags$br(),
+               uiOutput("pretty_toplot_update_addobj_remove_uiOut_button")
+        ),
+        conditionalPanel(
+          condition = "output.pretty_toplot_update_addobj_flag",
+          column(
+            width = 6,
+            uiOutput("pretty_toplot_update_which_addobj_uiOut_select"),
+            uiOutput("pretty_toplot_update_which_param_uiOut_select")
+          )
         )
       ),
-      actionButton("pretty_toplot_update_execute", "Save parameter"),
-      uiOutput("pretty_toplot_update_temp_out_text"),
-      tags$br(), tags$br(), tags$br(),
-      tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
-              "otherwise they are displayed as hexadecimals."),
-      tableOutput("pretty_toplot_update_table_out"),
+      conditionalPanel(
+        condition = "output.pretty_toplot_update_addobj_flag == false",
+        tags$h5("There are no additional objects for this saved map", style = "color: red;")
+      ),
+      conditionalPanel(
+        condition = "output.pretty_toplot_update_addobj_flag",
+        box(
+          width = 12,
+          textOutput("pretty_toplot_update_message_uiOut_text"),
+          fluidRow(
+            column(6, uiOutput("pretty_toplot_update_thing1_uiOut_mult")),
+            column(6, uiOutput("pretty_toplot_update_thing2_uiOut_mult"))
+          )
+        ),
+        actionButton("pretty_toplot_update_execute", "Save parameter"),
+        uiOutput("pretty_toplot_update_temp_out_text"),
+        tags$br(), tags$br(), tags$br(),
+        tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
+                "otherwise they are displayed as hexadecimals."),
+        tableOutput("pretty_toplot_update_table_out")
+      ),
 
       footer = tagList(actionButton("pretty_toplot_update_done", "Done")),
       size = "m" #'size = "l"' for large
     )
   }
 }
+
+
+###############################################################################
+output$pretty_toplot_update_addobj_flag <- reactive({
+  if (isTruthy(input$pretty_toplot_update_which)) {
+    isTruthy(val.pretty.toplot.update()$list.addobj) |
+      input$pretty_toplot_update_which != 6
+  } else {
+    TRUE
+  }
+})
+outputOptions(output, "pretty_toplot_update_addobj_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
@@ -80,6 +110,7 @@ pretty_toplot_update_table <- reactive({
 
   #--------------------------------------------------------
   if (z == 1) {
+    # Map coordinate system and range
     params.names <- c(
       "Coordinate system",
       "Longitude minimum", "Longitude maximum", "Latitude minimum",
@@ -89,6 +120,7 @@ pretty_toplot_update_table <- reactive({
 
     #------------------------------------------------------
   } else if (z == 2) {
+    # Background color and prediction color scheme
     params.names <- c(
       "Background color", "NA prediction color", "Prediction color scheme"
     )
@@ -100,6 +132,7 @@ pretty_toplot_update_table <- reactive({
 
     #------------------------------------------------------
   } else if (z == 3) {
+    # Legend
     y.leg <- y$list.legend
     params.names <- c(
       "Include legend", "Legend location", "Legend position", "Legend width",
@@ -127,6 +160,7 @@ pretty_toplot_update_table <- reactive({
 
     #------------------------------------------------------
   } else if (z == 4) {
+    # Title, axis labels, and margins
     params.names <- c(
       "Title", "X-axis label", "Y-axis label", "Title size", "Axis label size",
       "Inner margin - bottom", "Inner margin - left", "Inner margin - top",
@@ -138,6 +172,7 @@ pretty_toplot_update_table <- reactive({
 
     #------------------------------------------------------
   } else if (z == 5) {
+    # Coordinate grid lines and labels
     y.t <- y$list.tick
     params.names <- c(
       "Include coordinate grid lines",
@@ -167,18 +202,46 @@ pretty_toplot_update_table <- reactive({
 
     #------------------------------------------------------
   } else if (z == 6) {
-    validate(need(FALSE, "Not ready yet"))
+    # Additional objects (points or polygons)
+    if (!isTruthy(y$list.addobj)) {
+      return(data.frame(Name = NA, Value = NA))
+    }
+
+    addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    y.addobj <- y$list.addobj[[addobj.which]]
+
+    params.names <- c( #function in '..._addobj_update.R'
+      "Object name", pretty_addobj_update_names_func(y.addobj)
+    )
+    params.vals <- c(
+      y.addobj$obj.text, pretty_addobj_update_vals_func(y.addobj)
+    )
+
 
     #------------------------------------------------------
   } else { #z == 7
+    # Map ID
     params.names <- "Map ID"
     params.vals <- y$id
 
   }
 
   data.frame(
-    Name = params.names, Values = params.vals, stringsAsFactors = FALSE
+    Name = params.names, Value = params.vals, stringsAsFactors = FALSE
   )
+})
+
+
+###############################################################################
+# Remove selected additional object
+observeEvent(input$pretty_toplot_update_addobj_remove, {
+  y <- req(val.pretty.toplot.update())
+  addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+
+  y$list.addobj <- y$list.addobj[-addobj.which]
+  if (length(y$list.addobj) == 0) y$list.addobj <- NULL
+
+  val.pretty.toplot.update(y)
 })
 
 
@@ -297,7 +360,35 @@ observeEvent(input$pretty_toplot_update_execute, {
 
     #------------------------------------------------------
   } else if (z == 6) {
-    validate(need(FALSE, "Not ready yet"))
+    addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    y.addobj <- y$list.addobj[[addobj.which]]
+    input.lab <- req(pretty_toplot_update_table())$Name[z2]
+
+    if (z2 == 3) {
+      y.addobj$obj.order <- input$pretty_toplot_update_thing1
+
+    } else if (z2 == 4) {
+      req(is.logical(input$pretty_toplot_update_thing1))
+      y.addobj$col.ptfill <- ifelse(
+        input$pretty_toplot_update_thing1 | input.lab == "N/A",
+        NA, input$pretty_toplot_update_thing2
+      )
+
+    } else if (z2 == 5) {
+      req(is.logical(input$pretty_toplot_update_thing1))
+      y.addobj$col.absborder <- ifelse(
+        input$pretty_toplot_update_thing1 | input.lab == "N/A",
+        NA, input$pretty_toplot_update_thing2
+      )
+
+    } else if (z2 == 6) {
+      y.addobj$pchlty <- as.numeric(input$pretty_toplot_update_thing1)
+
+    } else if (z2 == 7) {
+      y.addobj$cexlwd <- input$pretty_toplot_update_thing1
+    }
+
+    y$list.addobj[[addobj.which]] <- y.addobj
 
     #------------------------------------------------------
   } else { #z == 7

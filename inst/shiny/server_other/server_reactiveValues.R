@@ -154,13 +154,20 @@ load_envir <- eventReactive(input$load_app_envir_file, {
     } else {
       updateCheckboxInput(session, "overlay_bound", value = FALSE)
     }
+
     if (isTruthy(vals$overlay.land)) {
       updateCheckboxInput(session, "overlay_land", value = TRUE)
     } else {
       updateCheckboxInput(session, "overlay_land", value = FALSE)
     }
 
-    # TODO Set widget as necessary
+    if (isTruthy(vals$pretty.addobj)) {
+      updateCheckboxInput(session, "pretty_addobj", value = TRUE)
+    } else {
+      updateCheckboxInput(session, "pretty_addobj", value = FALSE)
+    }
+
+    # TODO Update all widgets
 
     incProgress(0.1)
   })

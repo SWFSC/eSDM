@@ -52,31 +52,49 @@ addobj_update_modal <- function(failed) {
 
 
 ###############################################################################
-#------------------------------------------------------------------------------
-# Get names of parameter widgets for selections and table
-pretty_addobj_update_names <- reactive({
-  y <- req(val.pretty.addobj.update())
-
+# Functions used to create info table about additional object
+pretty_addobj_update_names_func <- function(addobj.params) {
   lab.col1 <- ifelse(
-    y$obj.which == 3, "Presence point color",
-    ifelse(y$obj.type == 1, "Point color", "Polygon fill color")
+    addobj.params$obj.which == 3, "Presence point color",
+    ifelse(addobj.params$obj.type == 1, "Point color", "Polygon fill color")
   )
   lab.col2 <- ifelse(
-    y$obj.which == 3, "Absence point color",
-    ifelse(y$obj.type == 1, "N/A", "Polygon border color")
+    addobj.params$obj.which == 3, "Absence point color",
+    ifelse(addobj.params$obj.type == 1, "N/A", "Polygon border color")
   )
 
   c("Object type", "Object draw order", lab.col1, lab.col2,
-    addobj_render_lab(7, NULL, y$obj.type),
-    addobj_render_lab(8, NULL, y$obj.type))
+    addobj_render_lab(7, NULL, addobj.params$obj.type),
+    addobj_render_lab(8, NULL, addobj.params$obj.type))
+}
+
+pretty_addobj_update_vals_func <- function(addobj.params) {
+  c(
+    ifelse(addobj.params$obj.type == 1, "Point(s)", "Polygon(s)"),
+    ifelse(addobj.params$obj.order == 1, "Behind SDM", "In front of SDM"),
+    addobj.params$col.ptfill, addobj.params$col.absborder,
+    ifelse(
+      addobj.params$obj.type == 1,
+      names(choices.list.pch)[addobj.params$pchlty + 1], #first pch val is 0
+      names(choices.list.lty)[addobj.params$pchlty]
+    ),
+    as.character(addobj.params$cexlwd)
+  )
+}
+
+
+###############################################################################
+#------------------------------------------------------------------------------
+# Get names of parameter widgets for selections and table
+pretty_addobj_update_names <- reactive({
+  pretty_addobj_update_names_func(req(val.pretty.addobj.update()))
 })
+
 
 
 #------------------------------------------------------------------------------
 # renderUI() for which parameter to update
 output$pretty_addobj_update_which_uiOut_select <- renderUI({
-  y <- val.pretty.addobj.update()
-
   choices.list <- as.list(1:6)
   names(choices.list) <- req(pretty_addobj_update_names())
 
@@ -94,14 +112,15 @@ output$pretty_addobj_update_thing1_uiOut_mult <- renderUI({
 
   if (z == 1) {
     #-------------------------------------------------
-    if (y$obj.text %in% c("Study area polygon", "Erasing polygon", "Validation data points")) {
-      helpText("You cannot change the object type for a", y$obj.text)
-
-    } else {
-      radioButtons("pretty_addobj_update_thing1", tags$h5("Object type:"),
-                   choices = list("Point(s)" = 1, "Polygon(s)" = 2),
-                   selected = y$obj.type)
-    }
+      tags$h5("You cannot change the object type of an additional object", style = "color: red;")
+    # if (y$obj.text %in% c("Study area polygon", "Erasing polygon", "Validation data points")) {
+    #   helpText("You cannot change the object type for a", y$obj.text)
+    #
+    # } else {
+    #   radioButtons("pretty_addobj_update_thing1", tags$h5("Object type:"),
+    #                choices = list("Point(s)" = 1, "Polygon(s)" = 2),
+    #                selected = y$obj.type)
+    # }
 
     #-------------------------------------------------
   } else if (z == 2) {
@@ -119,8 +138,8 @@ output$pretty_addobj_update_thing1_uiOut_mult <- renderUI({
     #-------------------------------------------------
   }  else if (z == 4) {
     if (y$obj.which == 4 & y$obj.type == 1) {
-      helpText("This parameter does not apply when the additional object is a new object",
-               "of type 'Point(s)'")
+      tags$h5("This parameter does not apply when the additional object is a new object",
+               "of type 'Point(s)'", style = "color: red;")
 
     } else {
       val.curr <- is.na(y$col.absborder)
@@ -165,9 +184,8 @@ output$pretty_addobj_update_thing2_uiOut_mult <- renderUI({
   y <- req(val.pretty.addobj.update())
   z <- req(input$pretty_addobj_update_which)
 
-  req(z %in% 3:4)
-  req(is.logical(input$pretty_addobj_update_thing))
-  req(!input$pretty_addobj_update_thing)
+  req(z %in% 3:4, is.logical(input$pretty_addobj_update_thing1))
+  req(!input$pretty_addobj_update_thing1)
 
   if (z == 3) {
     val.curr <- y$col.ptfill
@@ -193,22 +211,11 @@ output$pretty_addobj_update_thing2_uiOut_mult <- renderUI({
 
 ###############################################################################
 output$pretty_addobj_update_table_out <- renderTable({
-  x <- req(input$pretty_addobj_table_out_rows_selected)
   y <- req(val.pretty.addobj.update())
 
   data.frame(
     "Name" =  pretty_addobj_update_names(),
-    "Value" = c(
-      ifelse(y$obj.type == 1, "Point(s)", "Polygon(s)"),
-      ifelse(y$obj.order == 1, "Behind SDM", "In front of SDM"),
-      y$col.ptfill, y$col.absborder,
-      ifelse(
-        y$obj.type == 1,
-        names(choices.list.pch)[y$pchlty + 1], #+1 because first pch val is 0
-        names(choices.list.lty)[y$pchlty]
-      ),
-      as.character(y$cexlwd)
-    ),
+    "Value" = pretty_addobj_update_vals_func(y),
     stringsAsFactors = FALSE
   )
 })
@@ -216,38 +223,41 @@ output$pretty_addobj_update_table_out <- renderTable({
 
 ###############################################################################
 observeEvent(input$pretty_addobj_update_execute, {
-  z <- req(input$pretty_addobj_update_which)
   y <- val.pretty.addobj.update()
+  z <- req(input$pretty_addobj_update_which)
 
-  if (z == 1 & isTruthy(input$pretty_addobj_update_thing)) {
-    if (y$obj.type != input$pretty_addobj_update_thing) {
-      y$col.absborder <- NA
-      y$pchlty <- ifelse(input$pretty_addobj_update_thing == 1, 19, 1)
-    }
-    y$obj.type <- input$pretty_addobj_update_thing
+  # if (z == 1 & (y$obj.type != input$pretty_addobj_update_thing1)) {
+  # y$obj.type <- input$pretty_addobj_update_thing1
+  # if (input$pretty_addobj_update_thing1 == 1) {
+  #   y$col.absborder <- NA
+  #   y$pchlty <- 19
+  # } else {
+  #   y$col.absborder <- "#000000"
+  #   y$pchlty <- 1
+  # }
+  # } else
+  if (z == 2) {
+    y$obj.order <- input$pretty_addobj_update_thing1
 
-  } else if (z == 2) {
-    y$obj.order <- input$pretty_addobj_update_thing
-
-  } else  if (z == 3) {
-    if (input$pretty_addobj_update_thing) {
+  } else if (z == 3) {
+    if (input$pretty_addobj_update_thing1) {
       y$col.ptfill <- NA
     } else {
       y$col.ptfill <- input$pretty_addobj_update_thing2
     }
 
-  } else  if (z == 4) {
-    if (input$pretty_addobj_update_thing) {
+  } else if (z == 4) {
+    if (input$pretty_addobj_update_thing1) {
       y$col.absborder <- NA
     } else {
       y$col.absborder <- input$pretty_addobj_update_thing2
     }
 
-  } else  if (z == 5) {
-    y$pchlty <- as.numeric(input$pretty_addobj_update_thing)
+  } else if (z == 5) {
+    y$pchlty <- as.numeric(input$pretty_addobj_update_thing1)
 
-  } else  if (z == 6) {
-    y$cexlwd <- input$pretty_addobj_update_thing
+  } else if (z == 6) {
+    y$cexlwd <- input$pretty_addobj_update_thing1
 
   } else {
     validate(need(FALSE, "pretty_addobj_update_execute error"))

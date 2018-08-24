@@ -54,7 +54,8 @@ pretty_addobj_add <- eventReactive(input$pretty_addobj_add_execute, {
   }
 
   #------------------------------------
-  if (input$pretty_addobj_color_absbordercheck) {
+  if (input$pretty_addobj_color_absbordercheck |
+      (input$pretty_addobj_type == 1 & input$pretty_addobj_which != 3)) {
     addobj.col.absborder <- NA
   } else {
     addobj.col.absborder <- input$pretty_addobj_color_absborder

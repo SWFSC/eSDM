@@ -1,10 +1,55 @@
 # renderUI()'s for updating saved map parameters
 
 ###############################################################################
+# Additional object-specific widgets
+
+### Selection dropdown for additional objects
+output$pretty_toplot_update_which_addobj_uiOut_select <- renderUI({
+  if (input$pretty_toplot_update_which == 6){
+    y <- req(val.pretty.toplot.update())
+    y.list.addobj <- req(y$list.addobj)
+
+    choices.list <- seq_along(y.list.addobj) %>%
+      set_names(sapply(y.list.addobj, function(i) i$obj.text))
+    input.lab <- "Choose additional object to update"
+
+    selectInput("pretty_toplot_update_which_addobj", tags$h5(input.lab),
+                choices = choices.list, selected = 1)
+
+  } else {
+    NULL
+  }
+})
+
+
+### Remove additional object
+output$pretty_toplot_update_addobj_remove_uiOut_button <- renderUI({
+  req(input$pretty_toplot_update_which_addobj,
+      input$pretty_toplot_update_which == 6,
+      val.pretty.toplot.update()$list.addobj)
+    actionButton("pretty_toplot_update_addobj_remove",
+               "Remove selected additional object")
+})
+
+
+###############################################################################
 ### Selection dropdown for specific parameters
 output$pretty_toplot_update_which_param_uiOut_select <- renderUI({
-  input$pretty_toplot_update_which
-  isolate(choices.list.names <- req(pretty_toplot_update_table())$Name)
+  if (input$pretty_toplot_update_which == 6) { #needs to update based off table
+    addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    isolate({
+      y <- req(val.pretty.toplot.update())
+      y.addobj <- y$list.addobj[[addobj.which]]
+    })
+
+    choices.list.names <- c( #function in '..._addobj_update.R'
+      "Object name", pretty_addobj_update_names_func(y.addobj)
+    )
+
+  } else {
+    isolate(choices.list.names <- req(pretty_toplot_update_table())$Name)
+  }
+
   choices.list <- seq_along(choices.list.names)
   names(choices.list) <- choices.list.names
 
@@ -21,7 +66,7 @@ output$pretty_toplot_update_message_uiOut_text <- renderText({
   z <- input$pretty_toplot_update_which
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
   z.names <- req(pretty_toplot_update_table())$Name
-  z.vals <- req(pretty_toplot_update_table())$Values
+  z.vals <- req(pretty_toplot_update_table())$Value
 
   if (z == 5 & z2 == 2) {
     paste("Please ensure that the 'Longitude start value' is between",
@@ -46,7 +91,7 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
   z <- input$pretty_toplot_update_which
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
   z.names <- req(pretty_toplot_update_table())$Name
-  z.vals <- req(pretty_toplot_update_table())$Values
+  z.vals <- req(pretty_toplot_update_table())$Value
 
   #--------------------------------------------------------
   if (z == 1) {
@@ -214,7 +259,52 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
 
     #------------------------------------------------------
   } else if (z == 6) {
-    validate(need(FALSE, "Not ready yet"))
+    input.lab <- z.names[z2]
+    addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    y.addobj <- y$list.addobj[[addobj.which]]
+
+    if (z2 %in% 1:2) {
+      tags$h5("Cannot update this parameter", style = "color: red;")
+
+    } else if (z2 == 3) {
+      val.curr <- as.numeric(y.addobj$obj.order)
+      selectInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                  choices = list("Draw object behind SDM" = 1,
+                                 "Draw object in front of SDM" = 2),
+                  selected = val.curr)
+
+    } else if (z2 == 4) {
+      val.curr <- is.na(y.addobj$col.ptfill)
+      input.lab <- addobj_render_lab(3, y.addobj$obj.which, y.addobj$obj.type)
+      checkboxInput("pretty_toplot_update_thing1", input.lab, value = val.curr)
+
+    } else if (z2 == 5) {
+      if (input.lab == "N/A") {
+        tags$h5("N/A: object type is points", style = "color: red;")
+      } else {
+        val.curr <- is.na(y.addobj$col.absborder)
+        input.lab <- addobj_render_lab(5, y.addobj$obj.which, y.addobj$obj.type)
+        checkboxInput("pretty_toplot_update_thing1", input.lab, value = val.curr)
+      }
+
+    } else if (z2 == 6) {
+      val.curr <- y.addobj$pchlty
+
+      if (y.addobj$obj.type == 1) {
+        choices.list <- choices.list.pch
+      } else {
+        choices.list <- choices.list.lty
+      }
+
+      selectizeInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                     choices = choices.list, selected = val.curr,
+                     multiple = FALSE)
+
+    } else if (z2 == 7) {
+      val.curr <- y.addobj$cexlwd
+      numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                   value = val.curr, min = 0.1, step = 0.1)
+    }
 
     #------------------------------------------------------
   } else { #z == 7
@@ -262,7 +352,33 @@ output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
     }
 
   } else if (z == 6) {
-    validate(need(FALSE, "Not ready yet"))
+    req(z2 %in% 4:5, is.logical(input$pretty_toplot_update_thing1))
+    req(!input$pretty_toplot_update_thing1)
+
+    input.lab <- req(pretty_toplot_update_table())$Name[z2]
+    input.lab <- paste("Click to select", tolower(input.lab))
+    addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    y.addobj <- y$list.addobj[[addobj.which]]
+
+    if (z2 == 4) {
+      val.curr <- y.addobj$col.ptfill
+
+      colourpicker::colourInput(
+        "pretty_toplot_update_thing2", tags$h5(input.lab),
+        showColour = "background", value = val.curr
+      )
+
+    } else if (z2 == 5) {
+      val.curr <- y.addobj$col.absborder
+
+      colourpicker::colourInput(
+        "pretty_toplot_update_thing2", tags$h5(input.lab),
+        showColour = "background", value = val.curr
+      )
+
+    } else {
+      NULL
+    }
 
     #------------------------------------------------------
   } else { #z %in% c(1, 3, 4, 5, 7)

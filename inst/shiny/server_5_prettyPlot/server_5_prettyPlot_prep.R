@@ -301,10 +301,9 @@ pretty_tick_list <- reactive({
 ###############################################################################
 ### Generate lists of additional objects to plot
 # Functions assume they are only called when an additional object is loaded
-pretty_addobj_preflag <- reactive({
-  sapply(req(vals$pretty.addobj), function(i) i$obj.order == 1)
-})
-
+# pretty_addobj_preflag <- reactive({
+#   sapply(req(vals$pretty.addobj), function(i) i$obj.order == 1)
+# })
 
 pretty_addobj_list <- reactive({
   lapply(req(vals$pretty.addobj), function(i) {

@@ -47,17 +47,26 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     incProgress(0.1)
 
     if (input$pretty_addobj) {
-      addobj.pre.bool  <- pretty_addobj_preflag()
-      list.addobj.pre  <- pretty_addobj_list()[addobj.pre.bool]
-      incProgress(0.1)
-      list.addobj.post <- pretty_addobj_list()[!addobj.pre.bool]
-      incProgress(0.2)
+      list.addobj  <- pretty_addobj_list()
+      incProgress(0.3)
 
     } else {
-      list.addobj.pre  <- list()
-      list.addobj.post <- list()
+      list.addobj <- NULL
       incProgress(0.3)
     }
+
+    # if (input$pretty_addobj) {
+    #   addobj.pre.bool  <- pretty_addobj_preflag()
+    #   list.addobj.pre  <- pretty_addobj_list()[addobj.pre.bool]
+    #   incProgress(0.1)
+    #   list.addobj.post <- pretty_addobj_list()[!addobj.pre.bool]
+    #   incProgress(0.2)
+    #
+    # } else {
+    #   list.addobj.pre  <- list()
+    #   list.addobj.post <- list()
+    #   incProgress(0.3)
+    # }
 
 
     # Save plot parameters to reactive values
@@ -69,7 +78,8 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
         list.titlelab = list.titlelab, list.margin = list.margin,
         list.tick = list.tick,
         list.colorscheme = list.colorscheme, list.legend = list.legend,
-        list.addobj.pre = list.addobj.pre, list.addobj.post = list.addobj.post,
+        list.addobj = list.addobj,
+        # list.addobj.pre = list.addobj.pre, list.addobj.post = list.addobj.post,
         id = input$pretty_toplot_add_id
       ))
     )

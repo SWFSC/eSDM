@@ -72,10 +72,20 @@ pretty_plot <- eventReactive(input$pretty_plot_event, {
 #   but a normal tmap call respects provided axis limits
 plot_pretty_top <- function(dims, idx.list, params.list) {
   tmap.list <- lapply(params.list, function(k) {
+    if (isTruthy(k$list.addobj)) {
+      addobj.pre.bool  <- sapply(k$list.addobj, function(i) i$obj.order == 1)
+      list.addobj.pre  <- k$list.addobj[addobj.pre.bool]
+      list.addobj.post <- k$list.addobj[!addobj.pre.bool]
+
+    } else {
+      list.addobj.pre  <- list()
+      list.addobj.post <- list()
+    }
+
     plot_pretty(
       k$model.toplot, k$plot.lim, k$background.color,
       k$list.colorscheme, k$list.legend, k$list.titlelab, k$list.margin,
-      k$list.tick, k$list.addobj.pre, k$list.addobj.post
+      k$list.tick, list.addobj.pre, list.addobj.post
     )
   })
 
