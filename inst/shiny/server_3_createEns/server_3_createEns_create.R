@@ -72,7 +72,8 @@ create_ens_data_reg <- reactive({
     validate(
       need(sum(!sapply(vals$ens.over.wpoly.filename, is.null)) > 0,
            paste("Error: Please either load and assign at least one",
-                 "weight polygon or uncheck the 'TODO' button"))
+                 "weight polygon or uncheck the",
+                 "'Regionally weight overlaid predictions...' checkbox"))
     )
 
     create_ens_data_rescale() * create_ens_reg_weights()
@@ -166,7 +167,7 @@ create_ens_info_overlaid_idx <- reactive({
 create_ens_info_weighting <- reactive({
   if (input$create_ens_reg) {
     paste(
-      "Regional weighting &",
+      "Regionally weighted +",
       ifelse(input$create_ens_type == 1, "unweighted", "weighted"
       )
     )

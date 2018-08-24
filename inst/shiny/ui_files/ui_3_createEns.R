@@ -121,7 +121,7 @@ ui.createEns <- function() {
                   box(
                     width = 12,
                     tags$strong("2) Ensemble options: regional weighting"),
-                    checkboxInput("create_ens_reg", "Weight overlaid predictions regionally", value = FALSE),
+                    checkboxInput("create_ens_reg", "Regionally weight overlaid predictions before creating ensemble", value = FALSE),
                     conditionalPanel(
                       condition = "input.create_ens_reg",
                       box(

@@ -197,7 +197,7 @@ create_ens_reg_add <- eventReactive(
       # .csv filetype
       poly.filename <- create_ens_reg_csv_process()[[2]]
       poly.sfc      <- create_ens_reg_csv_process()[[1]]
-      stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
+      req(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
         input$create_ens_reg_csv_weight == 0,
         NA, input$create_ens_reg_csv_weight
@@ -207,7 +207,7 @@ create_ens_reg_add <- eventReactive(
       # .tif filetype
       poly.filename <- create_ens_reg_raster_read()[[2]]
       poly.sfc      <- create_ens_reg_raster_read()[[1]]
-      stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
+      req(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
         input$create_ens_reg_raster_weight == 0,
         NA, input$create_ens_reg_raster_weight
@@ -217,27 +217,23 @@ create_ens_reg_add <- eventReactive(
       # .shp filetype
       poly.filename <- create_ens_reg_shp_read()[[2]]
       poly.sfc      <- create_ens_reg_shp_read()[[1]]
-      stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
+      req(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
         input$create_ens_reg_shp_weight == 0,
         NA, input$create_ens_reg_shp_weight
       )
 
-    } else if (poly.filetype == 4) {
+    } else { #poly.filetype == 4
       # .gdb filetype
       poly.filename <- create_ens_reg_gdb_read()[[2]]
       poly.sfc      <- create_ens_reg_gdb_read()[[1]]
-      stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
+      req(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
         input$create_ens_reg_gdb_weight == 0,
         NA, input$create_ens_reg_gdb_weight
       )
-
-    } else {
-      validate(
-        need(FALSE, "Error: create_ens_reg_add() filetype error")
-      )
     }
+
     poly.sf <- st_sf(Weight = weight.val, geometry = poly.sfc, agr = "constant")
     rm(poly.sfc)
 
@@ -328,7 +324,7 @@ outputOptions(output, "create_ens_reg_csv_flag",
 ### Load and process
 create_ens_reg_csv_read <- reactive({
   file.in <- input$create_ens_reg_csv_file
-  req(file.in)
+  validate(need(file.in, "Error: please load a .csv file "))
 
   # Ensure file extension is .csv (RStudio type, browser type)
   if (!(file.in$type %in% c("text/csv", "application/vnd.ms-excel"))) return()
@@ -373,7 +369,7 @@ outputOptions(output, "create_ens_reg_raster_flag",
 ### Load and process
 create_ens_reg_raster_read <- reactive({
   file.in <- input$create_ens_reg_raster_file
-  req(file.in)
+  validate(need(file.in, "Error: please load a raster file"))
 
   # Ensure file extension is .tif
   if (file.in$type != "image/tiff") return()
@@ -430,7 +426,7 @@ outputOptions(
 ### Load and process
 create_ens_reg_shp_read <- reactive({
   files.in <- input$create_ens_reg_shp_files
-  req(files.in)
+  validate(need(files.in, "Error: please load the files of a shapefile"))
 
   withProgress(message = "Loading GIS shapefile", value = 0.3, {
     gis.file.shp <- read.shp.shiny(files.in)
