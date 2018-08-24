@@ -239,12 +239,12 @@ output$create_ens_weights_pix_table_out <- renderTable({
 }, rownames = FALSE, align = "lcc")
 
 ### Table summarizing overlaid models and their polygon weights
-output$create_ens_weights_poly_table_out <- renderTable({
-  create_ens_weights_poly_table()
+output$create_ens_reg_table_out <- renderTable({
+  create_ens_reg_table()
 }, rownames = FALSE)
 
 ### Preview plot of weight polygons
-output$create_ens_weights_poly_preview_plot <- renderPlot({
+output$create_ens_reg_preview_plot <- renderPlot({
   x <- req(vals$ens.over.wpoly.plot)
 
   plot(x[[1]], axes = TRUE, col = "black", border = NA)
@@ -255,13 +255,13 @@ output$create_ens_weights_poly_preview_plot <- renderPlot({
 
 
 ### Text output for removing loaded weight polygons
-output$create_ens_weights_poly_remove_text <- renderText({
-  create_ens_weights_poly_remove()
+output$create_ens_reg_remove_text <- renderText({
+  create_ens_reg_remove()
 })
 
 ### Output for adding polygon weight(s) to reactiveValues
-output$create_ens_weights_poly_add_text <- renderText({
-  create_ens_weights_poly_add()
+output$create_ens_reg_add_text <- renderText({
+  create_ens_reg_add()
 })
 
 #----------------------------------------------------------

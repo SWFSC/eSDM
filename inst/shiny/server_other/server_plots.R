@@ -168,9 +168,9 @@ observeEvent(input$overlay_preview_overlaid_execute, {
 
 #################################################
 ### Preview overlaid model predictions with assigned weight polygons
-observeEvent(input$create_ens_weights_poly_preview_execute, {
+observeEvent(input$create_ens_reg_preview_execute, {
   req(vals$ens.over.wpoly.filename)
-  overlaid.which <- as.numeric(input$create_ens_weights_poly_preview_model)
+  overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
 
   vals$ens.over.wpoly.plot <- list(
     st_geometry(vals$overlaid.models[[overlaid.which]]), overlaid.which

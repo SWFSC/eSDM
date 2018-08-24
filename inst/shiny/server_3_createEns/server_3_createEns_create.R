@@ -26,14 +26,14 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
     ### Add data to reactive variables
     vals$ensemble.models <- c(vals$ensemble.models, list(ens.sf))
-    vals$ensemble.overlaid.idx <- c(vals$ensemble.overlaid.idx,
-                                    create_ens_info_overlaid_idx())
-    vals$ensemble.method <- c(vals$ensemble.method,
-                              create_ens_info_weighting())
-    vals$ensemble.weights <- c(vals$ensemble.weights,
-                               create_ens_info_weights())
-    vals$ensemble.rescaling <- c(vals$ensemble.rescaling,
-                                 create_ens_info_rescaling())
+    vals$ensemble.overlaid.idx <- c(
+      vals$ensemble.overlaid.idx, create_ens_info_overlaid_idx())
+    vals$ensemble.method <- c(
+      vals$ensemble.method, create_ens_info_weighting())
+    vals$ensemble.weights <- c(
+      vals$ensemble.weights, create_ens_info_weights())
+    vals$ensemble.rescaling <- c(
+      vals$ensemble.rescaling, create_ens_info_rescaling())
     incProgress(0.1)
   })
 
@@ -50,7 +50,7 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
 # Create unweighted ensemble
 create_ens_unweighted <- reactive({
-  overlaid.data <- create_ens_data_rescale()
+  overlaid.data <- create_ens_data_reg()
 
   st_sf(
     data.frame(Pred.ens = apply(overlaid.data, 1, mean, na.rm = TRUE)),
@@ -66,7 +66,17 @@ create_ens_unweighted <- reactive({
 ###############################################################################
 # 'Level 2' functions
 
-### Get predictions to be used in ensemble
+### Apply regional weights (if necessary)
+create_ens_data_reg <- reactive({
+  if (create_ens_reg) {
+    browser()
+
+  } else {
+    create_ens_data_rescale()
+  }
+})
+
+### Rescale predictions
 create_ens_data_rescale <- reactive({
   models.overlaid <- vals$overlaid.models[create_ens_overlaid_idx()]
   x.pred.idx <- switch(
@@ -93,75 +103,11 @@ create_ens_data_rescale <- reactive({
   # Next level-up function expects data.frame of prediction values
   data.frame(lapply(temp, function(i) st_set_geometry(i, NULL)$Pred.overlaid)) %>%
     purrr::set_names(letters[1:length(temp)])
-
-  # switch(input$create_ens_rescale_type,
-  #        "1" = create_ens_data_extract(),        # No rescaling
-  #        "2" = create_ens_data_rescale_abund(),  # Rescale densities to given abundance
-  #        "3" = create_ens_data_rescale_norm(),   # Normalize densities
-  #        "4" = create_ens_data_rescale_std(),    # Standardize densities
-  #        "5" = create_ens_data_rescale_sumto1()) # Rescale densities so they sum to 1
 })
 
 
 ###############################################################################
 # 'Level 3' functions
-
-# #################################################
-# # Rescale model predictions
-#
-# ### Rescale model predictions by abundance
-# create_ens_data_rescale_abund <- reactive({
-#   abund <- input$create_ens_rescale_abund
-#   sf.list <- vals$overlaid.models
-#
-#   validate(
-#     need(abund > 0,
-#          "Error: Abundance must be greater than 0 to rescale predictions")
-#   )
-#
-#   if (input$create_ens_table_subset) {
-#     sf.list <- sf.list[sort(input$create_ens_datatable_rows_selected)]
-#   }
-#
-#   x <- as.data.frame(lapply(sf.list, function(s) {
-#     a = s$Pred.overlaid / (eSDM::model_abundance(s, "Pred.overlaid") / abund)
-#   }))
-#   names(x) <- letters[ncol(x)]
-#
-#   x
-# })
-#
-# ### Normalize model predictions (densities)
-# create_ens_data_rescale_norm <- reactive({
-#   as.data.frame(apply(create_ens_data_extract(), 2, normalize))
-# })
-#
-# ### Standardize model predictions (densities)
-# create_ens_data_rescale_std <- reactive({
-#   as.data.frame(apply(create_ens_data_extract(), 2, base::scale))
-# })
-#
-# ### Rescale model predictions (densities) to sum to 1
-# create_ens_data_rescale_sumto1 <- reactive({
-#   as.data.frame(
-#     apply(create_ens_data_extract(), 2, function(i) {i / sum(i, na.rm = TRUE)})
-#   )
-# })
-#
-#
-# #################################################
-# ### Extract prediction data from overlaid models to use
-# create_ens_data_extract <- reactive({
-#   overlaid.models <- vals$overlaid.models[create_ens_overlaid_idx()]
-#
-#   data.extracted <- as.data.frame(
-#     lapply(overlaid.models, function(i) i$Pred.overlaid)
-#   )
-#   names(data.extracted) <- letters[1:ncol(data.extracted)]
-#
-#   data.extracted
-# })
-#
 
 #################################################
 ### Get indices of overlaid models to be used in ensemble
@@ -225,8 +171,7 @@ create_ens_info_weights <- reactive({
            "1" = input$create_ens_weight_manual,
            "2" = paste(round(create_ens_weights_metric_table()[,3], 3),
                        collapse = ", "),
-           "3" = "Spatial by pixel",
-           "4" = "Spatial by polygon")
+           "3" = "Spatial by pixel")
   }
 })
 

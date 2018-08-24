@@ -20,7 +20,7 @@ create_ens_weighted_poly <- reactive({
 
   data.rescaled <- create_ens_data_rescale()
   base.sfc <- vals$overlay.base.sfc
-  data.weights <- create_ens_weights_poly_weights()
+  data.weights <- create_ens_reg_weights()
 
   data.reweighted <- data.rescaled * data.weights
   data.ens <- data.frame(
@@ -31,7 +31,7 @@ create_ens_weighted_poly <- reactive({
 })
 
 ### Get weights based on loaded polygons
-create_ens_weights_poly_weights <- reactive({
+create_ens_reg_weights <- reactive({
   idx <- create_ens_overlaid_idx()
 
   x <- as.data.frame(
@@ -92,15 +92,15 @@ poly_weight <- function(poly.pred, poly.w, coverage) {
 
 ###############################################################################
 ### Remove loaded weight polygons
-create_ens_weights_poly_remove <- eventReactive(
-  input$create_ens_weights_poly_remove_execute, {
+create_ens_reg_remove <- eventReactive(
+  input$create_ens_reg_remove_execute, {
     validate(
-      need(!is.null(input$create_ens_weights_poly_remove_choices),
+      need(!is.null(input$create_ens_reg_remove_choices),
            "Error: Please select at least one weighted polygon to remove")
     )
 
     # Get indices of wpoly objects to remove
-    poly.toremove.idx <- input$create_ens_weights_poly_remove_choices
+    poly.toremove.idx <- input$create_ens_reg_remove_choices
     poly.toremove.idx <- lapply(strsplit(poly.toremove.idx, ", "), as.numeric)
     poly.toremove.df  <- data.frame(t(data.frame(poly.toremove.idx)))
 
@@ -149,7 +149,7 @@ create_ens_weights_poly_remove <- eventReactive(
 
 ###############################################################################
 ### Table summarizing loaded polygon weights
-create_ens_weights_poly_table <- reactive({
+create_ens_reg_table <- reactive({
   req(vals$ens.over.wpoly.filename)
 
   models.which <- seq_along(vals$overlaid.models)
@@ -191,21 +191,21 @@ create_ens_weights_poly_table <- reactive({
 ###############################################################################
 # Add filename, weighted polygon, and coverage percentage to
 #   vals$ens.over.wpoly... objects
-create_ens_weights_poly_add <- eventReactive(
-  input$create_ens_weights_poly_add_execute,
+create_ens_reg_add <- eventReactive(
+  input$create_ens_reg_add_execute,
   {
     validate(
-      need(input$create_ens_weights_poly_model,
+      need(input$create_ens_reg_model,
            paste("Error: Please select at least one overlaid model",
                  "to which to apply weight polygon"))
     )
 
     #------------------------------------------------------
     ### Get input information
-    overlaid.list <- strsplit(input$create_ens_weights_poly_model, " ")
+    overlaid.list <- strsplit(input$create_ens_reg_model, " ")
     overlaid.selected <- sapply(overlaid.list, function(i) as.numeric(i[[2]]))
 
-    poly.filetype <- as.numeric(input$create_ens_weights_poly_type)
+    poly.filetype <- as.numeric(input$create_ens_reg_type)
     poly.filetype.txt <- switch(poly.filetype, "CSV", "Raster", "SHP", "GDB")
 
 
@@ -213,47 +213,47 @@ create_ens_weights_poly_add <- eventReactive(
     ### Get/process weight polygon based on filetype
     if (poly.filetype == 1) {
       # .csv filetype
-      poly.filename <- create_ens_weights_poly_csv_process()[[2]]
-      poly.sfc      <- create_ens_weights_poly_csv_process()[[1]]
+      poly.filename <- create_ens_reg_csv_process()[[2]]
+      poly.sfc      <- create_ens_reg_csv_process()[[1]]
       stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
-        input$create_ens_weights_poly_csv_weight == 0,
-        NA, input$create_ens_weights_poly_csv_weight
+        input$create_ens_reg_csv_weight == 0,
+        NA, input$create_ens_reg_csv_weight
       )
 
     } else if (poly.filetype == 2) {
       # .tif filetype
-      poly.filename <- create_ens_weights_poly_raster_read()[[2]]
-      poly.sfc      <- create_ens_weights_poly_raster_read()[[1]]
+      poly.filename <- create_ens_reg_raster_read()[[2]]
+      poly.sfc      <- create_ens_reg_raster_read()[[1]]
       stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
-        input$create_ens_weights_poly_raster_weight == 0,
-        NA, input$create_ens_weights_poly_raster_weight
+        input$create_ens_reg_raster_weight == 0,
+        NA, input$create_ens_reg_raster_weight
       )
 
     } else if (poly.filetype == 3) {
       # .shp filetype
-      poly.filename <- create_ens_weights_poly_shp_read()[[2]]
-      poly.sfc      <- create_ens_weights_poly_shp_read()[[1]]
+      poly.filename <- create_ens_reg_shp_read()[[2]]
+      poly.sfc      <- create_ens_reg_shp_read()[[1]]
       stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
-        input$create_ens_weights_poly_shp_weight == 0,
-        NA, input$create_ens_weights_poly_shp_weight
+        input$create_ens_reg_shp_weight == 0,
+        NA, input$create_ens_reg_shp_weight
       )
 
     } else if (poly.filetype == 4) {
       # .gdb filetype
-      poly.filename <- create_ens_weights_poly_gdb_read()[[2]]
-      poly.sfc      <- create_ens_weights_poly_gdb_read()[[1]]
+      poly.filename <- create_ens_reg_gdb_read()[[2]]
+      poly.sfc      <- create_ens_reg_gdb_read()[[1]]
       stopifnot(inherits(poly.sfc, "sfc"), nrow(poly.sfc) == 1)
       weight.val <- ifelse(
-        input$create_ens_weights_poly_gdb_weight == 0,
-        NA, input$create_ens_weights_poly_gdb_weight
+        input$create_ens_reg_gdb_weight == 0,
+        NA, input$create_ens_reg_gdb_weight
       )
 
     } else {
       validate(
-        need(FALSE, "Error: create_ens_weights_poly_add() filetype error")
+        need(FALSE, "Error: create_ens_reg_add() filetype error")
       )
     }
     poly.sf <- st_sf(Weight = weight.val, geometry = poly.sfc, agr = "constant")
@@ -309,7 +309,7 @@ create_ens_weights_poly_add <- eventReactive(
     ews.selected.new <- lapply(ews.selected, function(l) c(l, list(poly.sf)))
     vals$ens.over.wpoly.sf[overlaid.selected] <- ews.selected.new
 
-    poly.coverage    <- input$create_ens_weights_poly_coverage
+    poly.coverage    <- input$create_ens_reg_coverage
     ewc.selected     <- vals$ens.over.wpoly.coverage[overlaid.selected]
     ewc.selected.new <- lapply(ewc.selected, function(l) c(l, poly.coverage))
     vals$ens.over.wpoly.coverage[overlaid.selected] <- ewc.selected.new
@@ -324,7 +324,7 @@ create_ens_weights_poly_add <- eventReactive(
     ### Output message
     paste(
       poly.filetype.txt, "weight polygon added as weight for:",
-      paste(input$create_ens_weights_poly_model, collapse = ", ")
+      paste(input$create_ens_reg_model, collapse = ", ")
     )
   }
 )
@@ -337,15 +337,15 @@ create_ens_weights_poly_add <- eventReactive(
 # CSV
 
 ### Flag for successfully loaded file
-output$create_ens_weights_poly_csv_flag <- reactive({
-  isTruthy(create_ens_weights_poly_csv_read())
+output$create_ens_reg_csv_flag <- reactive({
+  isTruthy(create_ens_reg_csv_read())
 })
-outputOptions(output, "create_ens_weights_poly_csv_flag",
+outputOptions(output, "create_ens_reg_csv_flag",
               suspendWhenHidden = FALSE)
 
 ### Load and process
-create_ens_weights_poly_csv_read <- reactive({
-  file.in <- input$create_ens_weights_poly_csv_file
+create_ens_reg_csv_read <- reactive({
+  file.in <- input$create_ens_reg_csv_file
   req(file.in)
 
   # Ensure file extension is .csv (RStudio type, browser type)
@@ -356,9 +356,9 @@ create_ens_weights_poly_csv_read <- reactive({
   return(list(file.in$name, csv.data))
 })
 
-create_ens_weights_poly_csv_process <- reactive({
+create_ens_reg_csv_process <- reactive({
   withProgress(message = 'Loading csv polygon', value = 0.6, {
-    csv.poly.list <- create_ens_weights_poly_csv_read()
+    csv.poly.list <- create_ens_reg_csv_read()
     csv.poly.filename <- csv.poly.list[[1]]
     csv.poly.data <- csv.poly.list[[2]]
     csv.poly.data[csv.poly.data == ""] <- NA
@@ -381,16 +381,16 @@ create_ens_weights_poly_csv_process <- reactive({
 # GIS raster
 
 ### Flag for successfully loaded file
-output$create_ens_weights_poly_raster_flag <- reactive({
-  isTruthy(create_ens_weights_poly_raster_read())
+output$create_ens_reg_raster_flag <- reactive({
+  isTruthy(create_ens_reg_raster_read())
 })
-outputOptions(output, "create_ens_weights_poly_raster_flag",
+outputOptions(output, "create_ens_reg_raster_flag",
               suspendWhenHidden = FALSE)
 
 
 ### Load and process
-create_ens_weights_poly_raster_read <- reactive({
-  file.in <- input$create_ens_weights_poly_raster_file
+create_ens_reg_raster_read <- reactive({
+  file.in <- input$create_ens_reg_raster_file
   req(file.in)
 
   # Ensure file extension is .tif
@@ -438,16 +438,16 @@ create_ens_weights_poly_raster_read <- reactive({
 # GIS shp
 
 ### Flag for successfully loaded file
-output$create_ens_weights_poly_shp_flag <- reactive({
-  isTruthy(create_ens_weights_poly_shp_read())
+output$create_ens_reg_shp_flag <- reactive({
+  isTruthy(create_ens_reg_shp_read())
 })
 outputOptions(
-  output, "create_ens_weights_poly_shp_flag", suspendWhenHidden = FALSE
+  output, "create_ens_reg_shp_flag", suspendWhenHidden = FALSE
 )
 
 ### Load and process
-create_ens_weights_poly_shp_read <- reactive({
-  files.in <- input$create_ens_weights_poly_shp_files
+create_ens_reg_shp_read <- reactive({
+  files.in <- input$create_ens_reg_shp_files
   req(files.in)
 
   withProgress(message = "Loading GIS shapefile", value = 0.3, {
@@ -487,18 +487,18 @@ create_ens_weights_poly_shp_read <- reactive({
 # GIS gdb
 
 ### Flag for successfully loaded file
-output$create_ens_weights_poly_gdb_flag <- reactive({
-  isTruthy(create_ens_weights_poly_gdb_read())
+output$create_ens_reg_gdb_flag <- reactive({
+  isTruthy(create_ens_reg_gdb_read())
 })
-outputOptions(output, "create_ens_weights_poly_gdb_flag", suspendWhenHidden = FALSE)
+outputOptions(output, "create_ens_reg_gdb_flag", suspendWhenHidden = FALSE)
 
 
 ### Load and process
-create_ens_weights_poly_gdb_read <- eventReactive(
-  input$create_ens_weights_poly_gdb_load,
+create_ens_reg_gdb_read <- eventReactive(
+  input$create_ens_reg_gdb_load,
   {
-    gdb.path <- input$create_ens_weights_poly_gdb_path
-    gdb.name <- input$create_ens_weights_poly_gdb_name
+    gdb.path <- input$create_ens_reg_gdb_path
+    gdb.name <- input$create_ens_reg_gdb_name
 
     withProgress(message = "Loading GIS .gdb file", value = 0.3, {
       gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),

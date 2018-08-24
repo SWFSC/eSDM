@@ -48,13 +48,6 @@ create_ens_weighted_manual <- reactive({
 ###############################################################################
 # Weighted ensembling method 2: 'Weight all model predictions by metric'
 
-### Flag for if metrics have been calculated for selected overlaid model preds
-# output$create_ens_weights_metric_flag <- reactive({
-#   all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]])
-# })
-# outputOptions(output, "create_ens_weights_metric_flag",
-#               suspendWhenHidden = FALSE)
-
 ### Table of selected metrics
 create_ens_weights_metric_table <- reactive({
   req(
@@ -201,9 +194,4 @@ create_ens_weighted_pix <- reactive({
 
 
 ###############################################################################
-###############################################################################
-# Weighted ensembling method 4: 'Load GIS polygon(s) with weights'
-
-### Code is in ensCreateEns_create_weighted_poly.R
-
 ###############################################################################
