@@ -4,9 +4,7 @@
 ### Save data
 # There is nothing to validate or return, so we don't need eventReactive
 output$save_app_envir <- downloadHandler(
-  filename = function() {
-    input$save_app_envir_name
-  },
+  filename = function() input$save_app_envir_name,
 
   content = function(file) {
     withProgress(message = "Preparing workspace to be saved", value = 0.3, {
@@ -28,11 +26,11 @@ output$save_app_envir <- downloadHandler(
       vals.save <- reactiveValuesToList(vals)
       incProgress(0.5)
 
-      # Create list of current input values
-      inputs.save <- list(
-        "model_load_type" = input$model_load_type,
-        "model_csv_pt_loc" = input$model_csv_pt_loc
-      )
+      # # Create list of current input values
+      # inputs.save <- list(
+      #   "model_load_type" = input$model_load_type,
+      #   "model_csv_pt_loc" = input$model_csv_pt_loc
+      # )
 
       save(vals.save, file = file)
       incProgress(0.2)
