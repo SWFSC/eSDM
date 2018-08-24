@@ -95,7 +95,6 @@ ui.createEns <- function() {
                     box(
                       title = "Preview of polygon(s) with weights", width = 12, status = "primary", solidHeader = TRUE,
                       collapsible = TRUE,
-                      # helpText(tags$strong("Polygon(s) with weights preview")),
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag == false",
                         helpText("No weight polygons have been assigned")
@@ -362,7 +361,7 @@ ui.createEns <- function() {
 
       ######################################################################### Created ensemble predictions
       conditionalPanel(
-        condition = "output.ens_display_ens_flag",  # This flag checks if any ensemble predictions have been created
+        condition = "output.ens_display_ens_flag",
         fluidRow(
           box(
             title = "Created Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
