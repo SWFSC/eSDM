@@ -9,31 +9,33 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
   withProgress(message = "Creating ensemble", value = 0.6, {
     ### Create ensemble
-    ens.type <- input$create_ens_type
+    if (input$create_ens_type == "1") { # Unweighted
+      ens.sf <- create_ens_unweighted()
 
-    # Unweighted
-    if (ens.type == "1") ens.sf <- create_ens_unweighted()
-
-    # Weighted
-    if (ens.type == "2") {
-      ens.sf <- switch(input$create_ens_weight_type,
-                       "1" = create_ens_weighted_manual(),
-                       "2" = create_ens_weighted_metric(),
-                       "3" = create_ens_weighted_pix(),
-                       "4" = create_ens_weighted_poly())
+    } else { #input$create_ens_type == "2"; # Weighted
+      ens.sf <- switch(
+        input$create_ens_weight_type,
+        "1" = create_ens_weighted_manual(),
+        "2" = create_ens_weighted_metric(),
+        "3" = create_ens_weighted_pix()
+      )
     }
     incProgress(0.3)
 
     ### Add data to reactive variables
     vals$ensemble.models <- c(vals$ensemble.models, list(ens.sf))
     vals$ensemble.overlaid.idx <- c(
-      vals$ensemble.overlaid.idx, create_ens_info_overlaid_idx())
+      vals$ensemble.overlaid.idx, create_ens_info_overlaid_idx()
+    )
     vals$ensemble.method <- c(
-      vals$ensemble.method, create_ens_info_weighting())
+      vals$ensemble.method, create_ens_info_weighting()
+    )
     vals$ensemble.weights <- c(
-      vals$ensemble.weights, create_ens_info_weights())
+      vals$ensemble.weights, create_ens_info_weights()
+    )
     vals$ensemble.rescaling <- c(
-      vals$ensemble.rescaling, create_ens_info_rescaling())
+      vals$ensemble.rescaling, create_ens_info_rescaling()
+    )
     incProgress(0.1)
   })
 
@@ -50,10 +52,8 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
 # Create unweighted ensemble
 create_ens_unweighted <- reactive({
-  overlaid.data <- create_ens_data_reg()
-
   st_sf(
-    data.frame(Pred.ens = apply(overlaid.data, 1, mean, na.rm = TRUE)),
+    data.frame(Pred.ens = apply(create_ens_data_reg(), 1, mean, na.rm = TRUE)),
     geometry = vals$overlay.base.sfc, agr = "constant"
   )
 })
@@ -66,10 +66,16 @@ create_ens_unweighted <- reactive({
 ###############################################################################
 # 'Level 2' functions
 
-### Apply regional weights (if necessary)
+### Retrun data to be ensembled, including apply regional weights if necessary
 create_ens_data_reg <- reactive({
-  if (create_ens_reg) {
-    browser()
+  if (input$create_ens_reg) {
+    validate(
+      need(sum(!sapply(vals$ens.over.wpoly.filename, is.null)) > 0,
+           paste("Error: Please either load and assign at least one",
+                 "weight polygon or uncheck the 'TODO' button"))
+    )
+
+    create_ens_data_rescale() * create_ens_reg_weights()
 
   } else {
     create_ens_data_rescale()
@@ -100,7 +106,7 @@ create_ens_data_rescale <- reactive({
     )
   }
 
-  # Next level-up function expects data.frame of prediction values
+  # For GUI, next function expects data.frame of prediction values
   data.frame(lapply(temp, function(i) st_set_geometry(i, NULL)$Pred.overlaid)) %>%
     purrr::set_names(letters[1:length(temp)])
 })
@@ -158,44 +164,51 @@ create_ens_info_overlaid_idx <- reactive({
 
 ### Weighting method used
 create_ens_info_weighting <- reactive({
-  ifelse(input$create_ens_type == "1", "Unweighted", "Weighted")
+  if (input$create_ens_reg) {
+    paste(
+      "Regional weighting &",
+      ifelse(input$create_ens_type == 1, "unweighted", "weighted"
+      )
+    )
+  } else {
+    ifelse(input$create_ens_type == 1, "Unweighted", "Weighted")
+  }
 })
 
 ### Weights used, if applicable
 # Get weights from functions that returns numerical weights for computation
 create_ens_info_weights <- reactive({
-  if (input$create_ens_type == "1") {
+  if (input$create_ens_type == 1) {
     NA
   } else {
-    switch(input$create_ens_weight_type,
-           "1" = input$create_ens_weight_manual,
-           "2" = paste(round(create_ens_weights_metric_table()[,3], 3),
-                       collapse = ", "),
-           "3" = "Spatial by pixel")
+    switch(
+      as.numeric(input$create_ens_weight_type),
+      input$create_ens_weight_manual,
+      paste(round(create_ens_weights_metric_table()[,3], 3), collapse = ", "),
+      "Spatial by pixel"
+    )
   }
 })
 
 ### Rescaling method used
 create_ens_info_rescaling <- reactive ({
-  switch(input$create_ens_rescale_type,
-         "1" = "None",
-         "2" = paste("Abundance:", input$create_ens_rescale_abund),
-         "3" = "Normalization",
-         "4" = "Standardization",
-         "5" = "Sum to 1")
+  switch(
+    as.numeric(input$create_ens_rescale_type),
+    "None", paste("Abundance:", input$create_ens_rescale_abund),
+    "Normalization", "Standardization", "Sum to 1"
+  )
 })
 
 ### Generate string for text about created ensemble
 create_ens_info_rescaling_message <- reactive({
   input.rescale <- input$create_ens_rescale_type
-  str.rescale <- switch(input.rescale,
-                        "1" = "Predictions not rescaled",
-                        "2" = "abundance",
-                        "3" = "normalization",
-                        "4" = "standardization",
-                        "5" = "sum to 1")
+  str.rescale <- switch(
+    as.numeric(input.rescale),
+    "Predictions not rescaled", "abundance",
+    "normalization", "standardization", "sum to 1"
+  )
 
-  if (input.rescale != "1") {
+  if (input.rescale != 1) {
     paste("Predictions rescaled using the", str.rescale, "method")
   } else {
     str.rescale

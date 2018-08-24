@@ -26,7 +26,7 @@ create_ens_weights_num <- reactive({
 
 ### Create weighted ensemble from manually entered weights
 create_ens_weighted_manual <- reactive({
-  data.rescaled <- create_ens_data_rescale()
+  data.rescaled <- create_ens_data_reg()
   base.sfc <- vals$overlay.base.sfc
   data.weights <- create_ens_weights_num()
 
@@ -74,7 +74,7 @@ create_ens_weights_metric_table <- reactive({
 
 ### Create weighted ensemble using some evaluation metric as weights
 create_ens_weighted_metric <- reactive({
-  data.rescaled <- create_ens_data_rescale()
+  data.rescaled <- create_ens_data_reg()
   base.sfc <- vals$overlay.base.sfc
 
   # Check that any predictions have been calculated
@@ -173,7 +173,7 @@ create_ens_weights_pix_weights <- reactive({
 
 ### Create weighted ensemble using pixel-level spatial weights
 create_ens_weighted_pix <- reactive({
-  data.rescaled <- create_ens_data_rescale()
+  data.rescaled <- create_ens_data_reg()
   base.sfc <- vals$overlay.base.sfc
   data.weights <- create_ens_weights_pix_weights()
 

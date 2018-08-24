@@ -50,7 +50,7 @@ vals <- reactiveValues(
   # Objects that store created ensembles and their data
   ensemble.models        = list(), # Ensemble model predictions
   ensemble.method        = NULL,   # Vector of ensembling methods used
-  ensemble.weights       = NULL,   # Strings of weights used (if any)
+  ensemble.weights       = NULL,   # Vector of strings of weights used (if any)
   ensemble.rescaling     = NULL,   # Vector of rescaling methods used
   ensemble.overlaid.idx  = NULL,   # Strings of indices of overlaid model predictions used
   ensemble.plot.leaf     = NULL,   # Plot info of currently interactively previewed ensemble models

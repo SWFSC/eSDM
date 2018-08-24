@@ -10,25 +10,7 @@ outputOptions(output, "create_ens_weighted_poly_flag", suspendWhenHidden = FALSE
 
 
 ###############################################################################
-### Create weighted ensemble using polygon weights
-create_ens_weighted_poly <- reactive({
-  validate(
-    need(sum(!sapply(vals$ens.over.wpoly.filename, is.null)) > 0,
-         paste("Error: Please load at least one weight polygon in order to",
-               "use this weighted ensembling method"))
-  )
-
-  data.rescaled <- create_ens_data_rescale()
-  base.sfc <- vals$overlay.base.sfc
-  data.weights <- create_ens_reg_weights()
-
-  data.reweighted <- data.rescaled * data.weights
-  data.ens <- data.frame(
-    Pred.ens = apply(data.reweighted, 1, mean, na.rm = TRUE)
-  )
-
-  st_sf(data.ens, geometry = base.sfc, agr = "constant")
-})
+### create_ens_data_reg() is in '...createEns_create.R'
 
 ### Get weights based on loaded polygons
 create_ens_reg_weights <- reactive({
@@ -148,7 +130,7 @@ create_ens_reg_remove <- eventReactive(
 
 
 ###############################################################################
-### Table summarizing loaded polygon weights
+### Table summarizing overlaid predicitons and their assigned weight polygons
 create_ens_reg_table <- reactive({
   req(vals$ens.over.wpoly.filename)
 
