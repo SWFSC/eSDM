@@ -100,7 +100,7 @@ output$pretty_na_color_uiOut_colour <- renderUI({
 # If 'plot predictions as percentages' is selected, then remove some options
 output$pretty_color_palette_uiOut_select <- renderUI({
   choices.list <- list(
-    "Default: blue to white to red" = 1,
+    "Default: red to white to blue" = 1,
     "RColorBrewer: Spectral (rainbow)" = 2,
     "RColorBrewer: YlGnBu" = 3, "viridis: viridis" = 4,
     "viridis: inferno" = 5, "dichromat: DarkRedtoBlue" = 6
@@ -114,8 +114,6 @@ output$pretty_color_palette_uiOut_select <- renderUI({
   if (isTruthy(col.sel)) {
     if (!(col.sel %in% choices.list)) col.sel <- 1
   }
-
-  # choices.list <- c("Choose color palette" = "", choices.list)
 
   selectInput("pretty_color_palette", tags$h5("Color palette"),
               choices = choices.list, selected = col.sel, width = "80%")
@@ -215,14 +213,6 @@ output$pretty_title_uiOut_text <- renderUI({
     table.idx, paste("Original", model.idx),
     paste("Overlaid", model.idx), paste("Ensemble", model.idx)
   )
-
-  # val.default <- ifelse(
-  #   table.idx == 3,
-  #   paste("Ensembling method:", vals$ensemble.method[model.idx], "||",
-  #         "Rescaling method:", vals$ensemble.rescaling[model.idx]),
-  #   paste("Model file:", vals$models.names[model.idx], "||",
-  #         "Data header:", vals$models.data.names[[model.idx]][1])
-  # )
 
   textInput("pretty_title", tags$h5("Map title"), value = val.default)
 })
