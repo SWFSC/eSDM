@@ -65,7 +65,7 @@ ui <- dashboardPage(
       menuItem("Manual", tabName = "manual", icon = icon("book"))
     ),
     tags$br(),
-    actionButton("close_app", label = "Close GUI")
+    actionButton("close_gui", label = "Close GUI")
   ),
 
   dashboardBody(

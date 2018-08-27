@@ -5,23 +5,24 @@
 ###############################################################################
 # reactiveVal's used in specific tabs
 
-# Clicked to other tabs
+# Load workspace
+### Clicked to other tabs
 val.tabs <- reactiveVal(value = FALSE)
+### Flag used while loading saved workspace
 val.load <- reactiveVal(value = FALSE)
+
 
 # Pretty ploy
 ### Number of colors
 val.pretty.color.num <- reactiveVal(value = NULL)
-
 ### Ppdate params of loaded additional objects
 val.pretty.addobj.update <- reactiveVal(value = NULL)
-
 ### Update params of saved maps (to-plot list items)
 val.pretty.toplot.update <- reactiveVal(value = NULL)
 
+
 ###############################################################################
 # 'Initialize' all 42 elements of vals
-
 vals <- reactiveValues(
   # Objects that store loaded models and related info
   models.ll             = list(),  # List of models; crs is crs.ll
@@ -127,12 +128,17 @@ observe({
 
 
   if (length(reactiveValuesToList(vals)) != 42) {
-    #TODO? Change this to a modal whose button closes the app?
-    shinyjs::alert(paste(
-      "There was an error in the eSDM GUI data storage and processing;",
-      "please restart the GUI and report this as an issue."
-    ))
+    #TODO Change this to a modal whose button closes the app?
+    showModal(modalDialog(
+      title = "Error in eSDM GUI data storage and processing",
+      tags$h5("There was an error in eSDM GUI data storage and processing.",
+              "Please restart the GUI and report this as an issue."),
 
-    browser() #TODO: remove
+      footer = tagList(actionButton("close_gui_error", "Close GUI"))
+    ))
   }
 })
+
+# observeEvent(input$close_gui_error, {}) is in 'server.R'
+
+###############################################################################
