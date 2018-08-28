@@ -10,9 +10,9 @@
 val.tabs <- reactiveVal(value = FALSE)
 ### Flag used while loading saved workspace
 val.load <- reactiveVal(value = FALSE)
+val.workspace <- reactiveVal(value = list())
 
-
-# Pretty ploy
+# Pretty plot
 ### Number of colors
 val.pretty.color.num <- reactiveVal(value = NULL)
 ### Ppdate params of loaded additional objects
@@ -132,7 +132,8 @@ observe({
     showModal(modalDialog(
       title = "Error in eSDM GUI data storage and processing",
       tags$h5("There was an error in eSDM GUI data storage and processing.",
-              "Please restart the GUI and report this as an issue."),
+              "Please restart the GUI and report this as an issue at",
+              tags$a("https://github.com/smwoodman/eSDM/issues")),
 
       footer = tagList(actionButton("close_gui_error", "Close GUI"))
     ))

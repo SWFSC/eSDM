@@ -1,6 +1,7 @@
 # Save and load workspace
 
 ###############################################################################
+###############################################################################
 ### Save data
 # There is nothing to validate or return, so we don't need eventReactive
 output$save_app_envir <- downloadHandler(
@@ -26,12 +27,24 @@ output$save_app_envir <- downloadHandler(
       vals.save <- reactiveValuesToList(vals)
       incProgress(0.5)
 
-      # # Create list of current input values
+      # Create list of current input values
       # inputs.save <- list(
-      #   "model_load_type" = input$model_load_type,
-      #   "model_csv_pt_loc" = input$model_csv_pt_loc
+      #   # "model_load_type" = input$model_load_type,
+      #   # "model_csv_pt_loc" = input$model_csv_pt_loc
+      #   "pretty_table_orig_out_rows_selected" = input$pretty_table_orig_out_rows_selected,
+      #   "pretty_table_over_out_rows_selected" = input$pretty_table_over_out_rows_selected,
+      #   "pretty_table_ens_out_rows_selected" = input$pretty_table_ens_out_rows_selected,
+      #   "pretty_proj_ll" = input$pretty_proj_ll,
+      #   "pretty_proj_method" = input$pretty_proj_method,
+      #   "pretty_proj_idx" = input$pretty_proj_idx,
+      #   "pretty_proj_epsg" = input$pretty_proj_epsg,
+      #   "pretty_range_xmin" = input$pretty_range_xmin,
+      #   "pretty_range_xmax" = input$pretty_range_xmax,
+      #   "pretty_range_ymin" = input$pretty_range_ymin,
+      #   "pretty_range_ymax" = input$pretty_range_ymax
       # )
 
+      # save(vals.save, inputs.save, file = file)
       save(vals.save, file = file)
       incProgress(0.2)
     })
@@ -39,6 +52,7 @@ output$save_app_envir <- downloadHandler(
 )
 
 
+###############################################################################
 ###############################################################################
 # Load data
 
@@ -101,14 +115,19 @@ load_envir <- eventReactive(val.load(), {
   file.load <-  req(input$load_app_envir_file)
 
   withProgress(message = "Loading saved workspace", value = 0.4, {
+    #------------------------------------------------------
     load(file.load$datapath)
     validate(
       need(exists("vals.save"),
            paste0("Error: The loaded .RDATA file does not contain",
                   "a workspace saved using the eSDM GUI"))
     )
-    incProgress(0.4)
+    incProgress(0.3)
 
+    # browser()
+    # val.workspace(inputs.save)
+
+    #------------------------------------------------------
     vals$models.ll             <- vals.save[["models.ll"]]
     vals$models.orig           <- vals.save[["models.orig"]]
     vals$models.names          <- vals.save[["models.names"]]
@@ -159,38 +178,24 @@ load_envir <- eventReactive(val.load(), {
 
     incProgress(0.1)
 
-    # Update variable defaults if necessary
-    if (isTruthy(vals$overlay.bound)) {
-      updateCheckboxInput(session, "overlay_bound", value = TRUE)
-    } else {
-      updateCheckboxInput(session, "overlay_bound", value = FALSE)
-    }
 
-    if (isTruthy(vals$overlay.land)) {
-      updateCheckboxInput(session, "overlay_land", value = TRUE)
-    } else {
-      updateCheckboxInput(session, "overlay_land", value = FALSE)
-    }
+    #------------------------------------------------------
+    # Update several checkboxes based on vals contents
+    updateCheckboxInput(session, "overlay_bound",  value = isTruthy(vals$overlay.bound))
+    updateCheckboxInput(session, "overlay_land",   value = isTruthy(vals$overlay.land))
+    updateCheckboxInput(session, "create_ens_reg", value = any(sapply(vals$ens.over.wpoly.filename, isTruthy)))
+    updateCheckboxInput(session, "pretty_addobj",  value = isTruthy(vals$pretty.addobj))
 
-    if (any(sapply(vals$ens.over.wpoly.filename, isTruthy))) {
-      updateCheckboxInput(session, "create_ens_reg", value = TRUE)
-    } else {
-      updateCheckboxInput(session, "create_ens_reg", value = FALSE)
-    }
+    incProgress(0.1)
 
-    if (isTruthy(vals$pretty.addobj)) {
-      updateCheckboxInput(session, "pretty_addobj", value = TRUE)
-    } else {
-      updateCheckboxInput(session, "pretty_addobj", value = FALSE)
-    }
 
-    # TODO Update all widgets
-
+    #------------------------------------------------------
+    # TODO Non-reactive widgets
+    # updateCheckboxInput(session, "pretty_proj_ll", value = )
     incProgress(0.1)
   })
 
   paste("Workspace loaded from", file.load$name)
 }, ignoreInit = TRUE)
-
 
 ###############################################################################

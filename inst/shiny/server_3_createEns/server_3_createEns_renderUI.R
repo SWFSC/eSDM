@@ -19,8 +19,10 @@ output$create_ens_rescale_type_uiOut_radio <- renderUI({
   models.which <- create_ens_rescale_type_helper()
   pred.type <- vals$models.pred.type[models.which]
 
-  choices.list <- list("None" = 1, "Abundance" = 2, "Normalization" = 3,
-                       "Standardization" = 4, "Sum to 1" = 5)
+  choices.list <- list(
+    "None" = 1, "Abundance" = 2, "Normalization" = 3, "Standardization" = 4,
+    "Sum to 1" = 5
+  )
   choices.list.sel <- ifelse(all(pred.type == "1"), 1, 2)
 
   radioButtons("create_ens_rescale_type", NULL, choices = choices.list,
@@ -37,7 +39,7 @@ output$create_ens_rescale_type_message <- renderUI({
 
   paste(
     "All prediction types are not \"Absolute density\" and thus the",
-    "overlaid predictions should probably be rescaled"
+    "overlaid predictions likely need to be rescaled"
   )
 })
 

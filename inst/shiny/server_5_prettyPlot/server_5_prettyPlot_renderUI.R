@@ -3,13 +3,6 @@
 
 ###############################################################################
 # Map control widgets
-output$pretty_toplot_remove_execute_uiOut_button <- renderUI({
-  req(pretty_toplot_table())
-
-  actionButton("pretty_toplot_remove_execute",
-               "Remove selected saved maps")
-})
-
 output$pretty_toplot_add_id_uiOut_text <- renderUI({
   val.default <- "Map ID"
   if (pretty_models_idx_count() == 1) {
@@ -54,6 +47,19 @@ pretty_range <- reactive({
 
 ### Render longitude, latitude min and max
 output$pretty_range_xmin_uiOut_num <- renderUI({
+  # input$load_app_envir_file
+  # pretty_range()
+  #
+  # isolate({
+  #   qq <- val.workspace()$pretty_range_xmin
+  #   if (isTruthy(qq)) {
+  #     val.default <- qq
+  #     qq$pretty_range_xmin <- NULL
+  #     val.workspace(qq)
+  #   } else {
+  #     val.default <- pretty_range()$xmin
+  #   }
+  # })
   val.default <- pretty_range()$xmin
   numericInput("pretty_range_xmin", tags$h5("Longitude minimum"),
                value = val.default, min = -180, max = 180)

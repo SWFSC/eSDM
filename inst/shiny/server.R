@@ -64,7 +64,7 @@ jscode <- "shinyjs.closeWindow = function() { window.close(); }"
 ###############################################################################
 ### Server function
 server <- function(input, output, session) {
-  ###############################################
+  #----------------------------------------------------------------------------
   ### Quit GUI
   session$onSessionEnded(function() {
     stopApp(returnValue = "eSDM GUI was closed")
@@ -77,7 +77,9 @@ server <- function(input, output, session) {
 
   observeEvent(input$close_gui_error, {
     # js$closeWindow()
-    stopApp(returnValue = "eSDM GUI was closed due to a data storage and processing error")
+    stopApp(returnValue = paste(
+      "eSDM GUI was closed due to a data storage and processing error"
+    ))
   })
 
   observe({
@@ -88,10 +90,10 @@ server <- function(input, output, session) {
     ))
   })
 
-  ###############################################
-  ### Source general and tab-specific server code
+  #----------------------------------------------------------------------------
+  # Source general and tab-specific server code
 
-  # General server code
+  ### General server code
   source(file.path("server_other", "server_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots_download.R"), local = TRUE, chdir = TRUE)
@@ -101,8 +103,7 @@ server <- function(input, output, session) {
   source(file.path("server_other", "server_tables.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_workspace.R"), local = TRUE, chdir = TRUE)
 
-
-  # Roadmap: download sample data
+  ### Roadmap: download sample data
   output$download_sample_data <- downloadHandler(
     filename = function() {
       "eSDM_sample_data.zip"
@@ -128,7 +129,7 @@ server <- function(input, output, session) {
     }
   )
 
-  # Load model predictions
+  ### Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_csv.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_funcs.R"), local = TRUE, chdir = TRUE)
@@ -137,7 +138,7 @@ server <- function(input, output, session) {
   source(file.path("server_1_loadModels", "server_1_loadModels_shpgdb.R"), local = TRUE, chdir = TRUE)
 
 
-  # Overlay model predictions
+  ### Overlay model predictions
   source(file.path("server_2_overlay", "server_2_overlay.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_csv.R"), local = TRUE, chdir = TRUE)
@@ -148,7 +149,7 @@ server <- function(input, output, session) {
   source(file.path("server_2_overlay", "server_2_overlay_renderUI.R"), local = TRUE, chdir = TRUE)
 
 
-  # Create ensemble predictions
+  ### Create ensemble predictions
   source(file.path("server_3_createEns", "server_3_createEns.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_3_createEns", "server_3_createEns_create.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_3_createEns", "server_3_createEns_create_regionalweighting.R"), local = TRUE, chdir = TRUE)
@@ -156,14 +157,14 @@ server <- function(input, output, session) {
   source(file.path("server_3_createEns", "server_3_createEns_renderUI.R"), local = TRUE, chdir = TRUE)
 
 
-  # Calculate evaluation metrics
+  ### Calculate evaluation metrics
   source(file.path("server_4_evalMetrics", "server_4_evalMetrics.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_4_evalMetrics", "server_4_evalMetrics_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_4_evalMetrics", "server_4_evalMetrics_loadData.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_4_evalMetrics", "server_4_evalMetrics_renderUI.R"), local = TRUE, chdir = TRUE)
 
 
-  # Make high quality maps (pretty plots)
+  ### Make high quality maps (pretty plots)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_addobj.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_addobj_renderUI.R"), local = TRUE, chdir = TRUE)
@@ -177,12 +178,12 @@ server <- function(input, output, session) {
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_update_renderUI.R"), local = TRUE, chdir = TRUE)
 
 
-  # Export model predictions
+  ### Export model predictions
   source(file.path("server_6_export", "server_6_export.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_6_export", "server_6_export_renderUI.R"), local = TRUE, chdir = TRUE)
 
 
-  # Manual
+  ### Manual
   # The function tags$iframe(...) is in ui.R so that the manual renders immediately
 }
 
