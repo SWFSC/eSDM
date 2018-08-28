@@ -12,13 +12,14 @@ ui.overlay <- function() {
           fluidRow(
             box(
               title = "Import Study Area Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              checkboxInput("overlay_bound",
-                            paste("Use a study area polygon as the boundary for the base geometry in the overlay process;",
-                                  "uncheck this box to remove an imported study area polygon"),
-                            value = FALSE),
+              checkboxInput("overlay_bound", "Clip the base geometry to a study area polygon in the overlay process", value = FALSE),
               conditionalPanel(
                 condition = "input.overlay_bound == true",
-                column(12, radioButtons("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)),
+                column(
+                  width = 12,
+                  tags$h5("Uncheck the above checkbox to remove an imported study area polygon"),
+                  selectInput("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1, width = "50%")
+                ),
                 box(
                   width = 12,
                   conditionalPanel(
@@ -69,14 +70,12 @@ ui.overlay <- function() {
 
             box(
               title = "Import Erasing Polygon", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              checkboxInput("overlay_land",
-                            paste("Use an erasing polygon to remove are from the base geometry in the overlay process;",
-                                  "uncheck this box to remove an imported erasing polygon"),
-                            value = FALSE),
+              checkboxInput("overlay_land", "Erase area from the base geometry in the overlay process", value = FALSE),
               conditionalPanel(
                 condition = "input.overlay_land == true",
                 column(
                   width = 12,
+                  tags$h5("Uncheck the above checkbox to remove an imported erasing polygon"),
                   fluidRow(
                     column(6, radioButtons("overlay_land_load_type", NULL,
                                            choices = list("Use provided erasing polygon" = 1, "Upload personal erasing polygon" = 2),
@@ -189,7 +188,12 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("1) Overlay options: study area and erasing polygons"),
-                      tags$h5("Import these polygons in their respecitve boxes: 'Import Study Area Polygon' and 'Import Erasing Polygon'."),
+                      tags$h5("Import these polygons in their respecitve boxes: 'Import Study Area Polygon' and 'Import Erasing Polygon'.",
+                              tags$br(), tags$br(),
+                              "Note that the study area polygon performs the same function as the 'clip feature' in the",
+                              tags$a(href = "http://pro.arcgis.com/en/pro-app/tool-reference/analysis/clip.htm", "clip tool"),
+                              "in ArcGIS, while the erasing polygon performs the same function as the 'erase feature' in the",
+                              tags$a(href = "http://pro.arcgis.com/en/pro-app/tool-reference/analysis/erase.htm", "erase tool")),
                       tags$br(),
                       tags$strong("2) Overlay options: base geometry"),
                       tags$h5("Choose the base geometry in the 'Imported Model Predictions' box.")

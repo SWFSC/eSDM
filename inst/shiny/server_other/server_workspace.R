@@ -198,4 +198,6 @@ load_envir <- eventReactive(val.load(), {
   paste("Workspace loaded from", file.load$name)
 }, ignoreInit = TRUE)
 
+observe(load_envir())
+
 ###############################################################################
