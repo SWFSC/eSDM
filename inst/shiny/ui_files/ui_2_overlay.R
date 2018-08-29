@@ -242,7 +242,7 @@ ui.overlay <- function() {
                   fluidRow(
                     box(
                       width = 12,
-                      tags$strong("4) Overlay options: percent overlap"),
+                      tags$strong("4) Overlay options: percent overlap threshold"),
                       helpText("Specify the minimum percentage of a base geometry polygon the must overlap with",
                                "original model prediction(s)",
                                "for that cell to have a non-NA overlaid prediction value.",
