@@ -183,7 +183,7 @@ ui.loadModels <- function() {
           fluidRow(
             box(
               title = "Imported Original Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
-              ui.instructions.table.select(text.pre = "imported", text.in = "with which to perform an action:"),
+              ui.instructions.table.select(text.pre = "original", text.in = "with which to perform an action:"),
               conditionalPanel("input.models_loaded_table_stats != true", DTOutput("models_loaded_table")),
               conditionalPanel("input.models_loaded_table_stats", DTOutput("models_loaded_table_stats")),
               column(
