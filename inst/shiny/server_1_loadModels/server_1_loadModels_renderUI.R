@@ -1,4 +1,4 @@
-### Items that are rendered for Load Model Predictions tab
+### Items that are rendered for Load Predictions tab
 
 
 ###############################################################################
@@ -184,25 +184,25 @@ output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
 ### CSV
 output$model_create_csv_uiOut_button <- renderUI ({
   req(read_model_csv())
-  actionButton("model_create_csv", "Load model predictions")
+  actionButton("model_create_csv", "Import original predictions")
 })
 
 ### GIS raster
 output$model_create_gis_raster_uiOut_button <- renderUI ({
   req(read_model_gis_raster())
-  actionButton("model_create_gis_raster", "Load model predictions")
+  actionButton("model_create_gis_raster", "Import original predictions")
 })
 
 ### GIS .shp
 output$model_create_gis_shp_uiOut_button <- renderUI ({
   req(read_model_gis_shp()[[1]])
-  actionButton("model_create_gis_shp", "Load model predictions")
+  actionButton("model_create_gis_shp", "Import original predictions")
 })
 
 ### GIS .gdb
 output$model_create_gis_gdb_uiOut_button <- renderUI ({
   req(read_model_gis_gdb()[[1]])
-  actionButton("model_create_gis_gdb", "Load model predictions")
+  actionButton("model_create_gis_gdb", "Import original predictions")
 })
 
 
@@ -216,15 +216,15 @@ output$model_preview_interactive_execute_uiOut_button <- renderUI({
   validate(
     need(length(input$models_loaded_table_rows_selected) == 1,
          paste("You can only interactively preview one set of",
-               "model predictions at a time")),
+               "original predictions at a time")),
     errorClass = "validation2"
   )
 
   actionButton("model_preview_interactive_execute",
-               "Preview selected model predictions interactively")
+               "Preview selected original predictions interactively")
 })
 
-### Generate default filename for download of model preditcions preview
+### Generate default filename for download of static preview
 output$model_download_preview_name_uiOut_text <- renderUI({
   req(input$models_loaded_table_rows_selected)
 

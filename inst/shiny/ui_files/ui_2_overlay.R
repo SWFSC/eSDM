@@ -1,4 +1,4 @@
-### UI code for the 'Overlay Model Predictions' tab
+### UI code for the 'Overlay Predictions' tab
 
 ui.overlay <- function() {
   tabItem(
@@ -170,7 +170,7 @@ ui.overlay <- function() {
           width = 8,
           fluidRow(
             box(
-              title = "Imported Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              title = "Imported Original Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               ui.instructions.table.select(text.pre = "original", text.in = "to use as the base geometry:", sel.num = 1),
               conditionalPanel("input.overlay_loaded_table_stats != true", DTOutput("overlay_loaded_table")),
               conditionalPanel("input.overlay_loaded_table_stats", DTOutput("overlay_loaded_stats_table")),
@@ -180,7 +180,7 @@ ui.overlay <- function() {
           ),
           fluidRow(
             box(
-              title = "Overlay Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              title = "Overlay Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               fluidRow(
                 column(
                   width = 6,
@@ -196,7 +196,7 @@ ui.overlay <- function() {
                               tags$a(href = "http://pro.arcgis.com/en/pro-app/tool-reference/analysis/erase.htm", "erase tool")),
                       tags$br(),
                       tags$strong("2) Overlay options: base geometry"),
-                      tags$h5("Choose the base geometry in the 'Imported Model Predictions' box.")
+                      tags$h5("Choose the base geometry in the 'Imported Original Predictions' box.")
                     ),
                     box(
                       width = 12,
@@ -244,10 +244,10 @@ ui.overlay <- function() {
                       width = 12,
                       tags$strong("4) Overlay options: percent overlap threshold"),
                       helpText("Specify the minimum percentage of a base geometry polygon the must overlap with",
-                               "original model prediction(s)",
+                               "original prediction(s)",
                                "for that cell to have a non-NA overlaid prediction value.",
                                "A value of \"0\" means that cell will have a non-NA overlaid prediction value",
-                               "if there is any overlap with any original model prediction."),
+                               "if there is any overlap with any original prediction."),
                       sliderInput("overlay_grid_coverage", label = NULL, min = 0, max = 100, value = 50)
                     ),
                     box(
@@ -268,10 +268,10 @@ ui.overlay <- function() {
           ),
           fluidRow(
             box(
-              title = "Base Geometry and Overlaid Model Previews", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+              title = "Base Geometry and Overlaid Predictions Previews", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
               fluidRow(
                 column(3, radioButtons("overlay_preview_which", NULL,
-                                       choices = list("Base geometry preview" = 1, "Overlaid models preview" = 2))),
+                                       choices = list("Base geometry preview" = 1, "Overlaid predictions preview" = 2))),
                 column(
                   width = 9,
                   fluidRow(
@@ -281,7 +281,7 @@ ui.overlay <- function() {
                         condition = "input.overlay_preview_which == 1",
                         helpText("The base geometry will be outlined in black while if applicable the land and study area",
                                  "will be filled in tan and outlined in red, respectively.",
-                                 "Note that if model predictions were made at a high resolution,",
+                                 "Note that if predictions were made at a high resolution,",
                                  "then preview may appear to be completely black when zoomed out"),
                         uiOutput("overlay_preview_base_execute_uiOut_button"),
                         textOutput("overlay_preview_base_create_text")

@@ -9,14 +9,14 @@ ui.createEns <- function() {
       ######################################################################### Choose overlaid predictions to be used in ensemble
       fluidRow(
         box(
-          title = "Overlaid Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+          title = "Overlaid Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
           tags$span(textOutput("create_ens_base_message"), style = "color: blue;"),
           conditionalPanel(
             condition = "input.create_ens_table_subset == false",
-            tags$h5(tags$strong("Select overlaid model predictions to ensemble:"),
-                    "All overlaid model predictions will be used when creating ensemble predictions.",
-                    "You can select specific sets of overlaid model predictions to ensemble when",
-                    tags$em("Create ensemble using a subset of the overlaid model predictions"),
+            tags$h5(tags$strong("Select overlaid predictions to ensemble:"),
+                    "All overlaid predictions will be used when creating ensemble predictions.",
+                    "You can select specific sets of overlaid predictions to ensemble when",
+                    tags$em("Create ensemble using a subset of the overlaid predictions"),
                     "is checked."),
             tableOutput("create_ens_table")
           ),
@@ -25,7 +25,7 @@ ui.createEns <- function() {
             ui.instructions.table.select(text.pre = "overlaid", text.in = "to ensemble:"),
             DTOutput("create_ens_datatable")
           ),
-          column(12, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid model predictions"))
+          column(12, checkboxInput("create_ens_table_subset", "Create ensemble using a subset of the overlaid predictions"))
         )
       ),
 
@@ -35,7 +35,7 @@ ui.createEns <- function() {
           title = "Create Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
           conditionalPanel(
             condition = "output.ens_overlaid_selected_flag == false",
-            tags$h5("Select at least two sets of overlaid model predictions to create an ensemble", style = "color: red")
+            tags$h5("Select at least two sets of overlaid predictions to create an ensemble", style = "color: red")
           ),
           conditionalPanel(
             condition = "output.ens_overlaid_selected_flag",
@@ -299,8 +299,7 @@ ui.createEns <- function() {
                                 helpText(tags$strong("Weighted ensembling method:"),
                                          "Calculate the weighted mean of all corresponding predictions"),
                                 helpText(tags$strong("Manual entry method:"),
-                                         "Entered weights correspond to the order of the models in the",
-                                         "overlaid model predictions table.",
+                                         "Entered weights correspond to the order of the models in the overlaid predictions table.",
                                          "Weights must be entered in the following format: 'weight, weight, ..., weight'."),
                                 uiOutput("create_ens_weight_manual_uiOut_text")
                               )
@@ -331,8 +330,8 @@ ui.createEns <- function() {
                                 helpText(tags$strong("Pixel-level spatial weights method:"),
                                          "Overlaid predictions are multiplied by their corresponding spatial weight. These pixel-level",
                                          "spatial weights were specified by the 'Column with weight data' input",
-                                         "when each set of model predictions was initially imported into the GUI.",
-                                         "If a set of overlaid model predictions does not have pixel-level spatial weights, ",
+                                         "when each set of original predictions was initially imported into the GUI.",
+                                         "If a set of overlaid predictions does not have pixel-level spatial weights, ",
                                          "then the row corresponding to that set will say \"No\" in the table below and",
                                          "those predictions will have a weight of one when the enseble is created"),
                                 tableOutput("create_ens_weights_pix_table_out")
@@ -369,8 +368,8 @@ ui.createEns <- function() {
             DTOutput("ens_datatable_ensembles"),
             tags$br(),
             column(4, radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"),
-                                   choices = list("Plot interactive preview" = 1, "Plot static preview(s)" = 2,
-                                                  "Download static preview(s)" = 3, "Remove from GUI" = 4,
+                                   choices = list("Plot interactive preview" = 1, "Plot static preview" = 2,
+                                                  "Download static preview" = 3, "Remove from GUI" = 4,
                                                   "Calculate predicted abundance" = 5),
                                    selected = 1)),
             column(
@@ -385,7 +384,7 @@ ui.createEns <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    ####################################### Plot interactive ensemble preview(s)
+                    ####################################### Plot interactive ensemble preview
                     conditionalPanel(
                       condition = "input.ens_select_action == 1",
                       fluidRow(
@@ -395,7 +394,7 @@ ui.createEns <- function() {
                       ),
                       helpText("Note that if you are not connected to the internet then the background map will not display")
                     ),
-                    ####################################### Plot static ensemble preview(s)
+                    ####################################### Plot static ensemble preview
                     conditionalPanel(
                       condition = "input.ens_select_action == 2",
                       fluidRow(
@@ -405,7 +404,7 @@ ui.createEns <- function() {
                         column(9, tags$br(), tags$br(), actionButton("ens_preview_execute", "Preview selected ensemble predictions"))
                       )
                     ),
-                    ####################################### Download static ensemble preview(s)
+                    ####################################### Download static ensemble preview
                     conditionalPanel(
                       condition = "input.ens_select_action == 3",
                       fluidRow(

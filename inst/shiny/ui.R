@@ -56,8 +56,8 @@ ui <- dashboardPage(
       id = "tabs",
       menuItem(HTML(paste0("eSDM GUI Roadmap and", "<br/>", "Load or Save Workspace")),
                tabName = "roadmap", icon = icon("road")), #icon("sitemap")
-      menuItem("Import Model Predictions", tabName = "loadModels", icon = icon("cloud-upload")),
-      menuItem("Overlay Model Predictions", tabName = "overlay", icon = icon("cogs")),
+      menuItem("Import Predictions", tabName = "loadModels", icon = icon("cloud-upload")),
+      menuItem("Overlay Predictions", tabName = "overlay", icon = icon("cogs")),
       menuItem("Create Ensemble Predictions", tabName = "createEns", icon = icon("cog")),
       menuItem("Evaluation Metrics", tabName = "evalMetrics", icon = icon("check")),
       menuItem("High Quality Maps", tabName = "prettyPlot", icon = icon("file-image-o")),
@@ -98,8 +98,8 @@ ui <- dashboardPage(
     ### UI code separated by tabs
     tabItems(
       ui.roadmap(),      # eSDM Roadmap and Load or Save Session
-      ui.loadModels(),   # Import Model Predictions
-      ui.overlay(),      # Overlay Model Predictions
+      ui.loadModels(),   # Import Predictions
+      ui.overlay(),      # Overlay Predictions
       ui.createEns(),    # Create Ensemble
       ui.evalMetrics(),  # Evaluation Metrics
       ui.prettyPlot(),   # High Quality Maps

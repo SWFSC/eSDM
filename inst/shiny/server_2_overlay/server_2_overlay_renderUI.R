@@ -12,7 +12,7 @@ output$overlay_proj_sdm_uiOut_select <- renderUI({
 
   selectInput("overlay_proj_sdm",
               tags$h5("Perform the overlay in the coordinate system of the",
-                      "selected model predictions"),
+                      "selected original predictions"),
               choices = choices.list, selected = 1)
 })
 
@@ -22,8 +22,7 @@ output$overlay_proj_sdm_uiOut_select <- renderUI({
 output$overlay_preview_base_execute_uiOut_button <- renderUI({
   validate(
     need(isTruthy(input$overlay_loaded_table_rows_selected),
-         paste("Select a set of loaded model predictions",
-               "to use as the base geometry")),
+         "Select a set of original predictions to use as the base geometry"),
     errorClass = "validation2"
   )
 
@@ -48,8 +47,7 @@ output$overlay_preview_base_execute_uiOut_button <- renderUI({
 output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
   validate(
     need(length(vals$overlaid.models) > 0,
-         paste("Create overlaid model predictions",
-               "to use this section of the GUI")),
+         "Create overlaid predictions to use this section of the GUI"),
     errorClass = "validation2"
   )
 
@@ -58,7 +56,7 @@ output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
 
   selectizeInput(
     "overlay_preview_overlaid_models",
-    tags$h5("Select overlaid model predictions to preview; 'Overlaid' numbers",
+    tags$h5("Select overlaid predictions to preview; 'Overlaid' numbers",
             "correspond to 'Original' numbers in the table above"),
     choices = choices.list, selected = NULL, multiple = TRUE
   )
@@ -67,7 +65,8 @@ output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
 
 output$overlay_preview_overlaid_execute_uiOut_button <- renderUI({
   req(length(vals$overlaid.models) > 0)
-  actionButton("overlay_preview_overlaid_execute", "Preview")
+  actionButton("overlay_preview_overlaid_execute",
+               "Preview selected overlaid predictions")
 })
 
 ###############################################################################

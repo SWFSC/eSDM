@@ -1,4 +1,4 @@
-### UI code for the 'Import Model Predictions' tab
+### UI code for the 'Import Predictions' tab
 
 ui.loadModels <- function() {
   tabItem(
@@ -8,7 +8,7 @@ ui.loadModels <- function() {
         width = 5,
         fluidRow(
           box(
-            title = "Import Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+            title = "Import Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
             selectInput("model_load_type", tags$h5("Data file type"),  choices = file.type.list2, selected = 1, width = "50%"),
             conditionalPanel(
               condition = "input.model_load_type == 1",
@@ -182,7 +182,7 @@ ui.loadModels <- function() {
           condition = "output.loadModels_display_flag",
           fluidRow(
             box(
-              title = "Imported Model Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
+              title = "Imported Original Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
               ui.instructions.table.select(text.pre = "imported", text.in = "with which to perform an action:"),
               conditionalPanel("input.models_loaded_table_stats != true", DTOutput("models_loaded_table")),
               conditionalPanel("input.models_loaded_table_stats", DTOutput("models_loaded_table_stats")),
@@ -191,9 +191,9 @@ ui.loadModels <- function() {
                 checkboxInput("models_loaded_table_stats",
                               "Display additional information - NOTE that you can only select or deselect row(s) when this box is unchecked"),
                 fluidRow(
-                  column(3, radioButtons("model_select_action", tags$h5("Action to perform with selected model predictions"),
-                                         choices = list("Plot interactive preview" = 1, "Plot static preview(s)" = 2,
-                                                        "Download static preview(s)" = 3, "Remove from GUI" = 4),
+                  column(3, radioButtons("model_select_action", tags$h5("Action to perform with selected original predictions"),
+                                         choices = list("Plot interactive preview" = 1, "Plot static preview" = 2,
+                                                        "Download static preview" = 3, "Remove from GUI" = 4),
                                          selected = 1)
                   ),
                   column(
@@ -208,7 +208,7 @@ ui.loadModels <- function() {
                       fluidRow(
                         box(
                           width = 12,
-                          ###################################### Plot interactive model preview(s)
+                          ###################################### Plot interactive preview
                           conditionalPanel(
                             condition = "input.model_select_action == 1",
                             fluidRow(
@@ -218,17 +218,17 @@ ui.loadModels <- function() {
                             ),
                             helpText("Note that if you are not connected to the internet then the background map will not display")
                           ),
-                          ###################################### Plot static model preview(s)
+                          ###################################### Plot static preview
                           conditionalPanel(
                             condition = "input.model_select_action == 2",
                             fluidRow(
                               column(3, radioButtons("model_preview_perc", tags$h5("Units"),
                                                      choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
-                              column(9, tags$br(), tags$br(), actionButton("model_preview_execute", "Preview selected model predictions")
+                              column(9, tags$br(), tags$br(), actionButton("model_preview_execute", "Preview selected original predictions")
                               )
                             )
                           ),
-                          ###################################### Download static model preview(s)
+                          ###################################### Download static preview
                           conditionalPanel(
                             condition = "input.model_select_action == 3",
                             fluidRow(
@@ -247,10 +247,10 @@ ui.loadModels <- function() {
                               column(3, tags$br(), tags$br(), downloadButton("model_download_preview_execute", "Download"))
                             )
                           ),
-                          ###################################### Remove model(s)
+                          ###################################### Remove predictions
                           conditionalPanel(
                             condition = "input.model_select_action == 4",
-                            actionButton("model_remove_execute", "Remove selected model predictions"),
+                            actionButton("model_remove_execute", "Remove selected original predictions"),
                             textOutput("model_remove_text")
                           )
                         )
