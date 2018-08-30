@@ -85,7 +85,7 @@ output$create_ens_weights_metric_uiOut_text <- renderUI({
   validate(
     need(all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]]),
          paste("You must calculate at least one metric for all selected",
-               "overlaid model predictions to use this weighting method.",
+               "overlaid predictions to use this weighting method.",
                "Calculate metric(s) in the 'Evaluation Metrics' tab")),
     errorClass = "validation2"
   )
@@ -193,7 +193,7 @@ output$create_ens_reg_preview_execute_uiOut_button <- renderUI({
   overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
   validate(
     need(isTruthy(vals$ens.over.wpoly.sf[[overlaid.which]]),
-         paste("This overlaid model does not have any",
+         paste("These overlaid predictions do not have any",
                "assigned weight polygons to preview"))
   )
 
@@ -211,12 +211,12 @@ output$ens_preview_interactive_execute_uiOut_button <- renderUI({
   validate(
     need(length(input$ens_datatable_ensembles_rows_selected) == 1,
          paste("You can only interactively preview one set of ensemble",
-               "model predictions at a time")),
+               "predictions at a time")),
     errorClass = "validation2"
   )
 
   actionButton("ens_preview_interactive_execute",
-               "Preview selected model predictions interactively")
+               "Preview selected ensemble predictions interactively")
 })
 
 

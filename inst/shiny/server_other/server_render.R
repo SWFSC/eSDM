@@ -15,27 +15,27 @@ output$load_envir_text <- renderText({
 })
 
 #----------------------------------------------------------
-# Created model predictions messages
+# Created predictions messages
 
-### Created model predictions message for csv
+### Created predictions message for csv
 output$create_sf_csv_text <- renderText({
   req(read_model_csv())
   create_sf_csv()
 })
 
-### Created model predictions message for gis raster
+### Created predictions message for gis raster
 output$create_sf_gis_raster_text <- renderText({
   req(read_model_gis_raster())
   create_sf_gis_raster()
 })
 
-### Created model predictions message for gis shp
+### Created predictions message for gis shp
 output$create_sf_gis_shp_text <- renderText({
   req(read_model_gis_shp())
   create_sf_gis_shp()
 })
 
-### Created model predictions message for gis gdb
+### Created predictions message for gis gdb
 output$create_sf_gis_gdb_text <- renderText({
   req(read_model_gis_gdb())
   create_sf_gis_gdb()
@@ -44,12 +44,12 @@ output$create_sf_gis_gdb_text <- renderText({
 #----------------------------------------------------------
 # Tables
 
-### Table of loaded original model preds
+### Table of loaded original preds
 output$models_loaded_table <- renderDT({
   table_orig()
 }, options = dt.list, selection = "multiple")
 
-### Table of stats of loaded original model preds
+### Table of stats of loaded original preds
 output$models_loaded_table_stats <- renderDT({
   table_orig_stats()
 }, options = dt.list, selection = "none")
@@ -87,12 +87,12 @@ output$model_preview_plot <- renderPlot({
 #----------------------------------------------------------
 # Tables
 
-### Table of loaded model predictions
+### Table of loaded predictions
 output$overlay_loaded_table <- renderDT({
   table_orig()
 }, options = dt.list, selection = "single")
 
-### Table of stats of loaded model predictions
+### Table of stats of loaded predictions
 output$overlay_loaded_stats_table <- renderDT({
   table_orig_stats()
 }, options = dt.list, selection = "none")
@@ -184,7 +184,7 @@ output$overlay_preview_base <- renderLeaflet({
   req(vals$overlay.plot)
 })
 
-### Preview of overlaid model predictions
+### Preview of overlaid predictions
 output$overlay_preview_overlaid <- renderPlot({
   x <- req(vals$overlaid.plot)
 
@@ -208,7 +208,7 @@ output$create_ens_base_message <- renderText({
   paste(
     "Overlaid models were created using the geometry of the",
     paste0("'", vals$overlay.info[[1]], "'"), "SDM as the base geometry.",
-    "See the 'Overlay Model Predictions' tab for other overlay information."
+    "See the 'Overlay Predictions' tab for other overlay information."
   )
 })
 
@@ -312,17 +312,17 @@ output$ens_abund_table_out <- renderTable({
 
 
 ###############################################################################
-##### Model Evaluation Metrics tab #####
+##### Evaluation Metrics tab #####
 
 #----------------------------------------------------------
 # Tables
 
-### Table of orig model predictions
+### Table of orig predictions
 output$eval_models_table_orig_out <- renderDT({
   table_orig()[, 1:3]
 }, options = dt.list)
 
-### Table of overlaid model predictions
+### Table of overlaid predictions
 output$eval_models_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
 }, options = dt.list)
@@ -391,17 +391,17 @@ output$eval_metrics_overlap_text <- renderText({
 #----------------------------------------------------------
 # Tables
 
-### Table of orig model predictions
+### Table of orig predictions
 output$pretty_table_orig_out <- renderDT({
   table_orig()[, 1:3]
 }, options = dt.list, selection = "single")
 
-### Table of overlaid model predictions
+### Table of overlaid predictions
 output$pretty_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
 }, options = dt.list, selection = "single")
 
-### Table of ensemble model predictions
+### Table of ensemble predictions
 output$pretty_table_ens_out <- renderDT({
   table_ensembles()
 }, options = dt.list, selection = "single")
@@ -497,14 +497,14 @@ observe({
 
 
 ###############################################################################
-##### Export Model Predictions #####
+##### Export Predictions #####
 
-### Table of orig model predictions
+### Table of orig predictions
 output$export_table_orig_out <- renderDT({
   table_orig()[, 1:3]
 }, options = dt.list, selection = "single")
 
-### Table of overlaid model predictions
+### Table of overlaid predictions
 output$export_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
 }, options = dt.list, selection = "single")
