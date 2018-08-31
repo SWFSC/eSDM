@@ -18,7 +18,8 @@
 #' @details If \code{count.flag == TRUE}, then \code{eSDM::model_abundance(x, x.idx, FALSE)} will be run
 #'   to calculate predicted abundance and thus calculate RMSE.
 #'   Note that this assumes the data in column \code{x.idx} of \code{x} are density values.
-#'   If \code{count.flag == FALSE}, then all of the values in column \code{x.idx} of \code{x} must be \code{0} or \code{1}
+#'   If \code{count.flag == FALSE}, then all of the values in column \code{x.idx} of \code{x} must be \code{0} or \code{1}.
+#'   All rows of \code{x} with a value of \code{NA} in column \code{x.idx} are removed within the function
 #'
 #' @return A numeric vector with AUC, TSS and RMSE values, respectively.
 #'   If \code{count.flag == FALSE}, the RMSE value will be \code{NA}
@@ -52,6 +53,7 @@ evaluation_metrics <- function(x, y, x.idx, y.idx, count.flag = FALSE) {
 
 
   #------------------------------------------------------------------
+  x <- x[!is.na(st_set_geometry(x, NULL)[, 1]), ]
   yx.sgbp <- suppressMessages(st_intersects(y, x))
 
   temp <- sapply(yx.sgbp, length)

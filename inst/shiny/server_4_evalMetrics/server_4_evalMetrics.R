@@ -120,7 +120,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 
     eval.results <- mapply(function(m, idx) {
       eval.data <- st_transform(eval.data, st_crs(m))
-      m <- m[!is.na(m[, 1]), ]
+      # eSDM function removes NA predictions
 
       incProgress(
         amount = 0.8 / m.num,
@@ -133,7 +133,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
         )
       } else {
         suppressMessages(
-          eSDM::evaluation_metrics(m, eval.data, names(m)[1], "sight")
+          eSDM::evaluation_metrics(m2, eval.data, names(m)[1], "sight")
         )
       }
     }, models.toeval, seq_along(models.toeval), SIMPLIFY = TRUE)
