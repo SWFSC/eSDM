@@ -193,7 +193,8 @@ pretty_colorscheme_list <- reactive({
     )
     data.breaks.labs <- round(data.breaks, input$pretty_legend_round)
     labels.lab.pretty <- paste(
-      head(data.breaks.labs, -1), tail(data.breaks.labs, -1),
+      format(head(data.breaks.labs, -1), nsmall = 3),
+      format(tail(data.breaks.labs, -1), nsmall = 3),
       sep = " - "
     )
   }

@@ -81,7 +81,8 @@ output$pretty_download_name_uiOut_text <- renderUI({
 
   if (length(maps.selected) == 1) {
     id.txt <- paste(
-      unlist(strsplit(vals$pretty.params.toplot[[1]]$id, " ")), collapse = "_"
+      unlist(strsplit(vals$pretty.params.toplot[[maps.selected]]$id, " ")),
+      collapse = "_"
     )
     f.val <- paste0("eSDM_", id.txt, res.txt, file.ext)
 
