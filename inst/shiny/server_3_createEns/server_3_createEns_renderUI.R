@@ -265,6 +265,22 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
 })
 
 
+### Download static preview
+output$ens_download_preview_execute_uiOut_download <- renderUI({
+  if (input$ens_download_preview_dim == 2) {
+    validate(
+      need(isTruthy(session$clientData$output_ens_preview_plot_width) &&
+             isTruthy(session$clientData$output_ens_preview_plot_height),
+           paste("You must plot a static preview before downloading a file",
+                 "with these dimensions")),
+      errorClass = "validation2"
+    )
+  }
+
+  downloadButton("ens_download_preview_execute", "Download")
+})
+
+
 ### Flag for if appropriate ensembles are selected for abundance calc
 abund_reac_flag <- reactive({
   ens.rows <- input$ens_datatable_ensembles_rows_selected

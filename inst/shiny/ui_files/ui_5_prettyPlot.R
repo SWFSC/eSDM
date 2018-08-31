@@ -163,7 +163,7 @@ ui.prettyPlot <- function() {
                             column(6, radioButtons("pretty_download_res", tags$h5("Resolution"),
                                                    choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
                                                    selected = 1)),
-                            column(6, radioButtons("pretty_download_format", tags$h5("Image file format"),
+                            column(6, radioButtons("pretty_download_format", tags$h5("File format"),
                                                    choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
                                                    selected = 3))
                           ),

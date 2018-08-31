@@ -257,5 +257,19 @@ output$model_download_preview_name_uiOut_text <- renderUI({
   textInput("model_download_preview_name", tags$h5("Filename"), value = f.val)
 })
 
+output$model_download_preview_execute_uiOut_download <- renderUI({
+  if (input$model_download_preview_dim == 2) {
+    validate(
+      need(isTruthy(session$clientData$output_model_preview_plot_width) &&
+             isTruthy(session$clientData$output_model_preview_plot_height),
+           paste("You must plot a static preview before downloading a file",
+                 "with these dimensions")),
+      errorClass = "validation2"
+    )
+  }
+
+  downloadButton("model_download_preview_execute", "Download")
+})
+
 
 ###############################################################################

@@ -180,6 +180,48 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 
 
 ###############################################################################
+### Adapted from the sf package, https://github.com/r-spatial/sf/blob/master/R/graticule.R
+degreeLabelsNS_sf = function(x) {
+  pos = sign(x) + 2
+  dir = c("~S", "", "~N")
+  paste0(abs(x), "*degree", dir[pos])
+}
+
+degreeLabelsEW_sf = function(x) {
+  x <- ifelse(x > 180, x - 360, x)
+  pos = sign(x) + 2
+  if (any(x == -180))
+    pos[x == -180] = 2
+  if (any(x == 180))
+    pos[x == 180] = 2
+  dir = c("~W", "", "~E")
+  paste0(abs(x), "*degree", dir[pos])
+}
+
+### Based off of st_graticule, for generating coordinates
+preview_ll_axes <- function(x) {
+  stopifnot(inherits(x, c("sf", "sfc")))
+
+  bb <- st_bbox(x)
+  lon <- pretty(bb[c(1, 3)], n = 4)
+  lat <- pretty(bb[c(2, 4)], n = 4)
+
+  if (st_is_longlat(x)) {
+    lon.label <- degreeLabelsEW_sf(lon)
+    lat.label <- degreeLabelsNS_sf(lat)
+  } else {
+    lon.label <- lon
+    lat.label <- lat
+  }
+
+  stopifnot(length(lon.label) == length(lon), length(lat.label) == length(lat))
+
+  data.frame(lon, lon.label, lat, lat.label, stringsAsFactors = FALSE)
+}
+
+
+
+###############################################################################
 # Generate plot of sf object
 preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
                        axis.cex, main.cex) {
@@ -191,7 +233,7 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
     plot(
       sdm.ll[data.name], axes = TRUE, border = NA,
       breaks = b.model, pal = col.pal, key.pos = NULL, reset = FALSE,
-      main = title.ll, cex.main = main.cex, cex.axis = axis.cex
+      main = title.ll, cex.main = main.cex, xaxt = "n", yaxt = "n"
     )
 
   } else {
@@ -203,14 +245,25 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
     plot(
       sdm.ll[data.name], axes = TRUE, border = NA,
       breaks = b.model, pal = col.pal, key.pos = NULL, reset = FALSE,
-      main = title.ll, cex.main = main.cex, cex.axis = axis.cex
+      main = title.ll, cex.main = main.cex, xaxt = "n", yaxt = "n"
     )
   }
 
+  # Plot axes
+  z <- preview_ll_axes(sdm.ll)
+  if (st_is_longlat(sdm.ll)) {
+    axis(1, at = z$lon, labels = parse(text = z$lon.label), cex.axis = axis.cex)
+    axis(2, at = z$lat, labels = parse(text = z$lat.label), cex.axis = axis.cex)
+
+  } else {
+    axis(1, at = z$lon, labels = z$lon.label, cex.axis = axis.cex)
+    axis(2, at = z$lat, labels = z$lat.label, cex.axis = axis.cex)
+  }
+
+  # Plot NA polys
   if (anyNA(data.vec)) {
     sdm.na <- st_geometry(sdm.ll)[is.na(data.vec)]
     plot(sdm.na, add = TRUE, border = NA, col = "gray")
-
   }
 }
 
