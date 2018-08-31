@@ -119,6 +119,7 @@ output$ens_download_preview_execute <- downloadHandler(
         pf.dim1 <- pf.dim2 <- 8
       }
 
+
       #-------------------------------------------------------------
       plot.res <- ifelse(input$ens_download_preview_res == "1", 300, 72)
       pdf.res  <- ifelse(input$ens_download_preview_res == "1", 15, 7)
