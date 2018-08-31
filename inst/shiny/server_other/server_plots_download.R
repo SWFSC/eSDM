@@ -7,6 +7,7 @@ output$model_download_preview_execute <- downloadHandler(
     withProgress(message = "Downloading preview", value = 0.6, {
       #-------------------------------------------------------------
       perc.num <- as.numeric(input$model_download_preview_perc)
+      if (perc.num == 1) pal.download <- pal.esdm else pal.download <- pal.esdm.alt
       models.idx <- as.numeric(input$models_loaded_table_rows_selected)
       models.num <- length(models.idx)
 
@@ -21,6 +22,14 @@ output$model_download_preview_execute <- downloadHandler(
       plot.dims <- multiplot_download(models.num)
 
 
+      # browser()
+      # print(paste(
+      #   req(session$clientData$output_model_preview_plot_width),
+      #   req(session$clientData$output_model_preview_plot_height),
+      #   collapse = " - "
+      # ))
+
+
       #-------------------------------------------------------------
       plot.res <- ifelse(input$model_download_preview_res == "1", 300, 72)
       pdf.res  <- ifelse(input$model_download_preview_res == "1", 15, 7)
@@ -29,11 +38,11 @@ output$model_download_preview_execute <- downloadHandler(
 
       #-------------------------------------------------------------
       if (plot.format == 1) {
-        jpeg(file, width = 4, height = 4, units = 'in', res = plot.res,
+        jpeg(file, width = 8, height = 8, units = 'in', res = plot.res,
              quality = 150)
         multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
-          perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
+          perc.num, pal.download, leg.perc.esdm, plot.dims[1], plot.dims[2],
           plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6],
           plot.dims[7:10]
         )
@@ -43,17 +52,17 @@ output$model_download_preview_execute <- downloadHandler(
         pdf(file, width = pdf.res, height = pdf.res)
         multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
-          perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
+          perc.num, pal.download, leg.perc.esdm, plot.dims[1], plot.dims[2],
           plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6],
           plot.dims[7:10]
         )
         dev.off()
 
       } else if (plot.format == 3) {
-        png(file, width = 4, height = 4, units = "in", res = plot.res)
+        png(file, width = 8, height = 8, units = "in", res = plot.res)
         multiplot_layout(
           models.toplot, rep("Pred", models.num), plot.titles,
-          perc.num, pal.esdm, leg.perc.esdm, plot.dims[1], plot.dims[2],
+          perc.num, pal.download, leg.perc.esdm, plot.dims[1], plot.dims[2],
           plot.dims[3], plot.dims[4], plot.dims[5], plot.dims[6],
           plot.dims[7:10]
         )

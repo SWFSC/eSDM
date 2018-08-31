@@ -49,25 +49,30 @@ multiplot_download <- function(x) {
   )
   plot.nrow <- case_when(
     x == 1 ~ 1,
-    x <= 4 ~ 2,
+    x <= 6 ~ 2,
     x <= 9 ~ 3,
     TRUE ~ ceiling(sqrt(x))
   )
 
   axis.cex.curr <- case_when(
-    x == 1 ~ 0.8,
-    x <= 4 ~ 0.6,
-    TRUE ~ 0.6
-  )
-  main.cex.curr <- case_when(
-    x == 1 ~ 0.8,
-    x == 2 ~ 0.6,
-    TRUE ~ 0.4
+    x == 1 ~ 1.2,
+    x <= 4 ~ 1.3,
+    TRUE ~ 1.0
   )
 
-  leg.lcm <- 2.9
-  leg.txt.cex <- 0.7
-  leg.mai <- c(0.3, 0, 0.2, 1)
+  main.cex.curr <- case_when(
+    x == 1 ~ 1.0,
+    x == 2 ~ 1.3,
+    TRUE ~ 1.3
+  )
+
+  leg.lcm <- 3.0
+  leg.txt.cex <- ifelse(x == 1, 0.8, 1.3)
+  if (x == 1) {
+    leg.mai <- c(0.42, 0, 0.24, 1)
+  } else {
+    leg.mai <- c(0.27, 0, 0.16, 1)
+  }
 
   c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex,
     leg.mai)

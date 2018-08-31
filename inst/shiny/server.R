@@ -82,14 +82,6 @@ server <- function(input, output, session) {
     ))
   })
 
-  observe({
-    print(paste(
-      req(session$clientData$output_model_preview_plot_width),
-      req(session$clientData$output_model_preview_plot_height),
-      collapse = " - "
-    ))
-  })
-
   #----------------------------------------------------------------------------
   # Source general and tab-specific server code
 
