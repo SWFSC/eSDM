@@ -4,29 +4,31 @@
 \alias{overlay_sdm}
 \title{Overlay SDM predictions onto base geometry}
 \usage{
-overlay_sdm(base.geom, sdm, overlap.perc, data.names)
+overlay_sdm(base.geom, sdm, sdm.idx, overlap.perc)
 }
 \arguments{
 \item{base.geom}{object of class \code{sfc}; base geometry}
 
 \item{sdm}{object of class \code{sf}; original SDM predictions}
 
-\item{overlap.perc}{numeric; percentage of each base polygon that must intersect with \code{sdm} for overlaid density value to be kept}
+\item{sdm.idx}{names or indices of column(s) with data to be overlaid}
 
-\item{data.names}{names or indices of column(s) with data to be overlaid}
+\item{overlap.perc}{numeric; percent overlap threshold,
+i.e. percentage of each base geometry polygon must overlap with SDM polygons
+for overlaid density value to be calculated and not set as NA}
 }
 \value{
 Object of class \code{sf} with the geometry of \code{base.geom} and
-  the specified values of \code{sdm} overalid onto that geometry
+  the data in the \code{sdm.idx} columns of \code{sdm} overlaid onto that geometry
 }
 \description{
-Overlay SDM predictions onto base geometry
+Overlay specfied SDM predictions that meet the percent overlap threshold requirement onto base geometry
 }
 \details{
-TODO - copy from paper?
+See *paper reference* for details about the overlay process
 }
 \examples{
-overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, 1)
-overlay_sdm(sf::st_geometry(preds.2), preds.1, 50, c("Density", "Density2"))
+overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
+overlay_sdm(sf::st_geometry(preds.2), preds.1, c("Density", "Density2"), 50)
 
 }

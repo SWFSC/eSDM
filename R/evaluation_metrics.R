@@ -3,11 +3,11 @@
 #' Calculate AUC, TSS, and RMSE for given density predictions and validation data
 #'
 #' @param x object of class sf; SDM predictions
-#' @param y object of class sf; validation data
 #' @param x.idx name or index of column in \code{x} with prediction values
+#' @param y object of class sf; validation data
 #' @param y.idx name or index of column in \code{y} with validation data
-#' @param count.flag logical; if \code{TRUE} the data in column \code{y.idx} is count data,
-#'   and if \code{FALSE} the data in column \code{y.idx} is presence/absence
+#' @param count.flag logical; \code{TRUE} indicates that the data in column \code{y.idx} is count data,
+#'   while \code{FALSE} indicates that the data is presence/absence
 #'
 #' @importFrom ROCR performance
 #' @importFrom ROCR prediction
@@ -18,19 +18,21 @@
 #' @details If \code{count.flag == TRUE}, then \code{eSDM::model_abundance(x, x.idx, FALSE)} will be run
 #'   to calculate predicted abundance and thus calculate RMSE.
 #'   Note that this assumes the data in column \code{x.idx} of \code{x} are density values.
-#'   If \code{count.flag == FALSE}, then all of the values in column \code{x.idx} of \code{x} must be \code{0} or \code{1}.
+#'
+#'   If \code{count.flag == FALSE}, then all of the values in column \code{y.idx} of \code{y} must be \code{0} or \code{1}.
+#'
 #'   All rows of \code{x} with a value of \code{NA} in column \code{x.idx} are removed within the function
 #'
 #' @return A numeric vector with AUC, TSS and RMSE values, respectively.
 #'   If \code{count.flag == FALSE}, the RMSE value will be \code{NA}
 #'
 #' @examples
-#' evaluation_metrics(preds.1, validation.data, 1, "sight")
+#' evaluation_metrics(preds.1, 1, validation.data, "sight")
 #'
-#' evaluation_metrics(preds.1, validation.data, 1, "count", TRUE)
+#' evaluation_metrics(preds.1, "Density", validation.data, "count", TRUE)
 #'
 #' @export
-evaluation_metrics <- function(x, y, x.idx, y.idx, count.flag = FALSE) {
+evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   #------------------------------------------------------------------
   if (!all(sapply(list(x, y), inherits, "sf"))) {
     stop("x and y must both be objects of class sf")

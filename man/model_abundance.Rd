@@ -12,19 +12,20 @@ model_abundance(x, dens.idx, sum.abund = TRUE)
 \item{dens.idx}{name or index of column(s) in \code{x} with density predictions.
 Can be a character vector (column names) or numeric vector (column indices)}
 
-\item{sum.abund}{logical; if \code{TRUE} return the total predicted abundance and
-if \code{FALSE} the abundance for for each prediction polygon}
+\item{sum.abund}{logical; whether or not to sum all of the predicted abundances}
 }
 \value{
 If \code{sum.abund == TRUE}, then a vector of the same length as \code{dens.idx}
   representing the predicted abundance for the density values in each column.
+
   If \code{sum.abund == FALSE} and the length of \code{dens.idx} is 1,
   then a numeric vector with the predicted abundance of each prediction polygon of \code{x}.
+
   If \code{sum.abund == FALSE} and the length of \code{dens.idx} is greater than 1,
   then a data frame with \code{length(dens.idx)} columns of the predicted abundance of prediction polygons
 }
 \description{
-Calculates the predicted abundance by multiplying the density predictions by prediction polygon areas
+Calculates the predicted abundance by multiplying the density prediction values by prediction polygon areas
 }
 \details{
 Multiplies the values in the specified column(s) (i.e. the density predictions)

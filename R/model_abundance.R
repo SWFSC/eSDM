@@ -1,12 +1,11 @@
 #' Calculate predicted abundance
 #'
-#' Calculates the predicted abundance by multiplying the density predictions by prediction polygon areas
+#' Calculates the predicted abundance by multiplying the density prediction values by prediction polygon areas
 #'
 #' @param x object of class \code{sf}; SDM with density predictions
 #' @param dens.idx name or index of column(s) in \code{x} with density predictions.
 #'   Can be a character vector (column names) or numeric vector (column indices)
-#' @param sum.abund logical; if \code{TRUE} return the total predicted abundance and
-#'  if \code{FALSE} the abundance for for each prediction polygon
+#' @param sum.abund logical; whether or not to sum all of the predicted abundances
 #'
 #' @importFrom dplyr %>%
 #' @importFrom purrr set_names
@@ -19,8 +18,10 @@
 #'
 #' @return If \code{sum.abund == TRUE}, then a vector of the same length as \code{dens.idx}
 #'   representing the predicted abundance for the density values in each column.
+#'
 #'   If \code{sum.abund == FALSE} and the length of \code{dens.idx} is 1,
 #'   then a numeric vector with the predicted abundance of each prediction polygon of \code{x}.
+#'
 #'   If \code{sum.abund == FALSE} and the length of \code{dens.idx} is greater than 1,
 #'   then a data frame with \code{length(dens.idx)} columns of the predicted abundance of prediction polygons
 #'
@@ -33,7 +34,7 @@
 model_abundance <- function(x, dens.idx, sum.abund = TRUE) {
   stopifnot(
     inherits(x, "sf"),
-    inherits(dens.idx, c("character", "numeric")),
+    inherits(dens.idx, "character") | inherits(dens.idx, "numeric"),
     inherits(sum.abund, "logical")
   )
 

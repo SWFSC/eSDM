@@ -38,7 +38,7 @@ Rescale specified columns for each element in a list of SDM predictions
 }
 \examples{
 x <- list(
-  preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, "Density")
+  preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
 )
 ensemble_rescale(x, c("Density", "Density.overlaid"), "abundance", 50)
 ensemble_rescale(x, c(1, 1), "normalization")

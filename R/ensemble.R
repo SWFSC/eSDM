@@ -30,7 +30,7 @@
 #'
 #' @examples
 #' x <- list(
-#'   preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, "Density")
+#'   preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
 #' )
 #' ensemble_rescale(x, c("Density", "Density.overlaid"), "abundance", 50)
 #' ensemble_rescale(x, c(1, 1), "normalization")
@@ -96,7 +96,7 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
 #' Create weighted or unweighted ensemble of SDM predictions
 #'
 #' @param x list of objects of class \code{sf}, all of which must have the same geometry
-#' @param x.pred.idx vector of names or column indices giving the predictions column for each element of\code{x};
+#' @param x.pred.idx vector of names or column indices giving the predictions column for each element of \code{x};
 #'   must be the same length as \code{x}
 #' @param y ensembling method; one of: "unweighted", "weighted"
 #' @param y.weights either a numeric vector the same length as \code{x} or
@@ -122,7 +122,7 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
 #'
 #' @examples
 #' x <- list(
-#'   preds.1, preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, "Density")
+#'   preds.1, preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
 #' )
 #' ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "unweighted")
 #' ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "weighted", c(0.5, 1, 0.8))

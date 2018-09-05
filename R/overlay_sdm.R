@@ -1,11 +1,13 @@
 #' Overlay SDM predictions onto base geometry
 #'
-#' Overlay SDM predictions onto base geometry
+#' Overlay specfied SDM predictions that meet the percent overlap threshold requirement onto base geometry
 #'
 #' @param base.geom object of class \code{sfc}; base geometry
 #' @param sdm object of class \code{sf}; original SDM predictions
-#' @param overlap.perc numeric; percentage of each base polygon that must intersect with \code{sdm} for overlaid density value to be kept
-#' @param data.names names or indices of column(s) with data to be overlaid
+#' @param sdm.idx names or indices of column(s) with data to be overlaid
+#' @param overlap.perc numeric; percent overlap threshold,
+#'   i.e. percentage of each base geometry polygon must overlap with SDM polygons
+#'   for overlaid density value to be calculated and not set as NA
 #'
 #' @importFrom dplyr %>%
 #' @importFrom dplyr arrange
@@ -26,17 +28,17 @@
 #' @importFrom rlang .data
 #' @importFrom rlang sym
 #'
-#' @details TODO - copy from paper?
+#' @details See *paper reference* for details about the overlay process
 #'
 #' @return Object of class \code{sf} with the geometry of \code{base.geom} and
-#'   the specified values of \code{sdm} overalid onto that geometry
+#'   the data in the \code{sdm.idx} columns of \code{sdm} overlaid onto that geometry
 #'
 #' @examples
-#' overlay_sdm(sf::st_geometry(preds.1), preds.2, 50, 1)
-#' overlay_sdm(sf::st_geometry(preds.2), preds.1, 50, c("Density", "Density2"))
+#' overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
+#' overlay_sdm(sf::st_geometry(preds.2), preds.1, c("Density", "Density2"), 50)
 #'
 #' @export
-overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
+overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   #----------------------------------------------------------------------------
   # 0) Check that inputs meet requirements
   if (!inherits(base.geom, "sfc")) {
@@ -49,7 +51,7 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   }
   stopifnot(
     st_crs(base.geom) == st_crs(sdm),
-    all(data.names %in% names(sdm)) | inherits(data.names, "numeric")
+    all(sdm.idx %in% names(sdm)) | inherits(sdm.idx, "numeric")
   )
   if (identical(base.geom, st_geometry(sdm))) {
     warning("'base.geom' and 'sdm' have the same geometry and thus ",
@@ -74,11 +76,11 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
     base.idx = 1:length(base.geom), base.geom, agr = "constant"
   )
 
-  if (inherits(data.names, "numeric")) data.names <- names(sdm)[data.names]
+  if (inherits(sdm.idx, "numeric")) sdm.idx <- names(sdm)[sdm.idx]
 
   sdm <- sdm %>%
-    select(data.names) %>%
-    filter(!is.na(!!sym(data.names[1]))) %>%
+    select(sdm.idx) %>%
+    filter(!is.na(!!sym(sdm.idx[1]))) %>%
     st_set_agr("constant")
   sdm <- st_set_agr(suppressMessages(st_crop(sdm, st_bbox(base.geom))), "constant")
   # ^ not tidied so that suppressMessages() can be used
@@ -94,7 +96,7 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
 
   int <- int[as.numeric(st_area(int)) > 1, ]
   if (nrow(int) == 0) {
-    stop("No 'base.geom' and 'sdm' polygons with non-na data.names[1] values ",
+    stop("No 'base.geom' and 'sdm' polygons with non-na sdm.idx[1] values ",
          "overlap")
   }
   stopifnot(all(!is.na(st_set_geometry(sdm, NULL)[, 1])))
@@ -106,7 +108,7 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   int.df <- st_set_geometry(int, NULL) %>%
     mutate(int.area.km = as.numeric(st_area(int)) / 1e+06)
 
-  new.abund.list <- lapply(data.names, function(i){
+  new.abund.list <- lapply(sdm.idx, function(i){
     by(int.df[, c(i, "int.area.km")], int.df$base.idx,
        function(j) sum(j[, 1] * j[, 2])
     )
@@ -116,7 +118,7 @@ overlay_sdm <- function(base.geom, sdm, overlap.perc, data.names) {
   # ^ unique(int.df$base.idx) output is of class integer
 
   new.abund.df <- as.data.frame(lapply(new.abund.list, as.numeric)) %>%
-    set_names(paste0(data.names, ".overlaid"))
+    set_names(paste0(sdm.idx, ".overlaid"))
 
 
   #----------------------------------------------------------------------------

@@ -4,19 +4,19 @@
 \alias{evaluation_metrics}
 \title{Evaluation metrics}
 \usage{
-evaluation_metrics(x, y, x.idx, y.idx, count.flag = FALSE)
+evaluation_metrics(x, x.idx, y, y.idx, count.flag = FALSE)
 }
 \arguments{
 \item{x}{object of class sf; SDM predictions}
 
-\item{y}{object of class sf; validation data}
-
 \item{x.idx}{name or index of column in \code{x} with prediction values}
+
+\item{y}{object of class sf; validation data}
 
 \item{y.idx}{name or index of column in \code{y} with validation data}
 
-\item{count.flag}{logical; if \code{TRUE} the data in column \code{y.idx} is count data,
-and if \code{FALSE} the data in column \code{y.idx} is presence/absence}
+\item{count.flag}{logical; \code{TRUE} indicates that the data in column \code{y.idx} is count data,
+while \code{FALSE} indicates that the data is presence/absence}
 }
 \value{
 A numeric vector with AUC, TSS and RMSE values, respectively.
@@ -29,12 +29,14 @@ Calculate AUC, TSS, and RMSE for given density predictions and validation data
 If \code{count.flag == TRUE}, then \code{eSDM::model_abundance(x, x.idx, FALSE)} will be run
   to calculate predicted abundance and thus calculate RMSE.
   Note that this assumes the data in column \code{x.idx} of \code{x} are density values.
-  If \code{count.flag == FALSE}, then all of the values in column \code{x.idx} of \code{x} must be \code{0} or \code{1}.
+
+  If \code{count.flag == FALSE}, then all of the values in column \code{y.idx} of \code{y} must be \code{0} or \code{1}.
+
   All rows of \code{x} with a value of \code{NA} in column \code{x.idx} are removed within the function
 }
 \examples{
-evaluation_metrics(preds.1, validation.data, 1, "sight")
+evaluation_metrics(preds.1, 1, validation.data, "sight")
 
-evaluation_metrics(preds.1, validation.data, 1, "count", TRUE)
+evaluation_metrics(preds.1, "Density", validation.data, "count", TRUE)
 
 }

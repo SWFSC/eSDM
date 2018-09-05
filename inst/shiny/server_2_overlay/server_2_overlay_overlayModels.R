@@ -164,7 +164,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       } else {
         # SDM being overlaid has a DIFFERENT geometry than the base
         temp <- try( #overlay.sdm() crops 'sdm' to bbox of 'base.sfc'
-          eSDM::overlay_sdm(base.sfc, sdm, overlap.perc, c("Pred", "Weight")),
+          eSDM::overlay_sdm(base.sfc, sdm, c("Pred", "Weight"), overlap.perc),
           silent = TRUE
         )
 

@@ -129,11 +129,11 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 
       if (vals$eval.data.specs[2] == 1) {
         suppressMessages(
-          eSDM::evaluation_metrics(m, eval.data, names(m)[1], "count", TRUE)
+          eSDM::evaluation_metrics(m, names(m)[1], eval.data, "count", TRUE)
         )
       } else {
         suppressMessages(
-          eSDM::evaluation_metrics(m2, eval.data, names(m)[1], "sight")
+          eSDM::evaluation_metrics(m2, names(m)[1], eval.data, "sight")
         )
       }
     }, models.toeval, seq_along(models.toeval), SIMPLIFY = TRUE)
