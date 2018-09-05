@@ -160,8 +160,8 @@ make_poly_valid <- function(poly.invalid, dens.col = NA, poly.info = NA, message
 ###############################################################################
 # Create sfc object from data frame (from csv) with only long and lat,
 #   respectively, as columns. crs set as crs.prov
-pts_to_sfc_coords_shiny <- function(x, crs.prov, progress.detail) {
-  obj.sfc <- try(eSDM::pts_to_sfc_coords(x, crs.prov), silent = TRUE)
+pts_to_sfc_vertices_shiny <- function(x, crs.prov, progress.detail) {
+  obj.sfc <- try(eSDM::pts_to_sfc_vertices(x, crs.prov), silent = TRUE)
 
   validate(
     need(inherits(obj.sfc, "sfc"),

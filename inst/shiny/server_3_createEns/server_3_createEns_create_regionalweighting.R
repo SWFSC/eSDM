@@ -346,7 +346,7 @@ create_ens_reg_csv_process <- reactive({
     csv.poly.data <- csv.poly.list[[2]]
     csv.poly.data[csv.poly.data == ""] <- NA
 
-    csv.poly.sfc <- pts_to_sfc_coords_shiny(csv.poly.data[, 1:2], crs.ll, TRUE)
+    csv.poly.sfc <- pts_to_sfc_vertices_shiny(csv.poly.data[, 1:2], crs.ll, TRUE)
     incProgress(0.3)
 
     # Transform weight polygon as necesary

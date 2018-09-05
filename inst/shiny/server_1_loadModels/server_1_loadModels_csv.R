@@ -195,7 +195,7 @@ create_sf_csv_sfc <- reactive({
     ### c) Convert points to a list of sfc_POLYGONs and then to a sf object
     # Make sf object
     sfc.poly <- try(
-      eSDM::pts_to_sfc_grid(csv.data, cell.lw / 2, crs.ll),
+      eSDM::pts_to_sfc_centroids(csv.data, cell.lw / 2, crs.ll),
       silent = TRUE
     )
     validate(

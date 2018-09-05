@@ -87,7 +87,7 @@ overlay_land_csv <- reactive({
   withProgress(message = 'Loading land polygon', value = 0.7, {
     Sys.sleep(0.5)
 
-    land.sfc <- pts_to_sfc_coords_shiny(csv.df[, 1:2], crs.ll, TRUE)
+    land.sfc <- pts_to_sfc_vertices_shiny(csv.df[, 1:2], crs.ll, TRUE)
     incProgress(0.3)
   })
 

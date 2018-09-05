@@ -169,7 +169,7 @@ pretty_addobj_own_csv_process <- reactive({
 
   } else {
     # Polygon(s)
-    csv.sfc <- pts_to_sfc_coords_shiny(csv.data[, 1:2], crs.ll, FALSE)
+    csv.sfc <- pts_to_sfc_vertices_shiny(csv.data[, 1:2], crs.ll, FALSE)
     # ^ checks dateline and validity
   }
 
