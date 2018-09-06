@@ -57,15 +57,6 @@ output$save_app_envir <- downloadHandler(
 # Load data
 
 #------------------------------------------------------------------------------
-observeEvent(input$tabs, val.tabs(TRUE), ignoreInit = TRUE)
-
-observeEvent(input$workspace_load, {
-  removeModal()
-  val.load(!val.load())
-})
-
-
-#------------------------------------------------------------------------------
 observeEvent(input$load_app_envir_file, {
   req(input$load_app_envir_file)
 
@@ -74,7 +65,13 @@ observeEvent(input$load_app_envir_file, {
   temp <- file.load.ext %in% c(".RDATA", ".RData") &
     input$load_app_envir_file$type == ""
 
-  if (val.tabs() | !temp) {
+  if (temp) {
+    load(file.load$datapath)
+    temp <- exists("vals.save")
+  }
+
+  # If either
+  if (length(vals$models.ll) > 0 || !temp) {
     showModal(load_workspace_modal(failed = !temp))
   } else {
     val.load(!val.load())
@@ -86,11 +83,11 @@ observeEvent(input$load_app_envir_file, {
 load_workspace_modal <- function(failed = FALSE) {
   if (failed) {
     modalDialog(
-      tags$strong("Error: Please load a file with the extension '.RDATA' or '.RData'",
-                  "and ensure that this file contains a workspace saved using the eSDM GUI",
+      tags$strong("Error: Please load a file with the extension '.RDATA' or '.RData'.",
+                  "This file must contain a workspace saved using the eSDM GUI",
                   style = "color: red;"),
       tags$br(),
-      footer = tagList(modalButton("Cancel"))
+      footer = tagList(actionButton("workspace_cancel", "Cancel"))
     )
 
   } else {
@@ -102,12 +99,26 @@ load_workspace_modal <- function(failed = FALSE) {
               "file, click 'Proceed'"),
 
       footer = tagList(
-        modalButton("Cancel"),
+        actionButton("workspace_cancel", "Cancel"),
         actionButton("workspace_load", "Proceed")
       )
     )
   }
 }
+
+
+#------------------------------------------------------------------------------
+# Actions after modal
+observeEvent(input$workspace_cancel, {
+  removeModal()
+  shinyjs::reset("load_app_envir_file")
+})
+
+observeEvent(input$workspace_load, {
+  removeModal()
+  val.load(!val.load())
+})
+
 
 
 #------------------------------------------------------------------------------

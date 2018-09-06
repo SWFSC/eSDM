@@ -7,7 +7,7 @@
 
 # Load workspace
 ### Clicked to other tabs
-val.tabs <- reactiveVal(value = FALSE)
+# val.tabs <- reactiveVal(value = FALSE)
 ### Flag used while loading saved workspace
 val.load <- reactiveVal(value = FALSE)
 val.workspace <- reactiveVal(value = list())

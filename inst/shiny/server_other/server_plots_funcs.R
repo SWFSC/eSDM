@@ -284,44 +284,43 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
   }
 
   data.vec <- st_set_geometry(sdm.ll[data.name], NULL)[, 1]
+  data.vec.w <- if (ncol(sdm.ll) > 2) st_set_geometry(sdm.ll, NULL)[, 2] else NA
   stopifnot(is.numeric(data.vec))
   sdm.cent <- suppressWarnings(st_centroid(st_combine(sdm.ll))[[1]])
 
-  #--------------------------------------------------------
+
+  #----------------------------------------------------------------------------
   # Common parts of leaflet map
   leaf.map <- leaflet(sdm.ll) %>%
     addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
     addTiles(group = "OpenStreetMap") %>%
     addProviderTiles(providers$Esri.WorldImagery, group = "ESRI Topo") %>%
-    addControl(
-      tags$h5(title.ll), layerId = "SDM name", position = "bottomleft") %>%
-    addLayersControl(
-      baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
-      position = "bottomright",
-      options = layersControlOptions(collapsed = FALSE)) %>%
-    setView(
-      lng = sdm.cent[1], lat = sdm.cent[2], zoom = 5)
+    addControl(tags$h5(title.ll), layerId = "SDM name", position = "bottomleft") %>%
+    setView(lng = sdm.cent[1], lat = sdm.cent[2], zoom = 5)
 
   if (requireNamespace("mapview", quietly = TRUE)) {
     leaf.map <- leaf.map %>% mapview::addMouseCoordinates(style = "basic")
   }
 
-  #--------------------------------------------------------
-  # perc-specific parts of leaflet map
+
+  #----------------------------------------------------------------------------
   if (perc == 1) {
+    # Color prediction based on relative percentages
     b.model <- breaks_calc(data.vec)
     binpal <- colorBin(col.pal, data.vec, bins = b.model, na.color = "gray")
 
-    leaf.map %>%
+    leaf.map <- leaf.map %>%
       addPolygons(
-        stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8) %>%
+        stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8, group = "Predictions") %>%
       addLegend(
         "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
-        labels = c(rev(leg.labels), "NA"), opacity = 1)
+        labels = c(rev(leg.labels), "NA"), opacity = 1, group = "Predictions")
 
   } else {
-    binpal <- colorBin(col.pal, data.vec, bins = 10, pretty = FALSE,
-                       na.color = "gray")
+    # Color predictions based on actual values
+    binpal <- colorBin(
+      col.pal, data.vec, bins = 10, pretty = FALSE, na.color = "gray"
+    )
     data.breaks.vals <- format(round(seq(
       max(data.vec, na.rm = TRUE), min(data.vec, na.rm = TRUE), length.out = 11
     ), 3), justify = "right")
@@ -329,15 +328,50 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
       data.breaks.vals[2:11], "-", data.breaks.vals[1:10]
     )
 
-    leaf.map %>%
+    leaf.map <- leaf.map %>%
       addPolygons(
-        stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8) %>%
+        stroke = FALSE, color = ~binpal(data.vec), fillOpacity = 0.8, group = "Predictions") %>%
       addLegend(
         "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
-        labels = c(data.breaks.labs, "NA") , opacity = 1)
-    # addLegend(
-    #   "topright", title = leg.title, pal = binpal, values = ~data.vec,
-    #   opacity = 1)
+        labels = c(data.breaks.labs, "NA"), opacity = 1, group = "Predictions")
+  }
+
+
+  #----------------------------------------------------------------------------
+  if (all(is.na(data.vec.w))) {
+    # No weight data; include message
+    leaf.map %>%
+      addControl(
+        tags$h5("No weight data"), layerId = "Weight info", position = "bottomright") %>%
+      addLayersControl(
+        baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
+        position = "bottomright", options = layersControlOptions(collapsed = FALSE))
+
+
+  } else {
+    # Incldue weight data
+    pal.w <- viridis::viridis(10)
+    binpal <- colorBin(
+      pal.w, data.vec.w, bins = 10, pretty = FALSE, na.color = "gray"
+    )
+    data.breaks.vals.w <- format(round(seq(
+      max(data.vec.w, na.rm = TRUE), min(data.vec.w, na.rm = TRUE), length.out = 11
+    ), 3), justify = "right")
+    data.breaks.labs.w <- paste(
+      data.breaks.vals.w[2:11], "-", data.breaks.vals.w[1:10]
+    )
+
+    leaf.map %>%
+      addPolygons(
+        stroke = FALSE, color = ~binpal(data.vec.w), fillOpacity = 0.6, group = "Weights") %>%
+      addLegend(
+        "topright", title = "Weights", colors = rev(pal.w),
+        labels = data.breaks.labs.w, opacity = 1, group = "Weights") %>%
+      addLayersControl(
+        baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
+        overlayGroups = c("Predictions", "Weights"),
+        position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
+      hideGroup("Weights")
   }
 }
 
