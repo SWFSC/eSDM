@@ -129,10 +129,10 @@ ui.createEns <- function() {
                                  "Weight specified overlaid predictions in desired region(s) before creating the ensemble"),
                         helpText(tags$strong("Weight polygon(s)"),
                                  "Import and assign weight polygon(s) to overlaid predictions.",
-                                 "Weight polygons designate area(s) in which the specified predictions will be weighted.",
+                                 "Area(s) of the specified predictions that intersect with the imported weight polygon will be weighted.",
                                  "You can only assign one weight per weight polygon, but you may import and assign",
-                                 "multiple polygons to apply unique weights to different prediction regions.",
-                                 "Weight polygons may not overlap.",
+                                 "multiple polygons to apply unique weights to different regions.",
+                                 "However, weight polygons must not overlap.", tags$br(),
                                  "All predictions not assigned a weight polygon will not be weighted."),
                         uiOutput("create_ens_reg_model_uiOut_selectize"),
                         selectInput("create_ens_reg_type", tags$h5("Weight polygon file type"),
@@ -145,18 +145,17 @@ ui.createEns <- function() {
                           condition = "input.create_ens_reg_type == 1",
                           ui.instructions.upload.csv(),
                           ui.instructions.poly.csv.single(),
-                          ui.instructions.ens.weightpoly0(),
+                          ui.instructions.ens.weightpolyNA(),
                           fluidRow(
-                            column(6, fileInput("create_ens_reg_csv_file", label.csv.upload, accept = ".csv")),
                             column(
-                              width = 4, offset = 1,
+                              width = 6, fileInput("create_ens_reg_csv_file", label.csv.upload, accept = ".csv")),
+                            column(
+                              width = 5, offset = 1,
+                              checkboxInput("create_ens_reg_csv_weight_na", "Use 'NA' as weight", value = FALSE),
                               conditionalPanel(
-                                condition = "output.create_ens_reg_csv_flag == false",
-                                tags$br(), tags$br(),
-                                ui.error.upload.csv
-                              ),
-                              numericInput("create_ens_reg_csv_weight", tags$h5("Weight for csv polygon(s)"),
-                                           min = 0, value = 1, step = 0.1)
+                                condition = "input.create_ens_reg_csv_weight_na == false",
+                                numericInput("create_ens_reg_csv_weight", tags$h5("Weight"), min = 0, value = 1, step = 0.1)
+                              )
                             )
                           )
                         ),
@@ -164,44 +163,43 @@ ui.createEns <- function() {
                         conditionalPanel(
                           condition = "input.create_ens_reg_type == 2",
                           ui.instructions.upload.raster(),
-                          ui.instructions.ens.weightpoly0(),
+                          ui.instructions.ens.weightpolyNA(),
                           fluidRow(
-                            column(
-                              width = 6,
-                              fileInput("create_ens_reg_raster_file", label.raster.upload, accept = ".tif"),
-                              conditionalPanel("output.create_ens_reg_raster_flag == false", ui.error.upload.raster)
-                            ),
+                            column(6, fileInput("create_ens_reg_raster_file", label.raster.upload, accept = ".tif")),
                             column(
                               width = 5, offset = 1,
-                              numericInput("create_ens_reg_raster_weight", tags$h5("Weight for area covered by raster"),
-                                           value = 1, min = 0, step = 0.1)
+                              checkboxInput("create_ens_reg_raster_weight_na", "Use 'NA' as weight", value = FALSE),
+                              conditionalPanel(
+                                condition = "input.create_ens_reg_raster_weight_na == false",
+                                numericInput("create_ens_reg_raster_weight", tags$h5("Weight"), value = 1, min = 0, step = 0.1)
+                              )
                             )
-                          )
+                          ),
+                          conditionalPanel("output.create_ens_reg_raster_flag == false", ui.error.upload.raster)
                         ),
                         ############## File type: shp
                         conditionalPanel(
                           condition = "input.create_ens_reg_type == 3",
                           ui.instructions.upload.shp(),
-                          ui.instructions.ens.weightpoly0(),
+                          ui.instructions.ens.weightpolyNA(),
                           fluidRow(
-                            column(
-                              width = 6,
-                              fileInput("create_ens_reg_shp_files", label.shp.upload, multiple = TRUE),
-                              conditionalPanel("output.create_ens_reg_shp_flag == false", ui.error.upload.shp)
-                            ),
+                            column(6, fileInput("create_ens_reg_shp_files", label.shp.upload, multiple = TRUE)),
                             column(
                               width = 5, offset = 1,
-                              numericInput("create_ens_reg_shp_weight",
-                                           tags$h5("Weight for area covered by shapefile"),
-                                           value = 1, min = 0, step = 0.1)
+                              checkboxInput("create_ens_reg_shp_weight_na", "Use 'NA' as weight", value = FALSE),
+                              conditionalPanel(
+                                condition = "input.create_ens_reg_shp_weight_na == false",
+                                numericInput("create_ens_reg_shp_weight", tags$h5("Weight"), value = 1, min = 0, step = 0.1)
+                              )
                             )
-                          )
+                          ),
+                          conditionalPanel("output.create_ens_reg_shp_flag == false", ui.error.upload.shp)
                         ),
                         ############## File type: gdb
                         conditionalPanel(
                           condition = "input.create_ens_reg_type == 4",
                           ui.instructions.upload.gdb(),
-                          ui.instructions.ens.weightpoly0(),
+                          ui.instructions.ens.weightpolyNA(),
                           fluidRow(
                             column(
                               width = 6,
@@ -210,20 +208,19 @@ ui.createEns <- function() {
                               actionButton("create_ens_reg_gdb_load", label.gdb.upload)
                             ),
                             column(
-                              width = 6,
+                              width = 5, offset = 1,
+                              checkboxInput("create_ens_reg_gdb_weight_na", "Use 'NA' as weight", value = FALSE),
                               conditionalPanel(
-                                condition = "output.create_ens_reg_gdb_flag == false",
-                                ui.error.upload.gdb
-                              ),
-                              numericInput("create_ens_reg_gdb_weight",
-                                           tags$h5("Weight for area covered by file geodatabase file"),
-                                           value = 1, min = 0, step = 0.1)
+                                condition = "input.create_ens_reg_gdb_weight_na == false",
+                                numericInput("create_ens_reg_gdb_weight", tags$h5("Weight"), value = 1, min = 0, step = 0.1)
+                              )
                             )
-                          )
+                          ),
+                          conditionalPanel("output.create_ens_reg_gdb_flag == false", ui.error.upload.gdb)
                         ),
                         ############## General
                         sliderInput("create_ens_reg_coverage",
-                                    tags$h5("Percentage of prediction polygon that must be covered by the weight polygon(s)",
+                                    tags$h5("Percentage of prediction polygon that must intersect with the weight polygon(s)",
                                             "for the prediction polygon to be weighted.",
                                             "If '0' is selected then the prediction polygon will be weighted",
                                             "if there is any overlap."),
@@ -300,8 +297,10 @@ ui.createEns <- function() {
                                          "Calculate the weighted mean of all corresponding predictions"),
                                 helpText(tags$strong("Manual entry method:"),
                                          "Entered weights correspond to the order of the models in the overlaid predictions table.",
-                                         "Weights must be entered in the following format: 'weight, weight, ..., weight'."),
-                                uiOutput("create_ens_weight_manual_uiOut_text")
+                                         "Weights must be entered in the following format: 'weight, weight, ..., weight',",
+                                         "e.g. '1.0, 0.5, 0.7'."),
+                                uiOutput("create_ens_weight_manual_uiOut_text"),
+                                tags$span(uiOutput("create_ens_weight_manual_warning_uiOut_text"), style = "color: red;")
                               )
                             ),
                             ######################### Weighting by evaluation metric

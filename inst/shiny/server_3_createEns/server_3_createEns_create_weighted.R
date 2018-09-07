@@ -3,16 +3,25 @@
 
 ###############################################################################
 ###############################################################################
-# Weighted ensembling method 1: 'Weight all model predictions by manual entry'
+# Weighted ensembling method 1: 'Manual entry'
 
 ### Process text inputs for model weights
 create_ens_weights_num <- reactive({
-  models.weights.text <- input$create_ens_weight_manual
-  models.weights <- as.numeric(unlist(strsplit(models.weights.text, ", ")))
+  models.weights <- suppressWarnings(
+    as.numeric(unlist(strsplit(input$create_ens_weight_manual, ",")))
+  )
+
+  validate(
+    need(!anyNA(models.weights),
+         paste("Error: One or more of the weights was not recognized as",
+               "a number; please ensure that all of the weights are numbers",
+               "separated by a comma and a space"))
+  )
 
   models.num <- length(vals$overlaid.models)
-  if (input$create_ens_table_subset)
+  if (input$create_ens_table_subset) {
     models.num <- length(input$create_ens_datatable_rows_selected)
+  }
 
   # Validate weights input
   validate(
@@ -46,7 +55,7 @@ create_ens_weighted_manual <- reactive({
 
 ###############################################################################
 ###############################################################################
-# Weighted ensembling method 2: 'Weight all model predictions by metric'
+# Weighted ensembling method 2: 'Evaluation metric'
 
 ### Table of selected metrics
 create_ens_weights_metric_table <- reactive({
@@ -101,7 +110,7 @@ create_ens_weighted_metric <- reactive({
 
 ###############################################################################
 ###############################################################################
-# Weighted ensembling method 3: 'Use loaded spatial weights'
+# Weighted ensembling method 3: 'Pixel-level spatial weights'
 
 ### Vector of idx of selected overlaid models that have spatial weights
 create_ens_weights_pix_which <- reactive({

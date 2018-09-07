@@ -214,8 +214,9 @@ ui.notice.no.pred.overlaid <- function(box.width = 4) {
 
 
 ###############################################################################
-ui.instructions.ens.weightpoly0 <- function() {
-  helpText("A weight entry of '0' means that predictions within the weight polygon will be set to NA",
+ui.instructions.ens.weightpolyNA <- function() {
+  helpText("If the 'Use 'NA' as weight' box is checked, then the predictions",
+           "that intersect with the weight polygon will be set to NA",
            "and thus will not be included in the ensemble")
 }
 

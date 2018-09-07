@@ -198,7 +198,7 @@ create_ens_reg_add <- eventReactive(
       poly.filename <- create_ens_reg_csv_process()[[2]]
       poly.sfc      <- create_ens_reg_csv_process()[[1]]
       weight.val <- ifelse(
-        input$create_ens_reg_csv_weight == 0,
+        input$create_ens_reg_csv_weight_na,
         NA, input$create_ens_reg_csv_weight
       )
 
@@ -207,7 +207,7 @@ create_ens_reg_add <- eventReactive(
       poly.filename <- create_ens_reg_raster_read()[[2]]
       poly.sfc      <- create_ens_reg_raster_read()[[1]]
       weight.val <- ifelse(
-        input$create_ens_reg_raster_weight == 0,
+        input$create_ens_reg_raster_weight_na,
         NA, input$create_ens_reg_raster_weight
       )
 
@@ -216,7 +216,7 @@ create_ens_reg_add <- eventReactive(
       poly.filename <- create_ens_reg_shp_read()[[2]]
       poly.sfc      <- create_ens_reg_shp_read()[[1]]
       weight.val <- ifelse(
-        input$create_ens_reg_shp_weight == 0,
+        input$create_ens_reg_shp_weight_na,
         NA, input$create_ens_reg_shp_weight
       )
 
@@ -225,7 +225,7 @@ create_ens_reg_add <- eventReactive(
       poly.filename <- create_ens_reg_gdb_read()[[2]]
       poly.sfc      <- create_ens_reg_gdb_read()[[1]]
       weight.val <- ifelse(
-        input$create_ens_reg_gdb_weight == 0,
+        input$create_ens_reg_gdb_weight_na,
         NA, input$create_ens_reg_gdb_weight
       )
     }
@@ -347,6 +347,7 @@ create_ens_reg_csv_process <- reactive({
     csv.poly.data[csv.poly.data == ""] <- NA
 
     csv.poly.sfc <- pts_to_sfc_vertices_shiny(csv.poly.data[, 1:2], crs.ll, TRUE)
+    # ^ Performs check_dateline()
     incProgress(0.3)
 
     # Transform weight polygon as necesary

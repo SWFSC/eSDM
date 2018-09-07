@@ -64,7 +64,7 @@ output$create_ens_create_action_uiOut_button <- renderUI({
 # Method 1
 
 ### Weights for a manually weighted ensemble
-output$create_ens_weight_manual_uiOut_text <- renderUI ({
+output$create_ens_weight_manual_uiOut_text <- renderUI({
   models.num <- length(vals$overlaid.models)
 
   if (input$create_ens_table_subset) {
@@ -74,6 +74,27 @@ output$create_ens_weight_manual_uiOut_text <- renderUI ({
   text.val <- paste(rep("1.0", models.num), collapse = ", ")
   textInput("create_ens_weight_manual", tags$h5("Ensemble weights"),
             value = text.val, width = "40%")
+})
+
+### Warning for if any weights are > 1
+output$create_ens_weight_manual_warning_uiOut_text <- renderUI({
+  models.weights <- suppressWarnings(
+    as.numeric(unlist(strsplit(req(input$create_ens_weight_manual), ",")))
+  )
+  models.num <- length(vals$overlaid.models)
+  if (input$create_ens_table_subset) {
+    models.num <- length(input$create_ens_datatable_rows_selected)
+  }
+
+  # Req() weights input
+  req(length(models.weights) == models.num, !anyNA(models.weights))
+
+  if (any(models.weights > 1)) {
+    paste("Warning: One or more of the entered weights is greater than 1;",
+          "is this intentional?")
+  } else {
+    NULL
+  }
 })
 
 
@@ -158,7 +179,7 @@ output$create_ens_reg_remove_choices_uiOut_select <- renderUI({
   names(choices.list) <- unlist(choices.list.names)
 
   selectizeInput("create_ens_reg_remove_choices",
-                 tags$h5("Select loaded weight polygon(s) to remove"),
+                 tags$h5("Select assigned weight polygon(s) to remove"),
                  choices = choices.list, selected = NULL, multiple = TRUE)
 })
 
