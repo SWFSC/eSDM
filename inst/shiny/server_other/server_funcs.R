@@ -234,9 +234,9 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
     if (progress.detail) {
       incProgress(0, detail = "Object does span the dateline; processing now")
     }
-    x <- st_wrap_dateline(
+    x <- suppressWarnings(st_wrap_dateline(
       x, c("WRAPDATELINE=YES", paste0("DATELINEOFFSET=", wrap.offset))
-    )
+    ))
   }
 
   ext <- st_bbox(x)
