@@ -150,6 +150,10 @@ pretty_addobj_own_csv_process <- reactive({
   csv.data[csv.data == ""] <- NA
   names(csv.data) <- c("lon", "lat")
 
+  if (min(csv.data$lon, na.rm = TRUE) > 180) {
+    csv.data$lon <- csv.data$lon - 360
+  }
+
   if (input$pretty_addobj_type == 1) {
     # Points
     validate(

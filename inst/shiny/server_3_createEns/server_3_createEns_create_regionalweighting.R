@@ -346,6 +346,10 @@ create_ens_reg_csv_process <- reactive({
     csv.poly.data <- csv.poly.list[[2]]
     csv.poly.data[csv.poly.data == ""] <- NA
 
+    if (min(csv.poly.data[, 1], na.rm = TRUE) > 180) {
+      csv.poly.data[, 1] <- csv.poly.data[, 1] - 360
+    }
+
     csv.poly.sfc <- pts_to_sfc_vertices_shiny(csv.poly.data[, 1:2], crs.ll, TRUE)
     # ^ Performs check_dateline()
     incProgress(0.3)

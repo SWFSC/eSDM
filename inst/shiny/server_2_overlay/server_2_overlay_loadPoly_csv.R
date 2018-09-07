@@ -15,7 +15,7 @@ overlay_bound_csv <- reactive({
   validate(
     need(input$overlay_bound_csv_file$type %in%
            c("text/csv", "application/vnd.ms-excel"),
-         "Error: Selected file is not a csv file")
+         "Error: Selected file is not an Excel .csv file")
   )
   csv.df <- read.csv(
     input$overlay_bound_csv_file$datapath, stringsAsFactors = FALSE
@@ -35,8 +35,10 @@ overlay_bound_csv <- reactive({
   withProgress(message = 'Loading study area polygon', value = 0.7, {
     Sys.sleep(0.5)
 
-    bound.sfc <- try(st_sfc(st_polygon(list(as.matrix(csv.df))), crs = 4326),
-                     silent = TRUE)
+    if (min(csv.df[, 1]) > 180) csv.df[, 1] <- csv.df[, 1] - 360
+    bound.sfc <- try(
+      st_sfc(st_polygon(list(as.matrix(csv.df))), crs = 4326), silent = TRUE
+    )
     validate(
       need(isTruthy(bound.sfc),
            paste("Error: The study area polygon could not be created",
@@ -77,7 +79,7 @@ overlay_land_csv <- reactive({
   validate(
     need(input$overlay_land_csv_file$type %in%
            c("text/csv", "application/vnd.ms-excel"),
-         "Error: Selected file is not a csv file")
+         "Error: Selected file is not an Excel .csv file")
   )
   csv.df <- read.csv(
     input$overlay_land_csv_file$datapath, stringsAsFactors = FALSE
@@ -87,7 +89,11 @@ overlay_land_csv <- reactive({
   withProgress(message = 'Loading land polygon', value = 0.7, {
     Sys.sleep(0.5)
 
+    if (min(csv.df[, 1], na.rm = TRUE) > 180) {
+      csv.df[, 1] <- csv.df[, 1] - 360
+    }
     land.sfc <- pts_to_sfc_vertices_shiny(csv.df[, 1:2], crs.ll, TRUE)
+    #^ Calls check_dateline() and check_valid()
     incProgress(0.3)
   })
 

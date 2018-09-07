@@ -121,10 +121,10 @@ create_sf_csv_sfc <- reactive({
     validate(
       need(!(lon.idx == lat.idx),
            paste("Error: The longitude and latitude data columns",
-                "cannot be the same")) %then%
-      need(!anyNA(csv.data$Lon),
-           paste("Error: At least one of the points in the longitude data",
-                 "column has a value of 'NA'")),
+                 "cannot be the same")) %then%
+        need(!anyNA(csv.data$Lon),
+             paste("Error: At least one of the points in the longitude data",
+                   "column has a value of 'NA'")),
       need(!anyNA(csv.data$Lat),
            paste("Error: At least one of the points in the latitude data",
                  "column has a value of 'NA'"))
@@ -136,12 +136,10 @@ create_sf_csv_sfc <- reactive({
       need(diff.lon <= 360,
            paste("Error: The longitude points in the provided Excel .csv file",
                  "have a range greater than 360 degress")),
-      need(all(csv.data$Lat >= -90),
+      need(all(dplyr::between(csv.data$Lat, -90, 90)),
            paste("Error: All latitude values in the provided Excel .csv file",
-                 "must be greater than or equal to -90 degrees")),
-      need(all(csv.data$Lat <= 90),
-           paste("Error: The latitude points in the provided Excel .csv file",
-                 "must be less than or equal to 90 degrees"))
+                 "must be greater than or equal to -90 degrees and",
+                 "less than or equal to 90 degree"))
     )
 
 
@@ -193,6 +191,12 @@ create_sf_csv_sfc <- reactive({
 
     #####################################
     ### c) Convert points to a list of sfc_POLYGONs and then to a sf object
+    # If polygons are all in range 180-360, convert them to -180 to 180 range
+    #   Requires that they don't overlap dateline
+    if ((min(csv.data$Lon, na.rm = TRUE) - (cell.lw / 2)) > 180) {
+      csv.data$Lon <- csv.data$Lon - 360
+    }
+
     # Make sf object
     sfc.poly <- try(
       eSDM::pts_to_sfc_centroids(csv.data, cell.lw / 2, crs.ll),
