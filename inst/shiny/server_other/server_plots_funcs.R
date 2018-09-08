@@ -216,9 +216,52 @@ preview_ll_axes <- function(x) {
 
   stopifnot(length(lon.label) == length(lon), length(lat.label) == length(lat))
 
-  data.frame(lon, lon.label, lat, lat.label, stringsAsFactors = FALSE)
+  list(
+    data.frame(lon, lon.label, stringsAsFactors = FALSE),
+    data.frame(lat, lat.label, stringsAsFactors = FALSE)
+  )
 }
 
+
+###############################################################################
+### Based on https://github.com/r-spatial/sf/issues/280
+preview360 <- function (x) {
+  stopifnot(isTruthy(st_crs(x)[[2]]))
+  UseMethod("preview360", x)
+}
+
+preview360.sf <- function(x) {
+  x.crs <- st_crs(x)
+
+  if (st_is_longlat(x)) {
+    st_sf(
+      st_set_geometry(x, NULL),
+      geometry = (st_geometry(x) + c(360, 90)) %% c(360) - c(0, 90),
+      crs = st_crs(x), agr = st_agr(x)
+    )
+
+  } else {
+    x <- st_transform(x, 4326)
+    st_sf(
+      st_set_geometry(x, NULL),
+      geometry = (st_geometry(x) + c(360, 90)) %% c(360) - c(0, 90),
+      crs = 4326, agr = st_agr(x)
+    )
+    st_transform(x, x.crs)
+  }
+}
+preview360.sfc <- function(x) {
+  x.crs <- st_crs(x)
+
+  if (st_is_longlat(x)) {
+    st_sfc((x + c(360, 90)) %% c(360) - c(0, 90), crs = x.crs)
+
+  } else {
+    x <- st_transform(x, 4326)
+    x <- st_sfc((x + c(360, 90)) %% c(360) - c(0, 90), crs = 4326)
+    st_transform(x, x.crs)
+  }
+}
 
 
 ###############################################################################
@@ -250,14 +293,23 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
   }
 
   # Plot axes
-  z <- preview_ll_axes(sdm.ll)
-  if (st_is_longlat(sdm.ll)) {
-    axis(1, at = z$lon, labels = parse(text = z$lon.label), cex.axis = axis.cex)
-    axis(2, at = z$lat, labels = parse(text = z$lat.label), cex.axis = axis.cex)
+  z <- try(preview_ll_axes(sdm.ll), silent = TRUE)
+  if (isTruthy(z)  && !(st_bbox(sdm.ll)[1] == -180 && st_bbox(sdm.ll)[3] == 180)) {
+    z1 <- z[[1]]
+    z2 <- z[[2]]
+
+    if (st_is_longlat(sdm.ll)) {
+      axis(1, at = z1$lon, labels = parse(text = z1$lon.label), cex.axis = axis.cex)
+      axis(2, at = z2$lat, labels = parse(text = z2$lat.label), cex.axis = axis.cex)
+
+    } else {
+      axis(1, at = z1$lon, labels = z1$lon.label, cex.axis = axis.cex)
+      axis(2, at = z2$lat, labels = z2$lat.label, cex.axis = axis.cex)
+    }
 
   } else {
-    axis(1, at = z$lon, labels = z$lon.label, cex.axis = axis.cex)
-    axis(2, at = z$lat, labels = z$lat.label, cex.axis = axis.cex)
+    axis(1, cex.axis = axis.cex)
+    axis(2, cex.axis = axis.cex)
   }
 
   # Plot NA polys
