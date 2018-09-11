@@ -193,7 +193,8 @@ ui.overlay <- function() {
                               "Note that the study area polygon performs the same function as the 'clip feature' in the",
                               tags$a(href = "http://pro.arcgis.com/en/pro-app/tool-reference/analysis/clip.htm", "clip tool"),
                               "in ArcGIS, while the erasing polygon performs the same function as the 'erase feature' in the",
-                              tags$a(href = "http://pro.arcgis.com/en/pro-app/tool-reference/analysis/erase.htm", "erase tool")),
+                              tags$a(href = "http://pro.arcgis.com/en/pro-app/tool-reference/analysis/erase.htm", "erase tool"),
+                              "."),
                       tags$br(),
                       tags$strong("2) Overlay options: base geometry"),
                       tags$h5("Choose the base geometry in the 'Imported Original Predictions' box.")

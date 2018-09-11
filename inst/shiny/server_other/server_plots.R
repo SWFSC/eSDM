@@ -1,4 +1,5 @@
 ### Reactive plotting code for Ensemble App divided by tab
+### Download predictions code is in server_plots_download.R
 
 
 ###############################################################################
@@ -59,10 +60,13 @@ observeEvent(input$model_preview_execute, {
 ### Generate preview of base geometry to plot in-app
 # Helper reactive functions are in server_2_overlay_plot.R
 overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute, {
+  vals$overlay.plot <- NULL
+
   withProgress(message = "Preparing base geometry preview", value = 0.3, {
     b.inc <- !is.null(vals$overlay.bound)
     l.inc <- !is.null(vals$overlay.land)
     model.toplot <- overlay_preview_base_model()
+
 
     # Validation checks
     if (b.inc) {
@@ -77,9 +81,8 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
       rm(temp)
     }
     if (l.inc) {
-      land.toplot <- overlay_preview_base_land()
       temp <- suppressMessages(
-        st_intersects(st_union(land.toplot), model.toplot)
+        st_intersects(st_union(overlay_preview_base_land()), model.toplot)
       )
       validate(
         need(length(temp[[1]]) != 0,
@@ -90,6 +93,8 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
     }
 
     # Create leaflet
+    model.toplot <- check_preview360(model.toplot)
+
     leaf.map <- leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
       addTiles(group = "OpenStreetMap") %>%
@@ -107,17 +112,19 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
     incProgress(0.5)
 
     if (l.inc) {
+      erasing.toplot <- check_preview360(overlay_preview_base_land())
       leaf.map <- leaf.map %>%
         addPolygons(
-          data = land.toplot, fillColor = "tan",
+          data = erasing.toplot, fillColor = "tan",
           stroke = FALSE, fillOpacity = 0.6, group = "Erasing polygon")
       overlay.groups <- c(overlay.groups, "Erasing polygon")
     }
     incProgress(0.1)
     if (b.inc) {
+      bound.toplot <- st_union(check_preview360(vals$overlay.bound))
       leaf.map <- leaf.map %>%
         addPolygons(
-          data = vals$overlay.bound, fillColor = "transparent",
+          data = bound.toplot, fillColor = "transparent",
           stroke = TRUE, color = "red", fillOpacity = 0.8,
           group = "Study area")
       overlay.groups <- c(overlay.groups, "Study area")
@@ -170,11 +177,13 @@ observeEvent(input$overlay_preview_overlaid_execute, {
 ### Preview overlaid model predictions with assigned weight polygons
 observeEvent(input$create_ens_reg_preview_execute, {
   req(vals$ens.over.wpoly.filename)
-  overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
 
-  vals$ens.over.wpoly.plot <- list(
-    st_geometry(vals$overlaid.models[[overlaid.which]]), overlaid.which
+  overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
+  overlaid.toplot <- check_preview360(
+    st_geometry(vals$overlaid.models[[overlaid.which]])
   )
+
+  vals$ens.over.wpoly.plot <- list(overlaid.toplot, overlaid.which)
 })
 
 

@@ -1,5 +1,8 @@
 ###############################################################################
-# Get dimensions for eSDM preview within the app
+# Get dimensions for eSDM preview
+
+#------------------------------------------------------------------------------
+### Within the app
 multiplot_inapp <- function(x) {
   plot.ncol <- case_when(
     x == 1 ~ 1,
@@ -38,8 +41,8 @@ multiplot_inapp <- function(x) {
 }
 
 
-###############################################################################
-# Get dimensions for eSDM preview being downloaded
+#------------------------------------------------------------------------------
+### Being downloaded
 multiplot_download <- function(x) {
   plot.ncol <- case_when(
     x <= 2 ~ 1,
@@ -79,6 +82,154 @@ multiplot_download <- function(x) {
 }
 
 
+###############################################################################
+# Helper functions called by plotting functions
+
+#------------------------------------------------------------------------------
+### Adapted from https://github.com/r-spatial/sf/blob/master/R/graticule.R
+degreeLabelsNS_sf = function(x) {
+  pos = sign(x) + 2
+  dir = c("~S", "", "~N")
+  paste0(abs(x), "*degree", dir[pos])
+}
+
+degreeLabelsEW_sf = function(x) {
+  x <- ifelse(x > 180, x - 360, x)
+  pos = sign(x) + 2
+  if (any(x == -180))
+    pos[x == -180] = 2
+  if (any(x == 180))
+    pos[x == 180] = 2
+  dir = c("~W", "", "~E")
+  paste0(abs(x), "*degree", dir[pos])
+}
+
+### Based off of st_graticule, for generating coordinates
+preview_ll_axes <- function(x) {
+  stopifnot(inherits(x, c("sf", "sfc")))
+
+  bb <- st_bbox(x)
+  lon <- pretty(bb[c(1, 3)], n = 4)
+  lat <- pretty(bb[c(2, 4)], n = 4)
+
+  if (st_is_longlat(x)) {
+    lon.label <- degreeLabelsEW_sf(lon)
+    lat.label <- degreeLabelsNS_sf(lat)
+  } else {
+    lon.label <- lon
+    lat.label <- lat
+  }
+
+  stopifnot(length(lon.label) == length(lon), length(lat.label) == length(lat))
+
+  list(
+    data.frame(lon, lon.label, stringsAsFactors = FALSE),
+    data.frame(lat, lat.label, stringsAsFactors = FALSE)
+  )
+}
+
+
+#------------------------------------------------------------------------------
+#----------------------------------------------------------
+### Function for converting dateline-spanning preds back to 0-360 if nec
+check_preview360 <- function (x) {
+  stopifnot(isTruthy(st_crs(x)[[2]]))
+
+  x.bbox.lon <- round(unname(st_bbox(x)), 3)
+
+  if (identical(abs(x.bbox.lon[1]), x.bbox.lon[3])) preview360(x) else x
+}
+
+
+#----------------------------------------------------------
+### Inspired by https://github.com/r-spatial/sf/issues/280
+preview360 <- function(x) {
+  UseMethod("preview360", x)
+}
+
+preview360.sf <- function(x) {
+  if (inherits(st_geometry(x), "sfc_MULTIPOLYGON")) {
+    x <- st_cast(x, "POLYGON", warn = FALSE)
+  }
+  if (inherits(st_geometry(x), "sfc_MULTIPOINT")) {
+    x <- st_cast(x, "POINT", warn = FALSE)
+  }
+
+  stopifnot(
+    inherits(st_geometry(x), "sfc_POLYGON") | inherits(st_geometry(x), "sfc_POINT")
+  )
+
+  y <- st_sfc(st_polygon(list(
+    matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
+  )), crs = 4326)
+  y <- st_transform(y, st_crs(x))
+  lon.add <- abs(unname(st_bbox(y))[1] * 2)
+
+  y.x <- suppressMessages(st_intersects(y, x)[[1]])
+  y.x.no <- (1:nrow(x))[-y.x]
+
+  x.df <- st_set_geometry(x, NULL)
+  x.geom <- st_geometry(x)
+
+  x1 <- data.frame(x.df[y.x, ]) %>%
+    purrr::set_names(names(x.df)) %>%
+    st_sf(geometry = x.geom[y.x] + c(lon.add, 0),
+          agr = st_agr(x), crs = st_crs(x))
+  x2 <- data.frame(x.df[y.x.no, ]) %>%
+    purrr::set_names(names(x.df)) %>%
+    st_sf(geometry = x.geom[y.x.no], agr = st_agr(x))
+
+  rbind(x1, x2)[order(c(y.x, y.x.no)), ]
+}
+
+preview360.sfc <- function(x) {
+  if (inherits(x, "sfc_MULTIPOLYGON")) x <- st_cast(x, "POLYGON", warn = FALSE)
+  if (inherits(x, "sfc_MULTIPOINT"))   x <- st_cast(x, "POINT", warn = FALSE)
+
+  stopifnot(
+    inherits(x, "sfc_POLYGON") | inherits(x, "sfc_POINT")
+  )
+
+  y <- st_sfc(st_polygon(list(
+    matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
+  )), crs = 4326)
+  y <- st_transform(y, st_crs(x))
+  lon.add <- abs(unname(st_bbox(y))[1] * 2)
+
+  y.x <- suppressMessages(st_intersects(y, x)[[1]])
+  y.x.no <- (1:length(x))[-y.x]
+
+  x1 <- x[y.x] + c(lon.add, 0)
+  x2 <- x[y.x.no]
+
+  st_set_crs(c(x1, x2)[order(c(y.x, y.x.no))], st_crs(x))
+}
+
+
+#----------------------------------------------------------
+# ### Based on https://github.com/r-spatial/sf/issues/280
+# # st_transform() automatically processes x so that range(x) = (-180, 180]
+# #   thus you can't transform to 4326 and then back to original crs
+# #   Also, other method (above) is much faster
+# preview360_ll <- function (x) {
+#   stopifnot(st_is_longlat(x))
+#   UseMethod("preview360_ll", x)
+# }
+#
+# preview360_ll.sf <- function(x) {
+#   st_sf(
+#     st_set_geometry(x, NULL),
+#     geometry = (st_geometry(x) + c(360, 90)) %% c(360) - c(0, 90),
+#     crs = st_crs(x), agr = st_agr(x)
+#   )
+# }
+#
+# preview360_ll.sfc <- function(x) {
+#   st_sfc((x + c(360, 90)) %% c(360) - c(0, 90), crs = x.crs)
+# }
+
+
+###############################################################################
 ###############################################################################
 # Plot layout of sf objects given number of rows and columns + other plot info
 multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
@@ -180,96 +331,16 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 
 
 ###############################################################################
-### Adapted from the sf package, https://github.com/r-spatial/sf/blob/master/R/graticule.R
-degreeLabelsNS_sf = function(x) {
-  pos = sign(x) + 2
-  dir = c("~S", "", "~N")
-  paste0(abs(x), "*degree", dir[pos])
-}
-
-degreeLabelsEW_sf = function(x) {
-  x <- ifelse(x > 180, x - 360, x)
-  pos = sign(x) + 2
-  if (any(x == -180))
-    pos[x == -180] = 2
-  if (any(x == 180))
-    pos[x == 180] = 2
-  dir = c("~W", "", "~E")
-  paste0(abs(x), "*degree", dir[pos])
-}
-
-### Based off of st_graticule, for generating coordinates
-preview_ll_axes <- function(x) {
-  stopifnot(inherits(x, c("sf", "sfc")))
-
-  bb <- st_bbox(x)
-  lon <- pretty(bb[c(1, 3)], n = 4)
-  lat <- pretty(bb[c(2, 4)], n = 4)
-
-  if (st_is_longlat(x)) {
-    lon.label <- degreeLabelsEW_sf(lon)
-    lat.label <- degreeLabelsNS_sf(lat)
-  } else {
-    lon.label <- lon
-    lat.label <- lat
-  }
-
-  stopifnot(length(lon.label) == length(lon), length(lat.label) == length(lat))
-
-  list(
-    data.frame(lon, lon.label, stringsAsFactors = FALSE),
-    data.frame(lat, lat.label, stringsAsFactors = FALSE)
-  )
-}
-
-
 ###############################################################################
-### Based on https://github.com/r-spatial/sf/issues/280
-preview360 <- function (x) {
-  stopifnot(isTruthy(st_crs(x)[[2]]))
-  UseMethod("preview360", x)
-}
-
-preview360.sf <- function(x) {
-  x.crs <- st_crs(x)
-
-  if (st_is_longlat(x)) {
-    st_sf(
-      st_set_geometry(x, NULL),
-      geometry = (st_geometry(x) + c(360, 90)) %% c(360) - c(0, 90),
-      crs = st_crs(x), agr = st_agr(x)
-    )
-
-  } else {
-    x <- st_transform(x, 4326)
-    st_sf(
-      st_set_geometry(x, NULL),
-      geometry = (st_geometry(x) + c(360, 90)) %% c(360) - c(0, 90),
-      crs = 4326, agr = st_agr(x)
-    )
-    st_transform(x, x.crs)
-  }
-}
-preview360.sfc <- function(x) {
-  x.crs <- st_crs(x)
-
-  if (st_is_longlat(x)) {
-    st_sfc((x + c(360, 90)) %% c(360) - c(0, 90), crs = x.crs)
-
-  } else {
-    x <- st_transform(x, 4326)
-    x <- st_sfc((x + c(360, 90)) %% c(360) - c(0, 90), crs = 4326)
-    st_transform(x, x.crs)
-  }
-}
-
-
-###############################################################################
-# Generate plot of sf object
+# Generate static plot of sf object
 preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
                        axis.cex, main.cex) {
   data.vec <- st_set_geometry(sdm.ll, NULL)[, data.name]
 
+  # Convert to 0-360 longitude range if necessary
+  sdm.ll <- check_preview360(sdm.ll)
+
+  # Plot predictions
   if (perc == 1) {
     b.model <- breaks_calc(data.vec)
 
@@ -321,6 +392,7 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
 
 
 ###############################################################################
+###############################################################################
 # Generate leaflet plot of provided sf object
 preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
                                 col.pal, leg.labels = NULL, leg.title = NULL) {
@@ -334,6 +406,9 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
     stop("If 'leg.labels' is not NULL, then 'col.pal' and 'leg.labels' ",
          "must be the same length")
   }
+
+  # Convert to 0-360 longitude range if necessary
+  sdm.ll <- check_preview360(sdm.ll)
 
   data.vec <- st_set_geometry(sdm.ll[data.name], NULL)[, 1]
   data.vec.w <- if (ncol(sdm.ll) > 2) st_set_geometry(sdm.ll, NULL)[, 2] else NA

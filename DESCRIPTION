@@ -14,6 +14,7 @@ Imports:
     DT, 
     leaflet, 
     lwgeom,
+    methods,
     purrr, 
     raster, 
     rlang, 
