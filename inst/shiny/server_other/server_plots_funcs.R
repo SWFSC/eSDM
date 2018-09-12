@@ -179,6 +179,8 @@ preview360.sf <- function(x) {
     purrr::set_names(names(x.df)) %>%
     st_sf(geometry = x.geom[y.x.no], agr = st_agr(x))
 
+  stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x1), st_area(x2))) < 1)
+
   rbind(x1, x2)[order(c(y.x, y.x.no)), ]
 }
 
@@ -199,8 +201,10 @@ preview360.sfc <- function(x) {
   y.x <- suppressMessages(st_intersects(y, x)[[1]])
   y.x.no <- (1:length(x))[-y.x]
 
-  x1 <- x[y.x] + c(lon.add, 0)
+  x1 <- st_sfc(x[y.x] + c(lon.add, 0), crs = st_crs(x))
   x2 <- x[y.x.no]
+
+  stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x1), st_area(x2))) < 1)
 
   st_set_crs(c(x1, x2)[order(c(y.x, y.x.no))], st_crs(x))
 }
