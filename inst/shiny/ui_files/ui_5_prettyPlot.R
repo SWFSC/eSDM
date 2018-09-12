@@ -29,7 +29,7 @@ ui.prettyPlot <- function() {
               )
             ),
 
-            #-----------------------------------------------
+            #--------------------------------------------------------
             conditionalPanel(
               condition = "input.pretty_mapcontrol == 1",
               column(
@@ -61,12 +61,12 @@ ui.prettyPlot <- function() {
                     helpText("Note that most pretty plot parameters (including loaded additional objects)",
                              "will stay the same unless changed by user, even when a different set of predictions is selected"),
                     actionButton("pretty_toplot_add_execute", "Save map"),
-                    textOutput("pretty_toplot_add_text")
+                    tags$span(textOutput("pretty_toplot_add_text"), style = "color: blue;")
                   )
                 )
               )
             ),
-            #-----------------------------------------------
+            #--------------------------------------------------------
             conditionalPanel(
               condition = "input.pretty_mapcontrol == 2",
               column(
@@ -106,7 +106,7 @@ ui.prettyPlot <- function() {
                 )
               )
             ),
-            #-----------------------------------------------
+            #--------------------------------------------------------
             conditionalPanel(
               condition = "input.pretty_mapcontrol == 3",
               column(
@@ -219,6 +219,7 @@ ui.prettyPlot <- function() {
                     helpText("Map range values have the same units as the specified coordinate system, e.g.",
                              "if the specified coordinate system is WGS 84 geographic coordinates then the values are",
                              "decimal degrees and must have a longitude range of [-180, 180] and a latitude range of [-90, 90]"),
+                    shinycssloaders::withSpinner(uiOutput("pretty_range_360_uiOut_text"), type = 3, color.background = "white"),
                     fluidRow(
                       column(
                         width = 6,
@@ -349,13 +350,13 @@ ui.prettyPlot <- function() {
                       column(
                         width = 6,
                         numericInput("pretty_margin_in1", tags$h5("Inner margin - bottom"), value = 0.05, min = 0, step = 0.01),
-                        numericInput("pretty_margin_in3", tags$h5("Inner margin - top"), value = 0, min = 0, step = 0.01),
+                        numericInput("pretty_margin_in3", tags$h5("Inner margin - top"), value = 0.02, min = 0, step = 0.01),
                         numericInput("pretty_margin_out", tags$h5("Outer margin"), value = 0.02, min = 0, step = 0.01)
                       ),
                       column(
                         width = 6,
                         numericInput("pretty_margin_in2", tags$h5("Inner margin - left"), value = 0.05, min = 0, step = 0.01),
-                        numericInput("pretty_margin_in4", tags$h5("Inner margin - right"), value = 0, min = 0, step = 0.01)
+                        numericInput("pretty_margin_in4", tags$h5("Inner margin - right"), value = 0.02, min = 0, step = 0.01)
                       )
                     )
                   )
@@ -371,8 +372,10 @@ ui.prettyPlot <- function() {
                     checkboxInput("pretty_tick", "Include coordinate grid lines", value = TRUE),
                     conditionalPanel(
                       condition = "input.pretty_tick",
-                      helpText("Size and width values are relative to 1 (the default size).",
-                               "Grid line start and interval units are the same as the specified coordinate system units"),
+                      helpText("Grid line start and interval units are the same as the specified coordinate system units,",
+                               "and the range of these values must follow the requirements specfied in the map range section.",
+                               tags$br(),
+                               "Size and width values are relative to 1 (the default size)."),
                       fluidRow(
                         column(
                           width = 6,

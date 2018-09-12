@@ -39,48 +39,40 @@ output$pretty_proj_idx_uiOut_select <- renderUI({
               choices = choices.list, selected = 1)
 })
 
-### Get extent of selected predictions
-pretty_range <- reactive({
-  req(pretty_models_idx_count() == 1)
-  round(st_bbox(pretty_model_toplot()), 2)
+### Message about 0-360 range
+output$pretty_range_360_uiOut_text <- renderUI({
+  req(pretty_range_360())
+
+  tags$h5("The selected predictions span the international dateline; thus,",
+          "longitude map range and grid line values must be within",
+          "the range [0, 360] decimal degrees,",
+          "or the equivalant range for the specified coordinate system",
+          style = "color: red;")
 })
 
 ### Render longitude, latitude min and max
 output$pretty_range_xmin_uiOut_num <- renderUI({
-  # input$load_app_envir_file
-  # pretty_range()
-  #
-  # isolate({
-  #   qq <- val.workspace()$pretty_range_xmin
-  #   if (isTruthy(qq)) {
-  #     val.default <- qq
-  #     qq$pretty_range_xmin <- NULL
-  #     val.workspace(qq)
-  #   } else {
-  #     val.default <- pretty_range()$xmin
-  #   }
-  # })
-  val.default <- pretty_range()$xmin
+  val.default <- pretty_range()["xmin"]
   numericInput("pretty_range_xmin", tags$h5("Longitude minimum"),
-               value = val.default, min = -180, max = 180)
+               value = val.default)
 })
 
 output$pretty_range_xmax_uiOut_num <- renderUI({
-  val.default <- pretty_range()$xmax
+  val.default <- pretty_range()["xmax"]
   numericInput("pretty_range_xmax", tags$h5("Longitude maximum"),
-               value = val.default, min = -180, max = 180)
+               value = val.default)
 })
 
 output$pretty_range_ymin_uiOut_num <- renderUI({
-  val.default <- pretty_range()$ymin
+  val.default <- pretty_range()["ymin"]
   numericInput("pretty_range_ymin", tags$h5("Latitude minimum"),
-               value = val.default, min = -90, max = 90)
+               value = val.default)
 })
 
 output$pretty_range_ymax_uiOut_num <- renderUI({
-  val.default <- pretty_range()$ymax
+  val.default <- pretty_range()["ymax"]
   numericInput("pretty_range_ymax", tags$h5("Latitude maximum"),
-               value = val.default, min = -90, max = 90)
+               value = val.default)
 })
 
 

@@ -22,8 +22,16 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     )
   }
 
+  # pretty_range_poly() # Called so req() check is run early
+  validate(
+    need(input$pretty_range_xmin,
+         paste("Error: Please wait until the parameter inputs below",
+               "have finished loading"))
+  )
+
   # Get/set plotting variables
-  withProgress(message = "Processing map parameters", value = 0.5, {
+  withProgress(message = "Processing map parameters", value = 0.3, {
+    #--------------------------------------------------------------------------
     if (input$pretty_addobj) { # to get check earlier
       validate(
         need(vals$pretty.addobj,
@@ -32,12 +40,29 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       )
     }
 
+    #--------------------------------------------------------------------------
+    # browser()
+    # model.toplot <- check_preview360(pretty_model_toplot())
+    model.toplot <- pretty_model_toplot()
+
+    x.bbox.lon <- round(unname(st_bbox(model.toplot)), 3)
+    if (identical(abs(x.bbox.lon[1]), x.bbox.lon[3])) {
+      # This is here so incProgress() can be called
+      # Don't need check_preview360() becuase check was already done above
+      incProgress(0, detail = "Processing predictions that span dateline")
+      model.toplot <- preview360(model.toplot)
+      incProgress(0, detail = "")
+    }
+    incProgress(0.1)
+
     model.toplot <- suppressMessages(
-      st_intersection(pretty_model_toplot(), pretty_range_poly()[[2]])
+      st_intersection(model.toplot, pretty_range_poly()[[2]])
     )
+    incProgress(0.2)
+
+
     plot.lim <- pretty_range_poly()[[1]]
     background.color <- input$pretty_background_color
-    incProgress(0.1)
 
     list.colorscheme <- pretty_colorscheme_list()
     list.legend      <- pretty_legend_list()
@@ -46,29 +71,11 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     list.tick        <- pretty_tick_list()
     incProgress(0.1)
 
-    if (input$pretty_addobj) {
-      list.addobj  <- pretty_addobj_list()
-      incProgress(0.3)
-
-    } else {
-      list.addobj <- NULL
-      incProgress(0.3)
-    }
-
-    # if (input$pretty_addobj) {
-    #   addobj.pre.bool  <- pretty_addobj_preflag()
-    #   list.addobj.pre  <- pretty_addobj_list()[addobj.pre.bool]
-    #   incProgress(0.1)
-    #   list.addobj.post <- pretty_addobj_list()[!addobj.pre.bool]
-    #   incProgress(0.2)
-    #
-    # } else {
-    #   list.addobj.pre  <- list()
-    #   list.addobj.post <- list()
-    #   incProgress(0.3)
-    # }
+    list.addobj <- if (input$pretty_addobj) pretty_addobj_list() else NULL
+    incProgress(0.3)
 
 
+    #--------------------------------------------------------------------------
     # Save plot parameters to reactive values
     vals$pretty.params.toplot <- c(
       vals$pretty.params.toplot,
@@ -79,7 +86,6 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
         list.tick = list.tick,
         list.colorscheme = list.colorscheme, list.legend = list.legend,
         list.addobj = list.addobj,
-        # list.addobj.pre = list.addobj.pre, list.addobj.post = list.addobj.post,
         id = input$pretty_toplot_add_id
       ))
     )

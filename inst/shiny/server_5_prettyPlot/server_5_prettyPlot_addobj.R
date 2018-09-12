@@ -46,6 +46,11 @@ pretty_addobj_add <- eventReactive(input$pretty_addobj_add_execute, {
     addobj.obj.own  <- 1
   }
 
+  x.bbox.lon <- round(unname(st_bbox(addobj.obj)), 3)
+  if (identical(abs(x.bbox.lon[1]), x.bbox.lon[3])) {
+    addobj.obj <- st_union(preview360_ll(addobj.obj), by_feature = TRUE)
+  }
+
   #------------------------------------
   if (input$pretty_addobj_color_ptfillcheck) {
     addobj.col.ptfill <- NA

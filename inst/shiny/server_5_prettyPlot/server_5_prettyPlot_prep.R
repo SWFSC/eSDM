@@ -68,9 +68,7 @@ pretty_crs_selected <- reactive({
 })
 
 
-### Return list of: (table idx, pred idx, currently selected model predictions)
-# Currently only one model can be plotted so function just gets only model
-# In the future, this function would be used to get model specified by user
+### Return model specified by user
 pretty_model_toplot <- reactive({
   model.selected <- pretty_model_selected()
   crs.selected <- pretty_crs_selected()
@@ -83,14 +81,58 @@ pretty_model_toplot <- reactive({
 })
 
 
+### Returns logical indicating whether [0, 360] range needs to be used rather than [-180, 180]
+pretty_range_360 <- reactive({
+  req(pretty_models_idx_count() == 1)
+
+  b <- round(unname(st_bbox(pretty_model_toplot())), 3)
+
+  identical(abs(b[1]), b[3])
+})
+
+
+### Get extent of selected predictions
+pretty_range <- reactive({
+  req(pretty_models_idx_count() == 1)
+  # round(st_bbox(pretty_model_toplot()), 2)
+
+  x <- st_geometry(pretty_model_toplot())
+
+  if (pretty_range_360()) {
+    y1 <- st_sfc(st_polygon(list(
+      matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
+    )), crs = 4326)
+    y1 <- st_transform(y1, pretty_crs_selected())
+
+    y2 <- st_sfc(st_polygon(list(
+      matrix(c(180, 0, 0, 180, 180, -90, -90, 90, 90, -90), ncol = 2)
+    )), crs = 4326)
+    y2 <- st_transform(y2, pretty_crs_selected())
+    lon.add <- unname(st_bbox(y2))[3] * 2
+
+    x1.b <- st_bbox(suppressMessages(st_intersection(x, y1)))
+    x2.b <- st_bbox(suppressMessages(st_intersection(x, y2)))
+
+    round(c(x2.b[1], ymin = min(x1.b[2], x2.b[2]),
+            x1.b[3] + lon.add,  ymax = max(x1.b[4],x2.b[4])),
+          2)
+
+  } else {
+    round(st_bbox(x), 2)
+  }
+})
+
+
+
+
 ###############################################################################
 ### Compile plot limits, and create a boundary box with which to clip model
 ### Return list of (plot limits, boundary box poly)
 pretty_range_poly <- reactive({
-  plot.lim <- c(
+  plot.lim <- req(c(
     input$pretty_range_xmin, input$pretty_range_xmax,
     input$pretty_range_ymin, input$pretty_range_ymax
-  )
+  ))
 
   poly.x <- plot.lim[c(1, 1, 2, 2, 1)]
   poly.y <- plot.lim[c(3, 4, 4, 3, 3)]
