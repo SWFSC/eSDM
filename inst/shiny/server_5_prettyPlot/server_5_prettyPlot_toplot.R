@@ -22,7 +22,6 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     )
   }
 
-  # pretty_range_poly() # Called so req() check is run early
   validate(
     need(input$pretty_range_xmin,
          paste("Error: Please wait until the parameter inputs below",
@@ -41,9 +40,14 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     }
 
     #--------------------------------------------------------------------------
-    # browser()
-    # model.toplot <- check_preview360(pretty_model_toplot())
     model.toplot <- pretty_model_toplot()
+    range.poly <- pretty_plot_poly_func(pretty_plot_lim(), st_crs(model.toplot))
+    model.int <- suppressMessages(st_intersection(model.toplot, range.poly))
+    validate(
+      need(nrow(model.int) > 0,
+           "Error: The specified map range does not contain any predictions")
+    )
+    incProgress(0.1)
 
     x.bbox.lon <- round(unname(st_bbox(model.toplot)), 3)
     if (identical(abs(x.bbox.lon[1]), x.bbox.lon[3])) {
@@ -53,15 +57,14 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       model.toplot <- preview360(model.toplot)
       incProgress(0, detail = "")
     }
-    incProgress(0.1)
-
-    model.toplot <- suppressMessages(
-      st_intersection(model.toplot, pretty_range_poly()[[2]])
-    )
     incProgress(0.2)
 
+    # st_intersection call moved to _plot.R so map range inputs can be updated
+    # model.toplot <- suppressMessages(
+    #   st_intersection(model.toplot, pretty_range_poly()[[2]])
+    # )
 
-    plot.lim <- pretty_range_poly()[[1]]
+    plot.lim <- pretty_plot_lim()
     background.color <- input$pretty_background_color
 
     list.colorscheme <- pretty_colorscheme_list()

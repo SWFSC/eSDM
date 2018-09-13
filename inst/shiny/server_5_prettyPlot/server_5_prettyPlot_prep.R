@@ -123,25 +123,28 @@ pretty_range <- reactive({
 })
 
 
-
-
 ###############################################################################
-### Compile plot limits, and create a boundary box with which to clip model
-### Return list of (plot limits, boundary box poly)
-pretty_range_poly <- reactive({
-  plot.lim <- req(c(
+### Compile plot limit
+pretty_plot_lim <- reactive({
+  req(c(
     input$pretty_range_xmin, input$pretty_range_xmax,
     input$pretty_range_ymin, input$pretty_range_ymax
   ))
 
-  poly.x <- plot.lim[c(1, 1, 2, 2, 1)]
-  poly.y <- plot.lim[c(3, 4, 4, 3, 3)]
-
-  plot.lim.poly <- st_sfc(
-    st_polygon(list(cbind(poly.x, poly.y))), crs = pretty_crs_selected()
-  )
-
-  list(plot.lim, plot.lim.poly)
+  # plot.lim <- req(c(
+  #   input$pretty_range_xmin, input$pretty_range_xmax,
+  #   input$pretty_range_ymin, input$pretty_range_ymax
+  # ))
+  #
+  # poly.x <- plot.lim[c(1, 1, 2, 2, 1)]
+  # poly.y <- plot.lim[c(3, 4, 4, 3, 3)]
+  #
+  # # plot.lim.poly <-
+  # st_sfc(
+  #   st_polygon(list(cbind(poly.x, poly.y))), crs = pretty_crs_selected()
+  # )
+  #
+  # list(plot.lim, plot.lim.poly)
 })
 
 
@@ -209,6 +212,7 @@ pretty_colorscheme_list <- reactive({
   color.palette <- pretty_colorscheme_palette_num()[[1]]
   color.num     <- pretty_colorscheme_palette_num()[[2]]
 
+  # TODO x <- st_intersection(pretty_model_toplot())
   x <- pretty_model_toplot()
   data.which <- pretty_table_row_idx()[1]
   data.name <- switch(data.which, "Pred", "Pred.overlaid", "Pred.ens")
@@ -354,9 +358,10 @@ pretty_addobj_list <- reactive({
       i$obj <- st_transform(i$obj, pretty_crs_selected())
     }
 
-    i$obj <- suppressMessages(
-      st_intersection(i$obj, pretty_range_poly()[[2]])
-    )
+    # st_intersection call moved to _plot.R so map range inputs can be updated
+    # i$obj <- suppressMessages(
+    #   st_intersection(i$obj, pretty_range_poly()[[2]])
+    # )
 
     i
   })

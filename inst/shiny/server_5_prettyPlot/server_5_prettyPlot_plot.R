@@ -113,22 +113,36 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
   l4 <- list.tick
   l5a <- list.addobj.pre
   l5b <- list.addobj.post
+  print(plot.lim)
+  # browser()
+  # model.toplot <<- model.toplot
+  # plot.lim <<- plot.lim
+
+  #----------------------------------------------
+  # Make range polygon for intersections
+  # st_intersection()'s below happen here so user can update map range params
+  range.poly <- pretty_plot_poly_func(plot.lim, st_crs(model.toplot))
+  rpoly.bbox <- st_bbox(range.poly)
 
   #----------------------------------------------
   # Additional objects - pre
   for (i in l5a) { #l5a will be list() if empty and thus won't enter for() loop
+    if (!identical(round(st_bbox(i$obj), 2), round(rpoly.bbox, 2))) {
+      i$obj <- suppressMessages(st_intersection(i$obj, range.poly))
+    }
+
     if (i$obj.text == "Validation data points") { # special due to 2 colors
-      tmap.obj <- tm_shape(i$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+      tmap.obj <- tm_shape(i$obj, bbox = rpoly.bbox) +
         tm_dots(col = "sight", palette = c(i$col.ptfill, i$col.absborder),
                 shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
 
     } else if (i$obj.type == 1) { #pts
-      tmap.obj <- tm_shape(i$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+      tmap.obj <- tm_shape(i$obj, bbox = rpoly.bbox) +
         tm_dots(col = i$col.ptfill, shape = i$pchlty, size = i$cexlwd,
                 legend.show = FALSE)
 
     } else { #polys
-      tmap.obj <- tm_shape(i$obj, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+      tmap.obj <- tm_shape(i$obj, bbox = rpoly.bbox) +
         tm_polygons(col = i$col.ptfill, border.col = i$col.absborder,
                     alpha = ifelse(is.na(i$col.ptfill), 0, 1),
                     lty = i$pchlty, lwd = i$cexlwd)
@@ -138,6 +152,11 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
 
   #----------------------------------------------
   # Shape, fill (colorscheme), title, axis labels, margins
+  if (!identical(round(st_bbox(model.toplot), 2), round(rpoly.bbox, 2))) {
+    model.toplot <- suppressMessages(st_intersection(model.toplot, range.poly))
+    req(nrow(model.toplot) > 0)
+  }
+
   if (exists("tmap.obj")) {
     tmap.obj <- tmap.obj +
       tm_shape(model.toplot) +
@@ -148,7 +167,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
               legend.is.portrait = TRUE, legend.reverse = TRUE)
 
   } else {
-    tmap.obj <- tm_shape(model.toplot, bbox = matrix(plot.lim, nrow = 2, byrow = TRUE)) +
+    tmap.obj <- tm_shape(model.toplot, bbox = rpoly.bbox) +
       tm_fill(col = l1$data.name, border.col = "transparent",
               style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
               colorNA = l1$col.na, textNA = "NA", showNA = NA,
@@ -159,7 +178,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
   tmap.obj <- tmap.obj +
     tm_layout(bg.color = background.color, legend.bg.color = "white",
               main.title = l3$title, main.title.position = "center",
-              main.title.size = l3$titlecex,
+              main.title.size = l3$titlecex, #asp = NA,
               inner.margins = l3b[1:4], outer.margins = l3b[5]) +
     tm_xlab(l3$xlab, l3$labcex) +
     tm_ylab(l3$ylab, l3$labcex)
@@ -207,6 +226,10 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
   #----------------------------------------------
   # Additional objects - post
   for (j in l5b) { #l5b will be list() if empty and thus won't enter for() loop
+    if (!identical(round(st_bbox(i$obj), 2), round(rpoly.bbox, 2))) {
+      j$obj <- suppressMessages(st_intersection(j$obj, range.poly))
+    }
+
     if (j$obj.text == "Validation data points") { # special due to 2 colors
       tmap.obj <- tmap.obj +
         tm_shape(j$obj) +

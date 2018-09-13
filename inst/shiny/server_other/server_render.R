@@ -490,7 +490,8 @@ observe({
     )
 
     plot_pretty_top(p.list$dims, p.list$idx.list, p.list$params.list)
-  }, width = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["width"], 8 * 96),
+  },
+  width = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["width"], 8 * 96),
   height = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["height"], 4 * 96),
   res = 98)
 })

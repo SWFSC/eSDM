@@ -74,7 +74,7 @@ toplot_update_modal <- function(failed) {
         actionButton("pretty_toplot_update_execute", "Save parameter"),
         uiOutput("pretty_toplot_update_temp_out_text"),
         tags$br(), tags$br(), tags$br(),
-        tags$h5("Saved parameters for selected additional object. The color values will be 'NA' if transparent;",
+        tags$h5("Saved parameters for selected additional object. Any color values will be 'NA' if transparent;",
                 "otherwise they are displayed as hexadecimals."),
         tableOutput("pretty_toplot_update_table_out")
       ),
