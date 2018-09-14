@@ -387,9 +387,9 @@ ui.createEns <- function() {
                     conditionalPanel(
                       condition = "input.ens_select_action == 1",
                       fluidRow(
-                        column(3, radioButtons("ens_preview_interactive_perc", tags$h5("Units"),
+                        column(4, radioButtons("ens_preview_interactive_perc", tags$h5("Units"),
                                                choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
-                        column(9, tags$br(), tags$br(), uiOutput("ens_preview_interactive_execute_uiOut_button"))
+                        column(8, tags$br(), tags$br(), uiOutput("ens_preview_interactive_execute_uiOut_button"))
                       ),
                       helpText("Note that if you are not connected to the internet then the background map will not display")
                     ),
@@ -397,10 +397,10 @@ ui.createEns <- function() {
                     conditionalPanel(
                       condition = "input.ens_select_action == 2",
                       fluidRow(
-                        column(3, radioButtons("ens_preview_perc", tags$h5("Units"),
+                        column(4, radioButtons("ens_preview_perc", tags$h5("Units"),
                                                choices = list("Percentages" = 1, "Values" = 2),
                                                selected = 1)),
-                        column(9, tags$br(), tags$br(), actionButton("ens_preview_execute", "Preview selected ensemble predictions"))
+                        column(8, tags$br(), tags$br(), actionButton("ens_preview_execute", "Plot static preview"))
                       )
                     ),
                     ####################################### Download static ensemble preview

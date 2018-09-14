@@ -220,8 +220,7 @@ output$model_preview_interactive_execute_uiOut_button <- renderUI({
     errorClass = "validation2"
   )
 
-  actionButton("model_preview_interactive_execute",
-               "Preview selected original predictions interactively")
+  actionButton("model_preview_interactive_execute", "Plot interactive preview")
 })
 
 ### Generate default filename for download of static preview
