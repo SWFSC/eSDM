@@ -52,10 +52,12 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
 # Create unweighted ensemble
 create_ens_unweighted <- reactive({
-  st_sf(
-    data.frame(Pred.ens = apply(create_ens_data_reg(), 1, mean, na.rm = TRUE)),
-    geometry = vals$overlay.base.sfc, agr = "constant"
+  data.ens = data.frame(
+    Pred.ens = apply(create_ens_data_reg(), 1, mean, na.rm = TRUE)
   )
+  data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
+
+  st_sf(data.ens, geometry = vals$overlay.base.sfc, agr = "constant")
 })
 
 ####################################################################

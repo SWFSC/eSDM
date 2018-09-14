@@ -135,7 +135,9 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     ### Create overlaid models
     base.pix <- dplyr::select(base.sf, Pixels)
     models.orig.sfc <- lapply(vals$models.orig, st_geometry)
-    samegeo.flag <- sapply(models.orig.sfc[-base.idx], identical, models.orig.sfc[[base.idx]])
+    samegeo.flag <- sapply(
+      models.orig.sfc[-base.idx], identical, models.orig.sfc[[base.idx]]
+    )
     rm(models.orig.sfc)
 
     models.overlaid <- mapply(function(samegeo.flag.ind, sdm, sdm.num) {
@@ -145,21 +147,11 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       )
 
       if (samegeo.flag.ind) {
-        # SDM being overlaid has the SAME geometry as the base
-        sf.temp <- base.pix %>%
-          dplyr::left_join(st_set_geometry(sdm, NULL), by = "Pixels") %>%
-          dplyr::mutate(Pixels2 = 1:nrow(base.pix)) %>%
-          dplyr::select(Pred.overlaid = Pred, Weight.overlaid = Weight,
-                        Pixels = Pixels2) %>%
-          st_set_agr("constant")
-
-        validate(
-          need(identical(base.sfc, st_geometry(sf.temp)),
-               paste("Error: the eSDM was unable to overlay original model",
-                     sdm.num))
-        )
-
-        sf.temp
+        # SDM being overlaid has the EXACT SAME geometry (including order) as base.sfc
+        stopifnot(identical(base.sf$Pixels, sdm$Pixels))
+        sdm %>% st_set_geometry(NULL) %>%
+          purrr::set_names("Pred.overlaid", "Weight.overlaid", "Pixels") %>%
+          st_sf(geometry = base.sfc, agr = "constant")
 
       } else {
         # SDM being overlaid has a DIFFERENT geometry than the base
@@ -175,9 +167,9 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
         )
 
         temp %>%
+          st_set_geometry(NULL) %>%
           dplyr::bind_cols(Pixels = 1:nrow(temp)) %>%
-          dplyr::select(c(1, 2, 4, 3)) %>%
-          st_set_agr("constant")
+          st_sf(geometry = st_geometry(temp), agr = "constant")
       }
     },
     samegeo.flag, models.preoverlay,

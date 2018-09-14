@@ -48,6 +48,7 @@ create_ens_weighted_manual <- reactive({
   data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p) {
     stats::weighted.mean(p, data.weights, na.rm = TRUE)
   }))
+  data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
 
   st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
@@ -103,6 +104,7 @@ create_ens_weighted_metric <- reactive({
   data.ens <- data.frame(Pred.ens = apply(
     data.rescaled, 1, function(p) stats::weighted.mean(p, data.weights, na.rm = TRUE)
   ))
+  data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
 
   st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
@@ -185,6 +187,7 @@ create_ens_weighted_pix <- reactive({
   data.rescaled <- create_ens_data_reg()
   base.sfc <- vals$overlay.base.sfc
   data.weights <- create_ens_weights_pix_weights()
+  browser()
 
   validate(
     need(ncol(data.weights) == ncol(data.rescaled),
@@ -197,6 +200,7 @@ create_ens_weighted_pix <- reactive({
   data.ens <- data.frame(
     Pred.ens = apply(data.reweighted, 1, mean, na.rm = TRUE)
   )
+  data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
 
   st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
