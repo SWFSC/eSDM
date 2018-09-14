@@ -178,9 +178,7 @@ create_sf_csv_sfc <- reactive({
         adj.lon <- cell.lw / 2
         adj.lat <- cell.lw / 2
       } else {
-        validate(
-          need(FALSE, "Error: create_csv_grid() point location code")
-        )
+        validate("Error: create_csv_grid() point location code")
       }
 
       # Adjust points to center of the polygon
@@ -190,9 +188,8 @@ create_sf_csv_sfc <- reactive({
 
 
     #####################################
-    ### c) Convert points to a list of sfc_POLYGONs and then to a sf object
+    ### c) Convert points to a list of sfc_POLYGONs
     # If polygons are all in range 180-360, convert them to -180 to 180 range
-    #   Requires that they don't overlap dateline
     if ((min(csv.data$Lon, na.rm = TRUE) - (cell.lw / 2)) > 180) {
       csv.data$Lon <- csv.data$Lon - 360
     }
@@ -209,17 +206,14 @@ create_sf_csv_sfc <- reactive({
     )
     incProgress(0.3)
 
-    sf.temp.ll <- st_sf(csv.data, geometry = sfc.poly, agr = "constant")
-
 
     #####################################
     ### d) Perform final checks
-    # Ensure that sf object is in -180 to 180 longitude range
-    sf.temp.ll <- check_dateline(sf.temp.ll, progress.detail = TRUE)
-    sf.temp.ll <- check_valid(sf.temp.ll, progress.detail = TRUE)
+    # Ensure that sfc object is in -180 to 180 longitude range
+    sfc.poly <- check_dateline(sfc.poly, progress.detail = TRUE)
     incProgress(0.3)
 
-    list(sf.temp.ll, cell.lw)
+    list(sfc.poly, cell.lw)
   })
 })
 
@@ -231,13 +225,13 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
 
   # Combine data df and sfc object
   withProgress(message = "Combining .csv file data and polygons", value = 0.6, {
-    if (nrow(csv.data) == nrow(csv.sf.temp)) {
+    if (nrow(csv.data) == length(csv.sf.temp)) {
       sf.load.ll <- st_sf(
-        csv.data[, 3:5], geometry = st_geometry(csv.sf.temp), agr = "constant"
+        csv.data[, 3:5], geometry = csv.sf.temp, agr = "constant"
       )
 
     } else {
-      validate(need(FALSE, "Error in creating sf object from .csv file"))
+      validate("Error in creating sf object from .csv file")
     }
 
     ### Prep for and run function that adds relevant data to vals
@@ -254,6 +248,6 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
       local = TRUE, echo = FALSE, chdir = TRUE
     )
 
-    "Model predictions loaded from csv"
+    "Model predictions loaded from .csv file"
   })
 })
