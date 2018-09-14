@@ -78,9 +78,7 @@ server <- function(input, output, session) {
 
   observeEvent(input$close_gui_error, {
     # js$closeWindow()
-    stopApp(returnValue = paste(
-      "eSDM GUI was closed due to a data storage and processing error"
-    ))
+    stopApp(returnValue = "eSDM GUI was closed due to a data storage and processing error")
   })
 
   #----------------------------------------------------------------------------
@@ -98,9 +96,8 @@ server <- function(input, output, session) {
 
   ### Roadmap: download sample data
   output$download_sample_data <- downloadHandler(
-    filename = function() {
-      "eSDM_sample_data.zip"
-    },
+    filename = function() "eSDM_sample_data.zip",
+
     content = function(file) {
       withProgress(message = "Downloading sample data", value = 0.6, {
         sample.try <- try(
