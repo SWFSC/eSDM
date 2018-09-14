@@ -83,7 +83,7 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
     }
 
     plot_pretty(
-      k$model.toplot, k$plot.lim, k$background.color,
+      k$model.toplot, k$map.range, k$background.color,
       k$list.colorscheme, k$list.legend, k$list.titlelab, k$list.margin,
       k$list.tick, list.addobj.pre, list.addobj.post
     )
@@ -100,7 +100,7 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
 
 ###############################################################################
 # Returns individual tmap objects
-plot_pretty <- function(model.toplot, plot.lim, background.color,
+plot_pretty <- function(model.toplot, map.range, background.color,
                         list.colorscheme, list.legend, list.titlelab,
                         list.margin, list.tick,
                         list.addobj.pre, list.addobj.post) {
@@ -116,21 +116,17 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
 
   #----------------------------------------------
   # Make range polygon for intersections
-  # st_intersection()'s below happen here so user can update map range params
-  range.poly <- pretty_plot_poly_func(plot.lim, st_crs(model.toplot))
-  # rpoly.bbox <- st_bbox(range.poly)
-  rploy.mat <- matrix(st_bbox(range.poly)[c(1, 3, 2, 4)], ncol = 2, byrow = T)
+  # st_intersection()'s below happen here so users can update map range params
+  range.poly <- pretty_range_poly_func(map.range, st_crs(model.toplot))
+  rploy.mat <- matrix(st_bbox(range.poly), ncol = 2)
+  # tm_shape() does not currently handle bbox obj correctly for range [0, 360]
 
   #----------------------------------------------
   # Additional objects - pre
   for (i in l5a) { #l5a will be list() if empty and thus won't enter for() loop
-    cover1 <- suppressMessages(st_covers(range.poly, i$obj))
-    if (!(length(cover1[[1]]) == nrow(i$obj))) {
-      print("intersect 1")
-      i$obj <- suppressMessages(st_intersection(i$obj, range.poly))
-    }
+    i$obj <- pretty_int_func(i$obj, range.poly)
 
-    if (i$obj.text == "Validation data points") { # special due to 2 colors
+    if (i$obj.text == "Validation data points") { #special due to 2 colors
       tmap.obj <- tm_shape(i$obj, bbox = rploy.mat) +
         tm_dots(col = "sight", palette = c(i$col.ptfill, i$col.absborder),
                 shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
@@ -151,12 +147,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
 
   #----------------------------------------------
   # Shape, fill (colorscheme), title, axis labels, margins
-  cover2 <- suppressMessages(st_covers(range.poly, model.toplot))
-  if (!(length(cover2[[1]]) == nrow(model.toplot))) {
-    print("intersect 2")
-    model.toplot <- suppressMessages(st_intersection(model.toplot, range.poly))
-    req(nrow(model.toplot) > 0)
-  }
+  model.toplot <- pretty_int_func(model.toplot, range.poly)
 
   if (exists("tmap.obj")) {
     tmap.obj <- tmap.obj +
@@ -179,7 +170,7 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
   tmap.obj <- tmap.obj +
     tm_layout(bg.color = background.color, legend.bg.color = "white",
               main.title = l3$title, main.title.position = "center",
-              main.title.size = l3$titlecex, #asp = NA,
+              main.title.size = l3$titlecex,
               inner.margins = l3b[1:4], outer.margins = l3b[5]) +
     tm_xlab(l3$xlab, l3$labcex) +
     tm_ylab(l3$ylab, l3$labcex)
@@ -227,13 +218,9 @@ plot_pretty <- function(model.toplot, plot.lim, background.color,
   #----------------------------------------------
   # Additional objects - post
   for (j in l5b) { #l5b will be list() if empty and thus won't enter for() loop
-    cover3 <- suppressMessages(st_covers(range.poly, j$obj))
-    if (!(length(cover3[[1]]) == nrow(j$obj))) {
-      print("intersect 3")
-      j$obj <- suppressMessages(st_intersection(j$obj, range.poly))
-    }
+    j$obj <- pretty_int_func(j$obj, range.poly)
 
-    if (j$obj.text == "Validation data points") { # special due to 2 colors
+    if (j$obj.text == "Validation data points") { #special due to 2 colors
       tmap.obj <- tmap.obj +
         tm_shape(j$obj) +
         tm_dots(col = "sight", palette = c(j$col.ptfill, j$col.absborder),

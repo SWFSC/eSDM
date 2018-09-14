@@ -40,16 +40,6 @@ output$pretty_proj_idx_uiOut_select <- renderUI({
 })
 
 #------------------------------------------------------------------------------
-### Returns logical indicating whether [0, 360] range needs to be used
-pretty_range_360 <- reactive({
-  req(pretty_models_idx_count() == 1)
-
-  b <- round(unname(st_bbox(pretty_model_toplot())), 3)
-
-  identical(abs(b[1]), b[3])
-})
-
-
 ### Get extent of selected predictions
 pretty_range <- reactive({
   req(pretty_models_idx_count() == 1)

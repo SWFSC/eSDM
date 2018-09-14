@@ -39,41 +39,47 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       )
     }
 
+
     #--------------------------------------------------------------------------
-    model.toplot <- pretty_model_toplot()
-    range.poly <- pretty_plot_poly_func(pretty_plot_lim(), st_crs(model.toplot))
-    model.int <- suppressMessages(st_intersection(model.toplot, range.poly))
-    validate(
-      need(nrow(model.int) > 0,
-           "Error: The specified map range does not contain any predictions")
-    )
-    incProgress(0.1)
-
-    x.bbox.lon <- round(unname(st_bbox(model.toplot)), 3)
-    if (identical(abs(x.bbox.lon[1]), x.bbox.lon[3])) {
-      # This is here so incProgress() can be called
-      # Don't need check_preview360() becuase check was already done above
-      incProgress(0, detail = "Processing predictions that span dateline")
-      model.toplot <- preview360(model.toplot)
-      incProgress(0, detail = "")
-    }
-    incProgress(0.2)
-
-    # st_intersection call moved to _plot.R so map range inputs can be updated
-    # model.toplot <- suppressMessages(
-    #   st_intersection(model.toplot, pretty_range_poly()[[2]])
-    # )
-
-    plot.lim <- pretty_plot_lim()
+    #------------------------------------------------------
+    # Simpler operations; happen first in case user clicks around
+    map.range <- pretty_map_range()
     background.color <- input$pretty_background_color
 
-    list.colorscheme <- pretty_colorscheme_list()
     list.legend      <- pretty_legend_list()
     list.titlelab    <- pretty_titlelab_list()
     list.margin      <- pretty_margin_list()
     list.tick        <- pretty_tick_list()
     incProgress(0.1)
 
+
+    #------------------------------------------------------
+    model.toplot <- pretty_model_toplot()
+    range.poly <- pretty_range_poly_func(
+      pretty_map_range(), st_crs(model.toplot)
+    )
+    incProgress(0.1)
+
+    if (pretty_range_360()) {
+      # This is here so incProgress() can be called
+      # Don't need check_preview360() becuase check was already done above
+      incProgress(0, detail = "Processing predictions that span dateline")
+      model.toplot <- pretty_model_toplot360()
+      incProgress(0, detail = "")
+    }
+
+    model.int <- pretty_int_func(model.toplot, range.poly)
+    validate(
+      need(nrow(model.int) > 0,
+           paste("Error: The selected predictions are outside",
+                 "of the specified map range"))
+    )
+    incProgress(0.2)
+
+
+    #------------------------------------------------------
+    # Can be more complex operations
+    list.colorscheme <- pretty_colorscheme_list()
     list.addobj <- if (input$pretty_addobj) pretty_addobj_list() else NULL
     incProgress(0.3)
 
@@ -83,7 +89,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     vals$pretty.params.toplot <- c(
       vals$pretty.params.toplot,
       list(list(
-        model.toplot = model.toplot, plot.lim = plot.lim,
+        model.toplot = model.toplot, map.range = map.range,
         background.color = background.color,
         list.titlelab = list.titlelab, list.margin = list.margin,
         list.tick = list.tick,

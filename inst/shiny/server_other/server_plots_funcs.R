@@ -144,7 +144,7 @@ check_preview360 <- function (x) {
 #----------------------------------------------------------
 ### Inspired by https://github.com/r-spatial/sf/issues/280
 preview360 <- function(x) {
-  UseMethod("preview360", x)
+  UseMethod("preview360")
 }
 
 preview360.sf <- function(x) {

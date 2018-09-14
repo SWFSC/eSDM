@@ -96,7 +96,7 @@ pretty_addobj_update_names <- reactive({
 # renderUI() for which parameter to update
 output$pretty_addobj_update_which_uiOut_select <- renderUI({
   choices.list <- as.list(1:6)
-  names(choices.list) <- req(pretty_addobj_update_names())
+  isolate(names(choices.list) <- req(pretty_addobj_update_names()))
 
   selectInput("pretty_addobj_update_which",
               tags$h5("Choose parameter to update"),
@@ -112,15 +112,8 @@ output$pretty_addobj_update_thing1_uiOut_mult <- renderUI({
 
   if (z == 1) {
     #-------------------------------------------------
-      tags$h5("You cannot change the object type of an additional object", style = "color: red;")
-    # if (y$obj.text %in% c("Study area polygon", "Erasing polygon", "Validation data points")) {
-    #   helpText("You cannot change the object type for a", y$obj.text)
-    #
-    # } else {
-    #   radioButtons("pretty_addobj_update_thing1", tags$h5("Object type:"),
-    #                choices = list("Point(s)" = 1, "Polygon(s)" = 2),
-    #                selected = y$obj.type)
-    # }
+    tags$h5("You cannot change the object type of an additional object",
+            style = "color: red;")
 
     #-------------------------------------------------
   } else if (z == 2) {
@@ -139,7 +132,7 @@ output$pretty_addobj_update_thing1_uiOut_mult <- renderUI({
   }  else if (z == 4) {
     if (y$obj.which == 4 & y$obj.type == 1) {
       tags$h5("This parameter does not apply when the additional object is a new object",
-               "of type 'Point(s)'", style = "color: red;")
+              "of type 'Point(s)'", style = "color: red;")
 
     } else {
       val.curr <- is.na(y$col.absborder)

@@ -116,7 +116,7 @@ pretty_toplot_update_table <- reactive({
       "Longitude minimum", "Longitude maximum", "Latitude minimum",
       "Latitude maximum"
     )
-    params.vals <- c("N/A: cannot update", y$plot.lim)
+    params.vals <- c("N/A: cannot update", y$map.range)
 
     #------------------------------------------------------
   } else if (z == 2) {
@@ -254,20 +254,20 @@ observeEvent(input$pretty_toplot_update_execute, {
 
   #--------------------------------------------------------
   if (z == 1 & z2 != 1) {
-    y$plot.lim[z2 - 1] <- req(input$pretty_toplot_update_thing1)
+    y$map.range[z2 - 1] <- req(input$pretty_toplot_update_thing1)
     # May need to update grid line locations
     if (z2 %in% 2:3) {
-      x.tf <- dplyr::between(y$list.tick$x.vals, y$plot.lim[1], y$plot.lim[2])
+      x.tf <- dplyr::between(y$list.tick$x.vals, y$map.range[1], y$map.range[2])
       y$list.tick$x.vals <- y$list.tick$x.vals[x.tf]
       if (length(y$list.tick$x.vals) == 0) {
-        y$list.tick$x.vals <- y$plot.lim[1:2]
+        y$list.tick$x.vals <- y$map.range[1:2]
       }
 
     } else { #z2 %in% 4:5
-      y.tf <- dplyr::between(y$list.tick$y.vals, y$plot.lim[3], y$plot.lim[4])
+      y.tf <- dplyr::between(y$list.tick$y.vals, y$map.range[3], y$map.range[4])
       y$list.tick$y.vals <- y$list.tick$y.vals[y.tf]
       if (length(y$list.tick$y.vals) == 0) {
-        y$list.tick$y.vals <- y$plot.lim[1:2]
+        y$list.tick$y.vals <- y$map.range[1:2]
       }
     }
 
@@ -338,16 +338,16 @@ observeEvent(input$pretty_toplot_update_execute, {
       y.t$inc <- input$pretty_toplot_update_thing1
 
     } else if (z2 == 2) {
-      req(input$pretty_toplot_update_thing1 < y$plot.lim[2])
+      req(input$pretty_toplot_update_thing1 < y$map.range[2])
       y.t$x.vals <- seq(
-        from = input$pretty_toplot_update_thing1, to = y$plot.lim[2],
+        from = input$pretty_toplot_update_thing1, to = y$map.range[2],
         by = req(input$pretty_toplot_update_thing2)
       )
 
     } else if (z2 == 3) {
-      req(input$pretty_toplot_update_thing1 < y$plot.lim[4])
+      req(input$pretty_toplot_update_thing1 < y$map.range[4])
       y.t$y.vals <- seq(
-        from = input$pretty_toplot_update_thing1, to = y$plot.lim[4],
+        from = input$pretty_toplot_update_thing1, to = y$map.range[4],
         by = req(input$pretty_toplot_update_thing2)
       )
 

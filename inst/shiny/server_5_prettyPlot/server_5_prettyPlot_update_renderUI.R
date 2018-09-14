@@ -77,12 +77,12 @@ output$pretty_toplot_update_message_uiOut_text <- renderText({
   } else if (z == 5 & z2 == 2) {
     paste("Please ensure that the 'Longitude start value' is between",
           "the specified longitude limits:",
-          paste(y$plot.lim[1:2], collapse = " and "))
+          paste(y$map.range[1:2], collapse = " and "))
 
   }  else if (z == 5 & z2 == 3) {
     paste("Please ensure that the 'Latitude start value' is between",
           "the specified latitude limits:",
-          paste(y$plot.lim[3:4], collapse = " and "))
+          paste(y$map.range[3:4], collapse = " and "))
 
   } else {
     NULL
@@ -104,7 +104,7 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
     if (z2 == 1) {
       tags$h5("Cannot update this parameter", style = "color: red;")
     } else {
-      val.curr <- y$plot.lim[z2 - 1]
+      val.curr <- y$map.range[z2 - 1]
       input.lab <- z.names[z2]
       numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
                    value = val.curr)

@@ -81,28 +81,31 @@ pretty_model_toplot <- reactive({
 })
 
 
+### Returns logical indicating whether [0, 360] range needs to be used
+pretty_range_360 <- reactive({
+  req(pretty_models_idx_count() == 1)
+
+  b <- round(unname(st_bbox(pretty_model_toplot())), 3)
+
+  identical(abs(b[1]), b[3])
+})
+
+
+### Return model specified by user, transformed to 0-360 range
+# Used in multiple places (toplot and color scheme), hence reactive
+# Only called after check has already been done, hence no check_preview360()
+pretty_model_toplot360 <- reactive({
+  preview360(pretty_model_toplot())
+})
+
+
 ###############################################################################
-### Compile plot limit
-pretty_plot_lim <- reactive({
+### Compile map range (plot limits)
+pretty_map_range <- reactive({
   req(c(
     input$pretty_range_xmin, input$pretty_range_xmax,
     input$pretty_range_ymin, input$pretty_range_ymax
   ))
-
-  # plot.lim <- req(c(
-  #   input$pretty_range_xmin, input$pretty_range_xmax,
-  #   input$pretty_range_ymin, input$pretty_range_ymax
-  # ))
-  #
-  # poly.x <- plot.lim[c(1, 1, 2, 2, 1)]
-  # poly.y <- plot.lim[c(3, 4, 4, 3, 3)]
-  #
-  # # plot.lim.poly <-
-  # st_sfc(
-  #   st_polygon(list(cbind(poly.x, poly.y))), crs = pretty_crs_selected()
-  # )
-  #
-  # list(plot.lim, plot.lim.poly)
 })
 
 
@@ -170,10 +173,18 @@ pretty_colorscheme_list <- reactive({
   color.palette <- pretty_colorscheme_palette_num()[[1]]
   color.num     <- pretty_colorscheme_palette_num()[[2]]
 
-  # TODO x <- st_intersection(pretty_model_toplot())
-  x <- pretty_model_toplot()
-  data.which <- pretty_table_row_idx()[1]
-  data.name <- switch(data.which, "Pred", "Pred.overlaid", "Pred.ens")
+  # Clip preds to map range
+  # browser()
+  y <- pretty_range_poly_func(pretty_map_range(), pretty_crs_selected())
+  if (pretty_range_360()) {
+    x <- pretty_int_func(pretty_model_toplot360(), y)
+  } else {
+    x <- pretty_int_func(pretty_model_toplot(), y)
+  }
+
+  data.name <- switch(
+    pretty_table_row_idx()[1], "Pred", "Pred.overlaid", "Pred.ens"
+  )
   x.df <- st_set_geometry(x, NULL)[, data.name]
 
   ### NA color
@@ -254,7 +265,7 @@ pretty_legend_list <- reactive({
 ###############################################################################
 # Section 2
 ###############################################################################
-# Title and axis labels
+### Title and axis labels
 pretty_titlelab_list <- reactive({
   list(
     title = input$pretty_title, xlab = input$pretty_xlab,
@@ -265,7 +276,7 @@ pretty_titlelab_list <- reactive({
 
 
 ###############################################################################
-
+### Margin info
 pretty_margin_list <- reactive({
   list(
     input$pretty_margin_in1, input$pretty_margin_in2, input$pretty_margin_in3,
@@ -315,11 +326,6 @@ pretty_addobj_list <- reactive({
     if (!identical(st_crs(i$obj), pretty_crs_selected())) {
       i$obj <- st_transform(i$obj, pretty_crs_selected())
     }
-
-    # st_intersection call moved to _plot.R so map range inputs can be updated
-    # i$obj <- suppressMessages(
-    #   st_intersection(i$obj, pretty_range_poly()[[2]])
-    # )
 
     i
   })
