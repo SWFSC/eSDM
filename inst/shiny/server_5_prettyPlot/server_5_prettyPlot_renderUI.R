@@ -39,6 +39,52 @@ output$pretty_proj_idx_uiOut_select <- renderUI({
               choices = choices.list, selected = 1)
 })
 
+#------------------------------------------------------------------------------
+### Returns logical indicating whether [0, 360] range needs to be used
+pretty_range_360 <- reactive({
+  req(pretty_models_idx_count() == 1)
+
+  b <- round(unname(st_bbox(pretty_model_toplot())), 3)
+
+  identical(abs(b[1]), b[3])
+})
+
+
+### Get extent of selected predictions
+pretty_range <- reactive({
+  req(pretty_models_idx_count() == 1)
+  # round(st_bbox(pretty_model_toplot()), 2)
+
+  x <- st_geometry(pretty_model_toplot())
+
+  if (pretty_range_360()) {
+    y1 <- st_sfc(st_polygon(list(
+      matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
+    )), crs = 4326)
+    y1 <- st_transform(y1, pretty_crs_selected())
+
+    y2 <- st_sfc(st_polygon(list(
+      matrix(c(180, 0, 0, 180, 180, -90, -90, 90, 90, -90), ncol = 2)
+    )), crs = 4326)
+    y2 <- st_transform(y2, pretty_crs_selected())
+    lon.add <- unname(st_bbox(y2))[3] * 2
+
+    x1.b <- st_bbox(suppressMessages(st_intersection(x, y1)))
+    x2.b <- st_bbox(suppressMessages(st_intersection(x, y2)))
+
+    c(x2.b[1], ymin = min(x1.b[2], x2.b[2]), x1.b[3] + lon.add,
+      ymax = max(x1.b[4],x2.b[4]))
+
+  } else {
+    st_bbox(x)
+  }
+})
+
+# From https://stackoverflow.com/questions/35807523/r-decimal-ceiling
+esdm_floor <-   function(x, level = 2) round(x - 5 * 10 ^ (-level - 1), level)
+esdm_ceiling <- function(x, level = 2) round(x + 5 * 10 ^ (-level - 1), level)
+
+#------------------------------------------------------------------------------
 ### Message about 0-360 range
 output$pretty_range_360_uiOut_text <- renderUI({
   req(pretty_range_360())
@@ -50,27 +96,28 @@ output$pretty_range_360_uiOut_text <- renderUI({
           style = "color: red;")
 })
 
+
 ### Render longitude, latitude min and max
 output$pretty_range_xmin_uiOut_num <- renderUI({
-  val.default <- pretty_range()["xmin"]
+  val.default <- esdm_floor(pretty_range()["xmin"])
   numericInput("pretty_range_xmin", tags$h5("Longitude minimum"),
                value = val.default)
 })
 
 output$pretty_range_xmax_uiOut_num <- renderUI({
-  val.default <- pretty_range()["xmax"]
+  val.default <- ceiling(pretty_range()["xmax"])
   numericInput("pretty_range_xmax", tags$h5("Longitude maximum"),
                value = val.default)
 })
 
 output$pretty_range_ymin_uiOut_num <- renderUI({
-  val.default <- pretty_range()["ymin"]
+  val.default <- esdm_floor(pretty_range()["ymin"])
   numericInput("pretty_range_ymin", tags$h5("Latitude minimum"),
                value = val.default)
 })
 
 output$pretty_range_ymax_uiOut_num <- renderUI({
-  val.default <- pretty_range()["ymax"]
+  val.default <- esdm_ceiling(pretty_range()["ymax"])
   numericInput("pretty_range_ymax", tags$h5("Latitude maximum"),
                value = val.default)
 })

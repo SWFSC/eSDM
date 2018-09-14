@@ -81,48 +81,6 @@ pretty_model_toplot <- reactive({
 })
 
 
-### Returns logical indicating whether [0, 360] range needs to be used rather than [-180, 180]
-pretty_range_360 <- reactive({
-  req(pretty_models_idx_count() == 1)
-
-  b <- round(unname(st_bbox(pretty_model_toplot())), 3)
-
-  identical(abs(b[1]), b[3])
-})
-
-
-### Get extent of selected predictions
-pretty_range <- reactive({
-  req(pretty_models_idx_count() == 1)
-  # round(st_bbox(pretty_model_toplot()), 2)
-
-  x <- st_geometry(pretty_model_toplot())
-
-  if (pretty_range_360()) {
-    y1 <- st_sfc(st_polygon(list(
-      matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
-    )), crs = 4326)
-    y1 <- st_transform(y1, pretty_crs_selected())
-
-    y2 <- st_sfc(st_polygon(list(
-      matrix(c(180, 0, 0, 180, 180, -90, -90, 90, 90, -90), ncol = 2)
-    )), crs = 4326)
-    y2 <- st_transform(y2, pretty_crs_selected())
-    lon.add <- unname(st_bbox(y2))[3] * 2
-
-    x1.b <- st_bbox(suppressMessages(st_intersection(x, y1)))
-    x2.b <- st_bbox(suppressMessages(st_intersection(x, y2)))
-
-    round(c(x2.b[1], ymin = min(x1.b[2], x2.b[2]),
-            x1.b[3] + lon.add,  ymax = max(x1.b[4],x2.b[4])),
-          2)
-
-  } else {
-    round(st_bbox(x), 2)
-  }
-})
-
-
 ###############################################################################
 ### Compile plot limit
 pretty_plot_lim <- reactive({
