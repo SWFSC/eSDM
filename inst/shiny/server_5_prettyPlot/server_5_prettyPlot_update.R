@@ -424,6 +424,19 @@ observeEvent(input$pretty_toplot_update_done, {
 
   x <- req(input$pretty_update_table_out_rows_selected)
 
+  # Update color scheme data breaks and legend labels if necessary
+  y <- val.pretty.toplot.update()
+  if (!identical(vals$pretty.params.toplot[[x]]$map.range, y$map.range)) {
+    l.cs <- y$list.colorscheme
+    temp <- pretty_colorscheme_func(
+      y$model.toplot, l.cs$data.name, y$map.range, l.cs$perc,
+      length(l.cs$col.pal), leg.perc.esdm, l.cs$leg.round
+    )
+
+    y$list.colorscheme[c("data.breaks", "leg.labs")] <- temp
+    val.pretty.toplot.update(y)
+  }
+
   vals$pretty.params.toplot[[x]] <- val.pretty.toplot.update()
   val.pretty.toplot.update(NULL)
 })

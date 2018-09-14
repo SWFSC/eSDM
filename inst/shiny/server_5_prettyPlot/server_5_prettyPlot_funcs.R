@@ -42,7 +42,36 @@ pretty_int_func.sfc <- function(x, y) {
 
 
 ###############################################################################
-#
+# Calculate color scheme data breaks and legend labels
+pretty_colorscheme_func <- function(x, data.name, map.range, perc, color.num,
+                                    leg.perc.esdm, leg.round) {
+
+  y <- pretty_range_poly_func(map.range, st_crs(x))
+  x <- pretty_int_func(x, y)
+  x.df <- st_set_geometry(x, NULL)[, data.name]
+
+
+  if (perc) {
+    # Percentages
+    data.breaks <- breaks_calc(x.df)
+    labels.lab.pretty <- leg.perc.esdm
+
+  } else {
+    # Values
+    data.breaks <- seq(
+      min(x.df, na.rm = TRUE), max(x.df, na.rm = TRUE),
+      length.out = (color.num + 1)
+    )
+    data.breaks.labs <- round(data.breaks, leg.round)
+    labels.lab.pretty <- paste(
+      format(head(data.breaks.labs, -1), nsmall = leg.round),
+      format(tail(data.breaks.labs, -1), nsmall = leg.round),
+      sep = " - "
+    )
+  }
+
+  list(data.breaks, labels.lab.pretty)
+}
 
 
 ###############################################################################

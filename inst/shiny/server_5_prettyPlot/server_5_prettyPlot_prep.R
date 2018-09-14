@@ -112,6 +112,7 @@ pretty_map_range <- reactive({
 ###############################################################################
 # Color scheme of predictions
 
+#------------------------------------------------------------------------------
 ### Process inputs and return list with num of colors and color palette to use
 pretty_colorscheme_palette_num <- reactive({
   req(input$pretty_color_palette)
@@ -166,27 +167,10 @@ pretty_colorscheme_palette_num <- reactive({
 })
 
 
-# Generate list that specifies color scheme things
+#------------------------------------------------------------------------------
+### Generate list that specifies color scheme things
 pretty_colorscheme_list <- reactive({
-  ### Get reactive elements
-  perc <- input$pretty_color_perc == 1
-  color.palette <- pretty_colorscheme_palette_num()[[1]]
-  color.num     <- pretty_colorscheme_palette_num()[[2]]
-
-  # Clip preds to map range
-  # browser()
-  y <- pretty_range_poly_func(pretty_map_range(), pretty_crs_selected())
-  if (pretty_range_360()) {
-    x <- pretty_int_func(pretty_model_toplot360(), y)
-  } else {
-    x <- pretty_int_func(pretty_model_toplot(), y)
-  }
-
-  data.name <- switch(
-    pretty_table_row_idx()[1], "Pred", "Pred.overlaid", "Pred.ens"
-  )
-  x.df <- st_set_geometry(x, NULL)[, data.name]
-
+  #----------------------------------------------------------
   ### NA color
   if (input$pretty_na_color_check) {
     col.na <- NULL
@@ -194,30 +178,37 @@ pretty_colorscheme_list <- reactive({
     col.na <- input$pretty_na_color
   }
 
-  ### Determine data break points and legend labels
-  if (perc) {
-    # Percentages
-    data.breaks <- breaks_calc(x.df)
-    labels.lab.pretty <- leg.perc.esdm
+  #----------------------------------------------------------
+  ### Get reactive elements
+  perc <- input$pretty_color_perc == 1
+  color.palette <- pretty_colorscheme_palette_num()[[1]]
+  color.num     <- pretty_colorscheme_palette_num()[[2]]
 
+  #----------------------------------------------------------
+  ### Determine data break points and legend labels
+  # Prep
+  if (pretty_range_360()) {
+    x <- pretty_model_toplot360()
   } else {
-    # Values
-    data.breaks <- seq(
-      min(x.df, na.rm = TRUE), max(x.df, na.rm = TRUE),
-      length.out = (color.num + 1)
-    )
-    data.breaks.labs <- round(data.breaks, input$pretty_legend_round)
-    labels.lab.pretty <- paste(
-      format(head(data.breaks.labs, -1), nsmall = 3),
-      format(tail(data.breaks.labs, -1), nsmall = 3),
-      sep = " - "
-    )
+    x <- pretty_model_toplot()
   }
 
+  data.name <- switch(
+    pretty_table_row_idx()[1], "Pred", "Pred.overlaid", "Pred.ens"
+  )
+
+  # Call function
+  temp <- pretty_colorscheme_func(
+    x, data.name, pretty_map_range(), perc, color.num,
+    leg.perc.esdm, input$pretty_legend_round
+  )
+
+  #----------------------------------------------------------
   ### Return list
   list(
-    data.name = data.name, data.breaks = data.breaks, col.pal = color.palette,
-    col.na = col.na, leg.labs = labels.lab.pretty
+    data.name = data.name, data.breaks = temp[[1]], col.pal = color.palette,
+    col.na = col.na, leg.labs = temp[[2]],
+    perc = perc, leg.round = input$pretty_legend_round #incldued for update
   )
 })
 
