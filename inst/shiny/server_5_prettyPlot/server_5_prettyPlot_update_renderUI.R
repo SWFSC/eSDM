@@ -68,7 +68,13 @@ output$pretty_toplot_update_message_uiOut_text <- renderText({
   z.names <- req(pretty_toplot_update_table())$Name
   z.vals <- req(pretty_toplot_update_table())$Value
 
-  if (z == 5 & z2 == 2) {
+  if (z == 1 & z2 != 1) {
+    paste("Please ensure that the 'minimum' values remain less than their",
+          "respective 'maximum' values.",
+          "In addition, note that if you increase the expanse of the map",
+          "you will likely need to update the grid line locations")
+
+  } else if (z == 5 & z2 == 2) {
     paste("Please ensure that the 'Longitude start value' is between",
           "the specified longitude limits:",
           paste(y$plot.lim[1:2], collapse = " and "))

@@ -65,7 +65,7 @@ toplot_update_modal <- function(failed) {
         condition = "output.pretty_toplot_update_addobj_flag",
         box(
           width = 12,
-          textOutput("pretty_toplot_update_message_uiOut_text"),
+          tags$span(textOutput("pretty_toplot_update_message_uiOut_text"), style = "color: blue;"),
           fluidRow(
             column(6, uiOutput("pretty_toplot_update_thing1_uiOut_mult")),
             column(6, uiOutput("pretty_toplot_update_thing2_uiOut_mult"))
@@ -252,8 +252,24 @@ observeEvent(input$pretty_toplot_update_execute, {
   z <- input$pretty_toplot_update_which
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
 
+  #--------------------------------------------------------
   if (z == 1 & z2 != 1) {
     y$plot.lim[z2 - 1] <- req(input$pretty_toplot_update_thing1)
+    # May need to update grid line locations
+    if (z2 %in% 2:3) {
+      x.tf <- dplyr::between(y$list.tick$x.vals, y$plot.lim[1], y$plot.lim[2])
+      y$list.tick$x.vals <- y$list.tick$x.vals[x.tf]
+      if (length(y$list.tick$x.vals) == 0) {
+        y$list.tick$x.vals <- y$plot.lim[1:2]
+      }
+
+    } else { #z2 %in% 4:5
+      y.tf <- dplyr::between(y$list.tick$y.vals, y$plot.lim[3], y$plot.lim[4])
+      y$list.tick$y.vals <- y$list.tick$y.vals[y.tf]
+      if (length(y$list.tick$y.vals) == 0) {
+        y$list.tick$y.vals <- y$plot.lim[1:2]
+      }
+    }
 
     #------------------------------------------------------
   } else if (z == 2) {
