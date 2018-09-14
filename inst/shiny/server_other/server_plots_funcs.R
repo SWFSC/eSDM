@@ -328,7 +328,9 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
         from = min(data.vec, na.rm = TRUE), to = max(data.vec, na.rm = TRUE),
         length.out = 11
       )
-      b.model.lab <- format(round(b.model, 3), justify = "right")
+
+      d <- max(3, nchar(format(signif(b.model[2], 1), scientific = FALSE)) - 2)
+      b.model.lab <- format(round(b.model, d), justify = "right")
 
       opar <- par(mai = leg.mai)
       on.exit(par(opar), add = TRUE)
@@ -487,9 +489,12 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
     binpal <- colorBin(
       col.pal, data.vec, bins = 10, pretty = FALSE, na.color = "gray"
     )
-    data.breaks.vals <- format(round(seq(
+
+    data.breaks.vals <- seq(
       max(data.vec, na.rm = TRUE), min(data.vec, na.rm = TRUE), length.out = 11
-    ), 3), justify = "right")
+    )
+    d <- max(3, nchar(format(signif(data.breaks.vals[10], 1), scientific = FALSE)) - 2)
+    data.breaks.vals <- format(round(data.breaks.vals, d), justify = "right")
     data.breaks.labs <- paste(
       data.breaks.vals[2:11], "-", data.breaks.vals[1:10]
     )
@@ -520,9 +525,12 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
     binpal <- colorBin(
       pal.w, data.vec.w, bins = 10, pretty = FALSE, na.color = "gray"
     )
-    data.breaks.vals.w <- format(round(seq(
+
+    data.breaks.vals.w <- seq(
       max(data.vec.w, na.rm = TRUE), min(data.vec.w, na.rm = TRUE), length.out = 11
-    ), 3), justify = "right")
+    )
+    d <- max(3, nchar(format(signif(data.breaks.vals.w[10], 1), scientific = FALSE)) - 2)
+    data.breaks.vals.w <- format(round(data.breaks.vals.w, d), justify = "right")
     data.breaks.labs.w <- paste(
       data.breaks.vals.w[2:11], "-", data.breaks.vals.w[1:10]
     )
