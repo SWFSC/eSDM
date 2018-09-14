@@ -21,11 +21,13 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
            "Error: each map must have a unique ID")
     )
   }
-
   validate(
     need(input$pretty_range_xmin,
          paste("Error: Please wait until the parameter inputs below",
-               "have finished loading"))
+               "have finished loading")) %then%
+      need(input$pretty_tick_lon_start,
+           paste("Error: Please wait until the parameter inputs below",
+                 "have finished loading"))
   )
 
   # Get/set plotting variables

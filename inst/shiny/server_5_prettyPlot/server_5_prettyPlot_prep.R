@@ -280,7 +280,7 @@ pretty_margin_list <- reactive({
 ### Generate list of coordinate grid line and label info
 pretty_tick_list <- reactive({
   lon.grid.vals <- seq(
-    from = input$pretty_tick_lon_start, to = input$pretty_range_xmax,
+    from = req(input$pretty_tick_lon_start), to = input$pretty_range_xmax,
     by = input$pretty_tick_lon_interval
   )
 
