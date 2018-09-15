@@ -96,6 +96,7 @@ output$export_out <- downloadHandler(
       # Prep
       export.format <- input$export_format
       data.out <- export_model_selected_proj_format()
+      incProgress(0.3)
 
       # Write file
       if (export.format == 1) {
@@ -123,7 +124,7 @@ output$export_out <- downloadHandler(
         validate(need(FALSE, "Download error"))
       }
 
-      incProgress(0.6)
+      incProgress(0.3)
     })
   }
 )
@@ -200,6 +201,12 @@ export_model_selected_proj <- reactive({
 ### Return selected predictions in specified projection in desired format
 export_model_selected_proj_format <- reactive({
   model.selected <- export_model_selected_proj() #handles req()
+  x.bbox.lon <- round(unname(st_bbox(model.selected)), 3)
+  if (identical(abs(x.bbox.lon[1]), x.bbox.lon[3])) {
+    incProgress(0, detail = "Processing predictions that span dateline")
+    model.selected <- preview360_ll(model.selected)
+    incProgress(0, detail = "")
+  }
 
   if (input$export_format == 1) {
     # Exporting data as .csv requires data.frame with centroids
