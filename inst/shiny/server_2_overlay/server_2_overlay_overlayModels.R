@@ -147,11 +147,22 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       )
 
       if (samegeo.flag.ind) {
-        # SDM being overlaid has the EXACT SAME geometry (including order) as base.sfc
-        stopifnot(identical(base.sf$Pixels, sdm$Pixels))
-        sdm %>% st_set_geometry(NULL) %>%
-          purrr::set_names("Pred.overlaid", "Weight.overlaid", "Pixels") %>%
-          st_sf(geometry = base.sfc, agr = "constant")
+        # SDM being overlaid has the SAME geometry as orig geom of base.sfc
+        #   If base.sfc is clipped geom of orig geom, then can index by Pixels
+        sf.temp <- base.pix %>%
+          dplyr::left_join(st_set_geometry(sdm, NULL), by = "Pixels") %>%
+          dplyr::mutate(Pixels2 = 1:nrow(base.pix)) %>%
+          dplyr::select(Pred.overlaid = Pred, Weight.overlaid = Weight,
+                        Pixels = Pixels2) %>%
+          st_set_agr("constant")
+
+        validate(
+          need(identical(base.sfc, st_geometry(sf.temp)),
+               paste("Error: the eSDM was unable to overlay original model",
+                     sdm.num))
+        )
+
+        sf.temp
 
       } else {
         # SDM being overlaid has a DIFFERENT geometry than the base

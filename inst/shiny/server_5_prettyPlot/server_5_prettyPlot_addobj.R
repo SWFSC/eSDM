@@ -48,8 +48,7 @@ pretty_addobj_add <- eventReactive(input$pretty_addobj_add_execute, {
     }
     incProgress(0.3)
 
-    x.bbox.lon <- round(unname(st_bbox(addobj.obj)), 3)
-    if (identical(abs(x.bbox.lon[1]), x.bbox.lon[3])) {
+    if (check_360(addobj.obj)) {
       addobj.obj <- st_union(preview360_ll(addobj.obj), by_feature = TRUE)
     }
     incProgress(0.2)

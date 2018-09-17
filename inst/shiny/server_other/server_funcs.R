@@ -437,3 +437,150 @@ esdm_simple_cap <- function(x, all = FALSE) {
 
 ###############################################################################
 ###############################################################################
+# [0, 360]-related functions
+
+#------------------------------------------------------------------------------
+check_360 <- function(x) {
+  stopifnot(isTruthy(st_crs(x)[[2]]))
+
+  x.bbox.lon <- round(unname(st_bbox(x)), 3)
+
+  identical(abs(x.bbox.lon[1]), x.bbox.lon[3])
+}
+
+
+#------------------------------------------------------------------------------
+#----------------------------------------------------------
+### Function for converting dateline-spanning preds back to 0-360 if nec
+check_preview360 <- function (x) {
+  if (check_360(x)) preview360(x) else x
+}
+
+
+#----------------------------------------------------------
+### Inspired by https://github.com/r-spatial/sf/issues/280
+preview360 <- function(x) {
+  UseMethod("preview360")
+}
+
+preview360.sf <- function(x) {
+  x.agr <- st_agr(x)
+  x.crs <- st_crs(x)
+
+  if (inherits(st_geometry(x), "sfc_MULTIPOLYGON")) {
+    x <- st_cast(x, "POLYGON", warn = FALSE)
+  }
+  if (inherits(st_geometry(x), "sfc_MULTIPOINT")) {
+    x <- st_cast(x, "POINT", warn = FALSE)
+  }
+
+  stopifnot(
+    inherits(st_geometry(x), "sfc_POLYGON") | inherits(st_geometry(x), "sfc_POINT")
+  )
+
+  y <- st_sfc(st_polygon(list(
+    matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
+  )), crs = 4326)
+  y <- st_transform(y, st_crs(x))
+  lon.add <- abs(unname(st_bbox(y))[1] * 2)
+
+  y.x <- suppressMessages(st_intersects(y, x)[[1]])
+  y.x.no <- (1:nrow(x))[-y.x]
+
+  x.df <- st_set_geometry(x, NULL)
+  x.geom <- st_geometry(x)
+
+  x1 <- data.frame(x.df[y.x, ]) %>%
+    purrr::set_names(names(x.df)) %>%
+    st_sf(geometry = x.geom[y.x] + c(lon.add, 0), agr = x.agr, crs = x.crs)
+  x2 <- data.frame(x.df[y.x.no, ]) %>%
+    purrr::set_names(names(x.df)) %>%
+    st_sf(geometry = x.geom[y.x.no], agr = x.agr)
+
+  stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x1), st_area(x2))) < 1)
+
+  st_set_agr(rbind(x1, x2)[order(c(y.x, y.x.no)), ], x.agr)
+}
+
+preview360.sfc <- function(x) {
+  x.crs <- st_crs(x)
+
+  if (inherits(x, "sfc_MULTIPOLYGON")) x <- st_cast(x, "POLYGON", warn = FALSE)
+  if (inherits(x, "sfc_MULTIPOINT"))   x <- st_cast(x, "POINT", warn = FALSE)
+
+  stopifnot(
+    inherits(x, "sfc_POLYGON") | inherits(x, "sfc_POINT")
+  )
+
+  y <- st_sfc(st_polygon(list(
+    matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
+  )), crs = 4326)
+  y <- st_transform(y, st_crs(x))
+  lon.add <- abs(unname(st_bbox(y))[1] * 2)
+
+  y.x <- suppressMessages(st_intersects(y, x)[[1]])
+  y.x.no <- (1:length(x))[-y.x]
+
+  x1 <- st_sfc(x[y.x] + c(lon.add, 0), crs = x.crs)
+  x2 <- x[y.x.no]
+
+  stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x1), st_area(x2))) < 1)
+
+  st_set_crs(c(x1, x2)[order(c(y.x, y.x.no))], x.crs)
+}
+
+
+#------------------------------------------------------------------------------
+### Based on https://github.com/r-spatial/sf/issues/280
+# st_transform() automatically processes x so that range(x) = (-180, 180]
+#   thus you can't transform to 4326 and then back to original crs
+#   Also, other method (above) is much faster
+preview360_ll <- function (x) {
+  UseMethod("preview360_ll", x)
+}
+
+preview360_ll.sf <- function(x) {
+  x.crs <- st_crs(x)
+
+  if (st_is_longlat(x)) {
+    st_sf(
+      st_set_geometry(x, NULL),
+      geometry = (st_geometry(x) + c(360, 90)) %% c(360) - c(0, 90),
+      crs = x.crs, agr = st_agr(x)
+    )
+
+  } else {
+    y <- st_sfc(st_polygon(list(
+      matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
+    )), crs = 4326)
+    y <- st_transform(y, st_crs(x))
+    lon.add <- abs(unname(st_bbox(y))[1] * 2)
+    lat.add <- abs(unname(st_bbox(y))[2])
+
+    st_sf(
+      st_set_geometry(x, NULL),
+      geometry = (st_geometry(x) + c(lon.add, lat.add)) %% c(lon.add) - c(0, lat.add),
+      crs = x.crs, agr = st_agr(x)
+    )
+  }
+}
+
+preview360_ll.sfc <- function(x) {
+  x.crs <- st_crs(x)
+
+  if (st_is_longlat(x)) {
+    st_sfc((x + c(360, 90)) %% c(360) - c(0, 90), crs = x.crs)
+
+  } else {
+    y <- st_sfc(st_polygon(list(
+      matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
+    )), crs = 4326)
+    y <- st_transform(y, x.crs)
+    lon.add <- abs(unname(st_bbox(y))[1] * 2)
+    lat.add <- abs(unname(st_bbox(y))[2])
+
+    st_sfc((x + c(lon.add, lat.add)) %% c(lon.add) - c(0, lat.add), crs = x.crs)
+  }
+}
+
+###############################################################################
