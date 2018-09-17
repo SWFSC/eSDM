@@ -208,31 +208,31 @@ ui.overlay <- function() {
                                     value = TRUE),
                       conditionalPanel(
                         condition = "input.overlay_proj_native == false",
-                        box(
-                          width = 12,
-                          radioButtons("overlay_proj_method", NULL,
-                                       choices = list("Perform overlay in WGS 84 geographic coordinates" = 1,
-                                                      "Select model with desired coordinate system" = 2,
-                                                      "Enter numeric EPSG code" = 3),
-                                       selected = 1),
-                          conditionalPanel(
-                            condition = "input.overlay_proj_method == 1",
-                            helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
-                                     "1) 'Equatorial axis of ellipsoid' = 6378137 and",
-                                     "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
-                                     "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
-                                     "for more details about assumptions that must be made when calculating the area",
-                                     "using WGS 84 geographic coordinates.")
-                          ),
-                          uiOutput("overlay_proj_sdm_uiOut_select"),
-                          conditionalPanel(
-                            condition = "input.overlay_proj_method == 3",
-                            numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1),
-                            helpText("See", tags$a("epsg.io", href = "http://epsg.io/"), "or the",
-                                     tags$a("EPSG home page", href = "http://www.epsg.org/"), "for more information about EPSG codes")
-                          )
+                        # box(
+                        # width = 12,
+                        radioButtons("overlay_proj_method", NULL,
+                                     choices = list("Perform overlay in WGS 84 geographic coordinates" = 1,
+                                                    "Select model with desired coordinate system" = 2,
+                                                    "Enter numeric EPSG code" = 3),
+                                     selected = 1),
+                        conditionalPanel(
+                          condition = "input.overlay_proj_method == 1",
+                          helpText("When calculating area using WGS 84 geographic coordinates, the following assumptions are made:",
+                                   "1) 'Equatorial axis of ellipsoid' = 6378137 and",
+                                   "2) 'Inverse flattening of ellipsoid' = 1/298.257223563.", tags$br(),
+                                   "See", tags$a("this article", href = "https://link.springer.com/article/10.1007%2Fs00190-012-0578-z"),
+                                   "for more details about assumptions that must be made when calculating the area",
+                                   "using WGS 84 geographic coordinates.")
+                        ),
+                        uiOutput("overlay_proj_sdm_uiOut_select"),
+                        conditionalPanel(
+                          condition = "input.overlay_proj_method == 3",
+                          numericInput("overlay_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1),
+                          helpText("See", tags$a("epsg.io", href = "http://epsg.io/"), "or the",
+                                   tags$a("EPSG home page", href = "http://www.epsg.org/"), "for more information about EPSG codes")
                         )
                       )
+                      # )
                     )
                   )
                 ),

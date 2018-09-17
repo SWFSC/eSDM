@@ -74,31 +74,48 @@ ui.export <- function() {
               box(
                 width = 6,
                 tags$strong("2) Export options: coordinate system"),
+                tags$hr(style = "border-color: black;"), #-------------------------------------
                 helpText("Note that if you export predictions to an Excel .csv file in a longitude/latitude",
                          "coordinate system, the eSDM assumes the longitude/latitude coordinates are planar",
-                         "and thus the centroids may not be geographically accurate. See ... for more information"),
+                         "and thus the centroids may not be geographically accurate. See", tags$strong("TODO"), "for more information"),
                 checkboxInput("export_proj_native", "Export predictions in the native coordinate system of the selected SDM",
                               value = TRUE),
                 conditionalPanel(
                   condition = "input.export_proj_native == false",
-                  box(
+                  radioButtons("export_proj_method", NULL, #tags$h5("Overlay coordinate system"),
+                               choices = list("Export predictions in WGS 84 geographic coordinates" = 1,
+                                              "Select SDM with desired coordinate system" = 2,
+                                              "Enter numeric EPSG code" = 3),
+                               selected = 1),
+                  uiOutput("export_proj_sdm_uiOut_select"),
+                  conditionalPanel(
+                    condition = "input.export_proj_method == 3",
+                    numericInput("export_proj_epsg", tags$h5("EPSG code"), value = 4326)
+                  )
+                ),
+                tags$hr(style = "border-color: black;"), #-------------------------------------
+                conditionalPanel(
+                  condition = "output.export_range360_flag && input.export_proj_360 == false && input.export_format == 1",
+                  tags$h5("Warning: Centroids for polygons that span the international dateline will not be",
+                          "geographically accurate or meaningful in this longitude range",
+                          style = "color: red;")
+                ),
+                checkboxInput("export_proj_360",
+                              paste("Export predictions with longitude coordinates in a range equivalent to",
+                                    "[0, 360] decimal degrees rather than [-180, 180] decimal degrees"),
+                              value = FALSE),
+                conditionalPanel(
+                  condition = "input.export_proj_360 && input.export_format == 2",
+                  column(
                     width = 12,
-                    radioButtons("export_proj_method", NULL, #tags$h5("Overlay coordinate system"),
-                                 choices = list("Export predictions in WGS 84 geographic coordinates" = 1,
-                                                "Select SDM with desired coordinate system" = 2,
-                                                "Enter numeric EPSG code" = 3),
-                                 selected = 1),
-                    uiOutput("export_proj_sdm_uiOut_select"),
-                    conditionalPanel(
-                      condition = "input.export_proj_method == 3",
-                      numericInput("export_proj_epsg", tags$h5("EPSG code"), value = 4326, step = 1)
-                    )
+                    helpText("Prediction polygons that span the dateline will be multipart polygons split along the dateline")
                   )
                 ),
                 conditionalPanel(
                   condition = "output.export_nonll_flag",
-                  helpText("The selected predictions are set to be exported in a coordinate system where the units are",
-                           "not degrees"),
+                  tags$hr(style = "border-color: black;"), #-------------------------------------
+                  tags$h5("The selected predictions are set to be exported in a coordinate system where the units are",
+                          "not degrees", style = "color: red;"),
                   checkboxInput("export_csv_ll",
                                 paste("Include the longitudes and latitudes of the centroids in decimal degrees",
                                       "(WGS 84 geographic coordinates) in additional columns in the .csv file"),
