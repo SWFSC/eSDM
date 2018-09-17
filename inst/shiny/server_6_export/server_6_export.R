@@ -71,11 +71,18 @@ outputOptions(output, "export_tables_oneselected_flag",
               suspendWhenHidden = FALSE)
 
 ### Flag for if sdm will be exported in non-long/lat crs
-output$export_nonll_flag <- reactive({
+export_nonll <- reactive({
   req(export_crs()[[2]])
-  (input$export_format == 1) & !grepl("proj=longlat", export_crs()[[2]])
+  input$export_format == 1 && !st_is_longlat(export_crs())
 })
+output$export_nonll_flag <- reactive(export_nonll())
 outputOptions(output, "export_nonll_flag", suspendWhenHidden = FALSE)
+
+### Flag for if selected predictions span dateline
+output$export_range360_flag <- reactive({
+  check_360(export_model_selected())
+})
+outputOptions(output, "export_range360_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
@@ -201,15 +208,31 @@ export_model_selected_proj <- reactive({
 ### Return selected predictions in specified projection in desired format
 export_model_selected_proj_format <- reactive({
   model.selected <- export_model_selected_proj() #handles req()
-  x.bbox.lon <- round(unname(st_bbox(model.selected)), 3)
-  if (identical(abs(x.bbox.lon[1]), x.bbox.lon[3])) {
-    incProgress(0, detail = "Processing predictions that span dateline")
-    model.selected <- preview360_ll(model.selected)
-    incProgress(0, detail = "")
+
+  # Transform longitudes to equiv of range [0, 360] if necessary
+  if (input$export_proj_360) {
+    if (check_360(model.selected)) {
+      incProgress(0, detail = "Processing predictions that span dateline")
+      model.selected <- preview360_mod(model.selected)
+      incProgress(0, detail = "")
+
+    } else {
+      range.poly <- st_transform(
+        pretty_range_poly_func(c(-180, -90, 0, 90), 4326),
+        st_crs(model.selected)
+      )
+      cover.out <- suppressMessages(st_covers(range.poly, model.selected)[[1]])
+      if (length(cover.out) > 0) {
+        incProgress(0, detail = "Processing predictions")
+        model.selected <- preview360_mod(model.selected)
+        incProgress(0, detail = "")
+      }
+    }
   }
 
+  # Exporting data as .csv requires df of centroids; otherwise return sf obj
   if (input$export_format == 1) {
-    # Exporting data as .csv requires data.frame with centroids
+    # Must be after transformation so centroids are accurate
     model.selected.centroid <- suppressWarnings(suppressMessages(
       st_centroid(model.selected)
     ))
@@ -220,22 +243,21 @@ export_model_selected_proj_format <- reactive({
       st_set_geometry(model.selected, NULL)
     )
 
-    if (input$export_csv_ll) {
-      # Add centroid coordinates in crs.ll if desired
-      x.cent.ll <- st_transform(model.selected.centroid, 4326)
-      data.out.coords.ll <- do.call(rbind, st_geometry(x.cent.ll))
-
-      data.out <- cbind(data.out, Long_ll = data.out.coords.ll[, 1],
-                        Lat_ll = data.out.coords.ll[, 2])
-    }
+    # # Add centroid coordinates in crs.ll if desired
+    # if (export_nonll() && input$export_csv_ll) {
+    #   x.cent.ll <- st_transform(model.selected.centroid, 4326)
+    #   if (input$export_proj_360) x.cent.ll <- preview360_split(x.cent.ll)
+    #   data.out.coords.ll <- do.call(rbind, st_geometry(x.cent.ll))
+    #
+    #   data.out <- cbind(data.out, Long_ll = data.out.coords.ll[, 1],
+    #                     Lat_ll = data.out.coords.ll[, 2])
+    # }
 
     data.out
 
   } else {
-    # Exporting data as either .shp and .kml requires sf object
     model.selected
   }
 })
-
 
 ###############################################################################

@@ -65,9 +65,7 @@ output$export_filename_uiOut_text <- renderUI({
 
   #------------------------------------
   ### Projection info
-  # TODO?
-  # proj.txt <- ifelse(input$export_proj_native, "_ll", "_proj")
-  # filename.value <- paste0(filename.value, proj.txt)
+  if (input$export_proj_360) filename.value <- paste0(filename.value, "_360")
 
   #------------------------------------
   ### Prefix and extensions
