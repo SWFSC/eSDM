@@ -49,7 +49,7 @@ pretty_addobj_add <- eventReactive(input$pretty_addobj_add_execute, {
     incProgress(0.3)
 
     if (check_360(addobj.obj)) {
-      addobj.obj <- st_union(preview360_ll(addobj.obj), by_feature = TRUE)
+      addobj.obj <- st_union(preview360_mod(addobj.obj), by_feature = TRUE)
     }
     incProgress(0.2)
 

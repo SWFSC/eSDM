@@ -95,7 +95,7 @@ pretty_range_360 <- reactive({
 # Used in multiple places (toplot and color scheme), hence reactive
 # Only called after check has already been done, hence no check_preview360()
 pretty_model_toplot360 <- reactive({
-  preview360(pretty_model_toplot())
+  preview360_split(pretty_model_toplot())
 })
 
 

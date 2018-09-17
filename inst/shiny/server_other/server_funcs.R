@@ -437,9 +437,23 @@ esdm_simple_cap <- function(x, all = FALSE) {
 
 ###############################################################################
 ###############################################################################
-# [0, 360]-related functions
+# [0, 360] - related functions
+
+# Adapted from https://github.com/r-spatial/sf/issues/280
+# preview360_split(): Converts spatial object to range [0, 360] by splitting
+#   polygons that span the dateline and adding 360 to longitude coordinates of
+#   polygons in [-180, 0]
+#   Main advantage: this method is faster
+# preview360_mod(): Converts spatial object to range [0, 360] using the
+#   mod ('%%') function, and thus without splitting polygons that span the
+#   dateline
+#   Main advantage: this method conserves polygons that span the dateline;
+#     best for exporting or union-ing single polygons that had been split
+#     along the dateline
+
 
 #------------------------------------------------------------------------------
+### Tests if x spans the dateline
 check_360 <- function(x) {
   stopifnot(isTruthy(st_crs(x)[[2]]))
 
@@ -450,27 +464,30 @@ check_360 <- function(x) {
 
 
 #------------------------------------------------------------------------------
-#----------------------------------------------------------
-### Function for converting dateline-spanning preds back to 0-360 if nec
-check_preview360 <- function (x) {
-  if (check_360(x)) preview360(x) else x
+### Top-level for converting dateline-spanning preds back to 0-360 if nec
+check_preview360_split <- function (x) {
+  if (check_360(x)) preview360_split(x) else x
 }
 
 
-#----------------------------------------------------------
-### Inspired by https://github.com/r-spatial/sf/issues/280
-preview360 <- function(x) {
-  UseMethod("preview360")
+###############################################################################
+#  See above for details
+preview360_split <- function(x) {
+  UseMethod("preview360_split")
 }
 
-preview360.sf <- function(x) {
+#----------------------------------------------------------
+preview360_split.sf <- function(x) {
   x.agr <- st_agr(x)
   x.crs <- st_crs(x)
 
+  if (inherits(st_geometry(x), "sfc_GEOMETRY")) {
+    x <- st_cast(x)
+  }
+
   if (inherits(st_geometry(x), "sfc_MULTIPOLYGON")) {
     x <- st_cast(x, "POLYGON", warn = FALSE)
-  }
-  if (inherits(st_geometry(x), "sfc_MULTIPOINT")) {
+  } else if (inherits(st_geometry(x), "sfc_MULTIPOINT")) {
     x <- st_cast(x, "POINT", warn = FALSE)
   }
 
@@ -502,15 +519,19 @@ preview360.sf <- function(x) {
   st_set_agr(rbind(x1, x2)[order(c(y.x, y.x.no)), ], x.agr)
 }
 
-preview360.sfc <- function(x) {
+#----------------------------------------------------------
+preview360_split.sfc <- function(x) {
   x.crs <- st_crs(x)
 
-  if (inherits(x, "sfc_MULTIPOLYGON")) x <- st_cast(x, "POLYGON", warn = FALSE)
-  if (inherits(x, "sfc_MULTIPOINT"))   x <- st_cast(x, "POINT", warn = FALSE)
+  if (inherits(x, "sfc_GEOMETRY")) x <- st_cast(x)
 
-  stopifnot(
-    inherits(x, "sfc_POLYGON") | inherits(x, "sfc_POINT")
-  )
+  if (inherits(x, "sfc_MULTIPOLYGON")) {
+    x <- st_cast(x, "POLYGON", warn = FALSE)
+  } else if (inherits(x, "sfc_MULTIPOINT")) {
+    x <- st_cast(x, "POINT", warn = FALSE)
+  }
+
+  stopifnot(inherits(x, "sfc_POLYGON") | inherits(x, "sfc_POINT"))
 
   y <- st_sfc(st_polygon(list(
     matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
@@ -530,16 +551,14 @@ preview360.sfc <- function(x) {
 }
 
 
-#------------------------------------------------------------------------------
-### Based on https://github.com/r-spatial/sf/issues/280
-# st_transform() automatically processes x so that range(x) = (-180, 180]
-#   thus you can't transform to 4326 and then back to original crs
-#   Also, other method (above) is much faster
-preview360_ll <- function (x) {
-  UseMethod("preview360_ll", x)
+###############################################################################
+#  See above for details
+preview360_mod <- function (x) {
+  UseMethod("preview360_mod", x)
 }
 
-preview360_ll.sf <- function(x) {
+#----------------------------------------------------------
+preview360_mod.sf <- function(x) {
   x.crs <- st_crs(x)
 
   if (st_is_longlat(x)) {
@@ -565,7 +584,8 @@ preview360_ll.sf <- function(x) {
   }
 }
 
-preview360_ll.sfc <- function(x) {
+#----------------------------------------------------------
+preview360_mod.sfc <- function(x) {
   x.crs <- st_crs(x)
 
   if (st_is_longlat(x)) {

@@ -240,7 +240,7 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
   data.vec <- st_set_geometry(sdm.ll, NULL)[, data.name]
 
   # Convert to 0-360 longitude range if necessary
-  sdm.ll <- check_preview360(sdm.ll)
+  sdm.ll <- check_preview360_split(sdm.ll)
 
   # Plot predictions
   if (perc == 1) {
@@ -310,7 +310,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
   }
 
   # Convert to 0-360 longitude range if necessary
-  sdm.ll <- check_preview360(sdm.ll)
+  sdm.ll <- check_preview360_split(sdm.ll)
 
   data.vec <- st_set_geometry(sdm.ll[data.name], NULL)[, 1]
   data.vec.w <- if (ncol(sdm.ll) > 2) st_set_geometry(sdm.ll, NULL)[, 2] else NA

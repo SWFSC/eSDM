@@ -93,7 +93,7 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
     }
 
     # Create leaflet
-    model.toplot <- check_preview360(model.toplot)
+    model.toplot <- check_preview360_split(model.toplot)
 
     leaf.map <- leaflet() %>%
       addProviderTiles(providers$CartoDB.Positron, group = "CartoDB") %>%
@@ -112,7 +112,7 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
     incProgress(0.5)
 
     if (l.inc) {
-      erasing.toplot <- check_preview360(overlay_preview_base_land())
+      erasing.toplot <- check_preview360_split(overlay_preview_base_land())
       leaf.map <- leaf.map %>%
         addPolygons(
           data = erasing.toplot, fillColor = "tan",
@@ -121,7 +121,7 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
     }
     incProgress(0.1)
     if (b.inc) {
-      bound.toplot <- st_union(check_preview360(vals$overlay.bound))
+      bound.toplot <- st_union(check_preview360_split(vals$overlay.bound))
       leaf.map <- leaf.map %>%
         addPolygons(
           data = bound.toplot, fillColor = "transparent",
@@ -179,7 +179,7 @@ observeEvent(input$create_ens_reg_preview_execute, {
   req(vals$ens.over.wpoly.filename)
 
   overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
-  overlaid.toplot <- check_preview360(
+  overlaid.toplot <- check_preview360_split(
     st_geometry(vals$overlaid.models[[overlaid.which]])
   )
 
