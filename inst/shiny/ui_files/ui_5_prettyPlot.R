@@ -58,8 +58,9 @@ ui.prettyPlot <- function() {
                     width = 12,
                     uiOutput("pretty_toplot_add_id_uiOut_text"),
                     tags$br(),
-                    helpText("Note that most pretty plot parameters (including loaded additional objects)",
-                             "will stay the same unless changed by user, even when a different set of predictions is selected"),
+                    helpText("Note that most plot parameters below (including loaded additional objects)",
+                             "will stay the same unless changed by user, even when a different set of predictions is selected.",
+                             "Thus, be sure to check the parameters before saving a new map"),
                     actionButton("pretty_toplot_add_execute", "Save map"),
                     tags$span(textOutput("pretty_toplot_add_text"), style = "color: blue;")
                   )
@@ -216,9 +217,9 @@ ui.prettyPlot <- function() {
                         )
                       )
                     ),
-                    helpText("Map range values have the same units as the specified coordinate system, e.g.",
+                    helpText("Map range values have the same units as the specified coordinate system. For example,",
                              "if the specified coordinate system is WGS 84 geographic coordinates then the values are",
-                             "decimal degrees and must have a longitude range of [-180, 180] and a latitude range of [-90, 90]"),
+                             "decimal degrees and must have a longitude range of [-180, 180] and a latitude range of [-90, 90]."),
                     shinycssloaders::withSpinner(uiOutput("pretty_range_360_uiOut_text"), type = 3, color.background = "white"),
                     fluidRow(
                       column(
@@ -372,10 +373,10 @@ ui.prettyPlot <- function() {
                     checkboxInput("pretty_tick", "Include coordinate grid lines", value = TRUE),
                     conditionalPanel(
                       condition = "input.pretty_tick",
-                      helpText("Grid line start and interval units are the same as the specified coordinate system units,",
-                               "and the range of these values must follow the requirements specfied in the map range section.",
+                      helpText("Grid line start and interval units are the same as the units of the specified coordinate system.",
+                               "The range of these values must adhere to the requirements specfied in the map range section.",
                                tags$br(),
-                               "Size and width values are relative to 1 (the default size)."),
+                               "Size and width values are relative to 1 (the default size)"),
                       fluidRow(
                         column(
                           width = 6,

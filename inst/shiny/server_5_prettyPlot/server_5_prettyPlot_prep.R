@@ -85,9 +85,7 @@ pretty_model_toplot <- reactive({
 pretty_range_360 <- reactive({
   req(pretty_models_idx_count() == 1)
 
-  b <- round(unname(st_bbox(pretty_model_toplot())), 3)
-
-  identical(abs(b[1]), b[3])
+  check_360(pretty_model_toplot())
 })
 
 

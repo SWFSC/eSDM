@@ -79,9 +79,9 @@ esdm_ceiling <- function(x, level = 2) round(x + 5 * 10 ^ (-level - 1), level)
 output$pretty_range_360_uiOut_text <- renderUI({
   req(pretty_range_360())
 
-  tags$h5("The selected predictions span the international dateline; thus,",
-          "longitude map range and grid line values must be within",
-          "the range [0, 360] decimal degrees,",
+  tags$h5("The selected predictions span the antimeridian (180 decimal degrees),",
+          "and thus longitude map range and grid line values must be within",
+          "the range [0, 360] decimal degrees",
           "or the equivalant range for the specified coordinate system",
           style = "color: red;")
 })

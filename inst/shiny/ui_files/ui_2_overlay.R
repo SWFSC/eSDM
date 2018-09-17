@@ -282,7 +282,10 @@ ui.overlay <- function() {
                         helpText("The base geometry will be outlined in black while, if applicable, the erasing and study area polygons ",
                                  "will be filled in tan and outlined in red, respectively.",
                                  "Note that if predictions were made at a high resolution,",
-                                 "the preview may appear to be completely black when zoomed out"),
+                                 "the preview may appear to be completely black when zoomed out.",
+                                 "In addition, if the any base geometry polygons that span 180 decimal degrees",
+                                 "(or their equaivalent in the selected coordinate system) will appear to be split at 180 degress,",
+                                 "even thought they are still treated as a single polygon."),
                         uiOutput("overlay_preview_base_execute_uiOut_button"),
                         textOutput("overlay_preview_base_create_text")
                       ),
