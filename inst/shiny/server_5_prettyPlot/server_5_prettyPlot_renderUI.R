@@ -4,7 +4,6 @@
 ###############################################################################
 # Map control widgets
 output$pretty_toplot_add_id_uiOut_text <- renderUI({
-  val.default <- "Map ID"
   if (pretty_models_idx_count() == 1) {
 
     table.idx <- pretty_table_row_idx()[1]
@@ -15,6 +14,9 @@ output$pretty_toplot_add_id_uiOut_text <- renderUI({
       paste("Overlaid", model.idx), paste("Ensemble", model.idx)
     )
     val.default <- paste(val.default, "ID")
+
+  } else  {
+    val.default <- "Map ID"
   }
 
   textInput("pretty_toplot_add_id", tags$h5("Saved map ID"),
@@ -43,7 +45,6 @@ output$pretty_proj_idx_uiOut_select <- renderUI({
 ### Get extent of selected predictions
 pretty_range <- reactive({
   req(pretty_models_idx_count() == 1)
-  # round(st_bbox(pretty_model_toplot()), 2)
 
   x <- st_geometry(pretty_model_toplot())
 

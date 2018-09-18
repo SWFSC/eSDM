@@ -463,8 +463,9 @@ output$pretty_color_preview_plot <- renderPlot({
 })
 
 #----------------------------------------------------------
-# Pretty plot plot display
-###
+# Pretty plot, plotting
+
+### Display box, render-ed each time so that box can be resized
 output$pretty_display <- renderUI({
   box(
     title = "High Quality Maps", solidHeader = TRUE, status = "primary", width = 12, align = "center",
@@ -473,14 +474,31 @@ output$pretty_display <- renderUI({
   )
 })
 
+### Section with button to save map
+# All needs to be within box() so single 'object' is returned
+output$pretty_save_map <- renderUI({
+  # if () keeps req() within pretty_range() from being called
+  if (pretty_models_idx_count() == 1) pretty_range()
+
+  box(
+    width = 12,
+    uiOutput("pretty_toplot_add_id_uiOut_text"),
+    tags$br(),
+    helpText("Note that most plot parameters below (including loaded additional objects)",
+             "will stay the same unless changed by user, even when a different set of predictions is selected.",
+             "Thus, be sure to check the parameters before saving a new map"),
+    actionButton("pretty_toplot_add_execute", "Save map"),
+    tags$span(textOutput("pretty_toplot_add_text"), style = "color: blue;")
+  )
+})
+
+
 ### Pretty plot dimension warnings
 output$pretty_plot_dim_warnings_out <- renderText({
   pretty_plot_dim_warnings()
 })
 
-### Pretty plot
-# Running plotOutput() within a renderUI() didn't work because of issues with
-#   passing plot width and heigh from reactiveValues
+### Pretty plot; observe() allows for calling vals$
 observe({
   output$pretty_plot_out <- renderPlot({
     p.list <- vals$pretty.plot

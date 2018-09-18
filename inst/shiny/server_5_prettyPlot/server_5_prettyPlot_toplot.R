@@ -41,7 +41,6 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       )
     }
 
-
     #--------------------------------------------------------------------------
     #------------------------------------------------------
     # Simpler operations; happen first in case user clicks around

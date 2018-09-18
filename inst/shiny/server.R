@@ -94,6 +94,7 @@ server <- function(input, output, session) {
   source(file.path("server_other", "server_tables.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_workspace.R"), local = TRUE, chdir = TRUE)
 
+
   ### Roadmap: download sample data
   output$download_sample_data <- downloadHandler(
     filename = function() "eSDM_sample_data.zip",
@@ -118,6 +119,7 @@ server <- function(input, output, session) {
       })
     }
   )
+
 
   ### Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)

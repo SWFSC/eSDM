@@ -54,16 +54,7 @@ ui.prettyPlot <- function() {
                 width = 4,
                 tags$strong("3) Specify map ID and save map"),
                 fluidRow(
-                  box(
-                    width = 12,
-                    uiOutput("pretty_toplot_add_id_uiOut_text"),
-                    tags$br(),
-                    helpText("Note that most plot parameters below (including loaded additional objects)",
-                             "will stay the same unless changed by user, even when a different set of predictions is selected.",
-                             "Thus, be sure to check the parameters before saving a new map"),
-                    actionButton("pretty_toplot_add_execute", "Save map"),
-                    tags$span(textOutput("pretty_toplot_add_text"), style = "color: blue;")
-                  )
+                  shinycssloaders::withSpinner(uiOutput("pretty_save_map"), type = 3, color.background = "white")
                 )
               )
             ),
@@ -220,7 +211,7 @@ ui.prettyPlot <- function() {
                     helpText("Map range values have the same units as the specified coordinate system. For example,",
                              "if the specified coordinate system is WGS 84 geographic coordinates then the values are",
                              "decimal degrees and must have a longitude range of [-180, 180] and a latitude range of [-90, 90]."),
-                    shinycssloaders::withSpinner(uiOutput("pretty_range_360_uiOut_text"), type = 3, color.background = "white"),
+                    uiOutput("pretty_range_360_uiOut_text"),
                     fluidRow(
                       column(
                         width = 6,
