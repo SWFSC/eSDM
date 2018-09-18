@@ -3,6 +3,20 @@
 
 ###############################################################################
 # Map control widgets
+
+output$pretty_mapcontrol_uiOut_radio <- renderUI({
+  if (isTruthy(input$pretty_toplot_add_execute)) pretty_toplot_add()
+  if (pretty_models_idx_count() == 1) pretty_range()
+  x <- if (isTruthy(input$pretty_mapcontrol)) input$pretty_mapcontrol else 1
+
+  choices.list <- list(
+    "Save new map" = 1, "Update saved map parameters" = 2,
+    "Plot or download saved map(s)" = 3
+  )
+  radioButtons("pretty_mapcontrol", NULL, choices = choices.list, selected = x)
+})
+
+
 output$pretty_toplot_add_id_uiOut_text <- renderUI({
   if (pretty_models_idx_count() == 1) {
 

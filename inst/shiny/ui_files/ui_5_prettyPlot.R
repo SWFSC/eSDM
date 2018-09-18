@@ -21,10 +21,7 @@ ui.prettyPlot <- function() {
               fluidRow(
                 box(
                   width = 12,
-                  radioButtons("pretty_mapcontrol", NULL,
-                               choices = list("Save new map" = 1, "Update saved map parameters" = 2,
-                                              "Plot or download saved map(s)" = 3),
-                               selected = 1)
+                  uiOutput("pretty_mapcontrol_uiOut_radio")
                 )
               )
             ),
