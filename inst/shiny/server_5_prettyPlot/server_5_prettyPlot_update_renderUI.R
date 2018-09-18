@@ -27,7 +27,7 @@ output$pretty_toplot_update_addobj_remove_uiOut_button <- renderUI({
   req(input$pretty_toplot_update_which_addobj,
       input$pretty_toplot_update_which == 6,
       val.pretty.toplot.update()$list.addobj)
-    actionButton("pretty_toplot_update_addobj_remove",
+  actionButton("pretty_toplot_update_addobj_remove",
                "Remove selected additional object")
 })
 
@@ -61,7 +61,28 @@ output$pretty_toplot_update_which_param_uiOut_select <- renderUI({
 
 ###############################################################################
 # renderUI() #0: message
-output$pretty_toplot_update_message_uiOut_text <- renderText({
+output$pretty_toplot_update_message360_uiOut_text <- renderUI({
+  y <- req(val.pretty.toplot.update())
+  z <- input$pretty_toplot_update_which
+  z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
+
+  req(
+    (z == 1 & z2 != 1) | (z == 5 & z2 == 2),
+    st_bbox(st_transform(y$model.toplot, 4326))[3] > 180
+  )
+
+  tags$h5(
+    "The selected predictions span the antimeridian (180 decimal degrees),",
+    "and thus longitude map range and grid line values must be within",
+    "the range [0, 360] decimal degrees",
+    "or the equivalant range for the specified coordinate system.",
+    tags$br(),
+    style = "color: red;"
+  )
+})
+
+# renderUI() #0: message
+output$pretty_toplot_update_message_uiOut_text <- renderUI({
   y <- req(val.pretty.toplot.update())
   z <- input$pretty_toplot_update_which
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
@@ -69,24 +90,32 @@ output$pretty_toplot_update_message_uiOut_text <- renderText({
   z.vals <- req(pretty_toplot_update_table())$Value
 
   if (z == 1 & z2 != 1) {
-    paste("Please ensure that the 'minimum' values remain less than their",
-          "respective 'maximum' values.",
-          "In addition, note that if you increase the expanse of the map",
-          "you will likely need to update the grid line locations")
+    temp <- paste(
+      "Please ensure that the 'minimum' values remain less than their",
+      "respective 'maximum' values.",
+      "In addition, note that if you increase the expanse of the map",
+      "you will likely need to update the grid line locations"
+    )
 
   } else if (z == 5 & z2 == 2) {
-    paste("Please ensure that the 'Longitude start value' is between",
-          "the specified longitude limits:",
-          paste(y$map.range[1:2], collapse = " and "))
+    temp <- paste(
+      "Please ensure that the 'Longitude start value' is between",
+      "the specified longitude limits:",
+      paste(y$map.range[1:2], collapse = " and ")
+    )
 
   }  else if (z == 5 & z2 == 3) {
-    paste("Please ensure that the 'Latitude start value' is between",
-          "the specified latitude limits:",
-          paste(y$map.range[3:4], collapse = " and "))
+    temp <- paste(
+      "Please ensure that the 'Latitude start value' is between",
+      "the specified latitude limits:",
+      paste(y$map.range[3:4], collapse = " and ")
+    )
 
   } else {
-    NULL
+    req(NULL)
   }
+
+  tags$h5(temp, style = "color: red;")
 })
 
 

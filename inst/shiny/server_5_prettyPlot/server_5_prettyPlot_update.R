@@ -65,7 +65,8 @@ toplot_update_modal <- function(failed) {
         condition = "output.pretty_toplot_update_addobj_flag",
         box(
           width = 12,
-          tags$span(textOutput("pretty_toplot_update_message_uiOut_text"), style = "color: blue;"),
+          uiOutput("pretty_toplot_update_message360_uiOut_text"),
+          uiOutput("pretty_toplot_update_message_uiOut_text"),
           fluidRow(
             column(6, uiOutput("pretty_toplot_update_thing1_uiOut_mult")),
             column(6, uiOutput("pretty_toplot_update_thing2_uiOut_mult"))
