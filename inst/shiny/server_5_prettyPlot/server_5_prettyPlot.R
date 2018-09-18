@@ -165,6 +165,8 @@ observeEvent(input$pretty_addobj_color_absbordercheck, {
 
 
 ###############################################################################
+# Objects used multiple times
+
 choices.list.pch <- list(
   "0: Open Square" = 0, "1: Open Circle" = 1, "2: Open Up Triangle" = 2,
   "3: Plus" = 3, "4: X" = 4, "5: Open Diamond" = 5,
@@ -197,6 +199,13 @@ list.pos.vals <- list(
   c("right", "center"),
   c("right", "bottom"), c("center", "bottom"), c("left", "bottom"),
   c("left", "center")
+)
+
+message.360 <- paste(
+  "The selected predictions span the antimeridian (180 decimal degrees),",
+  "and thus longitude map range and grid line values must be within",
+  "the range [0, 360] decimal degrees",
+  "or the equivalant range for the specified coordinate system"
 )
 
 ###############################################################################

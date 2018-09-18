@@ -75,15 +75,11 @@ esdm_floor <-   function(x, level = 2) round(x - 5 * 10 ^ (-level - 1), level)
 esdm_ceiling <- function(x, level = 2) round(x + 5 * 10 ^ (-level - 1), level)
 
 #------------------------------------------------------------------------------
-### Message about 0-360 range
+### Message about 0-360 range, message.360 is in 'server_5_prettyPlot.R'
 output$pretty_range_360_uiOut_text <- renderUI({
   req(pretty_range_360())
 
-  tags$h5("The selected predictions span the antimeridian (180 decimal degrees),",
-          "and thus longitude map range and grid line values must be within",
-          "the range [0, 360] decimal degrees",
-          "or the equivalant range for the specified coordinate system",
-          style = "color: red;")
+  tags$h5(message.360, style = "color: red;")
 })
 
 

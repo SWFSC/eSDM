@@ -60,7 +60,7 @@ output$pretty_toplot_update_which_param_uiOut_select <- renderUI({
 
 
 ###############################################################################
-# renderUI() #0: message
+# renderUI() #0: message.360 is in 'server_5_prettyPlot.R'
 output$pretty_toplot_update_message360_uiOut_text <- renderUI({
   y <- req(val.pretty.toplot.update())
   z <- input$pretty_toplot_update_which
@@ -71,14 +71,7 @@ output$pretty_toplot_update_message360_uiOut_text <- renderUI({
     st_bbox(st_transform(y$model.toplot, 4326))[3] > 180
   )
 
-  tags$h5(
-    "The selected predictions span the antimeridian (180 decimal degrees),",
-    "and thus longitude map range and grid line values must be within",
-    "the range [0, 360] decimal degrees",
-    "or the equivalant range for the specified coordinate system.",
-    tags$br(),
-    style = "color: red;"
-  )
+  tags$h5(message.360, tags$br(), style = "color: red;")
 })
 
 # renderUI() #0: message
