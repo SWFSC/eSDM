@@ -232,25 +232,20 @@ ui.loadModels <- function() {
                           conditionalPanel(
                             condition = "input.model_select_action == 3",
                             fluidRow(
-                              column(
-                                width = 9,
-                                fluidRow(
-                                  column(4, radioButtons("model_download_preview_perc", tags$h5("Units"),
-                                                         choices = list("Percentages" = 1, "Values" = 2),
-                                                         selected = 1)),
-                                  column(4, radioButtons("model_download_preview_res", tags$h5("Resolution"),
-                                                         choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-                                                         selected = 1)),
-                                  column(4, radioButtons("model_download_preview_format", tags$h5("File format"),
-                                                         choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
-                                                         selected = 3))
-                                ),
-                                uiOutput("model_download_preview_name_uiOut_text")
-                              ),
-                              column(3, radioButtons("model_download_preview_dim", tags$h5("File dimensions"),
-                                                     choices = list("8 inches by 8 inches" = 1, "Dimensions of 'Static Preview' window" = 2),
-                                                     selected = 1))
+                              column(4, radioButtons("model_download_preview_perc", tags$h5("Units"),
+                                                     choices = list("Percentages" = 1, "Values" = 2),
+                                                     selected = 1)),
+                              column(4, radioButtons("model_download_preview_res", tags$h5("Resolution"),
+                                                     choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
+                                                     selected = 1)),
+                              column(4, radioButtons("model_download_preview_format", tags$h5("File format"),
+                                                     choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
+                                                     selected = 3))
                             ),
+                            radioButtons("model_download_preview_dim", tags$h5("File dimensions"),
+                                         choices = list("8 inches by 8 inches" = 1, "Dimensions of 'Static Preview' window" = 2),
+                                         selected = 1),
+                            uiOutput("model_download_preview_name_uiOut_text"),
                             uiOutput("model_download_preview_execute_uiOut_download")
                           ),
                           ###################################### Remove predictions

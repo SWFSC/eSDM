@@ -70,9 +70,16 @@ multiplot_download <- function(x) {
   )
 
   leg.lcm <- 3.0
-  leg.txt.cex <- ifelse(x == 1, 0.8, 1.3)
+  # leg.txt.cex <- ifelse(x == 1, 0.8, 1.3)
+  leg.txt.cex <- case_when(
+    x == 1 ~ 0.8,
+    x == 2 ~ 1.0,
+    TRUE ~ 1.3
+  )
   if (x == 1) {
     leg.mai <- c(0.42, 0, 0.24, 1)
+  } else if (x == 2) {
+    leg.mai <- c(0.35, 0, 0.20, 1)
   } else {
     leg.mai <- c(0.27, 0, 0.16, 1)
   }
