@@ -111,7 +111,7 @@ ui.roadmap <- function() {
                     "even if you have no need to create ensembles."),
             #------------------------------------------------------------------
             tags$h5(tags$strong("5) Manual:"),
-                    "In tha 'Manual' tab, you can view and download the GUI manual.",
+                    "In the 'Manual' tab, you can view and download the GUI manual.",
                     "The manual is divided into sections corresponding to the tabs and their boxes, and provides detailed information",
                     "about input format requirements and processes such as the overlay process.",
                     "Depending on the browser you are using,",
@@ -120,10 +120,9 @@ ui.roadmap <- function() {
             tags$h5(tags$strong("Running the GUI locally:"),
                     "R Shiny applications such as the GUI can be hosted and used online;",
                     "however, running the R Shiny apps locally can be faster than running from them online.",
-                    "Thus, you can install the eSDM package from",
-                    tags$a("https://github.com/smwoodman/eSDM.", href = "https://github.com/smwoodman/eSDM"), #TODO CRAN
-                    "See the GitHub page and the 'Running the GUI locally' section of the manual for",
-                    "details and instructions on how to run the GUI locally."),
+                    "Instructions for installing and running the eSDM GUI locally can be found at ",
+                    tags$a("https://github.com/smwoodman/eSDM"),
+                    "and in the 'Running the GUI locally' section of the GUI manual."),
             tags$br(),
             #------------------------------------------------------------------
             tags$strong("GUI tips:"),
