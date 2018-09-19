@@ -338,10 +338,7 @@ output$eval_models_table_ens_out <- renderDT({
 # Validation data loaded message
 output$eval_data_message <- renderText({
   req(vals$eval.data)
-  paste(
-    "Validation data successfully imported; data type:",
-    ifelse(vals$eval.data.specs[2] == 1, "'count'", "'presence/absence'")
-  )
+  "Validation data successfully imported"
 })
 
 # Text (error) outputs
@@ -357,15 +354,6 @@ output$eval_metrics_text <- renderText(eval_metrics())
 output$eval_metrics_message <- renderText({
   req(vals$eval.metrics)
   "Metrics calculated"
-})
-
-# Validation data info title
-output$table_eval_pts_title <- renderText({
-  req(vals$eval.data)
-  ifelse(
-    vals$eval.data.specs[2] == 1, "Validation data (count) info",
-    "Validation data (presence/absence) info"
-  )
 })
 
 # Validation data table
@@ -488,6 +476,7 @@ output$pretty_save_map <- renderUI({
              "will stay the same unless changed by user, even when a different set of predictions is selected.",
              "Thus, be sure to check the parameters before saving a new map"),
     actionButton("pretty_toplot_add_execute", "Save map"),
+    tags$br(), tags$br(),
     tags$span(textOutput("pretty_toplot_add_text"), style = "color: blue;")
   )
 })

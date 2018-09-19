@@ -136,20 +136,16 @@ ui.evalMetrics <- function() {
                 condition = "output.eval_display_calc_metrics_flag",
                 fluidRow(
                   column(
-                    width = 5,
-                    tags$strong(textOutput("table_eval_pts_title")),
+                    width = 6,
+                    tags$strong("Validation data info"),
                     tableOutput("table_eval_pts_out"),
                     tags$style(type="text/css", "#table_pa_pts_out td:first-child {font-weight:bold;}")
                     #tr:first-child for first row
                   ),
                   column(
-                    width = 3, offset = 1,
+                    width = 5, offset = 1,
+                    helpText("See 'Metrics Descriptions and References' section below for metric information"),
                     uiOutput("eval_metrics_which_uiOut_check"),
-                    tags$br(),
-                    helpText("See 'Metrics Descriptions and References' section below for metric information")
-                  ),
-                  column(
-                    width = 3,
                     tags$br(),
                     actionButton("eval_metrics_execute", "Calculate metrics"),
                     tags$br(), tags$br(),

@@ -9,7 +9,7 @@
 ###########################################################
 ### CSV error message and inputs
 output$eval_csv_flag <- reactive({
-  !is.null(eval_data_csv_load())
+  isTruthy(eval_data_csv_load())
 })
 outputOptions(output, "eval_csv_flag", suspendWhenHidden = FALSE)
 
@@ -270,6 +270,40 @@ eval_data_gis <- eventReactive(input$eval_gis_execute, {
   vals$eval.data.specs <- c(vals$eval.data.gis.info[[1]], data.type)
 
   "Loaded and stored validation data"
+})
+
+
+###############################################################################
+### Generate table with validation data stats
+table_eval_pts <- reactive({
+  eval.data <- vals$eval.data
+  data.type <- vals$eval.data.specs[2]
+  req(inherits(eval.data, "sf"), data.type)
+
+  data.type.txt <- ifelse(data.type == 1, "Count", "Presence/absence")
+  pres.num <- sum(eval.data$sight == 1)
+  abs.num <- sum(eval.data$sight == 0)
+
+  if (data.type == 1) {
+    pres.data <- eval.data %>% dplyr::filter(sight == 1)
+    count.range <- paste(range(round(pres.data$count, 2)), collapse = " to ")
+
+    data.frame(
+      c("Filename", "Data type", "Number of points with non-zero counts",
+        "Number of points with counts of 0", "Range of non-zero counts"),
+      c(vals$eval.data.specs[1], data.type.txt, pres.num, abs.num, count.range)
+    )
+
+  } else if (data.type == 2) {
+    data.frame(
+      c("Filename", "Data type", "Number of presence points",
+        "Number of absence points"),
+      c(vals$eval.data.specs[1], data.type.txt, pres.num, abs.num)
+    )
+
+  } else {
+    stop("table_eval_pts(): vals$eval.data.specs[[2]] is not 1 or 2")
+  }
 })
 
 

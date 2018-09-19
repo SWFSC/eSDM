@@ -24,38 +24,6 @@ outputOptions(output, "eval_display_calc_metrics_flag",
 
 
 ###############################################################################
-### Generate table with validation data stats
-table_eval_pts <- reactive({
-  eval.data <- vals$eval.data
-  data.type <- vals$eval.data.specs[2]
-  req(inherits(eval.data, "sf"), data.type)
-
-  pres.num <- sum(eval.data$sight == 1)
-  abs.num <- sum(eval.data$sight == 0)
-
-  if (data.type == 1) {
-    pres.data <- eval.data %>% dplyr::filter(sight == 1)
-    count.range <- paste(range(round(pres.data$count, 2)), collapse = " to ")
-
-    data.frame(
-      c("Filename", "Number of points with non-zero counts",
-        "Number of points with counts of 0", "Range of non-zero counts"),
-      c(vals$eval.data.specs[1], pres.num, abs.num, count.range)
-    )
-
-  } else if (data.type == 2) {
-    data.frame(
-      c("Filename", "Number of presence points", "Number of absence points"),
-      c(vals$eval.data.specs[1], pres.num, abs.num)
-    )
-
-  } else {
-    stop("table_eval_pts(): vals$eval.data.specs[[2]] is not 1 or 2")
-  }
-})
-
-
-###############################################################################
 # Functions for calculating metrics
 
 ###########################################################
@@ -104,12 +72,12 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   validate(
     need(inherits(eval.data, "sf"),
          paste("Error: Please load validation data in order",
-               "to calculate model evaluation metrics")),
-    need(models.idx.any,
-         paste("Error: Please select at least one model for which ",
-               "to calculate model evaluation metrics")),
-    need(!is.null(which.metrics),
-         "Error: Please select at least one evaluation metric to calculate")
+               "to calculate model evaluation metrics")) %then%
+      need(models.idx.any,
+           paste("Error: Please select at least one model for which ",
+                 "to calculate model evaluation metrics")) %then%
+      need(!is.null(which.metrics),
+           "Error: Please select at least one evaluation metric to calculate")
   )
 
   # Calculate metrics
