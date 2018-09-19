@@ -32,7 +32,8 @@ If \code{count.flag == TRUE}, then \code{eSDM::model_abundance(x, x.idx, FALSE)}
 
   If \code{count.flag == FALSE}, then all of the values in column \code{y.idx} of \code{y} must be \code{0} or \code{1}.
 
-  All rows of \code{x} with a value of \code{NA} in column \code{x.idx} are removed within the function
+  All rows of \code{x} with a value of \code{NA} in column \code{x.idx} and
+  all rows of \code{y} with a value of \code{NA} in column \code{y.idx} are removed before calculating metrics
 }
 \examples{
 evaluation_metrics(preds.1, 1, validation.data, "sight")

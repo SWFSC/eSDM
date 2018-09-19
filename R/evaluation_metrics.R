@@ -9,11 +9,13 @@
 #' @param count.flag logical; \code{TRUE} indicates that the data in column \code{y.idx} is count data,
 #'   while \code{FALSE} indicates that the data is presence/absence
 #'
+#' @importFrom methods slot
 #' @importFrom ROCR performance
 #' @importFrom ROCR prediction
 #' @importFrom sf st_crs
 #' @importFrom sf st_intersects
 #' @importFrom sf st_set_geometry
+#' @importFrom stats na.omit
 #'
 #' @details If \code{count.flag == TRUE}, then \code{eSDM::model_abundance(x, x.idx, FALSE)} will be run
 #'   to calculate predicted abundance and thus calculate RMSE.
@@ -21,7 +23,8 @@
 #'
 #'   If \code{count.flag == FALSE}, then all of the values in column \code{y.idx} of \code{y} must be \code{0} or \code{1}.
 #'
-#'   All rows of \code{x} with a value of \code{NA} in column \code{x.idx} are removed within the function
+#'   All rows of \code{x} with a value of \code{NA} in column \code{x.idx} and
+#'   all rows of \code{y} with a value of \code{NA} in column \code{y.idx} are removed before calculating metrics
 #'
 #' @return A numeric vector with AUC, TSS and RMSE values, respectively.
 #'   If \code{count.flag == FALSE}, the RMSE value will be \code{NA}
@@ -34,7 +37,7 @@
 #' @export
 evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   #------------------------------------------------------------------
-  if (!all(sapply(list(x, y), inherits, "sf"))) {
+  if (!all(vapply(list(x, y), inherits, TRUE, "sf"))) {
     stop("x and y must both be objects of class sf")
   }
   if (!identical(st_crs(x), st_crs(y))) {
@@ -44,13 +47,13 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
 
   x.dens <- st_set_geometry(x, NULL)[, x.idx]
   x.dens <- x.dens[!is.na(x.dens)]
-  y.temp <- st_set_geometry(y, NULL)[, y.idx]
+  y.data <- st_set_geometry(y, NULL)[, y.idx]
 
-  if (!inherits(x.dens,  c("numeric", "integer"))) {
-    stop("The data in column x.idx of object x must be numeric")
+  if (!is.numeric(x.dens)) {
+    stop("The data in column x.idx of object x must all be numbers")
   }
-  if (!inherits(y.temp, c("numeric", "integer"))) {
-    stop("The data in column y.idx of object y must be numeric")
+  if (!is.numeric(y.data)) {
+    stop("The data in column y.idx of object y must all be numbers")
   }
 
 
@@ -79,21 +82,22 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   #------------------------------------------------------------------
   # Data kept as separate vectors because in mapply() accessing several vector
   #   objects is faster than accessing one data.frame
+  y.data <- na.omit(y.data)
   if (count.flag) {
     x.abund <- unname(unlist(eSDM::model_abundance(x, x.idx, FALSE)))
-    y.sight <- ifelse(y.temp >= 1, 1, 0)
-    y.count <- y.temp
+    y.sight <- ifelse(y.data >= 1, 1, 0)
+    y.count <- y.data
 
   } else {
-    if (!all(y.temp %in% c(0, 1))) {
+    if (!all(y.data %in% c(0, 1))) {
       stop("The data in column y.idx of object y must all be numbers 0 or 1")
     }
 
     x.abund <- as.numeric(NA)
-    y.sight <- y.temp
+    y.sight <- y.data
     y.count <- as.numeric(NA)
   }
-  rm(y.temp)
+  rm(y.data)
 
   stopifnot(
     inherits(x.abund, c("numeric", "integer")),
@@ -117,26 +121,19 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
 
 
   #------------------------------------------------------------------
-  # RMSE
-  if (count.flag) {
-    m3 <- esdm_rmse(xy.data.overlap[, 3], xy.data.overlap[, 4])
-  } else {
-    m3 <- NA
-  }
-
-  #----------------------------------------------
+  # AUC and TSS
   pred.out <- prediction(xy.data.overlap[, 1], xy.data.overlap[, 2])
 
-  #----------------------------------------------
-  # AUC
-  m1 <- performance(pred.out, measure = "auc")@y.values[[1]]
+  m1 <- slot(performance(pred.out, measure = "auc"), "y.values")[[1]]
 
-  #----------------------------------------------
-  # TSS
-  sens <- performance(pred.out, "sens")@y.values[[1]]
-  spec <- performance(pred.out, "spec")@y.values[[1]]
+  sens <- slot(performance(pred.out, "sens"), "y.values")[[1]]
+  spec <- slot(performance(pred.out, "spec"), "y.values")[[1]]
   m2 <- max(sens + spec - 1)
 
+  # RMSE
+  m3 <- ifelse(
+    count.flag, esdm_rmse(xy.data.overlap[, 3], xy.data.overlap[, 4]), NA
+  )
 
   #------------------------------------------------------------------
   c(m1, m2, m3)
