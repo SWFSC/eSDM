@@ -72,12 +72,12 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   validate(
     need(inherits(eval.data, "sf"),
          paste("Error: Please load validation data in order",
-               "to calculate model evaluation metrics")) %then%
-      need(models.idx.any,
-           paste("Error: Please select at least one model for which ",
-                 "to calculate model evaluation metrics")) %then%
-      need(!is.null(which.metrics),
-           "Error: Please select at least one evaluation metric to calculate")
+               "to calculate model evaluation metrics")),
+    need(models.idx.any,
+         paste("Error: Please select at least one model for which ",
+               "to calculate model evaluation metrics")),
+    need(!is.null(which.metrics),
+         "Error: Please select at least one evaluation metric to calculate")
   )
 
   # Calculate metrics
