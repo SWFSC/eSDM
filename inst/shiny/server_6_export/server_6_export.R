@@ -10,10 +10,10 @@ observeEvent(input$export_table_orig_out_rows_selected, {
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
 
-  if(!is.null(x) & !is.null(y)) {
+  if(isTruthy(x) & isTruthy(y)) {
     dataTableProxy("export_table_over_out") %>% selectRows(list())
   }
-  if(!is.null(x) & !is.null(z)) {
+  if(isTruthy(x) & isTruthy(z)) {
     dataTableProxy("export_table_ens_out") %>% selectRows(list())
   }
 }, ignoreInit = TRUE)
@@ -23,10 +23,10 @@ observeEvent(input$export_table_over_out_rows_selected, {
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
 
-  if(!is.null(y) & !is.null(x)) {
+  if(isTruthy(y) & isTruthy(x)) {
     dataTableProxy("export_table_orig_out") %>% selectRows(list())
   }
-  if(!is.null(y) & !is.null(z)) {
+  if(isTruthy(y) & isTruthy(z)) {
     dataTableProxy("export_table_ens_out") %>% selectRows(list())
   }
 }, ignoreInit = TRUE)
@@ -36,10 +36,10 @@ observeEvent(input$export_table_ens_out_rows_selected, {
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
 
-  if(!is.null(z) & !is.null(x)) {
+  if(isTruthy(z) & isTruthy(x)) {
     dataTableProxy("export_table_orig_out") %>% selectRows(list())
   }
-  if(!is.null(z) & !is.null(y)) {
+  if(isTruthy(z) & isTruthy(y)) {
     dataTableProxy("export_table_over_out") %>% selectRows(list())
   }
 }, ignoreInit = TRUE)
@@ -143,27 +143,29 @@ output$export_out <- downloadHandler(
 ### Get selected predictions
 export_model_selected <- reactive({
   req(length(vals$models.orig) > 0)
-
   x <- input$export_table_orig_out_rows_selected
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
   req(sum(!sapply(list(x, y, z), is.null)) == 1)
 
-  if (!is.null(x)) {
-    model.selected <- vals$models.orig[[x]]
-
-  } else if (!is.null(y)) {
-    model.selected <- vals$overlaid.models[[y]]
-
-  } else { #!is.null(z)
+  if (isTruthy(z)) {
     model.selected <- vals$ensemble.models[[z]]
+    model.data <- st_set_geometry(model.selected, NULL) %>%
+      dplyr::select(Density = 1)
+
+  } else {
+    if (isTruthy(x)) model.selected <- vals$models.orig[[x]]
+    if (isTruthy(y)) model.selected <- vals$overlaid.models[[y]]
+
+    model.data <- st_set_geometry(model.selected, NULL)
+    if (all(is.na(model.data[, 2]))) {
+      model.data <- dplyr::select(model.data, Density = 1)
+    } else {
+      model.data <- dplyr::select(model.data, Density = 1, Weight = 2)
+    }
   }
 
-  # Pred column (column 1) is only column all 3 model types have in common
-  st_sf(
-    dplyr::select(st_set_geometry(model.selected, NULL), Density = 1),
-    st_geometry(model.selected), agr = "constant"
-  )
+  st_sf(model.data, st_geometry(model.selected), agr = "constant")
 })
 
 
@@ -229,6 +231,7 @@ export_model_selected_proj_format <- reactive({
       }
     }
   }
+
 
   # Exporting data as .csv requires df of centroids; otherwise return sf obj
   if (input$export_format == 1) {

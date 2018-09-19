@@ -133,7 +133,8 @@ ui.export <- function() {
               box(
                 width = 6,
                 tags$strong("4) Export predictions"),
-                tags$br(), tags$br(),
+                uiOutput("export_weight_inc_uiOut_text"),
+                tags$br(),
                 uiOutput("export_out_uiOut_download")
               )
             )

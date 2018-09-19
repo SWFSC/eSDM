@@ -29,19 +29,19 @@ output$export_filename_uiOut_text <- renderUI({
 
   #------------------------------------
   ### Extract first term of filename
-  if (!is.null(x)) {
+  if (isTruthy(x)) {
     # Orig model predictions
     table.info <- table_orig()[x, ]
     filename.value <- paste(table.info[, 1:2], collapse = "__")
     filename.value <- paste0(filename.value, "__orig")
 
-  } else if (!is.null(y)) {
+  } else if (isTruthy(y)) {
     # Overlaid model predictions
     table.info <- table_overlaid()[y, ]
     filename.value <- paste(table.info[, 1:2], collapse = "__")
     filename.value <- paste0(filename.value, "__overlaid")
 
-  } else {  # !is.null(z)
+  } else {  # isTruthy(z)
     # Ensemble model predictions
     table.info <- table_ensembles()[z, ]
 
@@ -83,7 +83,31 @@ output$export_filename_uiOut_text <- renderUI({
 })
 
 
-###########################################################
+###############################################################################
+output$export_weight_inc_uiOut_text <- renderUI({
+  req(length(vals$models.ll) > 0)
+  x <- input$export_table_orig_out_rows_selected
+  y <- input$export_table_over_out_rows_selected
+  z <- input$export_table_ens_out_rows_selected
+  req(sum(!sapply(list(x, y, z), is.null)) == 1)
+
+  if (isTruthy(z)) {
+    tags$h5("Ensemble predictions do not have any weight data to export")
+
+  } else {
+    data.w <- st_set_geometry(export_model_selected(), NULL)
+
+    if ("Weight" %in% names(data.w)) {
+      tags$h5("The selected predictions have weight data",
+              "that will be exported")
+    } else {
+      tags$h5("The selected predictions do not have any weight data to export")
+      }
+  }
+})
+
+
+###############################################################################
 ### Download button to export predictions
 output$export_out_uiOut_download <- renderUI({
   req(input$export_filename)
