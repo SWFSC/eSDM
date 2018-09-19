@@ -340,6 +340,12 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
 
   #----------------------------------------------------------------------------
+  validate(
+    need(length(unique(data.vec)) >= 11,
+         paste("Error: The selected predictions must have at least 11 unique",
+               "prediction values to plot an interactive preview"))
+  )
+
   if (perc == 1) {
     # Color prediction based on relative percentages
     b.model <- breaks_calc(data.vec)
@@ -387,8 +393,9 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         position = "bottomright", options = layersControlOptions(collapsed = FALSE))
 
 
-  } else {
+  } else if (length(unique(data.vec.w)) >= 11) {
     # Incldue weight data
+
     pal.w <- viridis::viridis(10)
     binpal <- colorBin(
       pal.w, data.vec.w, bins = 10, pretty = FALSE, na.color = "gray"
@@ -414,6 +421,15 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         overlayGroups = c("Predictions", "Weights"),
         position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
       hideGroup("Weights")
+
+  } else {
+    # Weight data deosn't have enough unique values
+    leaf.map %>%
+      addControl(
+        tags$h5("Fewer data cannot be plotted"), layerId = "Weight info", position = "bottomright") %>%
+      addLayersControl(
+        baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
+        position = "bottomright", options = layersControlOptions(collapsed = FALSE))
   }
 }
 
