@@ -37,7 +37,7 @@
 #'
 #' @export
 ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
-  #--------------------------------------------------------
+  #----------------------------------------------------------------------------
   stopifnot(all(sapply(x, inherits, "sf")))
   if (!all(nrow(x[[1]]) == sapply(x, nrow))) {
     stop("All elements of x must have the same number of rows, ",
@@ -47,9 +47,11 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
     stop("x and x.pred.idx must have the same number of elements")
   }
   if (!(y %in% c("abundance", "normalization", "standardization", "sumto1"))) {
-    stop("y must be one of: 'abundance', 'normalization', 'standardization', or 'sumto1'")
+    stop("y must be one of: 'abundance', 'normalization', ",
+         "'standardization', or 'sumto1'")
   }
 
+  #----------------------------------------------------------------------------
   #--------------------------------------------------------
   if (y == "abundance") {
     if (!(y.abund > 0)) {
@@ -63,6 +65,7 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
     ) %>% set_names(paste0("x.", 1:length(x)))
 
   } else {
+    #------------------------------------------------------
     data.extracted <- data.frame(
       mapply(function(i, j) {
         st_set_geometry(i, NULL)[, j]
@@ -70,19 +73,33 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
     ) %>% set_names(paste0("x.", 1:length(x)))
 
     if (y == "normalization") {
-      data.rescaled <- as.data.frame(apply(data.extracted, 2, esdm_normalize))
+      data.rescaled <- as.data.frame(apply(data.extracted, 2, function(i) {
+        if (diff(range(i, na.rm = TRUE)) == 0) {
+          stop("At least one of the specified data columns has a range of 0; ",
+               "you cannot normalize a vector of numbers with a range of 0")
+        } else {
+          esdm_normalize(i)
+        }
+      }))
 
     } else if (y == "standardization") {
-      data.rescaled <- (apply(data.extracted, 2, base::scale))
+      data.rescaled <- as.data.frame( apply(data.extracted, 2, function(i) {
+        if (diff(range(i, na.rm = TRUE)) == 0) {
+          stop("At least one of the specified data columns has a range of 0; ",
+               "you cannot standardize a vector of numbers with a range of 0")
+        } else {
+          base::scale(i)
+        }
+      }))
 
-    } else { #"sumto1"
+    } else { #y == "sumto1"
       data.rescaled <- as.data.frame(
         apply(data.extracted, 2, function(i) {i / sum(i, na.rm = TRUE)})
       )
     }
   }
 
-  #--------------------------------------------------------
+  #----------------------------------------------------------------------------
   lapply(1:length(x), function(i) {
     new.df <- st_set_geometry(x[[i]], NULL)
     new.df[, x.pred.idx[i]] <- data.rescaled[, i]
@@ -148,12 +165,14 @@ ensemble_create <- function(x, x.pred.idx, y, y.weights = NULL) {
   if (y == "weighted") {
     if (inherits(y.weights, "numeric")) {
       if (length(y.weights) != length(x)) {
-        stop("If y.weights is a numeric vector, then x and y.weights must have the same number of elements")
+        stop("If y.weights is a numeric vector, then x and y.weights ",
+             "must have the same number of elements")
       }
 
     } else if (inherits(y.weights, "data.frame")) {
       if (ncol(y.weights) != length(x) | nrow(y.weights) != length(x1.geom)) {
-        stop("If y.weights is a data frame, then it must have the same number of columns as x has elements ",
+        stop("If y.weights is a data frame, then it must have the ",
+             "same number of columns as x has elements ",
              "and the same number of rows as each element of x")
       }
 

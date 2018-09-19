@@ -103,9 +103,16 @@ create_ens_data_rescale <- reactive({
   if (x.pred.idx == "none") {
     temp <- models.overlaid
   } else {
-    temp <- eSDM::ensemble_rescale(
+    temp <- try(eSDM::ensemble_rescale(
       models.overlaid, rep("Pred.overlaid", length(models.overlaid)),
       x.pred.idx, input$create_ens_rescale_abund
+    ), silent = TRUE)
+
+    validate(
+      need(temp,
+           paste("Error: At least one of the selected sets of overlaid",
+                 "predictions has a range of 0; you cannot normalize or",
+                 "standardize a vector of numbers with a range of 0"))
     )
   }
 

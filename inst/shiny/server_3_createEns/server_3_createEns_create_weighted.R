@@ -187,7 +187,6 @@ create_ens_weighted_pix <- reactive({
   data.rescaled <- create_ens_data_reg()
   base.sfc <- vals$overlay.base.sfc
   data.weights <- create_ens_weights_pix_weights()
-  browser()
 
   validate(
     need(ncol(data.weights) == ncol(data.rescaled),
