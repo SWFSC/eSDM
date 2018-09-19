@@ -133,7 +133,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
         )
       } else {
         suppressMessages(
-          eSDM::evaluation_metrics(m2, names(m)[1], eval.data, "sight")
+          eSDM::evaluation_metrics(m, names(m)[1], eval.data, "sight")
         )
       }
     }, models.toeval, seq_along(models.toeval), SIMPLIFY = TRUE)

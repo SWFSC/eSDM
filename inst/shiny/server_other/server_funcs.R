@@ -85,8 +85,8 @@ make_poly_valid <- function(poly.invalid, dens.col = NA, poly.info = NA, message
 
     # Get predicted abundance difference
     if (!is.na(dens.col)) {
-      abund1 <- model.abundance(poly.invalid, dens.col)
-      abund.dif <- model.abundance(poly.maybe, dens.col) - abund1
+      abund1 <- eSDM::model_abundance(poly.invalid, dens.col)
+      abund.dif <- eSDM::model_abundance(poly.maybe, dens.col) - abund1
 
       abund.dif.char <- sprintf(as.character(round(abund.dif / 1e+06, 4)), "%3")
       if (identical(abund.dif.char, "0")) abund.dif.char <- "0.000"
@@ -102,9 +102,14 @@ make_poly_valid <- function(poly.invalid, dens.col = NA, poly.info = NA, message
       is.na(poly.info), "The polygon currently being processed was invalid.",
       paste("The", pol.info, "polygon was invalid.")
     )
-    if (!is.na(message.invalid)) {
+    if (!anyNA(message.invalid)) {
       alert1 <- paste(
-        alert1, "The error output was:<br>", message.invalid
+        alert1, "The error output was:<br>",
+        paste0(
+          "<span style=\"color: red;\">",
+          paste(message.invalid, collapse = "; "),
+          "</span>"
+        )
       )
     }
 
@@ -145,7 +150,7 @@ make_poly_valid <- function(poly.invalid, dens.col = NA, poly.info = NA, message
     # )
 
     showModal(modalDialog(
-      title = "Important message - imported polygon was invalid but made valid",
+      title = "Important message - polygon was invalid but made valid",
       HTML(paste0(
         alert1, "<br><br>", alert2, "<br><br>", alert3, "<br><br>", alert4
       ))

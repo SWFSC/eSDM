@@ -63,8 +63,10 @@ ui.evalMetrics <- function() {
                              "Please select a different column or select \"Counts (numerical)\" for",
                              tags$em("Validation data type"), ".")
                   ),
-                  column(6, uiOutput("eval_csv_codes_p_uiOut_select")),
-                  column(6, uiOutput("eval_csv_codes_a_uiOut_select"))
+                  fluidRow(
+                    column(6, uiOutput("eval_csv_codes_p_uiOut_select")),
+                    column(6, uiOutput("eval_csv_codes_a_uiOut_select"))
+                  )
                 ),
                 fluidRow(
                   column(6, uiOutput("eval_csv_execute_uiOut_button")),

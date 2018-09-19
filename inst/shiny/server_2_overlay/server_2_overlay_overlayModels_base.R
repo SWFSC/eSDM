@@ -67,9 +67,7 @@ overlay_create_base_sf <- reactive({
 
   #--------------------------------------------------------
   # Ensure the final version of base polygon is valid
-  if (!all(st_is_valid(base.sf))) {
-    base.sf <- try(make_poly_valid(base.sf, "Pred"), silent = TRUE)
-  }
+  if (!all(st_is_valid(base.sf))) base.sf <- check_valid(base.sf)
 
   validate(
     need(isTruthy(base.sf),
@@ -81,11 +79,13 @@ overlay_create_base_sf <- reactive({
   #--------------------------------------------------------
   # Ensure sfc object class is polygon or multipolygon for faster plotting
   if (!inherits(st_geometry(base.sf), c("sfc_POLYGON", "sfc_MULTIPOLYGON"))) {
-    base.sf2 <- st_cast(base.sf, "MULTIPOLYGON")
+    base.sf2 <- suppressWarnings(
+      st_cast(base.sf, "MULTIPOLYGON", warn = FALSE)
+    )
 
-    checks <- nrow(base.sf) == nrow(base.sf2) &
-      model_abundance(base.sf2, "Pred") == model_abundance(base.sf, "Pred")
-    if (unname(checks)) {
+    abund1 <- eSDM::model_abundance(base.sf, "Pred")
+    abund2 <- eSDM::model_abundance(base.sf2, "Pred")
+    if (nrow(base.sf) == nrow(base.sf2) & unname(abund1 == abund2)) {
       base.sf <- base.sf2
     }
     rm(base.sf2)
@@ -171,7 +171,7 @@ overlay_valid_base <- reactive({
   base.sf <- overlay_proj_base()
 
   if (!all(st_is_valid(base.sf))) {
-    base.sf <- try(make_poly_valid(base.sf), silent = TRUE)
+    base.sf <- check_valid(base.sf)
     validate(
       need(isTruthy(base.sf),
            paste("Error: The eSDM was unable to make the base valid",
@@ -190,7 +190,7 @@ overlay_valid_bound <- reactive({
   overlay.bound <- overlay_proj_bound()
 
   if (!all(st_is_valid(overlay.bound))) {
-    overlay.bound <- try(make_poly_valid(overlay.bound), silent = TRUE)
+    overlay.bound <- check_valid(overlay.bound)
     validate(
       need(isTruthy(overlay.bound),
            paste("Error: The eSDM was unable to make the study area polygon",
@@ -208,7 +208,7 @@ overlay_valid_land <- reactive({
   overlay.land <- overlay_proj_land()
 
   if (!all(st_is_valid(overlay.land))) {
-    overlay.land <- try(make_poly_valid(overlay.land), silent = TRUE)
+    overlay.land <- check_valid(overlay.land)
     validate(
       need(isTruthy(overlay.land),
            paste("Error: The eSDM was unable to make the land polygon valid",

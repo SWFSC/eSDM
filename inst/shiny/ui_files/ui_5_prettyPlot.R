@@ -340,7 +340,7 @@ ui.prettyPlot <- function() {
                         width = 6,
                         numericInput("pretty_margin_in1", tags$h5("Inner margin - bottom"), value = 0.05, min = 0, step = 0.01),
                         numericInput("pretty_margin_in3", tags$h5("Inner margin - top"), value = 0.02, min = 0, step = 0.01),
-                        numericInput("pretty_margin_out", tags$h5("Outer margin"), value = 0.02, min = 0, step = 0.01)
+                        numericInput("pretty_margin_out", tags$h5("Outer margin"), value = 0.03, min = 0, step = 0.01)
                       ),
                       column(
                         width = 6,
