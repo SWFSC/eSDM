@@ -441,9 +441,7 @@ esdm_simple_cap <- function(x, all = FALSE) {
 ### Tests if x spans the dateline
 check_360 <- function(x) {
   stopifnot(isTruthy(st_crs(x)[[2]]))
-
   x.bbox.lon <- round(unname(st_bbox(x)), 3)
-
   identical(abs(x.bbox.lon[1]), x.bbox.lon[3])
 }
 

@@ -1,5 +1,4 @@
-### Items that are rendered for Overlay section of App
-
+# Items that are rendered for Overlay section of GUI
 
 ###############################################################################
 ### Widget for user to select file with projection to use in overlay

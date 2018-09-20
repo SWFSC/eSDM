@@ -1,8 +1,4 @@
-# Title
-#
 # Check that provided sf object has a valid crs, and return crs.ll version
-#
-
 overlay_gis_check <- function(gis.loaded) {
   validate(
     need(inherits(gis.loaded, "sfc"),
@@ -13,7 +9,7 @@ overlay_gis_check <- function(gis.loaded) {
 
   sf.ll <- st_transform(gis.loaded, crs.ll)
 
-  if (st_bbox(sf.ll)[3] > 180)  sf.ll <- st_wrap_dateline(sf.ll)
+  if (st_bbox(sf.ll)[3] > 180) sf.ll <- st_wrap_dateline(sf.ll)
 
   validate(
     need(st_bbox(sf.ll)["xmax"] <= 180 & st_bbox(sf.ll)["xmin"] >= -180,
@@ -22,5 +18,5 @@ overlay_gis_check <- function(gis.loaded) {
          "Error: Shapefile has latitudes > 90 or < -90 degrees")
   )
 
-  return(sf.ll)
+  sf.ll
 }
