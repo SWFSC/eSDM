@@ -185,11 +185,10 @@ pts_to_sfc_vertices_shiny <- function(x, crs.prov, progress.detail) {
 
 ###############################################################################
 ###############################################################################
-# check_ functions: run on sdm sf objects as they're loaded to ensure
-#   correct formatting, etc
+# check_ functions: run on imported GIS objects to ensure correct formatting
 
 #------------------------------------------------------------------------------
-## Sort by lat and then long; return crs.ll and orig proj version of file
+### Sort by lat and then long; return crs.ll and orig proj version of file
 #    Requires that 'x' is an sf object
 
 check_gis_crs <- function(x) {
@@ -209,7 +208,7 @@ check_gis_crs <- function(x) {
 
 
 #------------------------------------------------------------------------------
-# Adjust sf object from 0 - 360 range to -180 to 180 range and check range
+### Adjust sf object from 0 - 360 range to -180 to 180 range and check range
 check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
   stopifnot(
     inherits(x, c("sf", "sfc")),
@@ -265,6 +264,7 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
 
 
 #------------------------------------------------------------------------------
+### Check that x's geometry is valid
 check_valid <- function(x, progress.detail = FALSE) {
   stopifnot(
     inherits(x, c("sf", "sfc")),
@@ -290,6 +290,7 @@ check_valid <- function(x, progress.detail = FALSE) {
 
 
 #------------------------------------------------------------------------------
+### Check that prediction and weight data is in proper format
 check_pred_weight <- function(x, pred.idx, weight.idx, pred.na.idx, weight.na.idx) {
   stopifnot(inherits(pred.idx, c("numeric", "integer")))
   if (inherits(x, "sf")) {
@@ -320,14 +321,14 @@ check_pred_weight <- function(x, pred.idx, weight.idx, pred.na.idx, weight.na.id
 ###############################################################################
 # GUI-specific helper functions
 
-# Sort x by col1 and then (if applicable) col2
+### Sort x by col1 and then (if applicable) col2
 data_sort <- function(x, col1 = 1, col2 = NA) {
   if (!is.na(col2)) x <- x[order(x[, col2]), ]
   x[order(x[, col1]), ]
 }
 
 
-# Determine whether all values in x are equal;
+### Determine whether all values in x are equal;
 # From Hadley on stack overflow, simplified version of scales::zero_range()
 zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
   if (length(x) == 1) return(TRUE)
@@ -336,12 +337,12 @@ zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
 }
 
 
-# Get last n element(s) from string x
+### Get last n element(s) from string x
 # From https://stackoverflow.com/questions/7963898
 substr_right <- function(x, n) substr(x, nchar(x) - n + 1, nchar(x))
 
 
-# Determine which elements of the x are one of invalid
+### Determine which elements of the x are one of invalid
 # Invalid elements are "N/A", "n/a", "na", "NaN", or ""
 na_which <- function(x) {
   na.char <- c("N/A", "n/a", "na", "NaN", "")
@@ -354,7 +355,7 @@ na_which <- function(x) {
 }
 
 
-# Generate message reporting length of x
+### Generate message reporting length of x
 # This message was built to refer to prediction values
 na_pred_message <- function(x) {
   if (anyNA(x)) {
@@ -368,7 +369,7 @@ na_pred_message <- function(x) {
 }
 
 
-# Generate message reporting length of x
+### Generate message reporting length of x
 # This message was built to refer to weight values, including if any non-NA
 #   prediction values corresponded to NA weight values
 na_weight_message <- function(x, y) {
@@ -395,7 +396,7 @@ na_weight_message <- function(x, y) {
 }
 
 
-# Round 'x' to nearest 'base' value
+### Round 'x' to nearest 'base' value
 mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) {
   if (floor.use) {
     base * floor(x / base)
@@ -408,7 +409,7 @@ mround <- function(x, base, floor.use = FALSE, ceiling.use = FALSE) {
   }
 }
 
-# Capitalize first letter of first element of string
+### Capitalize first letter of first element of string
 esdm_simple_cap <- function(x, all = FALSE) {
   if (all) {
     s <- strsplit(x, " ")[[1]]
