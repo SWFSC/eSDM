@@ -318,17 +318,7 @@ check_pred_weight <- function(x, pred.idx, weight.idx, pred.na.idx, weight.na.id
 
 ###############################################################################
 ###############################################################################
-# Originally internal eSDM functions that aren't used in exported functions
-
-# Calculate break points for density intervals
-# Break points are at: 2%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%
-breaks_calc <- function(x, breaks = c(seq(0.4, 0.05, by = -0.05), 0.02)) {
-  x <- x[!is.na(x)]
-  x <- sort(x, decreasing = TRUE)
-
-  c(-Inf, x[ceiling(breaks * length(x))], Inf)
-}
-
+# GUI-specific helper functions
 
 # Sort x by col1 and then (if applicable) col2
 data_sort <- function(x, col1 = 1, col2 = NA) {
@@ -348,9 +338,7 @@ zero_range <- function(x, tol = .Machine$double.eps ^ 0.5) {
 
 # Get last n element(s) from string x
 # From https://stackoverflow.com/questions/7963898
-substr_right <- function(x, n) {
-  substr(x, nchar(x) - n + 1, nchar(x))
-}
+substr_right <- function(x, n) substr(x, nchar(x) - n + 1, nchar(x))
 
 
 # Determine which elements of the x are one of invalid
@@ -405,15 +393,6 @@ na_weight_message <- function(x, y) {
     )
   }
 }
-
-
-# # Normalize vector of model predictions, 'x'
-# normalize <- function(x) {
-#   num <- (x - min(x, na.rm = TRUE))
-#   denom <- (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
-#
-#   num / denom
-# }
 
 
 # Round 'x' to nearest 'base' value

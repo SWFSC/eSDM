@@ -93,6 +93,36 @@ multiplot_download <- function(x) {
 # Helper functions called by plotting functions
 
 #------------------------------------------------------------------------------
+### Calculate break points for density intervals
+# Break points are at (top): 2%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%
+breaks_calc <- function(x, breaks = c(seq(0.4, 0.05, by = -0.05), 0.02)) {
+  x <- stats::na.omit(x)
+  x <- sort(x, decreasing = TRUE)
+
+  c(-Inf, x[ceiling(breaks * length(x))], Inf)
+}
+
+
+###
+preview_vals_break_col <- function(data.vec) {
+  data.vec.uniq <- length(unique(na.omit(data.vec)))
+  d <- ifelse(data.vec.uniq > 10, 10, data.vec.uniq)
+
+  b.model <- seq(
+    from = min(data.vec, na.rm = TRUE), to = max(data.vec, na.rm = TRUE),
+    length.out = d + 1
+  )
+  if (d < 3) {
+    col.pal <- c("#74add1", "#f46d43")[1:d]
+  } else {
+    col.pal <- rev(RColorBrewer::brewer.pal(d, "Spectral"))
+  }
+
+  list(b.model = b.model, col.pal = col.pal)
+}
+
+
+#------------------------------------------------------------------------------
 ### Adapted from https://github.com/r-spatial/sf/blob/master/R/graticule.R
 degreeLabelsNS_sf = function(x) {
   pos = sign(x) + 2
@@ -103,10 +133,8 @@ degreeLabelsNS_sf = function(x) {
 degreeLabelsEW_sf = function(x) {
   x <- ifelse(x > 180, x - 360, x)
   pos = sign(x) + 2
-  if (any(x == -180))
-    pos[x == -180] = 2
-  if (any(x == 180))
-    pos[x == 180] = 2
+  if (any(x == -180)) pos[x == -180] = 2
+  if (any(x == 180)) pos[x == 180] = 2
   dir = c("~W", "", "~E")
   paste0(abs(x), "*degree", dir[pos])
 }
@@ -149,16 +177,13 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
     is.list(models.toplot),
     length(models.toplot) == length(data.names),
     length(models.toplot) == length(plot.titles),
-    length(col.pal) == length(leg.labels),
+    is.na(col.pal) | length(col.pal) == length(leg.labels),
     perc.num %in% c(1, 2)
   )
   on.exit(layout(1))
 
   # -------------------------------------------------------
   models.num <- length(models.toplot)
-  col.num <- length(col.pal)
-  col.num.leg <- col.num + 1
-  col.pal.leg <- c("gray", col.pal)
   layout.num <- plot.nrow * plot.ncol
   models.layout.diff <- layout.num - models.num
 
@@ -191,14 +216,19 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 
     # Add a legend for each value plot
     if (perc.num == 2) {
-      data.vec <- st_set_geometry(models.toplot[[i]], NULL)[, data.names[[i]]]
-      b.model <- seq(
-        from = min(data.vec, na.rm = TRUE), to = max(data.vec, na.rm = TRUE),
-        length.out = 11
+      temp <- preview_vals_break_col(
+        st_set_geometry(models.toplot[[i]], NULL)[, data.names[[i]]]
       )
+      b.model <- temp[[1]]
+      col.pal <- temp[[2]]
+      rm(temp)
+
+      col.num <- length(col.pal)
+      col.num.leg <- col.num + 1
+      col.pal.leg <- c("gray", col.pal)
 
       d <- max(3, nchar(format(signif(b.model[2], 1), scientific = FALSE)) - 2)
-      b.model.lab <- format(round(b.model, d), justify = "right")
+      b.model.lab <- format(round(b.model, d), justify = "right") #, scientific = FALSE
 
       opar <- par(mai = leg.mai)
       on.exit(par(opar), add = TRUE)
@@ -223,6 +253,11 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
       for (j in 1:models.layout.diff) graphics::plot.new()
     }
 
+    col.num <- length(col.pal)
+    col.num.leg <- col.num + 1
+    col.pal.leg <- c("gray", col.pal)
+
+
     opar <- par(mai = leg.mai)
     on.exit(par(opar), add = TRUE)
 
@@ -241,17 +276,23 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 
 ###############################################################################
 ###############################################################################
+
 # Generate static plot of sf object
 preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
                        axis.cex, main.cex) {
-  data.vec <- st_set_geometry(sdm.ll, NULL)[, data.name]
-
   # Convert to 0-360 longitude range if necessary
   sdm.ll <- check_preview360_split(sdm.ll)
+  data.vec <- st_set_geometry(sdm.ll, NULL)[, data.name]
 
   # Plot predictions
   if (perc == 1) {
     b.model <- breaks_calc(data.vec)
+    validate(
+      need(length(unique(b.model)) >= 11,
+           paste("Error: At least one of the selected predictions does not",
+                 "have enough unique prediction values to plot",
+                 "a preview with a 'percentage' unit type"))
+    )
 
     plot(
       sdm.ll[data.name], axes = TRUE, border = NA,
@@ -260,10 +301,10 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
     )
 
   } else {
-    b.model <- seq(
-      from = min(data.vec, na.rm = TRUE), to = max(data.vec, na.rm = TRUE),
-      length.out = 11
-    )
+    temp <- preview_vals_break_col(data.vec)
+    b.model <- temp[[1]]
+    col.pal <- temp[[2]]
+    rm(temp)
 
     plot(
       sdm.ll[data.name], axes = TRUE, border = NA,
@@ -307,11 +348,12 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
                                 col.pal, leg.labels = NULL, leg.title = NULL) {
   stopifnot(
     inherits(sdm.ll, "sf"),
-    !is.null(sdm.ll[data.name]),
+    isTruthy(sdm.ll[data.name]),
     perc %in% c(1, 2),
     identical(st_crs(sdm.ll), st_crs(4326))
   )
-  if (!is.null(leg.labels) & length(col.pal) != length(leg.labels)) {
+  if (isTruthy(leg.labels) & !is.na(col.pal) &
+      length(col.pal) != length(leg.labels)) {
     stop("If 'leg.labels' is not NULL, then 'col.pal' and 'leg.labels' ",
          "must be the same length")
   }
@@ -340,15 +382,15 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
 
   #----------------------------------------------------------------------------
-  validate(
-    need(length(unique(data.vec)) >= 11,
-         paste("Error: The selected predictions must have at least 11 unique",
-               "prediction values to plot an interactive preview"))
-  )
-
   if (perc == 1) {
     # Color prediction based on relative percentages
     b.model <- breaks_calc(data.vec)
+    validate(
+      need(length(unique(b.model)) >= 11,
+           paste("Error: The selected predictions do not",
+                 "have enough unique prediction values to plot",
+                 "an interactive preview with a 'percentage' unit type"))
+    )
     binpal <- colorBin(col.pal, data.vec, bins = b.model, na.color = "gray")
 
     leaf.map <- leaf.map %>%
@@ -360,18 +402,30 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
   } else {
     # Color predictions based on actual values
-    binpal <- colorBin(
-      col.pal, data.vec, bins = 10, pretty = FALSE, na.color = "gray"
-    )
+    col.pal <- preview_vals_break_col(data.vec)[[2]]
+    col.num <- length(col.pal)
 
-    data.breaks.vals <- seq(
-      max(data.vec, na.rm = TRUE), min(data.vec, na.rm = TRUE), length.out = 11
-    )
-    d <- max(3, nchar(format(signif(data.breaks.vals[10], 1), scientific = FALSE)) - 2)
-    data.breaks.vals <- format(round(data.breaks.vals, d), justify = "right")
-    data.breaks.labs <- paste(
-      data.breaks.vals[2:11], "-", data.breaks.vals[1:10]
-    )
+    if (col.num < 10) {
+      binpal <- colorNumeric(
+        col.pal, data.vec, na.color = "gray"
+      )
+      data.breaks.labs <- format(
+        signif(sort(unique(na.omit(data.vec)), decreasing = TRUE), 3), justify = "right"
+      )
+
+    } else {
+      binpal <- colorBin(
+        col.pal, data.vec, bins = 10, pretty = FALSE, na.color = "gray"
+      )
+      data.breaks.vals <- seq(
+        max(data.vec, na.rm = TRUE), min(data.vec, na.rm = TRUE), length.out = col.num + 1
+      )
+      d <- max(3, nchar(format(signif(tail(data.breaks.vals, 2)[2], 1), scientific = FALSE)) - 2)
+      data.breaks.vals <- format(round(data.breaks.vals, d), justify = "right")
+      data.breaks.labs <- paste(
+        tail(data.breaks.vals, -1), "-", head(data.breaks.vals, -1)
+      )
+    }
 
     leaf.map <- leaf.map %>%
       addPolygons(
@@ -380,7 +434,6 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
         labels = c(data.breaks.labs, "NA"), opacity = 1, group = "Predictions")
   }
-
 
   #----------------------------------------------------------------------------
   if (all(is.na(data.vec.w))) {
@@ -393,21 +446,24 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         position = "bottomright", options = layersControlOptions(collapsed = FALSE))
 
 
-  } else if (length(unique(data.vec.w)) >= 11) {
+  } else { # if (length(unique(data.vec.w)) >= 11)
     # Incldue weight data
+    w.num <- ifelse(
+      length(unique(data.vec.w)) > 10, 10, length(unique(data.vec.w))
+    )
 
-    pal.w <- viridis::viridis(10)
+    pal.w <- viridis::viridis(w.num)
     binpal <- colorBin(
-      pal.w, data.vec.w, bins = 10, pretty = FALSE, na.color = "gray"
+      pal.w, data.vec.w, bins = w.num, pretty = FALSE, na.color = "gray"
     )
 
     data.breaks.vals.w <- seq(
-      max(data.vec.w, na.rm = TRUE), min(data.vec.w, na.rm = TRUE), length.out = 11
+      max(data.vec.w, na.rm = TRUE), min(data.vec.w, na.rm = TRUE), length.out = w.num + 1
     )
-    d <- max(3, nchar(format(signif(data.breaks.vals.w[10], 1), scientific = FALSE)) - 2)
+    d <- max(3, nchar(format(signif(tail(data.breaks.vals.w, 2)[2], 1), scientific = FALSE)) - 2)
     data.breaks.vals.w <- format(round(data.breaks.vals.w, d), justify = "right")
     data.breaks.labs.w <- paste(
-      data.breaks.vals.w[2:11], "-", data.breaks.vals.w[1:10]
+      tail(data.breaks.vals.w, -1), "-", head(data.breaks.vals.w, -1)
     )
 
     leaf.map %>%
@@ -422,15 +478,16 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
       hideGroup("Weights")
 
-  } else {
-    # Weight data deosn't have enough unique values
-    leaf.map %>%
-      addControl(
-        tags$h5("Fewer data cannot be plotted"), layerId = "Weight info", position = "bottomright") %>%
-      addLayersControl(
-        baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
-        position = "bottomright", options = layersControlOptions(collapsed = FALSE))
   }
+  # else {
+  #   # Weight data deosn't have enough unique values
+  #   leaf.map %>%
+  #     addControl(
+  #       tags$h5("Weight data cannot be plotted"), layerId = "Weight info", position = "bottomright") %>%
+  #     addLayersControl(
+  #       baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
+  #       position = "bottomright", options = layersControlOptions(collapsed = FALSE))
+  # }
 }
 
 ###############################################################################

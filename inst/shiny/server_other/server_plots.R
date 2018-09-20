@@ -17,7 +17,7 @@ observeEvent(input$model_preview_interactive_execute, {
   vals$models.plot.leaf <- list(
     model.toplot = vals$models.ll[[model.idx]],
     plot.title = paste("Original", model.idx), perc.num = perc.num,
-    pal = switch(perc.num, pal.esdm, pal.esdm.alt),
+    pal = switch(perc.num, pal.esdm, NA),
     leg.title = switch(
       perc.num, "Relative prediction value", "Absolute prediction value"
     )
@@ -43,7 +43,7 @@ observeEvent(input$model_preview_execute, {
   vals$models.plot <- list(
     models.toplot = models.toplot, data.name = rep("Pred", models.num),
     plot.titles = plot.titles, perc.num = perc.num,
-    pal = switch(perc.num, pal.esdm, pal.esdm.alt),
+    pal = switch(perc.num, pal.esdm, NA),
     plot.dims = multiplot_inapp(models.num)
   )
 })
@@ -160,7 +160,7 @@ observeEvent(input$overlay_preview_overlaid_execute, {
     models.toplot = models.toplot,
     data.names = rep("Pred.overlaid", models.num),
     plot.titles = plot.titles, perc.num = perc.num,
-    pal = switch(perc.num, pal.esdm, pal.esdm.alt),
+    pal = switch(perc.num, pal.esdm, NA),
     plot.dims = multiplot_inapp(models.num)
   )
 })
@@ -203,7 +203,7 @@ observeEvent(input$ens_preview_interactive_execute, {
   vals$ensemble.plot.leaf.idx <- model.idx
   vals$ensemble.plot.leaf <- list(
     model.toplot = model.toplot, plot.title = paste("Ensemble", model.idx),
-    perc.num = perc.num, pal = switch(perc.num, pal.esdm, pal.esdm.alt),
+    perc.num = perc.num, pal = switch(perc.num, pal.esdm, NA),
     leg.title = switch(
       perc.num, "Relative prediction value", "Absolute prediction value"
     )
@@ -229,7 +229,7 @@ observeEvent(input$ens_preview_execute, {
   vals$ensemble.plot <- list(
     models.toplot = models.toplot, data.name = rep("Pred.ens", models.num),
     plot.titles = plot.titles, perc.num = perc.num,
-    pal = switch(perc.num, pal.esdm, pal.esdm.alt),
+    pal = switch(perc.num, pal.esdm, NA),
     plot.dims = multiplot_inapp(models.num)
   )
 })
