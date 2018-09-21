@@ -84,7 +84,7 @@ ui.overlay <- function() {
                       width = 6,
                       conditionalPanel(
                         condition = "input.overlay_land_load_type == 2 ",
-                        radioButtons("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)
+                        selectInput("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)
                       )
                     )
                   )

@@ -32,26 +32,27 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   )
 
   #########################################################
-  ### Model overlay prep
+  ### Overlay prep
   # Get index of model predictions to be base geometry
   base.idx <- overlay_base_idx()
   models.num <- length(vals$models.ll)
 
   validate(
     need(length(base.idx) == 1,
-         paste("Error: Please select exactly one model from the table",
-               "to use as the base geometry")),
+         paste("Error: Please select exactly one set of predictions",
+               "from the table to use as the base geometry")),
     need(models.num > 1,
-         paste("Error: Please add more than one model to the app",
-               "before overlaying")),
+         paste("Error: You must import more than one set of predictions",
+               "into the GUI before overlaying")),
     if (input$overlay_bound) {
-      need(!is.null(vals$overlay.bound),
-           paste("Error: Please either uncheck boundary box",
-                 "or load a boundary polygon"))
+      need(vals$overlay.bound,
+           paste("Error: Please either uncheck the 'study area polygon'",
+                 "checkbox or load a study area polygon"))
     },
     if (input$overlay_land) {
-      need(!is.null(vals$overlay.land),
-           "Error: Please either uncheck land box or load a land polygon")
+      need(vals$overlay.land,
+           paste("Error: Please either uncheck the 'erasing polygon'",
+                 "checkbox or load an erasing polygon"))
     }
   )
 
@@ -59,7 +60,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
   #########################################################
-  ### Model overlay process
+  ### Overlay process
   withProgress(message = 'Model overlay step:', value = 0.1, {
     prog.total <- length(vals$models.ll) + 1
 
