@@ -202,16 +202,16 @@ create_ens_reg_add <- eventReactive(
         NA, input$create_ens_reg_csv_weight
       )
 
-    } else if (poly.filetype == 2) {
-      # .tif filetype
-      poly.filename <- create_ens_reg_raster_read()[[2]]
-      poly.sfc      <- create_ens_reg_raster_read()[[1]]
-      weight.val <- ifelse(
-        input$create_ens_reg_raster_weight_na,
-        NA, input$create_ens_reg_raster_weight
-      )
+    # } else if (poly.filetype == 2) {
+    #   # raster filetype
+    #   poly.filename <- create_ens_reg_raster_read()[[2]]
+    #   poly.sfc      <- create_ens_reg_raster_read()[[1]]
+    #   weight.val <- ifelse(
+    #     input$create_ens_reg_raster_weight_na,
+    #     NA, input$create_ens_reg_raster_weight
+    #   )
 
-    } else if (poly.filetype == 3) {
+    } else if (poly.filetype == 2) {
       # .shp filetype
       poly.filename <- create_ens_reg_shp_read()[[2]]
       poly.sfc      <- create_ens_reg_shp_read()[[1]]
@@ -220,7 +220,7 @@ create_ens_reg_add <- eventReactive(
         NA, input$create_ens_reg_shp_weight
       )
 
-    } else { #poly.filetype == 4
+    } else { #poly.filetype == 3
       # .gdb filetype
       poly.filename <- create_ens_reg_gdb_read()[[2]]
       poly.sfc      <- create_ens_reg_gdb_read()[[1]]
@@ -365,61 +365,65 @@ create_ens_reg_csv_process <- reactive({
 })
 
 
-#----------------------------------------------------------
-# GIS raster
-
-### Flag for successfully loaded file
-output$create_ens_reg_raster_flag <- reactive({
-  isTruthy(create_ens_reg_raster_read())
-})
-outputOptions(output, "create_ens_reg_raster_flag",
-              suspendWhenHidden = FALSE)
-
-
-### Load and process
-create_ens_reg_raster_read <- reactive({
-  file.in <- input$create_ens_reg_raster_file
-  validate(need(file.in, "Error: please load a raster file"))
-
-  # Ensure file extension is .tif
-  if (file.in$type != "image/tiff") return()
-
-
-  withProgress(message = "Loading GIS raster", value = 0.2, {
-    gis.file.raster <- try(raster(file.in$datapath, band = 1),
-                           silent = TRUE)
-    gis.file.success <- isTruthy(gis.file.raster)
-    incProgress(0.4)
-
-    # If specified file could be loaded as a raster, process raster
-    if (gis.file.success) {
-      gis.file.raster <- suppressMessages(st_union(
-        st_as_sfc(as(gis.file.raster, "SpatialPolygons"))
-      ))
-      stopifnot(inherits(gis.file.raster, "sfc"))
-      incProgress(0.1)
-
-      # Adjust 0 - 360 data to -180 - 180 if needed
-      gis.file.raster <- check_dateline(gis.file.raster, 60)
-      incProgress(0.1)
-
-      # Transform weight polygon as necesary
-      if (!identical(st_crs(gis.file.raster), vals$overlay.crs)) {
-        gis.file.raster <- st_transform(gis.file.raster, vals$overlay.crs)
-      }
-
-      # Check that polygon(s) are valid
-      gis.file.raster <- check_valid(gis.file.raster, progress.detail = TRUE)
-      incProgress(0.1)
-    }
-  })
-
-  if(!gis.file.success) {
-    NULL
-  } else {
-    list(gis.file.raster, file.in$name)
-  }
-})
+# #----------------------------------------------------------
+# # GIS raster
+#
+# ### Flag for successfully loaded file
+# output$create_ens_reg_raster_flag <- reactive({
+#   isTruthy(create_ens_reg_raster_read())
+# })
+# outputOptions(output, "create_ens_reg_raster_flag",
+#               suspendWhenHidden = FALSE)
+#
+#
+# ### Load and process
+# create_ens_reg_raster_read <- reactive({
+#   file.in <- input$create_ens_reg_raster_file
+#   validate(need(file.in, "Error: please load a raster file"))
+#
+#   # Ensure file extension is .tif
+#   if (!file.in$type %in% c("image/tiff", "")) return()
+#
+#
+#   withProgress(message = "Loading GIS raster", value = 0.2, {
+#     gis.file.raster <- try(
+#       raster(file.in$datapath, band = 1), silent = TRUE
+#     )
+#     gis.file.success <- isTruthy(gis.file.raster)
+#     incProgress(0.4)
+#
+#     # If specified file could be loaded as a raster, process raster
+#     if (gis.file.success) {
+#       gis.file.raster <- suppressMessages(st_union(
+#         st_as_sfc(as(gis.file.raster, "SpatialPolygons"))
+#       ))
+#       stopifnot(inherits(gis.file.raster, "sfc"))
+#       incProgress(0.1)
+#
+#       # Check that raster has valid crs
+#       check_gis_crs(gis.file.raster)
+#
+#       # Adjust 0 - 360 data to -180 - 180 if needed
+#       gis.file.raster <- check_dateline(gis.file.raster, 60)
+#       incProgress(0.1)
+#
+#       # Transform weight polygon as necesary
+#       if (!identical(st_crs(gis.file.raster), vals$overlay.crs)) {
+#         gis.file.raster <- st_transform(gis.file.raster, vals$overlay.crs)
+#       }
+#
+#       # Check that polygon(s) are valid
+#       gis.file.raster <- check_valid(gis.file.raster, progress.detail = TRUE)
+#       incProgress(0.1)
+#     }
+#   })
+#
+#   if(!gis.file.success) {
+#     NULL
+#   } else {
+#     list(gis.file.raster, file.in$name)
+#   }
+# })
 
 
 #----------------------------------------------------------

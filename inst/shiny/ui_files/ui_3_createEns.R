@@ -136,7 +136,7 @@ ui.createEns <- function() {
                                  "All predictions not assigned a weight polygon will not be weighted."),
                         uiOutput("create_ens_reg_model_uiOut_selectize"),
                         selectInput("create_ens_reg_type", tags$h5("Weight polygon file type"),
-                                    choices = file.type.list2, selected = 1)
+                                    choices = file.type.list1, selected = 1)
                       ),
                       box(
                         width = 8,
@@ -159,27 +159,27 @@ ui.createEns <- function() {
                             )
                           )
                         ),
-                        ############## File type: raster
-                        conditionalPanel(
-                          condition = "input.create_ens_reg_type == 2",
-                          ui.instructions.upload.raster(),
-                          ui.instructions.ens.weightpolyNA(),
-                          fluidRow(
-                            column(6, fileInput("create_ens_reg_raster_file", label.raster.upload, accept = ".tif")),
-                            column(
-                              width = 5, offset = 1,
-                              checkboxInput("create_ens_reg_raster_weight_na", "Use 'NA' as weight", value = FALSE),
-                              conditionalPanel(
-                                condition = "input.create_ens_reg_raster_weight_na == false",
-                                numericInput("create_ens_reg_raster_weight", tags$h5("Weight"), value = 1, min = 0, step = 0.1)
-                              )
-                            )
-                          ),
-                          conditionalPanel("output.create_ens_reg_raster_flag == false", ui.error.upload.raster)
-                        ),
+                        # ############## File type: raster
+                        # conditionalPanel(
+                        #   condition = "input.create_ens_reg_type == 2",
+                        #   ui.instructions.upload.raster(),
+                        #   ui.instructions.ens.weightpolyNA(),
+                        #   fluidRow(
+                        #     column(6, fileInput("create_ens_reg_raster_file", label.raster.upload, accept = ".tif")),
+                        #     column(
+                        #       width = 5, offset = 1,
+                        #       checkboxInput("create_ens_reg_raster_weight_na", "Use 'NA' as weight", value = FALSE),
+                        #       conditionalPanel(
+                        #         condition = "input.create_ens_reg_raster_weight_na == false",
+                        #         numericInput("create_ens_reg_raster_weight", tags$h5("Weight"), value = 1, min = 0, step = 0.1)
+                        #       )
+                        #     )
+                        #   ),
+                        #   conditionalPanel("output.create_ens_reg_raster_flag == false", ui.error.upload.raster)
+                        # ),
                         ############## File type: shp
                         conditionalPanel(
-                          condition = "input.create_ens_reg_type == 3",
+                          condition = "input.create_ens_reg_type == 2",
                           ui.instructions.upload.shp(),
                           ui.instructions.ens.weightpolyNA(),
                           fluidRow(
@@ -197,7 +197,7 @@ ui.createEns <- function() {
                         ),
                         ############## File type: gdb
                         conditionalPanel(
-                          condition = "input.create_ens_reg_type == 4",
+                          condition = "input.create_ens_reg_type == 3",
                           ui.instructions.upload.gdb(),
                           ui.instructions.ens.weightpolyNA(),
                           fluidRow(
