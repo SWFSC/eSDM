@@ -46,16 +46,19 @@ output$export_filename_uiOut_text <- renderUI({
     table.info <- table_ensembles()[z, ]
 
     table.info$`Ensembling method` <- switch(
-      table.info$`Ensembling method`, "Unweighted" = "UnW", "Weighted" = "W"
+      table.info$`Ensembling method`, "Unweighted" = "UnW", "Weighted" = "W",
+      "Regionally weighted + weighted" = "Reg+W",
+      "Regionally weighted + unweighted" = "Reg+UnW"
     )
 
     rescale.txt <- table.info$`Rescaling method`
     rescale.txt <- ifelse(
       grepl("Abund", rescale.txt),
       paste0("Abund", strsplit(rescale.txt, ": ")[[1]][2]),
-      switch(rescale.txt,
-             "None" = "None", "Normalization" = "Norm",
-             "Standardization" = "Stand", "Sum to 1" = "Sumto1_")
+      switch(
+        rescale.txt, "None" = "None", "Normalization" = "Norm",
+        "Standardization" = "Stand", "Sum to 1" = "Sumto1_"
+      )
     )
     table.info$`Rescaling method` <- rescale.txt
 
@@ -102,7 +105,7 @@ output$export_weight_inc_uiOut_text <- renderUI({
               "that will be exported")
     } else {
       tags$h5("The selected predictions do not have any weight data to export")
-      }
+    }
   }
 })
 
