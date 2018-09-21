@@ -1,7 +1,39 @@
-#' Title
-#'
-#' Determine the resolution of provided gis model
+# Functions specific to 'Import predictions' section
 
+###############################################################################
+# Generate info message for renderUIs
+model_csv_inf_func <- function(pred.type, pred.na.idx, weight.idx, weight.na.idx) {
+  temp <- ifelse(
+    pred.type != 3, NA,
+    paste("Abundance value type: All prediction values will be divided",
+          "by their prediction polygon area")
+  )
+
+  if (as.numeric(weight.idx) > 1) {
+    if (is.na(temp)) {
+      HTML(
+        na_pred_message(pred.na.idx), "<br/>",
+        na_weight_message(weight.na.idx, pred.na.idx)
+      )
+    } else {
+      HTML(
+        temp, "<br/>", "<br/>",
+        na_pred_message(pred.na.idx), "<br/>",
+        na_weight_message(weight.na.idx, pred.na.idx)
+      )
+    }
+
+  } else {
+    if (is.na(temp)) {
+      HTML(na_pred_message(pred.na.idx))
+    } else {
+      HTML(temp, "<br/>", "<br/>", na_pred_message(pred.na.idx))
+    }
+  }
+}
+
+###############################################################################
+# Determine the resolution of provided gis model
 gis_res_calc <- function(sf.ll, sf.orig) {
   validate(
     need(inherits(sf.ll, "sf") & inherits(sf.orig, "sf"),
@@ -73,3 +105,5 @@ gis_res_calc <- function(sf.ll, sf.orig) {
     "Unk"
   }
 }
+
+###############################################################################

@@ -47,10 +47,9 @@ model_csv_names_selected <- reactive({
 
 ### Identify row indices of NA values in given prediction column
 model_csv_NA_idx_pred <- reactive({
-  req(input$model_csv_names_pred)
-  data.csv <- read_model_csv()[[2]]
+  data.csv <- req(read_model_csv())[[2]]
 
-  na_which(data.csv[, as.numeric(input$model_csv_names_pred)])
+  na_which(data.csv[, as.numeric(req(input$model_csv_names_pred))])
 })
 
 ### Identify row indices of NA values in given weight column

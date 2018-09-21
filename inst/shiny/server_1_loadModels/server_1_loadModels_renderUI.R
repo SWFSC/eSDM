@@ -34,7 +34,8 @@ output$model_csv_names_pred_uiOut_select <- renderUI({
 output$model_csv_pred_type_uiOut_select <- renderUI({
   req(read_model_csv())
   selectInput("model_csv_pred_type", tags$h5("Prediction value type"),
-              choices = list("Absolute density" = 1, "Relative density" = 2),
+              choices = list("Absolute density" = 1, "Relative density" = 2,
+                             "Abundance" = 3),
               selected = 2)
 })
 
@@ -51,16 +52,11 @@ output$model_csv_names_weight_uiOut_select <- renderUI({
 ### Message with number of NA predictions for preds and weights
 output$model_csv_NA_idx_uiOut_message <- renderUI({
   req(read_model_csv())
-  pred.na.idx <- model_csv_NA_idx_pred()
 
-  if (as.numeric(input$model_csv_names_weight) > 1) {
-    weight.na.idx <- model_csv_NA_idx_weight()
-    HTML(na_pred_message(pred.na.idx), "<br/>",
-         na_weight_message(weight.na.idx, pred.na.idx))
-
-  } else {
-    na_pred_message(pred.na.idx)
-  }
+  model_csv_inf_func(
+    req(input$model_csv_pred_type), model_csv_NA_idx_pred(),
+    req(input$model_csv_names_weight), model_csv_NA_idx_weight()
+  )
 })
 
 
@@ -73,14 +69,27 @@ output$model_csv_NA_idx_uiOut_message <- renderUI({
 output$model_gis_raster_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_raster())
   selectInput("model_gis_raster_pred_type", tags$h5("Prediction value type"),
-              choices = list("Absolute density" = 1, "Relative density" = 2),
+              choices = list("Absolute density" = 1, "Relative density" = 2,
+                             "Abundance" = 3),
               selected = 2)
 })
 
 ### Message with number of NA predictions
 output$model_gis_raster_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_raster())
-  na_pred_message(model_gis_raster_NA_idx_pred())
+
+  temp <- ifelse(
+    req(input$model_gis_raster_pred_type) != 3, NA,
+    paste("Abundance value type: All prediction values will be divided",
+          "by their prediction polygon area")
+  )
+
+  if (is.na(temp)) {
+    na_pred_message(model_gis_raster_NA_idx_pred())
+  } else {
+    HTML(temp, "<br/>", "<br/>",
+         na_pred_message(model_gis_raster_NA_idx_pred()))
+  }
 })
 
 
@@ -99,7 +108,8 @@ output$model_gis_shp_names_pred_uiOut_select <- renderUI({
 output$model_gis_shp_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_shp())
   selectInput("model_gis_shp_pred_type", tags$h5("Prediction value type"),
-              choices = list("Absolute density" = 1, "Relative density" = 2),
+              choices = list("Absolute density" = 1, "Relative density" = 2,
+                             "Abundance" = 3),
               selected = 2)
 })
 
@@ -116,17 +126,23 @@ output$model_gis_shp_names_weight_uiOut_select <- renderUI({
 ### Message with number of NA predictions
 output$model_gis_shp_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_shp())
-  pred.na.idx <- model_gis_shp_NA_idx_pred()
 
-  weight.col <- as.numeric(input$model_gis_shp_names_weight)
-  if (weight.col > 1) {
-    weight.na.idx <- model_gis_shp_NA_idx_weight()
-    HTML(na_pred_message(pred.na.idx), "<br/>",
-         na_weight_message(weight.na.idx, pred.na.idx))
+  model_csv_inf_func(
+    req(input$model_gis_shp_pred_type), model_gis_shp_NA_idx_pred(),
+    req(input$model_gis_shp_names_weight), model_gis_shp_NA_idx_weight()
+  )
 
-  } else {
-    na_pred_message(pred.na.idx)
-  }
+  # pred.na.idx <- model_gis_shp_NA_idx_pred()
+  #
+  # weight.col <- as.numeric(input$model_gis_shp_names_weight)
+  # if (weight.col > 1) {
+  #   weight.na.idx <- model_gis_shp_NA_idx_weight()
+  #   HTML(na_pred_message(pred.na.idx), "<br/>",
+  #        na_weight_message(weight.na.idx, pred.na.idx))
+  #
+  # } else {
+  #   na_pred_message(pred.na.idx)
+  # }
 })
 
 
@@ -145,7 +161,8 @@ output$model_gis_gdb_names_pred_uiOut_select <- renderUI({
 output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
   selectInput("model_gis_gdb_pred_type", tags$h5("Prediction value type"),
-              choices = list("Absolute density" = 1, "Relative density" = 2),
+              choices = list("Absolute density" = 1, "Relative density" = 2,
+                             "Abundance" = 3),
               selected = 2)
 })
 
@@ -162,17 +179,23 @@ output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
 ### Message with number of NA predictions
 output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_gdb())
-  pred.na.idx <- model_gis_gdb_NA_idx_pred()
 
-  weight.col <- as.numeric(input$model_gis_gdb_names_weight)
-  if (weight.col > 1) {
-    weight.na.idx <- model_gis_gdb_NA_idx_weight()
-    HTML(na_pred_message(pred.na.idx), "<br/>",
-         na_weight_message(weight.na.idx, pred.na.idx))
+  model_csv_inf_func(
+    req(input$model_gis_gdb_pred_type), model_gis_gdb_NA_idx_pred(),
+    req(input$model_gis_gdb_names_weight), model_gis_gdb_NA_idx_weight()
+  )
 
-  } else {
-    na_pred_message(pred.na.idx)
-  }
+  # pred.na.idx <- model_gis_gdb_NA_idx_pred()
+  #
+  # weight.col <- as.numeric(input$model_gis_gdb_names_weight)
+  # if (weight.col > 1) {
+  #   weight.na.idx <- model_gis_gdb_NA_idx_weight()
+  #   HTML(na_pred_message(pred.na.idx), "<br/>",
+  #        na_weight_message(weight.na.idx, pred.na.idx))
+  #
+  # } else {
+  #   na_pred_message(pred.na.idx)
+  # }
 })
 
 

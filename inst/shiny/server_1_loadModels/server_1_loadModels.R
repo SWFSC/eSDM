@@ -128,11 +128,12 @@ observe({
                 vals$models.specs),
            length)
   )
-  if (!(check.all)) shinyjs::alert(
-    "eSDM error 1: Improper formatting of 'original' objects, please contact Sam"
+  if (!check.all) shinyjs::alert(
+    paste("eSDM error 1: Improper formatting of original predictions;",
+          "please either contact Sam at sam.woodman@noaa.gov or report this as an issue on GitHub")
   )
 
-  if (length(vals$models.ll) != 0) {
+  if (length(vals$models.ll) > 0) {
     check.all <- c(
       all(sapply(vals$models.ll, inherits, "sf")),
       all(sapply(vals$models.orig, inherits, "sf")),
@@ -151,17 +152,18 @@ observe({
       all(sapply(vals$models.ll, attr, "sf_column") == "geometry"),
       all(sapply(vals$models.orig, attr, "sf_column") == "geometry"),
 
-      sapply(lapply(vals$models.ll, function(i) i$Pred), inherits, c("numeric", "integer")),
-      sapply(lapply(vals$models.ll, function(i) i$Weight), inherits, c("numeric", "integer")),
-      sapply(lapply(vals$models.ll, function(i) i$Pixels), inherits, c("numeric", "integer")),
+      sapply(lapply(vals$models.ll, function(i) i$Pred), is.numeric),
+      sapply(lapply(vals$models.ll, function(i) i$Weight), is.numeric),
+      sapply(lapply(vals$models.ll, function(i) i$Pixels), is.numeric),
 
       all(sapply(vals$models.names, inherits, "character")),
       all(sapply(vals$models.data.names, function(i) all(sapply(i, inherits, "character"))))
     )
 
-    if (!all(check.all)) {
+    if (!all(check.all) | anyNA(check.all)) {
       shinyjs::alert(
-        "eSDM error 2: Improper formatting of 'original' objects, please contact Sam"
+        paste("eSDM error 2: Improper formatting of orignal predictions;",
+              "please either contact Sam at sam.woodman@noaa.gov or report this as an issue on GitHub")
       )
     }
   }

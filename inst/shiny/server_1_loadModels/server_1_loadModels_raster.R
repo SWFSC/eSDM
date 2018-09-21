@@ -4,10 +4,7 @@
 ###############################################################################
 ### Get indices of predictions that area NA's using na_which()
 model_gis_raster_NA_idx_pred <- reactive({
-  req(read_model_gis_raster())
-  data.raster.pred <- read_model_gis_raster()[[1]]$Pred
-
-  na_which(data.raster.pred)
+  na_which(req(read_model_gis_raster())[[1]]$Pred)
 })
 
 

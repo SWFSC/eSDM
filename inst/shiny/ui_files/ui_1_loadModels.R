@@ -17,7 +17,7 @@ ui.loadModels <- function() {
               fluidRow(
                 column(6, fileInput("model_csv_file", label.csv.upload, accept = ".csv")),
                 column(
-                  width = 4, offset = 1,
+                  width = 5, offset = 1,
                   selectInput("model_csv_pt_loc", tags$h5("Location of point in grid cell"),
                               choices = list("Center" = 1, "Top left" = 2, "Top right" = 3,
                                              "Bottom right" = 4, "Bottom left" = 5),
@@ -36,22 +36,25 @@ ui.loadModels <- function() {
                     column(
                       width = 6,
                       uiOutput("model_csv_names_lon_uiOut_select"),
-                      uiOutput("model_csv_names_pred_uiOut_select"),
+                      uiOutput("model_csv_names_pred_uiOut_select")
+                    ),
+                    column(
+                      width = 6,
+                      uiOutput("model_csv_names_lat_uiOut_select"),
+                      uiOutput("model_csv_pred_type_uiOut_select")
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
                       uiOutput("model_csv_names_weight_uiOut_select"),
                       tags$br(),
                       uiOutput("model_create_csv_uiOut_button"),
                       tags$br()
                     ),
-                    column(
-                      width = 6,
-                      uiOutput("model_csv_names_lat_uiOut_select"),
-                      uiOutput("model_csv_pred_type_uiOut_select"),
-                      tags$br(),
-                      tags$br(),
-                      uiOutput("model_csv_NA_idx_uiOut_message")
-                    ),
-                    column(12, tags$span(textOutput("create_sf_csv_text"), style = "color: blue"))
-                  )
+                    column(6, tags$h5(uiOutput("model_csv_NA_idx_uiOut_message"), style = "color: red;"))
+                  ),
+                  tags$span(textOutput("create_sf_csv_text"), style = "color: blue")
                 )
               )
             ),
@@ -86,14 +89,9 @@ ui.loadModels <- function() {
                       uiOutput("model_create_gis_raster_uiOut_button"),
                       tags$br()
                     ),
-                    column(
-                      width = 6,
-                      tags$br(), tags$br(),
-                      uiOutput("model_gis_raster_NA_idx_uiOut_message"),
-                      tags$br()
-                    ),
-                    column(12, tags$span(textOutput("create_sf_gis_raster_text"), style = "color: blue"))
-                  )
+                    column(6, tags$h5(uiOutput("model_gis_raster_NA_idx_uiOut_message"), style = "color: red;"))
+                  ),
+                  tags$span(textOutput("create_sf_gis_raster_text"), style = "color: blue")
                 )
               )
             ),
@@ -111,23 +109,20 @@ ui.loadModels <- function() {
                 box(
                   width = 12,
                   fluidRow(
+                    column(6, uiOutput("model_gis_shp_names_pred_uiOut_select")),
+                    column(6, uiOutput("model_gis_shp_pred_type_uiOut_select"))
+                  ),
+                  fluidRow(
                     column(
                       width = 6,
-                      uiOutput("model_gis_shp_names_pred_uiOut_select"),
                       uiOutput("model_gis_shp_names_weight_uiOut_select"),
                       tags$br(),
                       uiOutput("model_create_gis_shp_uiOut_button"),
                       tags$br()
                     ),
-                    column(
-                      width = 6,
-                      uiOutput("model_gis_shp_pred_type_uiOut_select"),
-                      tags$br(),
-                      tags$br(),
-                      uiOutput("model_gis_shp_NA_idx_uiOut_message")
-                    ),
-                    column(12, tags$span(textOutput("create_sf_gis_shp_text"), style = "color: blue"))
-                  )
+                    column(6, tags$h5(uiOutput("model_gis_shp_NA_idx_uiOut_message"), style = "color: red;"))
+                  ),
+                  tags$span(textOutput("create_sf_gis_shp_text"), style = "color: blue")
                 )
               )
             ),
@@ -153,23 +148,21 @@ ui.loadModels <- function() {
                 box(
                   width = 12,
                   fluidRow(
+                    column(6, uiOutput("model_gis_gdb_names_pred_uiOut_select")),
+                    column(6, uiOutput("model_gis_gdb_pred_type_uiOut_select"))
+                  ),
+                  fluidRow(
                     column(
                       width = 6,
-                      uiOutput("model_gis_gdb_names_pred_uiOut_select"),
                       uiOutput("model_gis_gdb_names_weight_uiOut_select"),
                       tags$br(),
                       uiOutput("model_create_gis_gdb_uiOut_button"),
                       tags$br()
                     ),
-                    column(
-                      width = 6,
-                      uiOutput("model_gis_gdb_pred_type_uiOut_select"),
-                      tags$br(),
-                      tags$br(),
-                      uiOutput("model_gis_gdb_NA_idx_uiOut_message")
-                    ),
-                    column(12, tags$span(textOutput("create_sf_gis_gdb_text"), style = "color: blue"))
-                  )
+                    column(6, tags$h5(uiOutput("model_gis_gdb_NA_idx_uiOut_message"), style = "color: red;")
+                    )
+                  ),
+                  tags$span(textOutput("create_sf_gis_gdb_text"), style = "color: blue")
                 )
               )
             )

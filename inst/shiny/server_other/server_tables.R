@@ -9,7 +9,9 @@ table_orig <- reactive({
   if (length(vals$models.ll) == 0) return()
 
   data.frame(vals$models.names, t(as.data.frame(vals$models.data.names)),
-             ifelse(vals$models.pred.type == "1", "Absolute", "Relative"),
+             vapply(as.numeric(vals$models.pred.type), function(i) {
+               switch(i, "Absolute density", "Relative density", "Abundance")
+             }, character(1)),
              stringsAsFactors = FALSE,
              row.names = paste("Original", 1:length(vals$models.names))) %>%
     purrr::set_names(

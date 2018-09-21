@@ -34,22 +34,38 @@ sf.load.orig <- st_set_geometry(sf.load.orig, NULL) %>%
   st_sf(geometry = st_geometry(sf.load.orig), agr = "constant")
 
 
-### Calculate predicted abundance if 'Absolute abundance' is selected
-# if (pred.type == 1) {
-#   abund <- unname(round(model_abundance(sf.load.orig, "Pred"), 0))
-# } else {
-#   abund <- "N/A"
-# }
+### Process prediction values based on prediction type
+if (pred.type == 1) {
+  abund <- unname(round(eSDM::model_abundance(sf.load.orig, "Pred"), 0))
+
+} else if (pred.type == 2) {
+  abund <- "N/A"
+
+} else if (pred.type == 3) {
+  abund <- sum(sf.load.orig$Pred)
+
+  sdm.area <- st_area(sf.load.orig)
+  validate(
+    need(all(units(sdm.area)$numerator == c("m", "m")),
+         paste("Error: The GUI could not properly calculate the area of",
+               "the prediction polygons; please ensure the predictions",
+               "are properly formatted and have a defined coordinate system"))
+  )
+
+  sdm.area <- as.numeric(st_area(sf.load.orig)) / 1e+06
+  sf.load.ll$Pred <- sf.load.ll$Pred / sdm.area
+  sf.load.orig$Pred <- sf.load.orig$Pred / sdm.area
+
+  sf.load.ll <- st_set_agr(sf.load.ll, "constant")
+  sf.load.orig <- st_set_agr(sf.load.orig, "constant")
+}
 
 
 ### Create vector of specs about the predictions, added to list of vectors
 # Specs are: resolution, cell count, non-NA prediction count, abundance,
 #   and lat/long extent
 specs.curr <- c(
-  model.res, nrow(sf.load.ll), sum(!is.na(sf.load.ll$Pred)),
-  ifelse(pred.type == 1,
-         unname(round(eSDM::model_abundance(sf.load.orig, "Pred"), 0)),
-         "N/A"),
+  model.res, nrow(sf.load.ll), sum(!is.na(sf.load.ll$Pred)), abund,
   paste0("(", paste(round(st_bbox(sf.load.ll), 0)[c(1, 3)], collapse = ", "),
          "), (",
          paste(round(st_bbox(sf.load.ll), 0)[c(2, 4)], collapse = ", "), ")")
