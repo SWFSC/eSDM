@@ -93,14 +93,16 @@ ui.overlay <- function() {
                   condition = "input.overlay_land_load_type == 1",
                   box(
                     width = 12,
-                    helpText("The provided erasing polygon is from the Global Self-consistent, Hierarchical, ",
-                             "High-resolution Geography (GSHHG) Database. It is a low-resolution polygon that",
-                             "represents the land of all continents, including Antarctica,",
-                             "but not lakes, rivers, or islands within those continents.",
-                             tags$br(),
-                             "See the", tags$a("GSHHG website", href = "http://www.soest.hawaii.edu/pwessel/gshhg/"),
-                             "for more information about the provided erasing polygon,",
-                             "or to download polygons with higher resolutions."),
+                    helpText(
+                      "The provided erasing polygon is from the Global Self-consistent, Hierarchical, ",
+                      "High-resolution Geography (GSHHG) Database. It is a low-resolution polygon that",
+                      "represents the land of all continents, including Antarctica,",
+                      "but not lakes, rivers, or islands within those continents.",
+                      tags$br(),
+                      "See the", tags$a("GSHHG website", href = "http://www.soest.hawaii.edu/pwessel/gshhg/"),
+                      "for more information about the provided erasing polygon,",
+                      "or to download polygons with higher resolutions."
+                    ),
                     fluidRow(
                       column(6, actionButton("overlay_land_provided", "Import provided erasing polygon")),
                       column(

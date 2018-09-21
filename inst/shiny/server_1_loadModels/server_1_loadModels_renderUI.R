@@ -131,18 +131,6 @@ output$model_gis_shp_NA_idx_uiOut_message <- renderUI({
     req(input$model_gis_shp_pred_type), model_gis_shp_NA_idx_pred(),
     req(input$model_gis_shp_names_weight), model_gis_shp_NA_idx_weight()
   )
-
-  # pred.na.idx <- model_gis_shp_NA_idx_pred()
-  #
-  # weight.col <- as.numeric(input$model_gis_shp_names_weight)
-  # if (weight.col > 1) {
-  #   weight.na.idx <- model_gis_shp_NA_idx_weight()
-  #   HTML(na_pred_message(pred.na.idx), "<br/>",
-  #        na_weight_message(weight.na.idx, pred.na.idx))
-  #
-  # } else {
-  #   na_pred_message(pred.na.idx)
-  # }
 })
 
 
@@ -184,18 +172,6 @@ output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
     req(input$model_gis_gdb_pred_type), model_gis_gdb_NA_idx_pred(),
     req(input$model_gis_gdb_names_weight), model_gis_gdb_NA_idx_weight()
   )
-
-  # pred.na.idx <- model_gis_gdb_NA_idx_pred()
-  #
-  # weight.col <- as.numeric(input$model_gis_gdb_names_weight)
-  # if (weight.col > 1) {
-  #   weight.na.idx <- model_gis_gdb_NA_idx_weight()
-  #   HTML(na_pred_message(pred.na.idx), "<br/>",
-  #        na_weight_message(weight.na.idx, pred.na.idx))
-  #
-  # } else {
-  #   na_pred_message(pred.na.idx)
-  # }
 })
 
 

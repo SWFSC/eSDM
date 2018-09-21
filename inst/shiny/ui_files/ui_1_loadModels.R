@@ -77,8 +77,8 @@ ui.loadModels <- function() {
               ),
               conditionalPanel(
                 condition = "output.read_model_gis_raster_flag",
-                helpText("Since imported rasters can only have one data layer, that layer is treated as the prediction data",
-                         "and there is no weight data"),
+                helpText("Since imported rasters can only have one data layer, that layer",
+                         "is treated as the prediction data and there is no weight data"),
                 box(
                   width = 12,
                   fluidRow(
@@ -183,7 +183,8 @@ ui.loadModels <- function() {
               column(
                 width = 12,
                 checkboxInput("models_loaded_table_stats",
-                              "Display additional information - NOTE that you can only select or deselect row(s) when this box is unchecked"),
+                              paste("Display additional information - NOTE that you can only select",
+                                    "or deselect row(s) when this box is unchecked")),
                 fluidRow(
                   column(3, radioButtons("model_select_action", tags$h5("Action to perform with selected original predictions"),
                                          choices = list("Plot interactive preview" = 1, "Plot static preview" = 2,
@@ -210,7 +211,8 @@ ui.loadModels <- function() {
                                                      choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
                               column(8, tags$br(), tags$br(), uiOutput("model_preview_interactive_execute_uiOut_button"))
                             ),
-                            helpText("Note that if you are not connected to the internet then the background map will not display")
+                            helpText("Note that if you are not connected to the internet,",
+                                     "then the background map will not display")
                           ),
                           ###################################### Plot static preview
                           conditionalPanel(

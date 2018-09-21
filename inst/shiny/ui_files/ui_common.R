@@ -8,7 +8,7 @@ file.type.list1 <- list(
   "GIS file geodatabase feature class" = 3
 )
 file.type.list2 <- list(
-  "Excel .csv" = 1, "GIS raster (GeoTIFF)" = 2, "GIS shapefile" = 3,
+  "Excel .csv" = 1, "GIS raster" = 2, "GIS shapefile" = 3,
   "GIS file geodatabase feature class" = 4
 )
 
@@ -20,7 +20,7 @@ file.type.list2 <- list(
 label.csv.upload <- tags$h5("Upload Excel .csv file (.csv extension)")
 
 ### GIS raster
-label.raster.upload <- tags$h5("Upload raster GeoTIFF file (.tif extension)")
+label.raster.upload <- tags$h5("Upload raster file (.img or .tif extension)")
 
 ### GIS shp
 label.shp.upload <- tags$h5("Upload GIS shapefile files")
@@ -28,7 +28,7 @@ label.shp.upload <- tags$h5("Upload GIS shapefile files")
 ### GIS gdb
 label.gdb.path <- tags$h5("Full path to file geodatabase")
 label.gdb.name <- tags$h5("Name of file geodatabase feature class")
-label.gdb.upload <- "Upload file geodatabase feature class"
+label.gdb.upload <- "Upload feature class"
 
 
 ###############################################################################
@@ -45,9 +45,10 @@ ui.instructions.upload.csv <- function() {
 
 ui.instructions.upload.raster <- function() {
   helpText(
-    "Browse to and open the desired GeoTIFF file, which has the extension '.tif'.",
+    "Browse to and open the desired file, which should have the extension '.img' or '.tif'.",
     "The raster can be in any coordinate system, but the raster coordinates must be",
-    "between the equivalent of -180 and 180 decimal degrees."
+    "between the equivalent of -180 and 180 decimal degrees.",
+    "Note that larger files will take longer to load."
   )
 }
 
@@ -59,8 +60,8 @@ ui.instructions.upload.shp <- function() {
 }
 
 ui.instructions.upload.gdb <- function() {
-  tags$h5(
-    tags$span(
+  helpText(
+    tags$h5(
       "Note that you can only import SDM predictions from a GIS file geodatabase feature class while",
       "running the eSDM locally through RStudio.",
       style = "color: red"
@@ -74,6 +75,21 @@ ui.instructions.upload.gdb <- function() {
       "Note that larger files will take longer to load."
     )
   )
+  # tags$h5(
+  #   tags$span(
+  #     "Note that you can only import SDM predictions from a GIS file geodatabase feature class while",
+  #     "running the eSDM locally through RStudio.",
+  #     style = "color: red"
+  #   ),
+  #   tags$br(),
+  #   tags$br(),
+  #   helpText(
+  #     "Enter the full file path of the file geodatabase that contains the desired file geodatabase feature class.",
+  #     "The path and the name of the feature class should be exactly as they appear in ArcCatalog.",
+  #     "The GUI does not currently support importing a file geodatabse raster dataset or data from an ESRI personal geodatabase.",
+  #     "Note that larger files will take longer to load."
+  #   )
+  # )
 }
 
 
@@ -92,7 +108,8 @@ ui.instructions.pred.csv <- function() {
     tags$br(),
     tags$em("Prediction value type:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
     tags$br(),
-    tags$em("Column with weight data:"), "Select \"N/A\" if the data does not have weight data."
+    tags$em("Column with weight data:"), "Select \"N/A - No pixel-level spatial weight data\" if the data",
+    "does not have weight data."
   )
 }
 
@@ -112,7 +129,8 @@ ui.instructions.pred.shp.gdb <- function() {
     tags$br(),
     tags$em("Prediction value type:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
     tags$br(),
-    tags$em("Column with weight data:"), "Select \"N/A\" if the data does not have weight data."
+    tags$em("Column with weight data:"), "Select \"N/A - No pixel-level spatial weight data\" if the data",
+    "does not have weight data."
   )
 }
 
@@ -120,13 +138,17 @@ ui.instructions.pred.shp.gdb <- function() {
 #######################################
 ### Loading csv polygons
 ui.instructions.poly.csv.single <- function() {
-  helpText("The first column must contain the longitude values, and the second column must contain the latitude values.",
-           "The longitudes and latitudes must be in WGS 84 geographic coordinates and in the range [-180, 180].")
+  helpText(
+    "The first column must contain the longitude values, and the second column must contain the latitude values.",
+    "The longitudes and latitudes must be in WGS 84 geographic coordinates and in the range [-180, 180]."
+  )
 }
 ui.instructions.poly.csv <- function() {
-  helpText("The first column must contain the longitude values, and the second column must contain the latitude values.",
-           "The longitudes and latitudes must be in WGS 84 geographic coordinates and in the range [-180, 180].",
-           "Multiple polygons may be demarcated rows with blank cells or cells with 'NA' entries.")
+  helpText(
+    "The first column must contain the longitude values, and the second column must contain the latitude values.",
+    "The longitudes and latitudes must be in WGS 84 geographic coordinates and in the range [-180, 180].",
+    "Multiple polygons may be demarcated rows with blank cells or cells with 'NA' entries."
+  )
 }
 
 
@@ -198,7 +220,7 @@ ui.notice.no.pred.original <- function() {
   box(
     width = 4,
     tags$h4("No original predictions have been imported"),
-    tags$h5("Please import original predictions to use this section of the GUI")
+    tags$h5("Please import original predictions or load a saved worksapce to use this section of the GUI")
   )
 }
 
@@ -208,16 +230,18 @@ ui.notice.no.pred.overlaid <- function(box.width = 4) {
   box(
     width = box.width,
     tags$h4("No overlaid predictions have been created"),
-    tags$h5("Please create overlaid predictions to use this section of the GUI")
+    tags$h5("Please create overlaid predictions or load a saved worksapce to use this section of the GUI")
   )
 }
 
 
 ###############################################################################
 ui.instructions.ens.weightpolyNA <- function() {
-  helpText("If the 'Use 'NA' as weight' box is checked, then the predictions",
-           "that intersect with the weight polygon will be set to NA",
-           "and thus will not be included in the ensemble")
+  helpText(
+    "If the 'Use 'NA' as weight' box is checked, then the predictions",
+    "that intersect with the weight polygon will be set to NA",
+    "and thus will not be included in the ensemble"
+  )
 }
 
 ###############################################################################
