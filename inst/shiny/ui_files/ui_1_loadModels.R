@@ -61,7 +61,8 @@ ui.loadModels <- function() {
               ui.instructions.upload.raster(),
               ui.instructions.pred.raster(),
               fluidRow(
-                column(6, fileInput("model_gis_raster_file", label.raster.upload, accept = ".tif")),
+                ######################## TODO
+                column(6, fileInput("model_gis_raster_file", label.raster.upload, accept = c(".tif", ".img"))),
                 column(
                   width = 5, offset = 1,
                   numericInput("model_gis_raster_band", tags$h5("Band number of prediction data"), value = 1, min = 1, step = 1)
