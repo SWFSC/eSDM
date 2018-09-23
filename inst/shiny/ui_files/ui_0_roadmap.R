@@ -41,7 +41,7 @@ ui.roadmap <- function() {
                 width = 7, offset = 1,
                 tags$h5(
                   tags$strong("Credits"),
-                  tags$p("Funding for this project was provided by Office of Science and Technology",
+                  tags$p("This project was made possible by the Office of Science and Technology",
                          "as part of the National Protected Species Toolbox initiative.")
                 ),
                 tags$h5(
@@ -121,7 +121,7 @@ ui.roadmap <- function() {
                     "R Shiny applications such as the GUI can be hosted and used online;",
                     "however, running the R Shiny apps locally can be faster than running from them online.",
                     "Instructions for installing and running the eSDM GUI locally can be found at ",
-                    tags$a("https://github.com/smwoodman/eSDM"),
+                    tags$a("https://github.com/smwoodman/eSDM", href = "https://github.com/smwoodman/eSDM"),
                     "and in the 'Running the GUI locally' section of the GUI manual."),
             tags$br(),
             #------------------------------------------------------------------
@@ -129,11 +129,11 @@ ui.roadmap <- function() {
             tags$ul(
               tags$li("The GUI can only perform a single operation at a time. Thus, if a process is running (e.g. the overlay process)",
                       "do not try to perform other actions (e.g. plotting a preview) as this may cause undefined behavior within the GUI."),
-              tags$li("When a longer process is running, a progress bar will appear int he bottom right corner of the GUI.",
+              tags$li("When a longer process is running, a progress bar will appear in the bottom right corner of the GUI.",
                       "This progress bar has an 'X' that closes the progress bar, but closing this bar will not stop the",
                       "currently running process."),
               tags$li("The larger the data sets, the longer all processes will take.",
-                      "In addition, plotting will take longer when predictions span the antimeridian (i.e. 180 degrees).")
+                      "In addition, plotting will take longer when predictions span the antimeridian (i.e. decimal 180 degrees).")
             ),
             tags$br(),
             downloadButton("download_sample_data", "Download sample data")

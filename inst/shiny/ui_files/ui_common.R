@@ -66,8 +66,6 @@ ui.instructions.upload.gdb <- function() {
       "running the eSDM locally through RStudio.",
       style = "color: red"
     ),
-    tags$br(),
-    tags$br(),
     helpText(
       "Enter the full file path of the file geodatabase that contains the desired file geodatabase feature class.",
       "The path and the name of the feature class should be exactly as they appear in ArcCatalog.",
@@ -75,21 +73,6 @@ ui.instructions.upload.gdb <- function() {
       "Note that larger files will take longer to load."
     )
   )
-  # tags$h5(
-  #   tags$span(
-  #     "Note that you can only import SDM predictions from a GIS file geodatabase feature class while",
-  #     "running the eSDM locally through RStudio.",
-  #     style = "color: red"
-  #   ),
-  #   tags$br(),
-  #   tags$br(),
-  #   helpText(
-  #     "Enter the full file path of the file geodatabase that contains the desired file geodatabase feature class.",
-  #     "The path and the name of the feature class should be exactly as they appear in ArcCatalog.",
-  #     "The GUI does not currently support importing a file geodatabse raster dataset or data from an ESRI personal geodatabase.",
-  #     "Note that larger files will take longer to load."
-  #   )
-  # )
 }
 
 

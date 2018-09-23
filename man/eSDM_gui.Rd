@@ -6,6 +6,9 @@
 \usage{
 eSDM_GUI()
 }
+\arguments{
+\item{launch.browser}{Logical with default of TRUE; passed to \code{launch.browser} argument of \code{\link[shiny]{runApp}}}
+}
 \description{
 The eSDM graphical user interface (GUI); an R Shiny app for creating ensemble predictions using SDM predictions.
   The GUI can also be accessed at \url{https://swoodman.shinyapps.io/eSDM/}
