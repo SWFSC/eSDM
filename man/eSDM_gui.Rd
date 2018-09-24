@@ -2,14 +2,14 @@
 % Please edit documentation in R/eSDM_GUI.R
 \name{eSDM_GUI}
 \alias{eSDM_GUI}
-\title{eSDM GUI}
+\title{Open eSDM GUI}
 \usage{
-eSDM_GUI()
+eSDM_GUI(launch.browser = TRUE)
 }
 \arguments{
-\item{launch.browser}{Logical with default of TRUE; passed to \code{launch.browser} argument of \code{\link[shiny]{runApp}}}
+\item{launch.browser}{Logical with default of \code{TRUE}; passed to \code{launch.browser} argument of \code{\link[shiny]{runApp}}}
 }
 \description{
-The eSDM graphical user interface (GUI); an R Shiny app for creating ensemble predictions using SDM predictions.
+Open the eSDM graphical user interface (GUI); an R Shiny app for creating ensemble predictions using SDM predictions.
   The GUI can also be accessed at \url{https://swoodman.shinyapps.io/eSDM/}
 }

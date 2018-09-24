@@ -2,7 +2,7 @@
 % Please edit documentation in R/pts_to_sfc.R
 \name{pts_to_sfc_centroids}
 \alias{pts_to_sfc_centroids}
-\title{Create polygons from coordinates of centroids}
+\title{Create polygons from centroid coordinates}
 \usage{
 pts_to_sfc_centroids(x, y, crs.prov = NULL)
 }

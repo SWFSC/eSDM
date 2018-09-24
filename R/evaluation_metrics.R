@@ -1,4 +1,4 @@
-#' Evaluation metrics
+#' Calculate SDM evaluation metrics
 #'
 #' Calculate AUC, TSS, and RMSE for given density predictions and validation data
 #'

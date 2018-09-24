@@ -2,7 +2,7 @@
 % Please edit documentation in R/pts_to_sfc.R
 \name{pts_to_sfc_vertices}
 \alias{pts_to_sfc_vertices}
-\title{Create polygons from coordinates of vertices}
+\title{Create polygons from vertice coordinates}
 \usage{
 pts_to_sfc_vertices(x, crs.prov = NULL)
 }

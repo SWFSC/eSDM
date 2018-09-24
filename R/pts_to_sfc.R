@@ -1,4 +1,4 @@
-#' Create polygons from coordinates of vertices
+#' Create polygons from vertice coordinates
 #'
 #' Create polygon(s) from a data frame with the coordinates of the polygon vertices
 #'
@@ -71,7 +71,7 @@ pts_to_sfc_vertices <- function(x, crs.prov = NULL) {
 
 
 
-#' Create polygons from coordinates of centroids
+#' Create polygons from centroid coordinates
 #'
 #' Create polygon(s) from a data frame with coordinates of the polygon centroid(s)
 #'

@@ -183,25 +183,25 @@ output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
 ### CSV
 output$model_create_csv_uiOut_button <- renderUI ({
   req(read_model_csv())
-  actionButton("model_create_csv", "Import original predictions")
+  actionButton("model_create_csv", "Import predictions")
 })
 
 ### GIS raster
 output$model_create_gis_raster_uiOut_button <- renderUI ({
   req(read_model_gis_raster())
-  actionButton("model_create_gis_raster", "Import original predictions")
+  actionButton("model_create_gis_raster", "Import predictions")
 })
 
 ### GIS .shp
 output$model_create_gis_shp_uiOut_button <- renderUI ({
   req(read_model_gis_shp()[[1]])
-  actionButton("model_create_gis_shp", "Import original predictions")
+  actionButton("model_create_gis_shp", "Import predictions")
 })
 
 ### GIS .gdb
 output$model_create_gis_gdb_uiOut_button <- renderUI ({
   req(read_model_gis_gdb()[[1]])
-  actionButton("model_create_gis_gdb", "Import original predictions")
+  actionButton("model_create_gis_gdb", "Import predictions")
 })
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/evaluation_metrics.R
 \name{evaluation_metrics}
 \alias{evaluation_metrics}
-\title{Evaluation metrics}
+\title{Calculate SDM evaluation metrics}
 \usage{
 evaluation_metrics(x, x.idx, y, y.idx, count.flag = FALSE)
 }
