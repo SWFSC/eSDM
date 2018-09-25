@@ -5,7 +5,7 @@
 
 ### Selection dropdown for additional objects
 output$pretty_toplot_update_which_addobj_uiOut_select <- renderUI({
-  if (input$pretty_toplot_update_which == 6){
+  if (input$pretty_toplot_update_which == 6) {
     y <- req(val.pretty.toplot.update())
     y.list.addobj <- req(y$list.addobj)
 

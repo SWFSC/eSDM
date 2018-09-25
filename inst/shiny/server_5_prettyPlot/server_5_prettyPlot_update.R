@@ -42,11 +42,12 @@ toplot_update_modal <- function(failed) {
       tags$br(),
       tags$strong(paste("Map ID:", vals$pretty.params.toplot[[x]]$id)),
       fluidRow(
-        column(width = 6,
-               selectInput("pretty_toplot_update_which", tags$h5("Choose parameter section"),
-                           choices = choices.list.main, selected = 1),
-               tags$br(), tags$br(),
-               uiOutput("pretty_toplot_update_addobj_remove_uiOut_button")
+        column(
+          width = 6,
+          selectInput("pretty_toplot_update_which", tags$h5("Choose parameter section"),
+                      choices = choices.list.main, selected = 1),
+          tags$br(), tags$br(),
+          uiOutput("pretty_toplot_update_addobj_remove_uiOut_button")
         ),
         conditionalPanel(
           condition = "output.pretty_toplot_update_addobj_flag",
