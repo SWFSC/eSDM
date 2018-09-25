@@ -352,7 +352,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
     perc %in% c(1, 2),
     identical(st_crs(sdm.ll), st_crs(4326))
   )
-  if (isTruthy(leg.labels) & !is.na(col.pal) &
+  if (isTruthy(leg.labels) & !anyNA(col.pal) &
       length(col.pal) != length(leg.labels)) {
     stop("If 'leg.labels' is not NULL, then 'col.pal' and 'leg.labels' ",
          "must be the same length")

@@ -3,7 +3,7 @@
 
 
 ###############################################################################
-# Load Model Predictions tab
+# Import Predictions tab
 
 #################################################
 ### Generate interactive preview of predictions to display in-app
@@ -54,7 +54,7 @@ observeEvent(input$model_preview_execute, {
 
 
 ###############################################################################
-# Overlay tab
+# Overlay Predictions tab
 
 #################################################
 ### Generate preview of base geometry to plot in-app
@@ -93,6 +93,7 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
     }
 
     # Create leaflet
+    model.toplot.360 <- check_360(model.toplot)
     model.toplot <- check_preview360_split(model.toplot)
 
     leaf.map <- leaflet() %>%
@@ -112,7 +113,9 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
     incProgress(0.5)
 
     if (l.inc) {
-      erasing.toplot <- check_preview360_split(overlay_preview_base_land())
+      erasing.toplot <- check_preview360_split(
+        overlay_preview_base_land(), force.360 = model.toplot.360
+      )
       leaf.map <- leaf.map %>%
         addPolygons(
           data = erasing.toplot, fillColor = "tan",
@@ -121,7 +124,10 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
     }
     incProgress(0.1)
     if (b.inc) {
-      bound.toplot <- st_union(check_preview360_split(vals$overlay.bound))
+      # Use st_union because study area is only on polygon
+      bound.toplot <- st_union(check_preview360_split(
+        vals$overlay.bound, force.360 = model.toplot.360
+      ))
       leaf.map <- leaf.map %>%
         addPolygons(
           data = bound.toplot, fillColor = "transparent",
@@ -147,7 +153,7 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
 
 
 #################################################
-### Generate preview of overlaid model predictions to plot in-app
+### Generate preview of overlaid predictions to plot in-app
 observeEvent(input$overlay_preview_overlaid_execute, {
   perc.num <- as.numeric(input$overlay_preview_overlaid_models_perc)
   overlaid.idx <- as.numeric(input$overlay_preview_overlaid_models)
@@ -174,7 +180,7 @@ observeEvent(input$overlay_preview_overlaid_execute, {
 # Create Ensembles tab
 
 #################################################
-### Preview overlaid model predictions with assigned weight polygons
+### Preview overlaid predictions with assigned weight polygons
 observeEvent(input$create_ens_reg_preview_execute, {
   req(vals$ens.over.wpoly.filename)
 
