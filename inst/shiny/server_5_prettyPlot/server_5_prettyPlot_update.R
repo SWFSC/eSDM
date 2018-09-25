@@ -209,6 +209,7 @@ pretty_toplot_update_table <- reactive({
     }
 
     addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    req(addobj.which <= length(y$list.addobj))
     y.addobj <- y$list.addobj[[addobj.which]]
 
     params.names <- c( #function in '..._addobj_update.R'
