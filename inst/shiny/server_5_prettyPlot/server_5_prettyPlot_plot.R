@@ -12,8 +12,10 @@ pretty_plot_dim_warnings <- reactive({
 
   if (x < plot.width) {
     paste(
-      "Warning: The user-specififed 'Plot width (in)' is larger than current the plot window,",
-      "and thus some of the plots might not be properly displayed within the plot window"
+      "Warning: The user-specififed 'Plot width (in)' is",
+      "larger than current the plot window,",
+      "and thus some of the plots might not be",
+      "properly displayed within the plot window"
     )
   } else {
     ""
@@ -66,7 +68,6 @@ pretty_plot <- eventReactive(input$pretty_plot_event, {
 
 
 ###############################################################################
-###############################################################################
 # Top-level function called within renderPlot() in server_render
 # When using tmap arrange spatial plot space is filled,
 #   but a normal tmap call respects provided axis limits
@@ -76,6 +77,13 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
       addobj.pre.bool  <- sapply(k$list.addobj, function(i) i$obj.order == 1)
       list.addobj.pre  <- k$list.addobj[addobj.pre.bool]
       list.addobj.post <- k$list.addobj[!addobj.pre.bool]
+
+      temp <- length(list.addobj.pre) + length(list.addobj.post)
+      validate(
+        need(temp == length(k$list.addobj),
+             "Error: Error in processing additional objects")
+      )
+      rm(temp)
 
     } else {
       list.addobj.pre  <- list()
@@ -104,7 +112,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
                         list.colorscheme, list.legend, list.titlelab,
                         list.margin, list.tick,
                         list.addobj.pre, list.addobj.post) {
-  #----------------------------------------------
+  #----------------------------------------------------------------------------
   # For ease of calling / sake of space
   l1 <- list.colorscheme
   l2 <- list.legend
@@ -114,38 +122,26 @@ plot_pretty <- function(model.toplot, map.range, background.color,
   l5a <- list.addobj.pre
   l5b <- list.addobj.post
 
-  #----------------------------------------------
+  #----------------------------------------------------------------------------
   # Make range polygon for intersections
   # st_intersection()'s below happen here so users can update map range params
   range.poly <- pretty_range_poly_func(map.range, st_crs(model.toplot))
-  rploy.mat <- matrix(st_bbox(range.poly), ncol = 2)
+  rpoly.mat <- matrix(st_bbox(range.poly), ncol = 2)
   # tm_shape() does not currently handle bbox obj correctly for range [0, 360]
 
-  #----------------------------------------------
+  #----------------------------------------------------------------------------
   # Additional objects - pre
-  for (i in l5a) { #l5a will be list() if empty and thus won't enter for() loop
-    i$obj <- pretty_int_func(i$obj, range.poly)
-
-    if (i$obj.text == "Validation data points") { #special due to 2 colors
-      tmap.obj <- tm_shape(i$obj, bbox = rploy.mat) +
-        tm_dots(col = "sight", palette = c(i$col.ptfill, i$col.absborder),
-                shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
-
-    } else if (i$obj.type == 1) { #pts
-      tmap.obj <- tm_shape(i$obj, bbox = rploy.mat) +
-        tm_dots(col = i$col.ptfill, shape = i$pchlty, size = i$cexlwd,
-                legend.show = FALSE)
-
-    } else { #polys
-      tmap.obj <- tm_shape(i$obj, bbox = rploy.mat) +
-        tm_polygons(col = i$col.ptfill, border.col = i$col.absborder,
-                    alpha = ifelse(is.na(i$col.ptfill), 0, 1),
-                    lty = i$pchlty, lwd = i$cexlwd)
+  # l5a will be list() if empty and thus won't enter for() loop
+  for (j in l5a) {
+    if (exists("tmap.obj")) {
+      tmap.obj <- tmap.obj + plot_pretty_addobj(j, range.poly)
+    } else {
+      tmap.obj <- plot_pretty_addobj(j, range.poly, rpoly.mat)
     }
   }
-  rm(i)
+  rm(j)
 
-  #----------------------------------------------
+  #----------------------------------------------------------------------------
   # Shape, fill (colorscheme), title, axis labels, margins
   model.toplot <- pretty_int_func(model.toplot, range.poly)
 
@@ -159,7 +155,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
               legend.is.portrait = TRUE, legend.reverse = TRUE)
 
   } else {
-    tmap.obj <- tm_shape(model.toplot, bbox = rploy.mat) +
+    tmap.obj <- tm_shape(model.toplot, bbox = rpoly.mat) +
       tm_fill(col = l1$data.name, border.col = "transparent",
               style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
               colorNA = l1$col.na, textNA = "NA", showNA = NA,
@@ -175,7 +171,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
     tm_xlab(l3$xlab, l3$labcex) +
     tm_ylab(l3$ylab, l3$labcex)
 
-  #----------------------------------------------
+  #----------------------------------------------------------------------------
   # Legend
   if (l2$inc) {
     if (l2$out) {
@@ -195,7 +191,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
     tmap.obj <- tmap.obj + tm_legend(show = FALSE)
   }
 
-  #----------------------------------------------
+  #----------------------------------------------------------------------------
   # Grid lines and labels
   if (l4$inc) {
     if (st_is_longlat(model.toplot)) {
@@ -204,7 +200,9 @@ plot_pretty <- function(model.toplot, map.range, background.color,
                 lwd = l4$grid.lw, alpha = l4$grid.alpha,
                 labels.inside.frame = l4$grid.labs.in,
                 labels.size = l4$grid.labs.size, labels.rot = c(0, 90),
-                labels.format = list(fun = function(i) parse(text = paste(i, "*degree"))))
+                labels.format = list(fun = function(i) {
+                  parse(text = paste(i, "*degree"))
+                }))
 
     } else {
       tmap.obj <- tmap.obj +
@@ -215,35 +213,50 @@ plot_pretty <- function(model.toplot, map.range, background.color,
     }
   }
 
-  #----------------------------------------------
+  #----------------------------------------------------------------------------
   # Additional objects - post
-  for (j in l5b) { #l5b will be list() if empty and thus won't enter for() loop
-    j$obj <- pretty_int_func(j$obj, range.poly)
-
-    if (j$obj.text == "Validation data points") { #special due to 2 colors
-      tmap.obj <- tmap.obj +
-        tm_shape(j$obj) +
-        tm_dots(col = "sight", palette = c(j$col.ptfill, j$col.absborder),
-                shape = j$pchlty, size = j$cexlwd, legend.show = FALSE)
-
-    } else if (j$obj.type == 1) { #pts
-      tmap.obj <- tmap.obj +
-        tm_shape(j$obj) +
-        tm_dots(col = j$col.ptfill, shape = j$pchlty, size = j$cexlwd,
-                legend.show = FALSE)
-
-    } else { #polys
-      tmap.obj <- tmap.obj +
-        tm_shape(j$obj) +
-        tm_polygons(col = j$col.ptfill, border.col = j$col.absborder,
-                    alpha = ifelse(is.na(j$col.ptfill), 0, 1),
-                    lty = j$pchlty, lwd = j$cexlwd)
-    }
-  }
+  # l5b will be list() if empty and thus won't enter for() loop
+  for (j in l5b) tmap.obj <- tmap.obj + plot_pretty_addobj(j, range.poly)
   rm(j)
 
-  #----------------------------------------------
+
+  #----------------------------------------------------------------------------
   tmap.obj
 }
 
+
 ###############################################################################
+# Helper function for additional object plotting part of plot_pretty()
+plot_pretty_addobj <- function(i, range.poly, rpoly.mat = NULL) {
+  i$obj <- pretty_int_func(i$obj, range.poly)
+
+  if (i$obj.text == "Validation data points") {
+    # Special due to 2 colors. Also 'NA' color means that points are white
+    if (!is.na(i$col.absborder) && !is.na(i$col.ptfill)) {
+      tm_shape(i$obj, bbox = rpoly.mat) +
+        tm_dots(col = "sight", palette = c(i$col.absborder, i$col.ptfill),
+                shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
+    } else if (is.na(i$col.ptfill)) {
+      tm_shape(dplyr::filter(i$obj, sight == 0), bbox = rpoly.mat) +
+        tm_dots(col = i$col.absborder,
+                shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
+
+    } else { #is.na(i$col.ptfill)
+      tm_shape(dplyr::filter(i$obj, sight == 1), bbox = rpoly.mat) +
+        tm_dots(col = i$col.ptfill,
+                shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
+    }
+
+  } else if (i$obj.type == 1) { #pts
+    tm_shape(i$obj, bbox = rpoly.mat) +
+      tm_dots(col = i$col.ptfill, shape = i$pchlty, size = i$cexlwd,
+              legend.show = FALSE)
+
+  } else { #polys
+    tm_shape(i$obj, bbox = rpoly.mat) +
+      tm_polygons(col = i$col.ptfill, border.col = i$col.absborder,
+                  alpha = ifelse(is.na(i$col.ptfill), 0, 1),
+                  lty = i$pchlty, lwd = i$cexlwd)
+  }
+}
+

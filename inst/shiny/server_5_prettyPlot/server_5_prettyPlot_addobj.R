@@ -46,27 +46,19 @@ pretty_addobj_add <- eventReactive(input$pretty_addobj_add_execute, {
       )
       addobj.obj.own  <- 1
     }
-    incProgress(0.3)
-
-    if (check_360(addobj.obj)) {
-      addobj.obj <- st_union(preview360_mod(addobj.obj), by_feature = TRUE)
-    }
-    incProgress(0.2)
+    incProgress(0.5)
 
     #------------------------------------
-    if (input$pretty_addobj_color_ptfillcheck) {
-      addobj.col.ptfill <- NA
-    } else {
-      addobj.col.ptfill <- input$pretty_addobj_color_ptfill
-    }
+    addobj.col.ptfill <- ifelse(
+      input$pretty_addobj_color_ptfillcheck,
+      NA, input$pretty_addobj_color_ptfill
+    )
 
-    #------------------------------------
-    if (input$pretty_addobj_color_absbordercheck |
-        (input$pretty_addobj_type == 1 & input$pretty_addobj_which != 3)) {
-      addobj.col.absborder <- NA
-    } else {
-      addobj.col.absborder <- input$pretty_addobj_color_absborder
-    }
+    addobj.col.absborder <- ifelse (
+      input$pretty_addobj_color_absbordercheck |
+        (input$pretty_addobj_type == 1 && input$pretty_addobj_which != 3),
+      NA, input$pretty_addobj_color_absborder
+    )
     incProgress(0.2)
 
 
@@ -77,8 +69,8 @@ pretty_addobj_add <- eventReactive(input$pretty_addobj_add_execute, {
       list(list(
         obj = addobj.obj,
         obj.text = addobj.obj.text,
-        obj.own = addobj.obj.own, #only for update
-        obj.which = input$pretty_addobj_which, #only for update
+        obj.own = addobj.obj.own, #only for update; file type (.csv .shp, .gdb)
+        obj.which = input$pretty_addobj_which, #only for update; which addobj
         obj.type = input$pretty_addobj_type,
         obj.order = input$pretty_addobj_order,
         col.ptfill = addobj.col.ptfill,

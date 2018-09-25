@@ -80,9 +80,10 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
 
     #------------------------------------------------------
     # Can be more complex operations
+    incProgress(0, detail = "Processing additional objects")
     list.colorscheme <- pretty_colorscheme_list()
     list.addobj <- if (input$pretty_addobj) pretty_addobj_list() else NULL
-    incProgress(0.3)
+    incProgress(0.3, detail = "")
 
 
     #--------------------------------------------------------------------------

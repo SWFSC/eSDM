@@ -305,15 +305,20 @@ pretty_tick_list <- reactive({
 
 ###############################################################################
 ### Generate lists of additional objects to plot
-# Functions assume they are only called when an additional object is loaded
-# pretty_addobj_preflag <- reactive({
-#   sapply(req(vals$pretty.addobj), function(i) i$obj.order == 1)
-# })
-
 pretty_addobj_list <- reactive({
   lapply(req(vals$pretty.addobj), function(i) {
-    if (!identical(st_crs(i$obj), pretty_crs_selected())) {
-      i$obj <- st_transform(i$obj, pretty_crs_selected())
+    i$obj <- st_transform(i$obj, pretty_crs_selected())
+
+    if (pretty_range_360()) {
+      if (length(i$obj) > 5000) {
+        i$obj <- check_preview360_split(i$obj, force.360 = TRUE)
+
+      } else {
+        i$obj <- st_union(
+          check_preview360_mod(i$obj, force.360 = TRUE),
+          by_feature = TRUE
+        )
+      }
     }
 
     i

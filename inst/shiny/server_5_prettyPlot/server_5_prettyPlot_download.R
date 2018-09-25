@@ -80,6 +80,7 @@ output$pretty_download_name_uiOut_text <- renderUI({
   )
 
   if (length(maps.selected) == 1) {
+    req(maps.selected <= length(vals$pretty.params.toplot$id))
     id.txt <- paste(
       unlist(strsplit(vals$pretty.params.toplot[[maps.selected]]$id, " ")),
       collapse = "_"
