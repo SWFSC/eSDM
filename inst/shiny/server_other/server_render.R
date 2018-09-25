@@ -108,15 +108,15 @@ output$overlay_bound_gis_gdb_text <- renderText(overlay_bound_gis_gdb())
 ### Boundary polygon loaded messages
 output$overlay_bound_csv_message <- renderText({
   req(vals$overlay.bound)
-  "A study area polygon is loaded"
+  "A study area polygon is imported"
 })
 output$overlay_bound_gis_shp_message <- renderText({
   req(vals$overlay.bound)
-  "A study area polygon is loaded"
+  "A study area polygon is imported"
 })
 output$overlay_bound_gis_gdb_message <- renderText({
   req(vals$overlay.bound)
-  "A study area polygon is loaded"
+  "A study area polygon is imported"
 })
 
 ### Erasing polygon error outputs
@@ -128,19 +128,19 @@ output$overlay_land_gis_gdb_text <- renderText(overlay_land_gis_gdb())
 ### Erasing polygon loaded messages
 output$overlay_land_prov_message <- renderText({
   req(vals$overlay.land)
-  "An erasing polygon is loaded"
+  "An erasing polygon is imported"
 })
 output$overlay_land_csv_message <- renderText({
   req(vals$overlay.land)
-  "An erasing polygon is loaded"
+  "An erasing polygon is imported"
 })
 output$overlay_land_gis_shp_message <- renderText({
   req(vals$overlay.land)
-  "An erasing polygon is loaded"
+  "An erasing polygon is imported"
 })
 output$overlay_land_gis_gdb_message <- renderText({
   req(vals$overlay.land)
-  "An erasing polygon is loaded"
+  "An erasing polygon is imported"
 })
 
 #----------------------------------------------------------

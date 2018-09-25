@@ -84,7 +84,7 @@ ui.export <- function() {
                   condition = "input.export_proj_native == false",
                   radioButtons("export_proj_method", NULL, #tags$h5("Overlay coordinate system"),
                                choices = list("Export predictions in WGS 84 geographic coordinates" = 1,
-                                              "Select SDM with desired coordinate system" = 2,
+                                              "Select predictions with desired coordinate system" = 2,
                                               "Enter numeric EPSG code" = 3),
                                selected = 1),
                   uiOutput("export_proj_sdm_uiOut_select"),

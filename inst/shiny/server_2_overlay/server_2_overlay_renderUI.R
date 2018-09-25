@@ -28,12 +28,12 @@ output$overlay_preview_base_execute_uiOut_button <- renderUI({
   validate(
     if (input$overlay_bound)
       need(isTruthy(vals$overlay.bound),
-           paste("Either uncheck the boundary box or",
-                 "load a boundary polygon to preview the base geometry")),
+           paste("Either uncheck the 'study area polygon' checkbox or",
+                 "import a study area polygon to preview the base geometry")),
     if (input$overlay_land)
       need(isTruthy(vals$overlay.land),
-           paste("Either uncheck the land box or load a land polygon",
-                 "to preview the base geometry")),
+           paste("Either uncheck the 'erasing polygon' checkbox or",
+                 "import an erasing polygon to preview the base geometry")),
     errorClass = "validation2"
   )
 

@@ -213,7 +213,7 @@ ui.overlay <- function() {
                         # width = 12,
                         radioButtons("overlay_proj_method", NULL,
                                      choices = list("Perform overlay in WGS 84 geographic coordinates" = 1,
-                                                    "Select model with desired coordinate system" = 2,
+                                                    "Select predictions with desired coordinate system" = 2,
                                                     "Enter numeric EPSG code" = 3),
                                      selected = 1),
                         conditionalPanel(
@@ -243,7 +243,7 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("4) Overlay options: percent overlap threshold"),
-                      helpText("Specify the overlap threshold, i.e. the minimum percentage of a base geometry polygon",
+                      helpText("Specify the percent overlap threshold, i.e. the minimum percentage of a base geometry polygon",
                                "that must overlap with overlaid prediction polygons.",
                                "All base geometry polygons with an overlap percentage less than this threshold",
                                "will be assigned a prediction value of 'NA'.",
@@ -284,9 +284,9 @@ ui.overlay <- function() {
                                  "will be filled in tan and outlined in red, respectively.",
                                  "Note that if predictions were made at a high resolution,",
                                  "the preview may appear to be completely black when zoomed out.",
-                                 "In addition, if the any base geometry polygons that span 180 decimal degrees",
-                                 "(or their equaivalent in the selected coordinate system) will appear to be split at 180 degress,",
-                                 "even thought they are still treated as a single polygon."),
+                                 "In addition, if the any base geometry polygons that span the antimeridian (i.e. 180 decimal degrees",
+                                 "or their equivalent in the specified coordinate system) will appear to be split at the antimeridian,",
+                                 "even though they are still treated as a single polygon."),
                         uiOutput("overlay_preview_base_execute_uiOut_button"),
                         textOutput("overlay_preview_base_create_text")
                       ),

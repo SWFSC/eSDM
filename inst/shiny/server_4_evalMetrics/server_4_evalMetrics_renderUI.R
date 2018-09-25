@@ -40,7 +40,7 @@ output$eval_csv_codes_a_uiOut_select <- renderUI({
                  multiple = TRUE)
 })
 
-### Click to load csv validation data
+### Click to import csv validation data
 output$eval_csv_execute_uiOut_button <- renderUI({
   if (input$eval_data_type == 1) {
     req(eval_data_csv_load(), length(input$eval_csv_names) == 3)
@@ -49,7 +49,7 @@ output$eval_csv_execute_uiOut_button <- renderUI({
     req(!any(c("error1", "error2") %in% eval_data_csv_pacodes()))
   }
 
-  actionButton("eval_csv_execute", "Load specified validation data")
+  actionButton("eval_csv_execute", "Import specified validation data")
 })
 
 

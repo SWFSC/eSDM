@@ -195,7 +195,7 @@ ui.prettyPlot <- function() {
                         width = 12,
                         radioButtons("pretty_proj_method", NULL, #tags$h5("Overlay coordinate system"),
                                      choices = list("Generate map in the native coordinate system of the selected SDM" = 1,
-                                                    "Select SDM with desired coordinate system" = 2,
+                                                    "Select predictions with desired coordinate system" = 2,
                                                     "Enter numeric EPSG code" = 3),
                                      selected = 1),
                         column(

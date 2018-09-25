@@ -346,7 +346,7 @@ ui.createEns <- function() {
               ####################################################### Create ensemble button
               box(
                 width = 2,
-                tags$strong("3) Create ensemble"),
+                tags$strong("4) Create ensemble"),
                 tags$br(), tags$br(),
                 uiOutput("create_ens_create_action_uiOut_button"),
                 tags$br(),

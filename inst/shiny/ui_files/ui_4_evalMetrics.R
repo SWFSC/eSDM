@@ -169,11 +169,11 @@ ui.evalMetrics <- function() {
                     condition = "input.eval_metrics_description == 1",
                     helpText(
                       tags$p(tags$strong("AUC decription:"),
-                             "The area under the curve (AUC) of the ROCR plot is a threshold independent metric that evaluates",
-                             "the percentage of the time a random selection from the positive group will have a score",
+                             "The area under the receiver operating curve (AUC) of the ROCR plot is a threshold independent metric",
+                             "that evaluates the percentage of the time a random selection from the positive group will have a score",
                              "greater than a random selection from the negative class (Deleo 1993)."),
-                      "See", tags$a("Fielding and Bell 1997",
-                                    href = "http://cescos.fau.edu/gawliklab/papers/FieldingAHandJFBell1997.pdf"),
+                      "See",
+                      tags$a("Fielding and Bell 1997", href = "http://cescos.fau.edu/gawliklab/papers/FieldingAHandJFBell1997.pdf"),
                       "for more information."
                     )
                   ),
