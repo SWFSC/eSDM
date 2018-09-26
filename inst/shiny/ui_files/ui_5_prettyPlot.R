@@ -436,8 +436,7 @@ ui.prettyPlot <- function() {
                           condition = "input.pretty_addobj_which == 4",
                           box(
                             width = 12,
-                            selectInput("pretty_addobj_own_type", tags$h5("File type"),
-                                        choices = file.type.list1, selected = 1),
+                            selectInput("pretty_addobj_own_type", tags$h5("File type"), choices = file.type.list1, selected = 1),
                             ############## File type: csv
                             conditionalPanel(
                               condition = "input.pretty_addobj_own_type == 1",
@@ -469,20 +468,13 @@ ui.prettyPlot <- function() {
                             conditionalPanel(
                               condition = "input.pretty_addobj_own_type == 3",
                               ui.instructions.upload.gdb(),
-                              fluidRow(
-                                column(6, textInput("pretty_addobj_own_gdb_path", label.gdb.path, value = ".../folder.gdb")),
-                                column(6, textInput("pretty_addobj_own_gdb_name", label.gdb.name, value = ""))
-                              ),
-                              fluidRow(
-                                column(6, actionButton("pretty_addobj_own_gdb_load", "Upload")),
-                                column(
-                                  width = 6,
-                                  conditionalPanel("output.pretty_addobj_own_gdb_flag == false", ui.error.upload.gdb),
-                                  conditionalPanel(
-                                    condition = "output.pretty_addobj_own_gdb_flag",
-                                    tags$span(tags$h5("Object uploaded"), style = "color: blue")
-                                  )
-                                )
+                              textInput("pretty_addobj_own_gdb_path", label.gdb.path, value = ".../folder.gdb"),
+                              textInput("pretty_addobj_own_gdb_name", label.gdb.name, value = ""),
+                              actionButton("pretty_addobj_own_gdb_load", "Upload"),
+                              conditionalPanel("output.pretty_addobj_own_gdb_flag == false", ui.error.upload.gdb),
+                              conditionalPanel(
+                                condition = "output.pretty_addobj_own_gdb_flag",
+                                tags$span(tags$h5("Object uploaded"), style = "color: blue")
                               )
                             )
                           )

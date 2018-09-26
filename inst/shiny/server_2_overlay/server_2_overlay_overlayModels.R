@@ -225,7 +225,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     # All done here so that all error checks happen before storage
     vals$overlay.base.sfc <- base.sfc
     vals$overlay.crs <- overlay_crs()
-    vals$overlay.info <- list( #base.idx,
+    vals$overlay.info <- list(
       vals$models.names[base.idx], overlay_studyarea_land_message(),
       overlay_crs_message(), overlap.perc
     )
@@ -236,7 +236,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
     #--------------------------------------------
     ### Ensemble prep
-    list.null <- lapply(seq_along(vals$overlaid.models), function(d) NULL)
+    list.null <- vector("list", length(vals$overlaid.models))
     vals$ens.over.wpoly.sf       <- list.null
     vals$ens.over.wpoly.filename <- list.null
     vals$ens.over.wpoly.coverage <- list.null
@@ -258,7 +258,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
 ###############################################################################
-### Reset  applicable vals elements before creating new overlaid things
+### Reset applicable vals elements before creating new overlaid things
 overlay_reset <- function() {
   vals$overlay.crs           <- NULL
   vals$overlay.info          <- NULL
