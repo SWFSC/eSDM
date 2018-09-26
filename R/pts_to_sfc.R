@@ -118,13 +118,13 @@ pts_to_sfc_centroids <- function(x, y, crs.prov = NULL) {
     is.numeric(y)
   )
 
-  sfg.list <- apply(x, 1, function(i, j) {
+  sfg.list <- unname(apply(x, 1, function(i, j) {
     st_polygon(list(matrix(
       c(i[1] + j, i[1] - j, i[1] - j, i[1] + j, i[1] + j,
         i[2] + j, i[2] + j, i[2] - j, i[2] - j, i[2] + j),
       ncol = 2
     )))
-  }, j = y)
+  }, j = y))
 
   if (is.null(crs.prov)) st_sfc(sfg.list) else st_sfc(sfg.list, crs = crs.prov)
 }

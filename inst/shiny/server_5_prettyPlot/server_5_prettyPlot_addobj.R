@@ -159,7 +159,7 @@ pretty_addobj_own_csv_process <- reactive({
     # Points
     validate(
       need(!any(is.na(csv.data)),
-           paste("Error: for points, no entries in the longitude or",
+           paste("Error: For points, no entries in the longitude or",
                  "latitude columns can be blank or 'NA'")
       )
     )
@@ -180,8 +180,8 @@ pretty_addobj_own_csv_process <- reactive({
 
   validate(
     need(csv.sfc,
-         paste("Error: the GUI was unable to process the provided .csv file;",
-               "please ensure that the .csv file has the longitude points",
+         paste("Error: The GUI was unable to process the provided .csv file.",
+               "Please ensure that the .csv file has the longitude points",
                "in the first column, the latitude points in the second",
                "column, and that the entries are valid"))
   )
@@ -189,46 +189,6 @@ pretty_addobj_own_csv_process <- reactive({
   csv.sfc
 })
 
-
-#----------------------------------------------------------
-addobj_gis_proc_shiny <- function(gis.file, obj.type) {
-  gis.sfc <- st_geometry(gis.file)
-  gis.file <- suppressMessages(st_union(gis.file))
-  gis.sfc <- check_dateline(gis.sfc, 60, FALSE)
-
-  validate.message <- paste(
-    "Error: the GUI was unable to process the provided shapefile;",
-    "please ensure that you selected the correct object type (point vs polygon)"
-  )
-
-  if (obj.type == 1) {
-    if (!(any(grepl("POINT", class(gis.sfc))))) {
-      gis.sfc <- try(st_cast(gis.sfc, "POINT"), silent = TRUE)
-    }
-
-    validate.check <- any(grepl("POINT", class(gis.sfc)))
-
-  } else {
-    if (!(any(grepl("POLYGON", class(gis.sfc))))) {
-      gis.sfc <- try(st_cast(gis.sfc, "POLYGON"), silent = TRUE)
-    }
-    # Check that polygon(s) are valid
-    gis.sfc <- try(check_valid(gis.sfc, progress.detail = FALSE),
-                   silent = TRUE)
-
-    validate.check <- any(grepl("POLYGON", class(gis.sfc)))
-  }
-
-
-  validate(
-    need(isTruthy(gis.sfc) & validate.check,
-         paste("Error: the GUI was unable to process the provided shapefile;",
-               "please ensure that you selected the correct object type",
-               "(point vs polygon)"))
-  )
-
-  gis.sfc
-}
 
 #----------------------------------------------------------
 # GIS shp
@@ -256,14 +216,9 @@ pretty_addobj_own_shp_read <- reactive({
 
 ### Process
 pretty_addobj_own_shp_process <- reactive({
-  withProgress(message = "Processing object", value = 0.6, {
-    x <- addobj_gis_proc_shiny(
-      pretty_addobj_own_shp_read()[[1]], input$pretty_addobj_type
-    )
-    incProgress(0.4)
-  })
-
-  x
+  addobj_gis_check_shiny(
+    pretty_addobj_own_shp_read()[[1]], input$pretty_addobj_type
+  )
 })
 
 
@@ -295,14 +250,34 @@ pretty_addobj_own_gdb_read <- eventReactive(
 
 ### Process
 pretty_addobj_own_gdb_process <- reactive({
-  withProgress(message = "Processing object", value = 0.6, {
-    x <- addobj_gis_proc_shiny(
-      pretty_addobj_own_gdb_read()[[1]], input$pretty_addobj_type
-    )
-    incProgress(0.4)
-  })
-
-  x
+  addobj_gis_check_shiny(
+    pretty_addobj_own_gdb_read()[[1]], input$pretty_addobj_type
+  )
 })
+
+
+#----------------------------------------------------------
+addobj_gis_check_shiny <- function(gis.file, obj.type) {
+  gis.sfc <- st_geometry(gis.file)
+  gis.file <- suppressMessages(st_union(gis.file))
+  gis.sfc <- check_dateline(gis.sfc, 60, FALSE)
+
+  validate.message <- paste(
+    "Error: The geometry of object in the provided GIS file does not match",
+    "the selected object type.",
+    "Please ensure that you selected the correct object type",
+    "(point or polygon) and that the provided GIS file",
+    "contains either all points or all polygons"
+  )
+
+  if (obj.type == 1) {
+    if (!(any(grepl("POINT", class(gis.sfc))))) validate(validate.message)
+
+  } else {
+    if (!(any(grepl("POLYGON", class(gis.sfc))))) validate(validate.message)
+  }
+
+  gis.sfc
+}
 
 ###############################################################################
