@@ -3,28 +3,28 @@
 ###############################################################################
 ###############################################################################
 ### Save data
-# There is nothing to validate or return, so we don't need eventReactive
+# Nothing to validate or return, so we don't need eventReactive
 output$save_app_envir <- downloadHandler(
   filename = function() input$save_app_envir_name,
 
   content = function(file) {
     withProgress(message = "Preparing workspace to be saved", value = 0.3, {
-      # Reset plot info
-      vals$models.plot.leaf <- NULL
-      vals$models.plot.leaf.idx <- NULL
-      vals$models.plot <- NULL
-      vals$models.plot.idx <- NULL
-      vals$overlay.plot <- NULL
-      vals$overlaid.plot <- NULL
-      vals$ens.over.wpoly.plot <- NULL
-      vals$ensemble.plot.leaf <- NULL
-      vals$ensemble.plot.leaf.idx <- NULL
-      vals$ensemble.plot <- NULL
-      vals$ensemble.plot.idx <- NULL
-      vals$pretty.plot <- NULL
-
-      # Convert reactiveValues to list and save
+      # Convert reactiveValues
       vals.save <- reactiveValuesToList(vals)
+
+      # Reset plotting info in vals.save
+      vals.save$models.plot.leaf <- NULL
+      vals.save$models.plot.leaf.idx <- NULL
+      vals.save$models.plot <- NULL
+      vals.save$models.plot.idx <- NULL
+      vals.save$overlay.plot <- NULL
+      vals.save$overlaid.plot <- NULL
+      vals.save$ens.over.wpoly.plot <- NULL
+      vals.save$ensemble.plot.leaf <- NULL
+      vals.save$ensemble.plot.leaf.idx <- NULL
+      vals.save$ensemble.plot <- NULL
+      vals.save$ensemble.plot.idx <- NULL
+      vals.save$pretty.plot <- NULL
       incProgress(0.5)
 
       # Create list of current input values
@@ -43,8 +43,9 @@ output$save_app_envir <- downloadHandler(
       #   "pretty_range_ymin" = input$pretty_range_ymin,
       #   "pretty_range_ymax" = input$pretty_range_ymax
       # )
-
       # save(vals.save, inputs.save, file = file)
+
+      # Save data
       save(vals.save, file = file)
       incProgress(0.2)
     })
