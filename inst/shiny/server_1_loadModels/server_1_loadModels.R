@@ -16,10 +16,6 @@ outputOptions(output, "loaded_models_selected_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
-### Show/hide interactive/static plot outputs is in 'server_hide+show.R'
-
-
-###############################################################################
 ### Delete selected model
 model_remove <- eventReactive(input$model_remove_execute, {
   idx <- as.numeric(input$models_loaded_table_rows_selected)
@@ -109,64 +105,6 @@ observe({
 observe({
   input$model_gis_gdb_load
   updateSelectInput(session, "model_gis_gdb_pred_type", selected = 2)
-})
-
-
-###############################################################################
-### Ensure all original model reactive values are correctly formatted
-observe({
-  vals$models.ll
-  vals$models.orig
-  vals$models.names
-  vals$models.data.names
-  vals$models.pred.type
-  vals$models.specs
-
-  check.all <- zero_range(
-    sapply(list(vals$models.ll, vals$models.orig, vals$models.names,
-                vals$models.data.names, vals$models.pred.type,
-                vals$models.specs),
-           length)
-  )
-  if (!check.all) shinyjs::alert(
-    paste("eSDM error 1: Improper formatting of original predictions;",
-          "please either contact Sam at sam.woodman@noaa.gov or report this as an issue on GitHub")
-  )
-
-  if (length(vals$models.ll) > 0) {
-    check.all <- c(
-      all(sapply(vals$models.ll, inherits, "sf")),
-      all(sapply(vals$models.orig, inherits, "sf")),
-
-      all(sapply(lapply(vals$models.ll, names), function(i) identical(i, c("Pred", "Weight", "Pixels", "geometry")))),
-      all(sapply(lapply(vals$models.orig, names), function(i) identical(i, c("Pred", "Weight", "Pixels", "geometry")))),
-
-      all(sapply(lapply(vals$models.ll, function(i) names(st_agr(i))), function(j) identical(j, c("Pred", "Weight", "Pixels")))),
-      all(sapply(lapply(vals$models.orig, function(i) names(st_agr(i))), function(j) identical(j, c("Pred", "Weight", "Pixels")))),
-
-      all(sapply(vals$models.ll, function(i) identical(st_crs(i), st_crs(4326)))),
-
-      all(sapply(vals$models.ll, st_agr) == "constant"),
-      all(sapply(vals$models.orig, st_agr) == "constant"),
-
-      all(sapply(vals$models.ll, attr, "sf_column") == "geometry"),
-      all(sapply(vals$models.orig, attr, "sf_column") == "geometry"),
-
-      sapply(lapply(vals$models.ll, function(i) i$Pred), is.numeric),
-      sapply(lapply(vals$models.ll, function(i) i$Weight), is.numeric),
-      sapply(lapply(vals$models.ll, function(i) i$Pixels), is.numeric),
-
-      all(sapply(vals$models.names, inherits, "character")),
-      all(sapply(vals$models.data.names, function(i) all(sapply(i, inherits, "character"))))
-    )
-
-    if (!all(check.all) | anyNA(check.all)) {
-      shinyjs::alert(
-        paste("eSDM error 2: Improper formatting of orignal predictions;",
-              "please either contact Sam at sam.woodman@noaa.gov or report this as an issue on GitHub")
-      )
-    }
-  }
 })
 
 ###############################################################################

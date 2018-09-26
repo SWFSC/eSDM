@@ -85,6 +85,7 @@ server <- function(input, output, session) {
   # Source general and tab-specific server code
 
   ### General server code
+  source(file.path("server_other", "server_checks.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_funcs_preview360.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_other", "server_plots.R"), local = TRUE, chdir = TRUE)
