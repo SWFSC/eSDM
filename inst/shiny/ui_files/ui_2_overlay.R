@@ -281,8 +281,8 @@ ui.overlay <- function() {
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 1",
                         helpText("The base geometry will be outlined in black while, if applicable, the erasing and study area polygons ",
-                                 "will be filled in tan and outlined in red, respectively.",
-                                 "Note that if predictions were made at a high resolution,",
+                                 "will be filled in tan and outlined in red, respectively. The erasing polygon will be clipped to the",
+                                 "extent of the base geoemtry. Note that if predictions were made at a high resolution,",
                                  "the preview may appear to be completely black when zoomed out.",
                                  "In addition, if the any base geometry polygons that span the antimeridian (i.e. 180 decimal degrees",
                                  "or their equivalent in the specified coordinate system) will appear to be split at the antimeridian,",

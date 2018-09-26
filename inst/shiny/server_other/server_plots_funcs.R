@@ -47,20 +47,20 @@ multiplot_download <- function(x) {
 ### Called by both; params with same dimensions for inapp and download
 multiplot_both <- function(x) {
   axis.cex.curr <- case_when(
-    x == 1 ~ 1.2,
-    TRUE ~ 1.7
+    x == 1 ~ 1.1,
+    TRUE ~ 1.6
   )
   main.cex.curr <- case_when(
     x == 1 ~ 1,
     TRUE ~ 1.4
   )
 
-  leg.lcm <- 3.55
-  leg.txt.cex <- ifelse(x == 1, 1.1, 1.6)
+  leg.lcm <- 3.5
+  leg.txt.cex <- ifelse(x == 1, 1.1, 1.5)
   if (x == 1) {
-    leg.mai <- c(0.42, 0, 0.24, 1.22)
+    leg.mai <- c(0.42, 0, 0.24, 1.2)
   } else {
-    leg.mai <- c(0.27, 0, 0.16, 1.22)
+    leg.mai <- c(0.27, 0, 0.16, 1.2)
   }
 
   c(axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex,
