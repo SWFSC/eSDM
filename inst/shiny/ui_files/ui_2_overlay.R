@@ -209,8 +209,6 @@ ui.overlay <- function() {
                                     value = TRUE),
                       conditionalPanel(
                         condition = "input.overlay_proj_native == false",
-                        # box(
-                        # width = 12,
                         radioButtons("overlay_proj_method", NULL,
                                      choices = list("Perform overlay in WGS 84 geographic coordinates" = 1,
                                                     "Select predictions with desired coordinate system" = 2,
@@ -233,7 +231,6 @@ ui.overlay <- function() {
                                    tags$a("EPSG home page", href = "http://www.epsg.org/"), "for more information about EPSG codes")
                         )
                       )
-                      # )
                     )
                   )
                 ),

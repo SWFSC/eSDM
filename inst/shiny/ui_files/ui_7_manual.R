@@ -8,7 +8,7 @@ ui.manual <- function() {
         width = 10, offset = 1,
         fluidRow(
           box(
-            title = "eSDM Manual", width = 12,
+            title = "eSDM GUI Manual", width = 12,
             tags$strong("Click the 'Fit to page' button in the pdf viewer (above the '+' and '-' buttons)",
                         "once or twice to resize the display of the manual to fit to page and fit to width, respectively.",
                         tags$br(),
