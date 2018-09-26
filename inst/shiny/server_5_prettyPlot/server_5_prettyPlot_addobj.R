@@ -123,7 +123,7 @@ pretty_addobj_table <- reactive({
 ###############################################################################
 # User file-specific loading and processing to sf object, and their respective flags
 
-#----------------------------------------------------------
+#------------------------------------------------------------------------------
 # .csv
 
 ### Flag for successfully loaded file
@@ -190,7 +190,7 @@ pretty_addobj_own_csv_process <- reactive({
 })
 
 
-#----------------------------------------------------------
+#------------------------------------------------------------------------------
 # GIS shp
 
 ### Flag for successfully loaded file
@@ -222,7 +222,7 @@ pretty_addobj_own_shp_process <- reactive({
 })
 
 
-#----------------------------------------------------------
+#------------------------------------------------------------------------------
 # GIS gdb
 
 ### Flag for successfully loaded file
@@ -256,7 +256,8 @@ pretty_addobj_own_gdb_process <- reactive({
 })
 
 
-#----------------------------------------------------------
+#------------------------------------------------------------------------------
+# Used by shp and gdb functions
 addobj_gis_check_shiny <- function(gis.file, obj.type) {
   gis.sfc <- st_geometry(gis.file)
   gis.file <- suppressMessages(st_union(gis.file))
