@@ -243,10 +243,11 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("4) Overlay options: percent overlap threshold"),
-                      helpText("Specify the percent overlap threshold, i.e. the minimum percentage of a base geometry polygon",
+                      tags$h5("Specify the percent overlap threshold"),
+                      helpText("The percent overlap threshold is the minimum percentage of a base geometry polygon",
                                "that must overlap with overlaid prediction polygons.",
                                "All base geometry polygons with an overlap percentage less than this threshold",
-                               "will be assigned a prediction value of 'NA'.",
+                               "will be assigned an overlaid prediction value of 'NA'.",
                                tags$br(),
                                "A threshold of '0' means that base geometry polygons will not be assigned a prediction value of 'NA'",
                                "if they overlap with any original predictions."),
