@@ -52,6 +52,7 @@ pal.esdm <- c(
   "#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0",
   "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026"
 )
+# Use rev(RColorBrewer::brewer.pal(10, "Spectral")) for values plots
 leg.perc.esdm <- c(
   "Lowest 60%", "35 - 40%", "30 - 35%", "25 - 30%", "20 - 25%",
   "15 - 20%", "10 - 15%", "5 - 10%", "2 - 5%", "Highest 2%"

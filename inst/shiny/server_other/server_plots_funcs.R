@@ -19,25 +19,7 @@ multiplot_inapp <- function(x) {
     TRUE ~ ceiling(sqrt(x))
   )
 
-  axis.cex.curr <- case_when(
-    x == 1 ~ 1.0,
-    TRUE ~ 1.3
-  )
-  main.cex.curr <- case_when(
-    x == 1 ~ 1,
-    TRUE ~ 1.2
-  )
-
-  leg.lcm <- 3.0
-  leg.txt.cex <- ifelse(x == 1, 0.8, 1.3)
-  if (x == 1) {
-    leg.mai <- c(0.42, 0, 0.24, 1)
-  } else {
-    leg.mai <- c(0.27, 0, 0.16, 1)
-  }
-
-  c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex,
-    leg.mai)
+  c(plot.ncol, plot.nrow, multiplot_both(x))
 }
 
 
@@ -57,34 +39,31 @@ multiplot_download <- function(x) {
     TRUE ~ ceiling(sqrt(x))
   )
 
+  c(plot.ncol, plot.nrow, multiplot_both(x))
+}
+
+
+#------------------------------------------------------------------------------
+### Called by both; params with same dimensions for inapp and download
+multiplot_both <- function(x) {
   axis.cex.curr <- case_when(
     x == 1 ~ 1.2,
-    x <= 4 ~ 1.3,
-    TRUE ~ 1.0
+    TRUE ~ 1.7
   )
-
   main.cex.curr <- case_when(
-    x == 1 ~ 1.0,
-    x == 2 ~ 1.3,
-    TRUE ~ 1.3
+    x == 1 ~ 1,
+    TRUE ~ 1.4
   )
 
-  leg.lcm <- 3.0
-  # leg.txt.cex <- ifelse(x == 1, 0.8, 1.3)
-  leg.txt.cex <- case_when(
-    x == 1 ~ 0.8,
-    x == 2 ~ 1.0,
-    TRUE ~ 1.3
-  )
+  leg.lcm <- 3.55
+  leg.txt.cex <- ifelse(x == 1, 1.1, 1.6)
   if (x == 1) {
-    leg.mai <- c(0.42, 0, 0.24, 1)
-  } else if (x == 2) {
-    leg.mai <- c(0.35, 0, 0.20, 1)
+    leg.mai <- c(0.42, 0, 0.24, 1.22)
   } else {
-    leg.mai <- c(0.27, 0, 0.16, 1)
+    leg.mai <- c(0.27, 0, 0.16, 1.22)
   }
 
-  c(plot.ncol, plot.nrow, axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex,
+  c(axis.cex.curr, main.cex.curr, leg.lcm, leg.txt.cex,
     leg.mai)
 }
 
@@ -103,7 +82,7 @@ breaks_calc <- function(x, breaks = c(seq(0.4, 0.05, by = -0.05), 0.02)) {
 }
 
 
-###
+### Get break point and palette info given data
 preview_vals_break_col <- function(data.vec) {
   data.vec.uniq <- length(unique(na.omit(data.vec)))
   d <- ifelse(data.vec.uniq > 10, 10, data.vec.uniq)
@@ -257,12 +236,11 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
     col.num.leg <- col.num + 1
     col.pal.leg <- c("gray", col.pal)
 
-
     opar <- par(mai = leg.mai)
     on.exit(par(opar), add = TRUE)
 
     graphics::image(
-      0.6, 1:col.num.leg, t(as.matrix(1:col.num.leg)), col = col.pal.leg,
+      0.3, 1:col.num.leg, t(as.matrix(1:col.num.leg)), col = col.pal.leg,
       axes = FALSE, xlab = "", ylab = ""
     )
     graphics::box(col = "black")

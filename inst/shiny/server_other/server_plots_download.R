@@ -19,7 +19,7 @@ output$model_download_preview_execute <- downloadHandler(
       if (perc.num == 1) {
         pal.download <- pal.esdm
       } else {
-        pal.download <- pal.esdm.alt
+        pal.download <- NA
       }
 
       x <- session$clientData$output_model_preview_plot_width
@@ -102,7 +102,7 @@ output$ens_download_preview_execute <- downloadHandler(
       if (perc.num == 1) {
         pal.download <- pal.esdm
       } else {
-        pal.download <- pal.esdm.alt
+        pal.download <- NA
       }
 
       x <- session$clientData$output_ens_preview_plot_width
