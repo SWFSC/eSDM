@@ -220,13 +220,13 @@ create_sf_csv_sfc <- reactive({
 ###############################################################################
 create_sf_csv <- eventReactive(input$model_create_csv, {
   csv.data <- create_sf_csv_data()
-  csv.sf.temp <- create_sf_csv_sfc()[[1]]
+  csv.sfc <- create_sf_csv_sfc()[[1]]
 
   # Combine data df and sfc object
   withProgress(message = "Combining .csv file data and polygons", value = 0.6, {
-    if (nrow(csv.data) == length(csv.sf.temp)) {
+    if (nrow(csv.data) == length(csv.sfc)) {
       sf.load.ll <- st_sf(
-        csv.data[, 3:5], geometry = csv.sf.temp, agr = "constant"
+        csv.data[, 3:5], geometry = csv.sfc, agr = "constant"
       )
 
     } else {

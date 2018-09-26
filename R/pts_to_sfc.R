@@ -115,21 +115,16 @@ pts_to_sfc_centroids <- function(x, y, crs.prov = NULL) {
   stopifnot(
     inherits(x, "data.frame"),
     ncol(x) >= 2,
-    inherits(y, "numeric") | inherits(y, "integer")
+    is.numeric(y)
   )
 
-  sfc.list <- apply(x, 1, function(i, j) {
-    i <- as.numeric(i)
-    st_sfc(st_polygon(list(matrix(
+  sfg.list <- apply(x, 1, function(i, j) {
+    st_polygon(list(matrix(
       c(i[1] + j, i[1] - j, i[1] - j, i[1] + j, i[1] + j,
         i[2] + j, i[2] + j, i[2] - j, i[2] - j, i[2] + j),
       ncol = 2
-    ))))
+    )))
   }, j = y)
 
-  if (is.null(crs.prov)) {
-    st_sfc(do.call(rbind, sfc.list))
-  } else {
-    st_sfc(do.call(rbind, sfc.list), crs = crs.prov)
-  }
+  if (is.null(crs.prov)) st_sfc(sfg.list) else st_sfc(sfg.list, crs = crs.prov)
 }
