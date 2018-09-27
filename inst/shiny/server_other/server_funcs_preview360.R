@@ -161,7 +161,7 @@ preview360_split.sfc <- function(x) {
 
   stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x1), st_area(x2))) < 1)
 
-  st_set_crs(c(x1, x2)[order(c(y.x, y.x.no))], x.crs)
+  st_sfc(c(x1, x2)[order(c(y.x, y.x.no))], crs = x.crs)
 }
 
 
@@ -213,7 +213,9 @@ preview360_mod.sfc <- function(x) {
     lon.add <- abs(unname(st_bbox(y))[1] * 2)
     lat.add <- abs(unname(st_bbox(y))[2])
 
-    st_sfc((x + c(lon.add, lat.add)) %% c(lon.add) - c(0, lat.add), crs = x.crs)
+    st_sfc(
+      (x + c(lon.add, lat.add)) %% c(lon.add) - c(0, lat.add), crs = x.crs
+    )
   }
 }
 
@@ -229,19 +231,7 @@ preview360_split_intersection.sf <- function(x) {
   x.agr <- st_agr(x)
   x.crs <- st_crs(x)
 
-  if (inherits(st_geometry(x), "sfc_GEOMETRY")) {
-    x <- st_cast(x)
-  }
-
-  if (inherits(st_geometry(x), "sfc_MULTIPOLYGON")) {
-    x <- st_cast(x, "POLYGON", warn = FALSE)
-  } else if (inherits(st_geometry(x), "sfc_MULTIPOINT")) {
-    x <- st_cast(x, "POINT", warn = FALSE)
-  }
-
-  stopifnot(
-    inherits(st_geometry(x), "sfc_POLYGON") | inherits(st_geometry(x), "sfc_POINT")
-  )
+  # Because we're using st_intersection(), sff geom doesn't have type reqs
 
   y1 <- st_sfc(st_polygon(list(
     matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
@@ -272,15 +262,7 @@ preview360_split_intersection.sf <- function(x) {
 preview360_split_intersection.sfc <- function(x) {
   x.crs <- st_crs(x)
 
-  if (inherits(x, "sfc_GEOMETRY")) x <- st_cast(x)
-
-  if (inherits(x, "sfc_MULTIPOLYGON")) {
-    x <- st_cast(x, "POLYGON", warn = FALSE)
-  } else if (inherits(x, "sfc_MULTIPOINT")) {
-    x <- st_cast(x, "POINT", warn = FALSE)
-  }
-
-  stopifnot(inherits(x, "sfc_POLYGON") | inherits(x, "sfc_POINT"))
+  # Because we're using st_intersection(), sfc object doesn't have type reqs
 
   y1 <- st_sfc(st_polygon(list(
     matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
@@ -300,7 +282,7 @@ preview360_split_intersection.sfc <- function(x) {
 
   stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x.y1.360), st_area(x.y2))) < 1)
 
-  st_set_crs(c(x.y2, x.y1.360), x.crs)
+  st_sfc(c(x.y2, x.y1.360), crs = x.crs)
 }
 
 ###############################################################################
