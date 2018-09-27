@@ -310,7 +310,7 @@ pretty_addobj_list <- reactive({
     i$obj <- st_transform(i$obj, pretty_crs_selected())
 
     if (pretty_range_360()) {
-      if (length(i$obj) > 5000) {
+      if (length(i$obj) > 6000) {
         i$obj <- check_preview360_split(i$obj, force.360 = TRUE)
 
       } else {

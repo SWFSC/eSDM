@@ -249,8 +249,10 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
   # Same for multi- and single- preview
   perc.txt <- ifelse(input$ens_download_preview_perc == 1, "perc_", "values_")
   res.txt <- ifelse(input$ens_download_preview_res == 1, "300ppi", "72ppi")
-  file.ext <- switch(input$ens_download_preview_format,
-                     "1" = ".jpeg", "2" = ".pdf", "3" = ".png")
+  file.ext <- switch(
+    input$ens_download_preview_format,
+    "1" = ".jpeg", "2" = ".pdf", "3" = ".png"
+  )
 
   if (length(input$ens_datatable_ensembles_rows_selected) > 1) {
     # Multi
@@ -259,8 +261,11 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
   } else {
     # Single
     idx.selected <- as.numeric(input$ens_datatable_ensembles_rows_selected)
-    ens.method.txt <- switch(vals$ensemble.method[idx.selected],
-                             "Unweighted" = "UnW_", "Weighted" = "W_")
+    req(idx.selected <= length(vals$ensemble.method))
+    ens.method.txt <- switch(
+      vals$ensemble.method[idx.selected],
+      "Unweighted" = "UnW_", "Weighted" = "W_"
+    )
     ens.weights.txt <- vals$ensemble.weights[idx.selected]
     ens.weights.txt <- ifelse(
       is.na(ens.weights.txt), "", paste0(gsub(", ", "+", ens.weights.txt), "_")
@@ -269,8 +274,10 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
     ens.rescale.txt <- ifelse(
       grepl("Abund", ens.rescale.txt),
       paste0("Abund", strsplit(ens.rescale.txt, ": ")[[1]][2], "_"),
-      switch(ens.rescale.txt, "None" = "None_", "Normalization" = "Norm_",
-             "Standardization" = "Stand_", "Sum to 1" = "Sumto1_")
+      switch(
+        ens.rescale.txt, "None" = "None_", "Normalization" = "Norm_",
+        "Standardization" = "Stand_", "Sum to 1" = "Sumto1_"
+      )
     )
     ens.idx.txt <- vals$ensemble.overlaid.idx[idx.selected]
     ens.idx.txt <- paste0(gsub(", ", "+", ens.idx.txt), "_")
@@ -281,7 +288,7 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
     )
   }
 
-  textInput("ens_download_preview_name", tags$h5("File name"), value = f.val)
+  textInput("ens_download_preview_name", tags$h5("Filename"), value = f.val)
 })
 
 

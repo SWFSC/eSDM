@@ -91,7 +91,7 @@ output$pretty_download_name_uiOut_text <- renderUI({
     f.val <- paste0("eSDM_map_", res.txt, file.ext)
   }
 
-  textInput("pretty_download_name", tags$h5("File name"), value = f.val)
+  textInput("pretty_download_name", tags$h5("Filename"), value = f.val)
 })
 
 ### Button

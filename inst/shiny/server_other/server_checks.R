@@ -60,6 +60,8 @@ observe({
 
 ###############################################################################
 # Perform checks of various sf objects to make sure attributes are correct
+# Checks are not performed on plot objects, i.e. pretty plot params list b/c
+#   some preview360 code adds attributes b/c of st_intersection()
 
 #------------------------------------------------------------------------------
 ### Prep

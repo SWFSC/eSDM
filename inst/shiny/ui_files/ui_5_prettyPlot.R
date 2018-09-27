@@ -67,7 +67,8 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    tags$h5("Click on a row in the table below to select or deselect an item.",
+                    tags$h5(tags$strong("Select saved map to update"),
+                            "Click on a row in the table below to select or deselect a saved map.",
                             "Then click the 'Update saved map parameters' button in the next box."),
                     DTOutput("pretty_update_table_out")
                   )
@@ -107,7 +108,8 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    tags$h5("Click on a row in the table below to select or deselect items.",
+                    tags$h5(tags$strong("Select saved map(s) to plot or download"),
+                            "Click on a row in the table below to select or deselect saved maps.",
                             "Maps will be plotted left to right, top to bottom, in order you select them"),
                     DTOutput("pretty_toplot_table_out"),
                     helpText(NULL)
@@ -408,12 +410,10 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    checkboxInput("pretty_addobj",
-                                  "Include additional objects in map; uncheck this box to remove all loaded additional objects",
-                                  value = FALSE),
+                    checkboxInput("pretty_addobj", "Include additional objects in map", value = FALSE),
                     conditionalPanel(
                       condition = "input.pretty_addobj",
-
+                      column(12, tags$h5("Uncheck the above checkbox to remove all loaded additional objects")),
                       #----------------------------------------
                       box(
                         width = 12,
@@ -470,7 +470,7 @@ ui.prettyPlot <- function() {
                               ui.instructions.upload.gdb(),
                               textInput("pretty_addobj_own_gdb_path", label.gdb.path, value = ".../folder.gdb"),
                               textInput("pretty_addobj_own_gdb_name", label.gdb.name, value = ""),
-                              actionButton("pretty_addobj_own_gdb_load", "Upload"),
+                              actionButton("pretty_addobj_own_gdb_load", "Upload feature class"),
                               conditionalPanel("output.pretty_addobj_own_gdb_flag == false", ui.error.upload.gdb),
                               conditionalPanel(
                                 condition = "output.pretty_addobj_own_gdb_flag",

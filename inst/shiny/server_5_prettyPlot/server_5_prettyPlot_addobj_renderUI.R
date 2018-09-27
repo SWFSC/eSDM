@@ -34,7 +34,7 @@ addobj_render_lab <- function(ui.which, addobj.which, addobj.type = NULL) {
   } else if (ui.which == 5) {
     ifelse(
       addobj.which == 3,
-      "Make absence points transparent", "Make polygon border(s) transparent"
+      "Make absence points transparent", "Make polygon borders transparent"
     )
 
     #------------------------------------------------------
@@ -47,11 +47,11 @@ addobj_render_lab <- function(ui.which, addobj.which, addobj.type = NULL) {
 
     #------------------------------------------------------
   } else if (ui.which == 7) {
-    ifelse(addobj.type == 1, "Point type", "Line type of polygon border(s)")
+    ifelse(addobj.type == 1, "Point type", "Line type of polygon borders")
 
     #------------------------------------------------------
   } else if (ui.which == 8) {
-    ifelse(addobj.type == 1, "Point size", "Line width of polygon border(s)")
+    ifelse(addobj.type == 1, "Point size", "Line width of polygon borders")
 
     #------------------------------------------------------
   } else {
@@ -75,8 +75,8 @@ output$pretty_addobj_update_show_uiOut_button <- renderUI({
 ### Button widget to remove additional polygon
 output$pretty_addobj_remove_execute_uiOut_button <- renderUI({
   req(vals$pretty.addobj)
-  actionButton("pretty_addobj_remove_execute",
-               "Remove selected object")
+  input.lab <- "Remove selected object"
+  actionButton("pretty_addobj_remove_execute", input.lab)
 })
 
 
@@ -93,12 +93,13 @@ output$pretty_addobj_which_uiOut_select <- renderUI({
   )
   choices.list <- c(choices.list[choices.list.bool], "Upload new object" = 4)
 
-  input.lab <- paste(
+  input.lab <- tags$h5(
+    tags$strong("Additional object source"),
     "Either select previously loaded object or upload new object.",
     "Then, specify the desired plot parameters and load the additional object."
   )
 
-  selectInput("pretty_addobj_which", tags$h5(input.lab),
+  selectInput("pretty_addobj_which", input.lab,
               choices = choices.list, selected = NULL)
 })
 

@@ -35,7 +35,7 @@ output$pretty_proj_idx_uiOut_select <- renderUI({
   names(choices.list) <- choices.list.names
 
   selectInput("pretty_proj_idx",
-              tags$h5("Filename of original model predictions",
+              tags$h5("Filename of original predictions",
                       "with desired coordinate system for the map"),
               choices = choices.list, selected = 1)
 })

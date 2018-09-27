@@ -219,7 +219,6 @@ plot_pretty <- function(model.toplot, map.range, background.color,
   for (j in l5b) tmap.obj <- tmap.obj + plot_pretty_addobj(j, range.poly)
   rm(j)
 
-
   #----------------------------------------------------------------------------
   tmap.obj
 }
@@ -228,6 +227,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
 ###############################################################################
 # Helper function for additional object plotting part of plot_pretty()
 plot_pretty_addobj <- function(i, range.poly, rpoly.mat = NULL) {
+  # browser()
   i$obj <- pretty_int_func(i$obj, range.poly)
 
   if (i$obj.text == "Validation data points") {
@@ -260,3 +260,4 @@ plot_pretty_addobj <- function(i, range.poly, rpoly.mat = NULL) {
   }
 }
 
+###############################################################################
