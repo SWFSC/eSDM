@@ -36,7 +36,7 @@ toplot_update_modal <- function(failed) {
       tags$h4("Saved map parameter update window"),
       tags$h5("Select the parameter you wish to update and change it as desired in the window that appears.",
               "Then click 'Save parameter', and the newly saved parameter will be updated in the table below.",
-              "After the table reflects the desired parameter values, click 'Done'."),
+              "After the table reflects the desired parameter values, click 'Done - save the updated parameters'."),
       tags$h5("Note that you cannot update the map coordinate system or prediction color scheme of a saved map;",
               "to change these parameters you must create a new map."),
       tags$br(),
@@ -81,8 +81,11 @@ toplot_update_modal <- function(failed) {
         tableOutput("pretty_toplot_update_table_out")
       ),
 
-      footer = tagList(actionButton("pretty_toplot_update_done", "Done")),
-      size = "m" #'size = "l"' for large
+      footer = tagList(
+        actionButton("pretty_toplot_update_cancel", "Cancel and discard the updated parameters"),
+        actionButton("pretty_toplot_update_done", "Done - save the updated parameters")
+      ),
+      size = "l" #'size = "l"' for large
     )
   }
 }
@@ -421,7 +424,14 @@ observeEvent(input$pretty_toplot_update_execute, {
 
 
 ###############################################################################
-# Final processing step and close modal
+### Cancel and discard updated parameters
+observeEvent(input$pretty_toplot_update_cancel, {
+  removeModal()
+
+  val.pretty.toplot.update(NULL)
+})
+
+### Done - save updated parameters
 observeEvent(input$pretty_toplot_update_done, {
   removeModal()
 

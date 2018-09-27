@@ -28,7 +28,7 @@ addobj_update_modal <- function(failed) {
       tags$h4("Additional object parameter update window"),
       tags$h5("Select the parameter you wish to update and change it as desired in the window that appears.",
               "Then click 'Save parameter', and the newly saved parameter will be updated in the table below.",
-              "After the table reflects the desired parameter values, click 'Done'."),
+              "After the table reflects the desired parameter values, click 'Done - save the updated parameters'."),
       tags$br(),
       tags$strong(paste("Polygon:", vals$pretty.addobj[[x]]$obj.text)),
       fluidRow(
@@ -45,7 +45,10 @@ addobj_update_modal <- function(failed) {
               "otherwise they are displayed as hexadecimals."),
       tableOutput("pretty_addobj_update_table_out"),
 
-      footer = tagList(actionButton("pretty_addobj_update_done", "Done"))
+      footer = tagList(
+        actionButton("pretty_addobj_update_cancel", "Cancel and discard the updated parameters"),
+        actionButton("pretty_addobj_update_done", "Done - save the updated parameters")
+      )
     )
   }
 }
@@ -261,6 +264,15 @@ observeEvent(input$pretty_addobj_update_execute, {
 
 
 ###############################################################################
+### Cancel and discard updated parameters
+observeEvent(input$pretty_addobj_update_cancel, {
+  removeModal()
+
+  val.pretty.addobj.update(NULL)
+})
+
+
+### Done - save updated parameters
 observeEvent(input$pretty_addobj_update_done, {
   removeModal()
 
