@@ -66,7 +66,8 @@ observe({
 #------------------------------------------------------------------------------
 ### Prep
 sf.attr  <- c("names", "row.names", "class", "sf_column", "agr")
-sfc.attr <- c("n_empty", "crs", "class", "precision", "bbox")
+sfc.attr <- c("n_empty", "crs", "class", "precision", "bbox", "classes")
+# TODO: research 'classes' attribute
 
 modal.attr <- function(x) {
   modalDialog(
@@ -91,7 +92,6 @@ observe({
 
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing original predictions"))
-    browser()
   }
 })
 
@@ -106,7 +106,6 @@ observe({
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing overlaid predictions"))
-    browser()
   }
 })
 observe({
@@ -116,7 +115,6 @@ observe({
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing study area polygon"))
-    browser()
   }
 })
 
@@ -127,7 +125,6 @@ observe({
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing erasing polygon"))
-    browser()
   }
 })
 
@@ -138,7 +135,6 @@ observe({
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in creation of base geometry"))
-    browser()
   }
 })
 
@@ -153,7 +149,6 @@ observe({
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing ensemble predictions"))
-    browser()
   }
 })
 
@@ -171,7 +166,6 @@ observe({
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing weight polygons"))
-    browser()
   }
 })
 
@@ -185,7 +179,6 @@ observe({
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing validation data"))
-    browser()
   }
 })
 
@@ -205,7 +198,6 @@ observe({
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing additional objects"))
-    browser()
   }
 })
 
