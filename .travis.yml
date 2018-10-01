@@ -2,12 +2,16 @@
 
 language: R
 cache: packages
+sudo: required
 
 addons:
   apt:
     packages:
+      - libgdal-dev
       - libudunits2-dev
 
-sudo: required
+r:
+  - release
+  - devel
 
 warnings_are_errors: true
