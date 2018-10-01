@@ -121,6 +121,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
   l4 <- list.tick
   l5a <- list.addobj.pre
   l5b <- list.addobj.post
+  m.orig <- model.toplot
 
   #----------------------------------------------------------------------------
   # Make range polygon for intersections
@@ -143,7 +144,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
 
   #----------------------------------------------------------------------------
   # Shape, fill (colorscheme), title, axis labels, margins
-  model.toplot <- pretty_int_func(model.toplot, range.poly)
+  model.toplot <- pretty_int_func(m.orig, range.poly)
 
   if (exists("tmap.obj")) {
     tmap.obj <- tmap.obj +
@@ -155,7 +156,8 @@ plot_pretty <- function(model.toplot, map.range, background.color,
               legend.is.portrait = TRUE, legend.reverse = TRUE)
 
   } else {
-    tmap.obj <- tm_shape(model.toplot, bbox = rpoly.mat) +
+    tmap.obj <- tm_shape(model.toplot, bbox = rpoly.mat,
+                         projection = st_crs(range.poly)) +
       tm_fill(col = l1$data.name, border.col = "transparent",
               style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
               colorNA = l1$col.na, textNA = "NA", showNA = NA,
@@ -194,7 +196,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
   #----------------------------------------------------------------------------
   # Grid lines and labels
   if (l4$inc) {
-    if (st_is_longlat(model.toplot)) {
+    if (st_is_longlat(m.orig)) {
       tmap.obj <- tmap.obj +
         tm_grid(x = l4$x.vals, y = l4$y.vals, col = l4$grid.col,
                 lwd = l4$grid.lw, alpha = l4$grid.alpha,
@@ -233,27 +235,29 @@ plot_pretty_addobj <- function(i, range.poly, rpoly.mat = NULL) {
   if (i$obj.text == "Validation data points") {
     # Special due to 2 colors. Also 'NA' color means that points are white
     if (!is.na(i$col.absborder) && !is.na(i$col.ptfill)) {
-      tm_shape(i$obj, bbox = rpoly.mat) +
+      tm_shape(i$obj, bbox = rpoly.mat, projection = st_crs(range.poly)) +
         tm_dots(col = "sight", palette = c(i$col.absborder, i$col.ptfill),
                 shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
     } else if (is.na(i$col.ptfill)) {
-      tm_shape(dplyr::filter(i$obj, sight == 0), bbox = rpoly.mat) +
+      tm_shape(dplyr::filter(i$obj, sight == 0), bbox = rpoly.mat,
+               projection = st_crs(range.poly)) +
         tm_dots(col = i$col.absborder,
                 shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
 
     } else { #is.na(i$col.ptfill)
-      tm_shape(dplyr::filter(i$obj, sight == 1), bbox = rpoly.mat) +
+      tm_shape(dplyr::filter(i$obj, sight == 1), bbox = rpoly.mat,
+               projection = st_crs(range.poly)) +
         tm_dots(col = i$col.ptfill,
                 shape = i$pchlty, size = i$cexlwd, legend.show = FALSE)
     }
 
   } else if (i$obj.type == 1) { #pts
-    tm_shape(i$obj, bbox = rpoly.mat) +
+    tm_shape(i$obj, bbox = rpoly.mat, projection = st_crs(range.poly)) +
       tm_dots(col = i$col.ptfill, shape = i$pchlty, size = i$cexlwd,
               legend.show = FALSE)
 
   } else { #polys
-    tm_shape(i$obj, bbox = rpoly.mat) +
+    tm_shape(i$obj, bbox = rpoly.mat, projection = st_crs(range.poly)) +
       tm_polygons(col = i$col.ptfill, border.col = i$col.absborder,
                   alpha = ifelse(is.na(i$col.ptfill), 0, 1),
                   lty = i$pchlty, lwd = i$cexlwd)

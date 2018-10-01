@@ -24,20 +24,28 @@ pretty_int_func <- function(x, y) {
 pretty_int_func.sf <- function(x, y) {
   cover <- suppressMessages(st_covers(y, x))
 
-  if (length(cover[[1]]) == nrow(x)) {
-    x
-  } else {
+  if (length(cover[[1]]) != nrow(x)) {
     suppressMessages(st_intersection(x, y))
+  }
+
+  if (st_bbox(x)[1] > 180) {
+    st_set_crs(x, NA)
+  } else {
+    x
   }
 }
 
 pretty_int_func.sfc <- function(x, y) {
   cover <- suppressMessages(st_covers(y, x))
 
-  if (length(cover[[1]]) == length(x)) {
-    x
-  } else {
+  if (length(cover[[1]]) != length(x)) {
     suppressMessages(st_intersection(x, y))
+  }
+
+  if (st_bbox(x)[1] > 180) {
+    st_set_crs(x, NA)
+  } else {
+    x
   }
 }
 
