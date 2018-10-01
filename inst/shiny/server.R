@@ -1,5 +1,4 @@
-### server.R for eSDM GUI
-# Author: Sam Woodman
+### server.R for eSDM GUI by Sam Woodman
 
 
 ###############################################################################
