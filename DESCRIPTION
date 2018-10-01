@@ -1,6 +1,6 @@
 Package: eSDM
-Title: Ensemble tool for predictions from Species Distribution Models
-Description: eSDM allows users to overlay SDM predictions onto a single base geometry and create and evaluate ensemble predictions.
+Title: Ensemble Tool for Predictions from Species Distribution Models
+Description: Allows users to overlay SDM predictions onto a single base geometry and create and evaluate ensemble predictions.
 Version: 0.0.0.9000
 Authors@R: person("Sam", "Woodman", email = "sam.woodman@noaa.gov", role = c("aut", "cre"))
 URL: https://github.com/smwoodman/eSDM
