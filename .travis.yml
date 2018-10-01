@@ -8,6 +8,6 @@ addons:
     packages:
       - libudunits2-dev
 
-sudo: false
+sudo: required
 
 warnings_are_errors: true
