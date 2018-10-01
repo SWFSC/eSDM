@@ -1,4 +1,4 @@
-### Code for loading a study area or erasing polygon from shp or gdb source
+### Code for importing a study area or erasing polygon from shp or gdb source
 ## overlaid.gis.crs is in ...overlay_funcs.R
 
 ###############################################################################
@@ -11,12 +11,12 @@ overlay_bound_gis_shp <- reactive({
   # Reset vals object here in case validate() is triggered
   vals$overlay.bound <- NULL
 
-  withProgress(message = 'Loading boundary polygon', value = 0.3, {
+  withProgress(message = 'Importing study area polygon', value = 0.3, {
     bound.sf <- read.shp.shiny(input$overlay_bound_gis_shp_files)
 
     validate(
       need(inherits(bound.sf, "sf"),
-           "Error: Could not load shapefile using selected files")
+           "Error: Could not import shapefile using selected files")
     )
     incProgress(0.5)
 
@@ -40,15 +40,17 @@ overlay_bound_gis_gdb <- eventReactive(input$overlay_bound_gis_gdb_load, {
   # Reset vals object here in case validate() is triggered
   vals$overlay.bound <- NULL
 
-  withProgress(message = 'Loading boundary polygon', value = 0.3, {
-    bound.sf <- try(st_read(input$overlay_bound_gis_gdb_path,
-                            input$overlay_bound_gis_gdb_name,
-                            quiet = TRUE),
-                    silent = TRUE)
+  withProgress(message = 'Importing study area polygon', value = 0.3, {
+    bound.sf <- try(
+      st_read(input$overlay_bound_gis_gdb_path,
+              input$overlay_bound_gis_gdb_name,
+              quiet = TRUE),
+      silent = TRUE
+    )
 
     validate(
       need(inherits(bound.sf, "sf"),
-           "Error: Could not load object using provided path and name")
+           "Error: Could not import object using provided path and name")
     )
     incProgress(0.5)
 
@@ -76,12 +78,12 @@ overlay_land_gis_shp <- reactive({
   # Reset vals object here in case validate() is triggered
   vals$overlay.land <- NULL
 
-  withProgress(message = 'Loading land polygon', value = 0.3, {
+  withProgress(message = 'Importing erasing polygon', value = 0.3, {
     land.sf <- read.shp.shiny(input$overlay_land_gis_shp_files)
 
     validate(
       need(inherits(land.sf, "sf"),
-           "Error: Could not load shapefile using selected files")
+           "Error: Could not import shapefile using selected files")
     )
     incProgress(0.5)
 
@@ -107,15 +109,16 @@ overlay_land_gis_gdb <- eventReactive(input$overlay_land_gis_gdb_load, {
   # Reset vals object here in case validate() is triggered
   vals$overlay.land <- NULL
 
-  withProgress(message = 'Loading land polygon', value = 0.3, {
-    land.sf <- try(st_read(input$overlay_land_gis_gdb_path,
-                           input$overlay_land_gis_gdb_name,
-                           quiet = TRUE),
-                   silent = TRUE)
+  withProgress(message = 'Importing erasing polygon', value = 0.3, {
+    land.sf <- try(
+      st_read(input$overlay_land_gis_gdb_path, input$overlay_land_gis_gdb_name,
+              quiet = TRUE),
+      silent = TRUE
+    )
 
     validate(
       need(inherits(land.sf, "sf"),
-           "Error: Could not load object using provided path and name")
+           "Error: Could not import object using provided path and name")
     )
     incProgress(0.5)
 

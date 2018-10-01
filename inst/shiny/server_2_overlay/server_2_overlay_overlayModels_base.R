@@ -301,7 +301,7 @@ overlay_clip_land_llpre <- reactive({
 
     validate(
       need(overlay.land.clipll,
-           "Error in base creation: Issue with land prep") %then%
+           "Error in base creation: Issue with erasing poly prep") %then%
         need(length(overlay.land.clipll) > 0,
              paste("Error: The erasing polygon and study area polygon",
                    "do not intersect"))
@@ -334,7 +334,7 @@ overlay_base_pre <- reactive({
   validate(
     need(length(base.idx) == 1,
          paste("Error: Please select exactly one set of predictions from the table",
-               "to use as the base"))
+               "to use as the base geometry"))
   )
 
   list(vals$models.ll[[base.idx]], vals$models.orig[[base.idx]])

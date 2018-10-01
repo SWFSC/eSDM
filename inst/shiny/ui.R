@@ -1,4 +1,4 @@
-### ui.R for Ensemble tool for predictions from Species Distribution Models (eSDM) GUI
+### ui.R for eSDM GUI
 # Author: Sam Woodman
 
 

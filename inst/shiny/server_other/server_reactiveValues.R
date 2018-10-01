@@ -23,6 +23,8 @@ val.pretty.toplot.update <- reactiveVal(value = NULL)
 
 ###############################################################################
 # 'Initialize' all 42 elements of vals
+# In this file,  '___ model predictions' is equivalent to '___ predictions'
+
 vals <- reactiveValues(
   # Objects that store loaded models and related info
   models.ll             = list(),  # List of models; crs is crs.ll
@@ -37,12 +39,12 @@ vals <- reactiveValues(
   models.plot.idx       = NULL,    # Plot index of currently static-previewed original models
 
   # Objects that store data for and from overlay section
-  overlay.bound         = NULL,    # Boundary sfc object; crs is crs.ll; always of length 1
-  overlay.land          = NULL,    # Coastline/land sfc object; crs is crs.ll
+  overlay.bound         = NULL,    # Study area (boundary) polygon as sfc object; crs is crs.ll; always of length 1
+  overlay.land          = NULL,    # Erasing (land) polygon as sfc object; crs is crs.ll
   overlay.plot          = NULL,    # Plot info for overlay base preview
   overlay.crs           = NULL,    # Class crs object of projection for overlay process
-  overlay.info          = NULL,    # List of index of model used as base grid and overlap percentage
-  overlay.base.sfc      = NULL,    # sfc object that is base grid
+  overlay.info          = NULL,    # List of index of model used as base geometry and overlap percentage
+  overlay.base.sfc      = NULL,    # sfc object that is base geometry
   overlaid.models       = list(),  # List of overlaid models
   overlaid.models.specs = NULL,    # models.spec info about overlaid models
   overlaid.plot         = NULL,    # Plot info of currently previewed overlaid models
