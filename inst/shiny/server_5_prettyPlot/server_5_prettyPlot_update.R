@@ -181,8 +181,6 @@ pretty_toplot_update_table <- reactive({
     y.t <- y$list.tick
     params.names <- c(
       "Include coordinate grid lines",
-      # "Longitude grid line start", "Longitude grid line interval",
-      # "Latitude grid line start", "Latitude grid line interval",
       "Longitude grid line locations", "Latitude grid line locations",
       "Grid line width", "Grid line transparency (1: solid; 0: transparent)",
       "Coordinate grid line color", "Include coordinate labels",
@@ -192,8 +190,6 @@ pretty_toplot_update_table <- reactive({
       y.t.labinc <- y.t$grid.labs.size > 0
       params.vals <- c(
         TRUE, paste(y.t$x.vals, collapse = ", "), paste(y.t$y.vals, collapse = ", "),
-        # y.t$x.vals[1], y.t$x.vals[2] - y.t$x.vals[1],
-        # y.t$y.vals[1], y.t$y.vals[2] - y.t$y.vals[1],
         y.t$grid.lw, y.t$grid.alpha, y.t$grid.col, y.t.labinc,
         ifelse(y.t.labinc, ifelse(y.t$grid.labs.in, "Inside frame", "Outside frame"),
                "N/A: coordinate labels not included"),
@@ -259,21 +255,36 @@ observeEvent(input$pretty_toplot_update_execute, {
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
 
   #--------------------------------------------------------
-  if (z == 1 & z2 != 1) {
+  if (z == 1 && z2 != 1) {
     y$map.range[z2 - 1] <- req(input$pretty_toplot_update_thing1)
+
     # May need to update grid line locations
     if (z2 %in% 2:3) {
       x.tf <- dplyr::between(y$list.tick$x.vals, y$map.range[1], y$map.range[2])
       y$list.tick$x.vals <- y$list.tick$x.vals[x.tf]
+
       if (length(y$list.tick$x.vals) == 0) {
         y$list.tick$x.vals <- y$map.range[1:2]
+      } else {
+        x.interval <- unique(diff(y$list.tick$x.vals))
+        y$list.tick$x.vals <- unique(c(
+          rev(seq(from = y$list.tick$x.vals[1], to = y$map.range[1], by = -x.interval)),
+          seq(from = y$list.tick$x.vals[1], to = y$map.range[2], by = x.interval)
+        ))
       }
 
     } else { #z2 %in% 4:5
       y.tf <- dplyr::between(y$list.tick$y.vals, y$map.range[3], y$map.range[4])
       y$list.tick$y.vals <- y$list.tick$y.vals[y.tf]
+
       if (length(y$list.tick$y.vals) == 0) {
         y$list.tick$y.vals <- y$map.range[1:2]
+      } else {
+        y.interval <- unique(diff(y$list.tick$y.vals))
+        y$list.tick$y.vals <- unique(c(
+          rev(seq(from = y$list.tick$y.vals[1], to = y$map.range[3], by = -y.interval)),
+          seq(from = y$list.tick$y.vals[1], to = y$map.range[4], by = y.interval)
+        ))
       }
     }
 
@@ -344,14 +355,18 @@ observeEvent(input$pretty_toplot_update_execute, {
       y.t$inc <- input$pretty_toplot_update_thing1
 
     } else if (z2 == 2) {
-      req(input$pretty_toplot_update_thing1 < y$map.range[2])
+      req(dplyr::between(
+        input$pretty_toplot_update_thing1, y$map.range[1], y$map.range[2]
+      ))
       y.t$x.vals <- seq(
         from = input$pretty_toplot_update_thing1, to = y$map.range[2],
         by = req(input$pretty_toplot_update_thing2)
       )
 
     } else if (z2 == 3) {
-      req(input$pretty_toplot_update_thing1 < y$map.range[4])
+      req(dplyr::between(
+        input$pretty_toplot_update_thing1, y$map.range[3], y$map.range[4]
+      ))
       y.t$y.vals <- seq(
         from = input$pretty_toplot_update_thing1, to = y$map.range[4],
         by = req(input$pretty_toplot_update_thing2)

@@ -98,7 +98,7 @@ server <- function(input, output, session) {
 
   ### Roadmap: download sample data
   output$download_sample_data <- downloadHandler(
-    filename = function() "eSDM_sample_data.zip",
+    filename = "eSDM_sample_data.zip",
 
     content = function(file) {
       withProgress(message = "Downloading sample data", value = 0.6, {
@@ -122,14 +122,14 @@ server <- function(input, output, session) {
   )
 
   output$download_manual <- downloadHandler(
-    filename = function() "eSDM_manual.pdf",
+    filename = "eSDM_manual.pdf",
 
     content = function(file) {
       withProgress(message = "Downloading manual", value = 0.6, {
         sample.try <- try(
           download.file(
             "https://github.com/smwoodman/eSDM/raw/master/inst/shiny/www/eSDM_manual.pdf",
-            destfile = file, quiet = TRUE, mode="wb"
+            destfile = file, quiet = TRUE, mode = "wb"
           ),
           silent = TRUE
         )

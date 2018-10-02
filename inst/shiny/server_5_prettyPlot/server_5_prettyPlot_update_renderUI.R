@@ -67,11 +67,11 @@ output$pretty_toplot_update_message360_uiOut_text <- renderUI({
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
 
   req(
-    (z == 1 & z2 != 1) | (z == 5 & z2 == 2),
+    (z == 1 && z2 != 1) | (z == 5 && z2 == 2),
     st_bbox(st_transform(y$model.toplot, 4326))[3] > 180
   )
 
-  tags$h5(message.360, tags$br(), style = "color: red;")
+  tags$h5(paste0(message.360, "."), tags$br(), style = "color: red;")
 })
 
 # renderUI() #0: message
@@ -83,12 +83,13 @@ output$pretty_toplot_update_message_uiOut_text <- renderUI({
   z.vals <- req(pretty_toplot_update_table())$Value
 
   if (z == 1 & z2 != 1) {
-    temp <- paste(
+    temp <- HTML(paste(
       "Please ensure that the 'minimum' values remain less than their",
-      "respective 'maximum' values.",
-      "In addition, note that if you increase the expanse of the map",
-      "you will likely need to update the grid line locations"
-    )
+      "respective 'maximum' values.", tags$br(),
+      "Grid line locations will be automatically updated when you change",
+      "the map range. These updates will attemp to keep",
+      "the grid line interval consistent."
+    ))
 
   } else if (z == 5 & z2 == 2) {
     temp <- paste(
