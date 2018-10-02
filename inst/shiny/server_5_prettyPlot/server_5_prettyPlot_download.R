@@ -80,7 +80,7 @@ output$pretty_download_name_uiOut_text <- renderUI({
   )
 
   if (length(maps.selected) == 1) {
-    req(maps.selected <= length(vals$pretty.params.toplot$id))
+    req(maps.selected <= length(vals$pretty.params.toplot))
     id.txt <- paste(
       unlist(strsplit(vals$pretty.params.toplot[[maps.selected]]$id, " ")),
       collapse = "_"
@@ -94,7 +94,7 @@ output$pretty_download_name_uiOut_text <- renderUI({
   textInput("pretty_download_name", tags$h5("Filename"), value = f.val)
 })
 
-### Button
+### Download button
 output$pretty_download_execute_uiOut_download <- renderUI({
   req(vals$pretty.params.toplot)
 
