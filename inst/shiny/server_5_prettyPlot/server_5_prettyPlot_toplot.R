@@ -46,11 +46,13 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     # Simpler operations; happen first in case user clicks around
     map.range <- pretty_map_range()
     background.color <- input$pretty_background_color
+    pretty.id <- input$pretty_toplot_add_id
 
     list.legend   <- pretty_legend_list()
     list.titlelab <- pretty_titlelab_list()
     list.margin   <- pretty_margin_list()
     list.tick     <- pretty_tick_list()
+    list.idx      <- list(pretty_models_idx_list())
     incProgress(0.1)
 
 
@@ -69,14 +71,9 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       incProgress(0, detail = "")
     }
 
-    model.int <- pretty_int_func(
+    model.int <- pretty_int_func( #contains validate()
       model.toplot, range.poly, "selected predictions"
     )
-    # validate(
-    #   need(nrow(model.int) > 0,
-    #        paste("Error: The selected predictions are outside",
-    #              "of the specified map range"))
-    # )
     incProgress(0.2)
 
 
@@ -99,15 +96,13 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
         list.tick = list.tick,
         list.colorscheme = list.colorscheme, list.legend = list.legend,
         list.addobj = list.addobj,
-        id = input$pretty_toplot_add_id
+        id = pretty.id
       ))
     )
-    vals$pretty.toplot.idx <- c(
-      vals$pretty.toplot.idx, list(pretty_models_idx_list())
-    )
+    vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
   })
 
-  paste0("Saved map '", input$pretty_toplot_add_id, "'")
+  paste0("Saved map '", pretty.id, "'")
 })
 
 

@@ -45,7 +45,8 @@ pretty_int_func.sf <- function(x, y, x.name) {
   }
 
   validate(
-    need(nrow(x) > 0, val.message)
+    need(nrow(x) > 0 && !inherits(st_geometry(x), "sfc_LINESTRING"),
+         val.message)
   )
 
   x
@@ -58,11 +59,15 @@ pretty_int_func.sfc <- function(x, y, x.name) {
     x <- suppressMessages(st_intersection(x, y))
   }
 
+  val.message <- paste(
+    "Error: None of the geometry of the", x.name,
+    "is within the specified map range;",
+    "either remove this object or adjust the map range"
+  )
+
   validate(
-    need(length(x) > 0,
-         paste("Error: None of the geometry of the", x.name,
-               "is within the specified map range;",
-               "either remove this object or adjust the map range"))
+    need(length(x) > 0 && !inherits(x, "sfc_LINESTRING"),
+         val.message)
   )
 
   x
@@ -87,7 +92,7 @@ pretty_colorscheme_func <- function(x, data.name, map.range, perc, color.num,
                                     leg.perc.esdm, leg.round) {
   # Clip predictions to map range
   y <- pretty_range_poly_func(map.range, st_crs(x))
-  x <- pretty_int_func(x, y)
+  x <- pretty_int_func(x, y, "selected predictions")
   x.df <- st_set_geometry(x, NULL)[, data.name]
 
   # Get color scheme info for clipped predictions
