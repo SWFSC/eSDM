@@ -121,6 +121,30 @@ server <- function(input, output, session) {
     }
   )
 
+  output$download_manual <- downloadHandler(
+    filename = function() "eSDM_manual.pdf",
+
+    content = function(file) {
+      withProgress(message = "Downloading manual", value = 0.6, {
+        sample.try <- try(
+          download.file(
+            "https://github.com/smwoodman/eSDM/raw/master/inst/shiny/www/eSDM_manual.pdf",
+            destfile = file, quiet = TRUE, mode="wb"
+          ),
+          silent = TRUE
+        )
+
+        validate(
+          need(sample.try,
+               paste("The manual could not be downloaded; please check",
+                     "your internet connection. If this problem persists, please",
+                     "report this issue at https://github.com/smwoodman/eSDM/issues"))
+        )
+        incProgress(0.4)
+      })
+    }
+  )
+
 
   ### Load model predictions
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)

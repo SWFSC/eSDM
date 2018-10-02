@@ -136,7 +136,8 @@ ui.roadmap <- function() {
                       "In addition, plotting will take longer when predictions span the antimeridian (i.e. decimal 180 degrees).")
             ),
             tags$br(),
-            downloadButton("download_sample_data", "Download sample data")
+            downloadButton("download_sample_data", "Download sample data"),
+            downloadButton("download_manual", "Download manual")
           )
         )
       )
