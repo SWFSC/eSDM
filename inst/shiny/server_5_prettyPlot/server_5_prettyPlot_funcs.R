@@ -17,36 +17,67 @@ pretty_range_poly_func <- function(x, poly.crs) {
 
 ###############################################################################
 # Check if x is completely within y, and if not then clip x by y
-pretty_int_func <- function(x, y) {
+# tmap can plot objects in (180, 360] range only when crs is NA
+pretty_int_func <- function(x, y, x.name) {
   UseMethod("pretty_int_func")
 }
 
-pretty_int_func.sf <- function(x, y) {
+pretty_int_func.sf <- function(x, y, x.name) {
   cover <- suppressMessages(st_covers(y, x))
 
   if (length(cover[[1]]) != nrow(x)) {
-    suppressMessages(st_intersection(x, y))
+    x <- suppressMessages(st_intersection(x, y))
   }
 
-  if (st_bbox(x)[1] > 180) {
-    st_set_crs(x, NA)
+  # Predictions will always be sf object
+  if (identical(x.name, "selected predictions")) {
+    val.message <- paste(
+      "Error: None of the geometry of the", x.name,
+      "is within the specified map range;",
+      "adjust the map range to plot these predictions"
+    )
   } else {
-    x
+    val.message <- paste(
+      "Error: None of the geometry of the", x.name,
+      "is within the specified map range;",
+      "either remove this object or adjust the map range"
+    )
   }
+
+  validate(
+    need(nrow(x) > 0, val.message)
+  )
+
+  x
 }
 
-pretty_int_func.sfc <- function(x, y) {
+pretty_int_func.sfc <- function(x, y, x.name) {
   cover <- suppressMessages(st_covers(y, x))
 
   if (length(cover[[1]]) != length(x)) {
-    suppressMessages(st_intersection(x, y))
+    x <- suppressMessages(st_intersection(x, y))
   }
 
-  if (st_bbox(x)[1] > 180) {
-    st_set_crs(x, NA)
-  } else {
-    x
-  }
+  validate(
+    need(length(x) > 0,
+         paste("Error: None of the geometry of the", x.name,
+               "is within the specified map range;",
+               "either remove this object or adjust the map range"))
+  )
+
+  x
+}
+
+
+# Set crs of objects as NA if their long range is (180, 360] dec deg
+pretty_crsNA_func <- function(x) {
+  y1 <- st_sfc(st_polygon(list(
+    matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)
+  )), crs = 4326)
+  y1 <- st_transform(y1, st_crs(x))
+  lon.180 <- abs(unname(st_bbox(y1))[1])
+
+  if (st_bbox(x)[1] > lon.180) st_set_crs(x, NA) else x
 }
 
 
@@ -54,12 +85,12 @@ pretty_int_func.sfc <- function(x, y) {
 # Calculate color scheme data breaks and legend labels
 pretty_colorscheme_func <- function(x, data.name, map.range, perc, color.num,
                                     leg.perc.esdm, leg.round) {
-
+  # Clip predictions to map range
   y <- pretty_range_poly_func(map.range, st_crs(x))
   x <- pretty_int_func(x, y)
   x.df <- st_set_geometry(x, NULL)[, data.name]
 
-
+  # Get color scheme info for clipped predictions
   if (perc) {
     # Percentages
     data.breaks <- breaks_calc(x.df)
@@ -81,6 +112,5 @@ pretty_colorscheme_func <- function(x, data.name, map.range, perc, color.num,
 
   list(data.breaks, labels.lab.pretty)
 }
-
 
 ###############################################################################

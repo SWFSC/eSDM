@@ -5,15 +5,15 @@
 
 
 ###############################################################################
-#
+# Warnings for if plot dimensions are larger than window size
 pretty_plot_dim_warnings <- reactive({
   plot.width  <- input$pretty_width_inch * 96
   x <- req(session$clientData$output_pretty_plot_out_width)
 
   if (x < plot.width) {
     paste(
-      "Warning: The user-specififed 'Plot width (in)' is",
-      "larger than current the plot window,",
+      "Warning: The user-specified 'Plot width (in)' is",
+      "larger than the current plot window,",
       "and thus some of the plots might not be",
       "properly displayed within the plot window"
     )
@@ -69,8 +69,7 @@ pretty_plot <- eventReactive(input$pretty_plot_event, {
 
 ###############################################################################
 # Top-level function called within renderPlot() in server_render
-# When using tmap arrange spatial plot space is filled,
-#   but a normal tmap call respects provided axis limits
+# tmap_arrange() overrides the margins
 plot_pretty_top <- function(dims, idx.list, params.list) {
   tmap.list <- lapply(params.list, function(k) {
     if (isTruthy(k$list.addobj)) {
@@ -144,7 +143,9 @@ plot_pretty <- function(model.toplot, map.range, background.color,
 
   #----------------------------------------------------------------------------
   # Shape, fill (colorscheme), title, axis labels, margins
-  model.toplot <- pretty_int_func(m.orig, range.poly)
+  model.toplot <- pretty_crsNA_func(
+    pretty_int_func(m.orig, range.poly, "selected predictions")
+  )
 
   if (exists("tmap.obj")) {
     tmap.obj <- tmap.obj +
@@ -229,8 +230,9 @@ plot_pretty <- function(model.toplot, map.range, background.color,
 ###############################################################################
 # Helper function for additional object plotting part of plot_pretty()
 plot_pretty_addobj <- function(i, range.poly, rpoly.mat = NULL) {
-  # browser()
-  i$obj <- pretty_int_func(i$obj, range.poly)
+  i$obj <- pretty_crsNA_func(
+    pretty_int_func(i$obj, range.poly, tolower(i$obj.text))
+  )
 
   if (i$obj.text == "Validation data points") {
     # Special due to 2 colors. Also 'NA' color means that points are white

@@ -47,10 +47,10 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     map.range <- pretty_map_range()
     background.color <- input$pretty_background_color
 
-    list.legend      <- pretty_legend_list()
-    list.titlelab    <- pretty_titlelab_list()
-    list.margin      <- pretty_margin_list()
-    list.tick        <- pretty_tick_list()
+    list.legend   <- pretty_legend_list()
+    list.titlelab <- pretty_titlelab_list()
+    list.margin   <- pretty_margin_list()
+    list.tick     <- pretty_tick_list()
     incProgress(0.1)
 
 
@@ -69,12 +69,14 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       incProgress(0, detail = "")
     }
 
-    model.int <- pretty_int_func(model.toplot, range.poly)
-    validate(
-      need(nrow(model.int) > 0,
-           paste("Error: The selected predictions are outside",
-                 "of the specified map range"))
+    model.int <- pretty_int_func(
+      model.toplot, range.poly, "selected predictions"
     )
+    # validate(
+    #   need(nrow(model.int) > 0,
+    #        paste("Error: The selected predictions are outside",
+    #              "of the specified map range"))
+    # )
     incProgress(0.2)
 
 
