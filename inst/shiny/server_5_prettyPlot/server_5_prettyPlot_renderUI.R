@@ -254,15 +254,18 @@ output$pretty_title_uiOut_text <- renderUI({
 
 ### Longitude start
 output$pretty_tick_lon_start_uiOut_numeric <- renderUI({
-  req(input$pretty_range_xmin, input$pretty_range_xmax)
-
-  if (input$pretty_range_xmin >= input$pretty_range_xmax) {
+  if (!isTruthy(input$pretty_range_xmin) | !isTruthy(input$pretty_range_xmax)) {
     val.def <- 1
 
   } else {
-    num.range <- c(input$pretty_range_xmin, input$pretty_range_xmax)
-    val.def <- base::pretty(num.range, n = 5)
-    val.def <- val.def[dplyr::between(val.def, num.range[1], num.range[2])][1]
+    if (input$pretty_range_xmin >= input$pretty_range_xmax) {
+      val.def <- 1
+
+    } else {
+      num.range <- c(input$pretty_range_xmin, input$pretty_range_xmax)
+      val.def <- base::pretty(num.range, n = 5)
+      val.def <- val.def[dplyr::between(val.def, num.range[1], num.range[2])][1]
+    }
   }
 
   numericInput("pretty_tick_lon_start", tags$h5("Longitude grid line start"),
@@ -272,28 +275,31 @@ output$pretty_tick_lon_start_uiOut_numeric <- renderUI({
 
 ### Longitude interval
 output$pretty_tick_lon_interval_uiOut_numeric <- renderUI({
-  req(input$pretty_range_xmin, input$pretty_range_xmax)
-
-  if (input$pretty_range_xmin >= input$pretty_range_xmax) {
+  if (!isTruthy(input$pretty_range_xmin) | !isTruthy(input$pretty_range_xmax)) {
     val.def <- 1
 
   } else {
-    range.diff <- input$pretty_range_xmax - input$pretty_range_xmin
-    if (range.diff > 360) {
-      temp <- grDevices::axisTicks(
-        usr = c(input$pretty_range_xmin, input$pretty_range_xmax),
-        log = FALSE, nint = 5
-      )
-      val.def <- diff(temp)[1]
-
-    } else if (range.diff >= 50) {
-      val.def <- 10
-    } else if (range.diff >= 10) {
-      val.def <- 5
-    } else if (range.diff >= 5) {
+    if (input$pretty_range_xmin >= input$pretty_range_xmax) {
       val.def <- 1
+
     } else {
-      val.def <- round(range.diff / 5, 1)
+      range.diff <- input$pretty_range_xmax - input$pretty_range_xmin
+      if (range.diff > 360) {
+        temp <- grDevices::axisTicks(
+          usr = c(input$pretty_range_xmin, input$pretty_range_xmax),
+          log = FALSE, nint = 5
+        )
+        val.def <- diff(temp)[1]
+
+      } else if (range.diff >= 50) {
+        val.def <- 10
+      } else if (range.diff >= 10) {
+        val.def <- 5
+      } else if (range.diff >= 5) {
+        val.def <- 1
+      } else {
+        val.def <- round(range.diff / 5, 1)
+      }
     }
   }
 

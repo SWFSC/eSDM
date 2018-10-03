@@ -1,6 +1,10 @@
 ### Functions that return data used in server_5_prettyPlot_plot.R
 ### Get model(s) to plot, generate lists with plotting information
 
+### NOTE ###
+# numericInput()'s convert everything to numeric, so entries or symbols are
+#   coerced to numeric NA
+
 
 ###############################################################################
 # Get set(s) of predictions to plot
@@ -120,6 +124,7 @@ pretty_colorscheme_palette_num <- reactive({
 
   if (perc) {
     color.num <- 10
+
   } else {
     color.num <- val.pretty.color.num()
 
@@ -158,7 +163,7 @@ pretty_colorscheme_palette_num <- reactive({
     color.palette <- dichromat::colorschemes$"DarkRedtoBlue.12"
 
   } else {
-    validate(need(FALSE, "Error: selecting color palette and number failed"))
+    validate("Error: selecting color palette and number failed")
   }
 
   list(color.palette, color.num)
@@ -181,6 +186,7 @@ pretty_colorscheme_list <- reactive({
   perc <- input$pretty_color_perc == 1
   color.palette <- pretty_colorscheme_palette_num()[[1]]
   color.num     <- pretty_colorscheme_palette_num()[[2]]
+
 
   #----------------------------------------------------------
   ### Determine data break points and legend labels
@@ -214,6 +220,11 @@ pretty_colorscheme_list <- reactive({
 ###############################################################################
 ### Generate list of legend arguments
 pretty_legend_list <- reactive({
+  validate(
+    need(!is.na(input$pretty_legend_size),
+         "Error: The legend text size entry must be a number")
+  )
+
   if (input$pretty_legend) {
     if (input$pretty_legend_inout == 1) {
       leg.out <- FALSE
@@ -229,7 +240,7 @@ pretty_legend_list <- reactive({
 
       validate(
         need(dplyr::between(leg.width, 0.1, 0.5),
-             "The 'Legend width' value must be between 0.1 and 0.5")
+             "The 'Legend width' entry must be between 0.1 and 0.5")
       )
     }
 
@@ -256,6 +267,11 @@ pretty_legend_list <- reactive({
 ###############################################################################
 ### Title and axis labels
 pretty_titlelab_list <- reactive({
+  validate(
+    need(!is.na(input$pretty_title_cex) && !is.na(input$pretty_lab_cex),
+         "Error: The title and axis size entries must be numbers")
+  )
+
   list(
     title = input$pretty_title, xlab = input$pretty_xlab,
     ylab = input$pretty_ylab, titlecex = input$pretty_title_cex,
@@ -267,6 +283,16 @@ pretty_titlelab_list <- reactive({
 ###############################################################################
 ### Margin info
 pretty_margin_list <- reactive({
+  temp <- c(
+    input$pretty_margin_in1, input$pretty_margin_in2, input$pretty_margin_in3,
+    input$pretty_margin_in4, input$pretty_margin_out
+  )
+
+  validate(
+    need(!anyNA(temp) && length(temp) == 5,
+         "Error: All margin values must be numbers")
+  )
+
   list(
     input$pretty_margin_in1, input$pretty_margin_in2, input$pretty_margin_in3,
     input$pretty_margin_in4, input$pretty_margin_out
@@ -277,8 +303,17 @@ pretty_margin_list <- reactive({
 ###############################################################################
 ### Generate list of coordinate grid line and label info
 pretty_tick_list <- reactive({
+  validate(
+    need(input$pretty_tick_lon_start < input$pretty_range_xmax,
+         paste("Error: The 'Longitude grid line start' must be less than the",
+               "'Longitude maximum'")),
+    need(input$pretty_tick_lat_start < input$pretty_range_ymax,
+         paste("Error: The 'Latitude grid line start' must be less than the",
+               "'Latitude maximum'"))
+  )
+
   lon.grid.vals <- seq(
-    from = req(input$pretty_tick_lon_start), to = input$pretty_range_xmax,
+    from = input$pretty_tick_lon_start, to = input$pretty_range_xmax,
     by = input$pretty_tick_lon_interval
   )
 
@@ -320,6 +355,11 @@ pretty_addobj_list <- reactive({
         )
       }
     }
+
+    range.poly <- pretty_range_poly_func(
+      pretty_map_range(), pretty_crs_selected()
+    )
+    pretty_int_func(i$obj, range.poly, tolower(i$obj.text))
 
     i
   })

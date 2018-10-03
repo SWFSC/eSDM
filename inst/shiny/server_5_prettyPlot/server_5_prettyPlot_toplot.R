@@ -18,29 +18,32 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     id.used <- pretty_toplot_table()$ID
     validate(
       need(!(input$pretty_toplot_add_id %in% id.used),
-           "Error: each map must have a unique ID")
+           "Error: Each map must have a unique ID")
     )
   }
-  validate(
-    need(input$pretty_range_xmin,
+  validate( #!is.null() in case values are NA
+    need(!is.null(input$pretty_range_xmin) &&
+           !is.null(input$pretty_tick_lon_start),
          paste("Error: Please wait until the parameter inputs below",
-               "have finished loading")) %then%
-      need(input$pretty_tick_lon_start,
-           paste("Error: Please wait until the parameter inputs below",
-                 "have finished loading"))
+               "have finished loading"))
   )
+
+  if (input$pretty_addobj) { # to get check earlier
+    validate(
+      need(vals$pretty.addobj,
+           paste("Error: Please either load additional objects or uncheck",
+                 "the 'Include addition objects box'"))
+    )
+  }
+
+  validate(
+    need(is.numeric(pretty_map_range()) && !anyNA(pretty_map_range()),
+         "Error: All map range entries must be numbers")
+  )
+
 
   # Get/set plotting variables
   withProgress(message = "Processing map parameters", value = 0.3, {
-    #--------------------------------------------------------------------------
-    if (input$pretty_addobj) { # to get check earlier
-      validate(
-        need(vals$pretty.addobj,
-             paste("Error: Please either load additional objects or uncheck",
-                   "the 'Include addition objects box'"))
-      )
-    }
-
     #--------------------------------------------------------------------------
     #------------------------------------------------------
     # Simpler operations; happen first in case user clicks around

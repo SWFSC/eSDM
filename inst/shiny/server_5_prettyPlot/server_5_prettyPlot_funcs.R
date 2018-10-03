@@ -17,7 +17,12 @@ pretty_range_poly_func <- function(x, poly.crs) {
 
 ###############################################################################
 # Check if x is completely within y, and if not then clip x by y
-# tmap can plot objects in (180, 360] range only when crs is NA
+# tmap explanation
+#   tmap can plot objects in [0, 360] range, but only if object has some
+#     area in [0, 180] and 'bbox' arg of tm_shape() is specified
+#   tmap can plot objects in (180, 360] range only when crs is NA,
+#     although this does warnings to be printed. One warning can be taken care
+#     of using 'projection' arg of tm_shape()
 pretty_int_func <- function(x, y, x.name) {
   UseMethod("pretty_int_func")
 }
