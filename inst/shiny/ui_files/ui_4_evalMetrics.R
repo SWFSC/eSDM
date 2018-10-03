@@ -155,6 +155,7 @@ ui.evalMetrics <- function() {
                 )
               )
             ),
+            ############################################################################### Metric descriptions and references
             box(
               title = "Metric Descriptions and References", status = "warning", solidHeader = FALSE, width = 12,
               collapsible = TRUE,

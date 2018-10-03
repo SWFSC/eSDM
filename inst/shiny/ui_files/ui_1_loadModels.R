@@ -10,6 +10,7 @@ ui.loadModels <- function() {
           box(
             title = "Import Predictions", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
             selectInput("model_load_type", tags$h5("Data file type"),  choices = file.type.list2, selected = 1, width = "50%"),
+            ###############################################
             conditionalPanel(
               condition = "input.model_load_type == 1",
               ui.instructions.upload.csv(),
@@ -58,13 +59,12 @@ ui.loadModels <- function() {
                 )
               )
             ),
-
+            ###############################################
             conditionalPanel(
               condition = "input.model_load_type == 2",
               ui.instructions.upload.raster(),
               ui.instructions.pred.raster(),
               fluidRow(
-                ######################## TODO
                 column(6, fileInput("model_gis_raster_file", label.raster.upload, accept = c(".tif", ".img"))),
                 column(
                   width = 5, offset = 1,
@@ -95,6 +95,7 @@ ui.loadModels <- function() {
                 )
               )
             ),
+            ###############################################
             conditionalPanel(
               condition = "input.model_load_type == 3",
               ui.instructions.upload.shp(),
@@ -126,6 +127,7 @@ ui.loadModels <- function() {
                 )
               )
             ),
+            ###############################################
             conditionalPanel(
               condition = "input.model_load_type == 4",
               fluidRow(

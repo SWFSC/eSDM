@@ -37,7 +37,7 @@ source(file.path("ui_files", "ui_7_manual.R"), local = TRUE, echo = FALSE, chdir
 
 
 ###############################################################################
-### UI object for Shiny app
+### UI object for GUI
 ui <- dashboardPage(
   skin = "blue",
   title = "eSDM GUI",
@@ -92,10 +92,10 @@ ui <- dashboardPage(
 
     ### UI code separated by tabs
     tabItems(
-      ui.roadmap(),      # eSDM Roadmap and Load or Save Session
+      ui.roadmap(),      # eSDM Roadmap and Load or Save Workspace
       ui.loadModels(),   # Import Predictions
       ui.overlay(),      # Overlay Predictions
-      ui.createEns(),    # Create Ensemble
+      ui.createEns(),    # Create Ensemble Predictions
       ui.evalMetrics(),  # Evaluation Metrics
       ui.prettyPlot(),   # High Quality Maps
       ui.export(),       # Export Predictions
