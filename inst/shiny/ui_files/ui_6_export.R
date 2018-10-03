@@ -21,11 +21,11 @@ ui.export <- function() {
         box(
           title = "Export Predictions", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
           conditionalPanel(
-            condition = "output.export_tables_oneselected_flag == false",
+            condition = "output.export_tables_onesel_flag == false",
             tags$span(tags$strong("Please select exactly one set of predictions to export"), style = "color: red")
           ),
           conditionalPanel(
-            condition = "output.export_tables_oneselected_flag",
+            condition = "output.export_tables_onesel_flag",
             fluidRow(
               ########################################## Exported file format
               box(

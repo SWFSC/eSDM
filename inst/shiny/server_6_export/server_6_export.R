@@ -58,7 +58,7 @@ output$export_flag <- reactive({
 outputOptions(output, "export_flag", suspendWhenHidden = FALSE)
 
 ### Flag for if one of orig, overlaid, and ensemble model preds are selected
-output$export_tables_oneselected_flag <- reactive({
+output$export_tables_onesel_flag <- reactive({
   x <- input$export_table_orig_out_rows_selected
   y <- input$export_table_over_out_rows_selected
   z <- input$export_table_ens_out_rows_selected
@@ -67,8 +67,7 @@ output$export_tables_oneselected_flag <- reactive({
   #   user selects a model from a different table
   sum(!sapply(list(x, y, z), is.null)) >= 1
 })
-outputOptions(output, "export_tables_oneselected_flag",
-              suspendWhenHidden = FALSE)
+outputOptions(output, "export_tables_onesel_flag", suspendWhenHidden = FALSE)
 
 ### Flag for if sdm will be exported in non-long/lat crs
 export_nonll <- reactive({
@@ -245,16 +244,6 @@ export_model_selected_proj_format <- reactive({
       Long = data.out.coords[, 1], Lat = data.out.coords[, 2],
       st_set_geometry(model.selected, NULL)
     )
-
-    # # Add centroid coordinates in crs.ll if desired
-    # if (export_nonll() && input$export_csv_ll) {
-    #   x.cent.ll <- st_transform(model.selected.centroid, 4326)
-    #   if (input$export_proj_360) x.cent.ll <- preview360_split(x.cent.ll)
-    #   data.out.coords.ll <- do.call(rbind, st_geometry(x.cent.ll))
-    #
-    #   data.out <- cbind(data.out, Long_ll = data.out.coords.ll[, 1],
-    #                     Lat_ll = data.out.coords.ll[, 2])
-    # }
 
     data.out
 

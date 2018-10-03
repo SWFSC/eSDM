@@ -178,8 +178,8 @@ create_ens_reg_add <- eventReactive(
   {
     validate(
       need(input$create_ens_reg_model,
-           paste("Error: Please select at least one overlaid model",
-                 "to which to apply weight polygon"))
+           paste("Error: Please select at least one set of overlaid",
+                 "predictions to which to apply weight polygon"))
     )
 
     #------------------------------------------------------
@@ -188,7 +188,10 @@ create_ens_reg_add <- eventReactive(
     overlaid.selected <- sapply(overlaid.list, function(i) as.numeric(i[[2]]))
 
     poly.filetype <- as.numeric(input$create_ens_reg_type)
-    poly.filetype.txt <- switch(poly.filetype, "CSV", "Raster", "SHP", "GDB")
+    # poly.filetype.txt <- switch(poly.filetype, "CSV", "Raster", "SHP", "GDB")
+    poly.filetype.txt <- switch(
+      poly.filetype, "Excel .csv", "Shapefile", "Feature class"
+    )
 
 
     #------------------------------------------------------
@@ -222,6 +225,10 @@ create_ens_reg_add <- eventReactive(
 
     } else { #poly.filetype == 3
       # .gdb filetype
+      validate( #Best we can do with current .gdb loading system
+        need(input$create_ens_reg_gdb_name,
+             "Error: Please upload a file geodatabase feature class")
+      )
       poly.filename <- create_ens_reg_gdb_read()[[2]]
       poly.sfc      <- create_ens_reg_gdb_read()[[1]]
       weight.val <- ifelse(
@@ -258,7 +265,7 @@ create_ens_reg_add <- eventReactive(
       stopifnot(length(z) == 1)
       validate(
         need(length(z[[1]]) > 0,
-             paste("Error: the provided weight polygon does not overlap",
+             paste("Error: The provided weight polygon does not overlap",
                    "with overlaid model", o.idx))
       )
     })
@@ -271,7 +278,7 @@ create_ens_reg_add <- eventReactive(
           x <- suppressMessages(st_intersection(poly.sf, poly.loaded))
           validate(
             need(nrow(x) == 0,
-                 paste("Error: Cannot load weight polygon because",
+                 paste("Error: The GUI cannot load weight polygon because",
                        "polygon overlaps with weight polygon number",
                        poly.idx, "of overlaid model", o.idx))
           )
@@ -329,7 +336,7 @@ outputOptions(output, "create_ens_reg_csv_flag",
 ### Load and process
 create_ens_reg_csv_read <- reactive({
   file.in <- input$create_ens_reg_csv_file
-  validate(need(file.in, "Error: please load a .csv file "))
+  validate(need(file.in, "Error: Please upload a .csv file "))
 
   # Ensure file extension is .csv (RStudio type, browser type)
   if (!(file.in$type %in% c("text/csv", "application/vnd.ms-excel"))) return()
@@ -340,7 +347,7 @@ create_ens_reg_csv_read <- reactive({
 })
 
 create_ens_reg_csv_process <- reactive({
-  withProgress(message = 'Loading csv polygon', value = 0.6, {
+  withProgress(message = 'Processing csv polygon', value = 0.6, {
     csv.poly.list <- create_ens_reg_csv_read()
     csv.poly.filename <- csv.poly.list[[1]]
     csv.poly.data <- csv.poly.list[[2]]
@@ -379,7 +386,7 @@ create_ens_reg_csv_process <- reactive({
 # ### Load and process
 # create_ens_reg_raster_read <- reactive({
 #   file.in <- input$create_ens_reg_raster_file
-#   validate(need(file.in, "Error: please load a raster file"))
+#   validate(need(file.in, "Error: please upload a raster file"))
 #
 #   # Ensure file extension is .tif
 #   if (!file.in$type %in% c("image/tiff", "")) return()
@@ -440,9 +447,9 @@ outputOptions(
 ### Load and process
 create_ens_reg_shp_read <- reactive({
   files.in <- input$create_ens_reg_shp_files
-  validate(need(files.in, "Error: please load the files of a shapefile"))
+  validate(need(files.in, "Error: Please upload the files of a shapefile"))
 
-  withProgress(message = "Loading GIS shapefile", value = 0.3, {
+  withProgress(message = "Processing GIS shapefile", value = 0.3, {
     gis.file.shp <- read.shp.shiny(files.in)
     incProgress(0.4)
 
@@ -492,7 +499,7 @@ create_ens_reg_gdb_read <- eventReactive(
     gdb.path <- input$create_ens_reg_gdb_path
     gdb.name <- input$create_ens_reg_gdb_name
 
-    withProgress(message = "Loading GIS .gdb file", value = 0.3, {
+    withProgress(message = "Processing GIS .gdb file", value = 0.3, {
       gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),
                           silent = TRUE)
       incProgress(0.4)

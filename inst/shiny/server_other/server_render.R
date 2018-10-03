@@ -151,12 +151,12 @@ output$overlay_overlay_all_text <- renderText({
   overlay_all()
 })
 
-### Message detailing that overlaid models are created
+### Message detailing that overlaid predictions have been created
 output$overlay_overlaid_models_message <- renderUI({
   req(length(vals$overlaid.models) > 0)
 
   HTML(paste0(
-    "Overlaid models have been created using the following overlay options:",
+    "Overlaid predictions have been created using the following overlay options:",
     tags$br(),
     paste("1)", vals$overlay.info[[2]]) ,
     tags$br(),
@@ -206,7 +206,7 @@ output$create_ens_base_message <- renderText({
   req(length(vals$overlaid.models) > 0)
 
   paste(
-    "Overlaid models were created using the geometry of the",
+    "Overlaid predictions were created using the geometry of the",
     paste0("'", vals$overlay.info[[1]], "'"), "SDM as the base geometry.",
     "See the 'Overlay Predictions' tab for other overlay information."
   )
@@ -233,12 +233,12 @@ output$create_ens_weights_metric_table_out <- renderTable({
   create_ens_weights_metric_table()
 }, rownames = FALSE, digits = 3)
 
-### Table of if overlaid models have spatial pixel weights
+### Table of if overlaid preds have spatial pixel weights
 output$create_ens_weights_pix_table_out <- renderTable({
   create_ens_weights_pix_table()
 }, rownames = FALSE, align = "lcc")
 
-### Table summarizing overlaid models and their polygon weights
+### Table summarizing overlaid preds and their polygon weights
 output$create_ens_reg_table_out <- renderTable({
   create_ens_reg_table()
 }, rownames = FALSE)

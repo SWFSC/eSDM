@@ -71,11 +71,11 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   # All validating done here so all messages are displayed at same time
   validate(
     need(inherits(eval.data, "sf"),
-         paste("Error: Please load validation data in order",
-               "to calculate model evaluation metrics")),
+         paste("Error: Please import validation data in order",
+               "to calculate evaluation metrics")),
     need(models.idx.any,
-         paste("Error: Please select at least one model for which ",
-               "to calculate model evaluation metrics")),
+         paste("Error: Please select at least one set of predictions for which ",
+               "to calculate evaluation metrics")),
     need(!is.null(which.metrics),
          "Error: Please select at least one evaluation metric to calculate")
   )
@@ -88,7 +88,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 
     eval.results <- mapply(function(m, idx) {
       eval.data <- st_transform(eval.data, st_crs(m))
-      # eSDM function removes NA predictions
+      # eSDM::evaluation_metrics() removes NA predictions
 
       incProgress(
         amount = 0.8 / m.num,
