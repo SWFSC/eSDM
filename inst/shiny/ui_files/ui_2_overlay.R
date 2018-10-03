@@ -190,7 +190,7 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("1) Overlay options: study area and erasing polygons"),
-                      tags$h5("Import these polygons in their respecitve boxes: 'Import Study Area Polygon' and 'Import Erasing Polygon'."),
+                      tags$h5("Import these polygons in their respecitve sections: 'Import Study Area Polygon' and 'Import Erasing Polygon'."),
                       helpText("Note that the study area polygon performs the same function as the 'clip feature' in the",
                                tags$a(href = "http://pro.arcgis.com/en/pro-app/tool-reference/analysis/clip.htm", "clip tool"),
                                "in ArcGIS, while the erasing polygon performs the same function as the 'erase feature' in the",
@@ -198,7 +198,7 @@ ui.overlay <- function() {
                                "."),
                       tags$br(),
                       tags$strong("2) Overlay options: base geometry"),
-                      tags$h5("Choose the base geometry in the 'Imported Original Predictions' box.")
+                      tags$h5("Specify the base geometry in the 'Imported Original Predictions' table.")
                     ),
                     box(
                       width = 12,
@@ -240,7 +240,7 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("4) Overlay options: percent overlap threshold"),
-                      tags$h5("Specify the percent overlap threshold"),
+                      tags$h5("Specify the percent overlap threshold."),
                       helpText("The percent overlap threshold is the minimum percentage of a base geometry polygon",
                                "that must overlap with overlaid prediction polygons.",
                                "All base geometry polygons with an overlap percentage less than this threshold",
@@ -253,8 +253,8 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("5) Perform overlay"),
-                      helpText(tags$strong("Reminder: imported study area and land polygons will be used during",
-                                           "the overlay process. This process may take several minutes.")),
+                      helpText(tags$strong("Reminder: imported study area and erasing polygons will be used during",
+                                           "will overwrite previously created overlaid predictions.")),
                       actionButton("overlay_create_overlaid_models_modal", "Overlay all predictions onto the specified base geometry"),
                       textOutput("overlay_overlay_all_text"),
                       tags$br(),
@@ -279,8 +279,9 @@ ui.overlay <- function() {
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 1",
                         helpText("The base geometry will be outlined in black while, if applicable, the erasing and study area polygons ",
-                                 "will be filled in tan and outlined in red, respectively. The erasing polygon will be clipped to the",
-                                 "extent of the base geoemtry. Note that if predictions were made at a high resolution,",
+                                 "will be filled in tan and outlined in red, respectively.",
+                                 "The erasing polygon will be clipped to the extent of the base geometry.",
+                                 "Note that if predictions were made at a high resolution,",
                                  "the preview may appear to be completely black when zoomed out.",
                                  "In addition, if the any base geometry polygons that span the antimeridian (i.e. 180 decimal degrees",
                                  "or their equivalent in the specified coordinate system) will appear to be split at the antimeridian,",

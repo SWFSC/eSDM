@@ -77,8 +77,8 @@ ui.loadModels <- function() {
               ),
               conditionalPanel(
                 condition = "output.read_model_gis_raster_flag",
-                helpText("Since imported rasters can only have one data layer, that layer",
-                         "is treated as the prediction data and there is no weight data"),
+                helpText("Imported rasters can only have one data layer, and that layer",
+                         "is treated as the prediction data. Thus, there is no weight data"),
                 box(
                   width = 12,
                   fluidRow(

@@ -367,7 +367,7 @@ ui.prettyPlot <- function() {
                     conditionalPanel(
                       condition = "input.pretty_tick",
                       helpText("Grid line start and interval units are the same as the units of the specified coordinate system.",
-                               "The range of these values must adhere to the requirements specfied in the map range section.",
+                               "The range of these values must adhere to the requirements specified in the map range section.",
                                tags$br(),
                                "Size and width values are relative to 1 (the default size)"),
                       fluidRow(

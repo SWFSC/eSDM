@@ -311,7 +311,7 @@ ui.createEns <- function() {
                                 helpText(tags$strong("Weighted ensembling method:"),
                                          "Calculate the weighted mean of all corresponding predictions"),
                                 helpText(tags$strong("Evaluation metric method:"),
-                                         "The relative weights are the metric values rescalued so that the maximum value is one."),
+                                         "The relative weights are the metric values rescaled so that the maximum value is one."),
                                 uiOutput("create_ens_weights_metric_uiOut_text"),
                                 fluidRow(
                                   column(4, uiOutput("create_ens_weights_metric_uiOut_radio")),
@@ -332,7 +332,7 @@ ui.createEns <- function() {
                                          "when each set of original predictions was initially imported into the GUI.",
                                          "If a set of overlaid predictions does not have pixel-level spatial weights, ",
                                          "then the row corresponding to that set will say \"No\" in the table below and",
-                                         "those predictions will have a weight of one when the enseble is created"),
+                                         "those predictions will have a weight of one when the ensemble is created"),
                                 tableOutput("create_ens_weights_pix_table_out")
                               )
                             )

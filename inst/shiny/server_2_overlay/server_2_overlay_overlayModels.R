@@ -28,7 +28,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   ### Reset/hide reactive values, preview plots, and eval metrics
   validate(
     need(overlay_reset(),
-         "There was an error in the eSDM, please reload the tool")
+         "An error occurred; please restart the GUI and report an issue")
   )
 
   #########################################################
@@ -39,20 +39,21 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   validate(
     need(length(base.idx) == 1,
-         paste("Error: Please select exactly one set of predictions",
-               "from the table to use as the base geometry")),
+         paste("Error: Select exactly one set of predictions",
+               "from the 'Imported Original Predictions' table",
+               "to use as the base geometry")),
     need(models.num > 1,
          paste("Error: You must import more than one set of predictions",
-               "into the GUI before overlaying")),
+               "into the GUI to overlay predictions")),
     if (input$overlay_bound) {
       need(vals$overlay.bound,
            paste("Error: Please either uncheck the 'study area polygon'",
-                 "checkbox or load a study area polygon"))
+                 "checkbox or import a study area polygon"))
     },
     if (input$overlay_land) {
       need(vals$overlay.land,
            paste("Error: Please either uncheck the 'erasing polygon'",
-                 "checkbox or load an erasing polygon"))
+                 "checkbox or import an erasing polygon"))
     }
   )
 
@@ -68,7 +69,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     ### Transform model predictions as necessary
     # Polys and base transformed in overlay_create_base_sf() suite of reac funcs
     # Polygons have already been checked for if they're valid
-    incProgress(0, detail = "Projecting model predictions if necessary")
+    incProgress(0, detail = "Projecting predictions if necessary")
 
     if (identical(overlay_crs(), crs.ll)) {
       models.preoverlay <- vals$models.ll[-base.idx]
@@ -86,7 +87,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     #--------------------------------------------
     ### Create base geometry (base.sfc) and 1st overlaid model predictions (base.sf)
     incProgress(0.9 / prog.total, detail = paste(
-      "Making the base geometry and thus also overlaying original model", base.idx
+      "Making the base geometry and thus also overlaying Original", base.idx
     ))
 
     base.sf <- overlay_create_base_sf() %>%
@@ -144,7 +145,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     models.overlaid <- mapply(function(samegeo.flag.ind, sdm, sdm.num) {
       incProgress(
         0.9 / prog.total,
-        detail = paste("Overlaying original model", sdm.num)
+        detail = paste("Overlaying Original", sdm.num)
       )
 
       if (samegeo.flag.ind) {
@@ -159,7 +160,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
         validate(
           need(identical(base.sfc, st_geometry(sf.temp)),
-               paste("Error: the eSDM was unable to overlay original model",
+               paste("Error: the eSDM was unable to overlay Original",
                      sdm.num))
         )
 

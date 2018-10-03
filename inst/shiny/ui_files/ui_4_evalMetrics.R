@@ -168,7 +168,7 @@ ui.evalMetrics <- function() {
                   conditionalPanel(
                     condition = "input.eval_metrics_description == 1",
                     helpText(
-                      tags$p(tags$strong("AUC decription:"),
+                      tags$p(tags$strong("AUC description:"),
                              "The area under the receiver operating curve (AUC) of the ROCR plot is a threshold independent metric",
                              "that evaluates the percentage of the time a random selection from the positive group will have a score",
                              "greater than a random selection from the negative class (Deleo 1993)."),
@@ -180,11 +180,11 @@ ui.evalMetrics <- function() {
                   conditionalPanel(
                     condition = "input.eval_metrics_description == 2",
                     helpText(
-                      tags$p(tags$strong("TSS decription:"),
+                      tags$p(tags$strong("TSS description:"),
                              "The true skill statistic (TSS) is a threshold dependent measure, and thus is calculated with respect",
                              "to a density cut-off, where densities above the cutoff are considered presence, and vice versa.",
                              "TSS = (true positive rate) + specificity (true negative rate) - 1, ",
-                             "and the maximum TSS for all posible density cutoffs is reported.",
+                             "and the maximum TSS for all possible density cutoffs is reported.",
                              "TSS is recommended for use in place of kappa because kappa",
                              "depends on prevalence while TSS does not."),
                       "See", tags$a(HTML(paste("Allouche", tags$em("et al."), "2006")),
@@ -195,7 +195,7 @@ ui.evalMetrics <- function() {
                   conditionalPanel(
                     condition = "input.eval_metrics_description == 3",
                     helpText(
-                      tags$p(tags$strong("RMSE decription:"), "The root mean squared error  (RMSE) is a metric that measures the",
+                      tags$p(tags$strong("RMSE description:"), "The root mean squared error  (RMSE) is a metric that measures the",
                              "difference between predicted response variable values and observed values.",
                              "RMSE requires count data rather than presence/absence data. To calculate RMSE:",
                              "for each validation data point, subtract the observed abundance from the predicted abundance and",

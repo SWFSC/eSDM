@@ -1,4 +1,4 @@
-### Items that are rendered for Load Predictions tab
+### Items that are rendered for Import Predictions tab
 
 
 ###############################################################################
@@ -176,9 +176,9 @@ output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
 
 
 ###############################################################################
-# Create buttons for finishing loadinng models/adding models to app
-#   These are here so that 'Model predictions loaded...' message resets
-#   if a new file is loaded
+# Create buttons for importing predicitons into the GUI
+#   These are here so that 'Predictions imported...' message resets
+#   if a new file is uploaded
 
 ### CSV
 output$model_create_csv_uiOut_button <- renderUI ({
@@ -206,7 +206,7 @@ output$model_create_gis_gdb_uiOut_button <- renderUI ({
 
 
 ###############################################################################
-# Loaded Model Predicitons section
+# Imported Predictions section
 
 ### actionButton for interactive preview
 output$model_preview_interactive_execute_uiOut_button <- renderUI({

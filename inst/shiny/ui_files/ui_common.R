@@ -69,7 +69,7 @@ ui.instructions.upload.gdb <- function() {
     helpText(
       "Enter the full file path of the file geodatabase that contains the desired file geodatabase feature class.",
       "The path and the name of the feature class should be exactly as they appear in ArcCatalog.",
-      "The GUI does not currently support importing a file geodatabse raster dataset or data from an ESRI personal geodatabase.",
+      "The GUI does not currently support importing a file geodatabase raster dataset or data from an ESRI personal geodatabase.",
       "Note that larger files will take longer to load."
     )
   )
@@ -86,7 +86,7 @@ ui.instructions.pred.csv <- function() {
     tags$em("Column with longitude data"), "and", tags$em("Column with latitude data:"),
     "Longitude and latitude points must be in WGS 84 geographic coordinates and equally spaced in decimal degrees.",
     tags$br(),
-    tags$em("Column with prediciton data:"), "Please ensure that missing prediction values are one of the following:",
+    tags$em("Column with prediction data:"), "Please ensure that missing prediction values are one of the following:",
     "'NA', 'NaN', 'N/A', 'n/a', 'na', 'Null', blank, or a negative number.",
     tags$br(),
     tags$em("Prediction value type:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
@@ -107,7 +107,7 @@ ui.instructions.pred.raster <- function() {
 
 ui.instructions.pred.shp.gdb <- function() {
   helpText(
-    tags$em("Column with prediciton data:"), "Please ensure that missing prediction values are one of the following:",
+    tags$em("Column with prediction data:"), "Please ensure that missing prediction values are one of the following:",
     "'NA', 'NaN', 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.",
     tags$br(),
     tags$em("Prediction value type:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
@@ -197,13 +197,14 @@ ui.error.upload.gdb <- tags$strong(
 ###########################################################
 # Message displayed if tab functionality can't be used yet
 
-### No original predicitons have been imported
+### No original predictions have been imported
 # ui.no.model.pred.loaded1
 ui.notice.no.pred.original <- function() {
   box(
     width = 4,
     tags$h4("No original predictions have been imported"),
-    tags$h5("Please import original predictions or load a saved worksapce to use this section of the GUI")
+    tags$h5("Please import original predictions or load a saved workspace",
+            "with imported original predictions to use this section of the GUI")
   )
 }
 
@@ -213,7 +214,8 @@ ui.notice.no.pred.overlaid <- function(box.width = 4) {
   box(
     width = box.width,
     tags$h4("No overlaid predictions have been created"),
-    tags$h5("Please create overlaid predictions or load a saved worksapce to use this section of the GUI")
+    tags$h5("Please create overlaid predictions or load a saved workspace",
+            "with overlaid predictions to use this section of the GUI")
   )
 }
 

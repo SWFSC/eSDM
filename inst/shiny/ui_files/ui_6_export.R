@@ -63,7 +63,7 @@ ui.export <- function() {
                     helpText(tags$u("Description:"),
                              "Within the KML or KMZ file, predictions will be represented as polygons with a red outline.",
                              "Currently you cannot color-code the polygons by density value. The polygons will have their respective",
-                             "prediction (density) and weight values as decriptions.",
+                             "prediction (density) and weight values as descriptions",
                              tags$br(), tags$br(),
                              tags$u("Filename:"), "Extension must be '.kml' if \"Export as KML\" is selected and",
                              "'.kmz' if \"Export as KMZ\" is selected.")
