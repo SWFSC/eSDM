@@ -33,8 +33,10 @@ model_csv_inf_func <- function(pred.type, pred.na.idx, weight.idx, weight.na.idx
 }
 
 ###############################################################################
-# Determine the resolution of provided gis model
+# Attempt to determine the resolution of provided GIS predictions
 gis_res_calc <- function(sf.ll, sf.orig) {
+  #----------------------------------------------------------------------------
+  # Checks
   validate(
     need(inherits(sf.ll, "sf") & inherits(sf.orig, "sf"),
          "Error: gis.res.calc(): inputs must be sf objects"),
@@ -42,6 +44,7 @@ gis_res_calc <- function(sf.ll, sf.orig) {
          "Error: gis.res.calc(): first input must have crs = crs.ll")
   )
 
+  #----------------------------------------------------------------------------
   ### Get extents of individual polys in original projection and units if apl
   crs.orig <- st_crs(sf.orig)$proj4string
   crs.orig.m  <- grepl("+units=m", crs.orig)
@@ -73,6 +76,7 @@ gis_res_calc <- function(sf.ll, sf.orig) {
     res.orig <- NA
   }
 
+  #----------------------------------------------------------------------------
   ### Get extents of individual polygons in original crs.ll (WGS84)
   res.ll <- sapply(list(sf.ll), function(sf.curr) {
     sf.bbox <- lapply(st_geometry(sf.curr), st_bbox)
@@ -94,7 +98,8 @@ gis_res_calc <- function(sf.ll, sf.orig) {
     }
   })
 
-  ## Return appropriate object
+  #----------------------------------------------------------------------------
+  ### Return appropriate object
   if (is.na(res.orig) & !is.na(res.ll)) {
     res.ll
 

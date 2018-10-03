@@ -72,7 +72,7 @@ model_csv_NA_idx_weight <- reactive({
 # Load and process data from csv file, and then add relevant data to vals
 create_sf_csv_data <- reactive({
   #######################################################
-  ### Load and process data and input variables
+  ### Upload and process data and input variables
   lon.idx <- as.numeric(input$model_csv_names_lon)
   lat.idx <- as.numeric(input$model_csv_names_lat)
   pred.idx <- as.numeric(input$model_csv_names_pred)
@@ -101,8 +101,10 @@ create_sf_csv_data <- reactive({
 
 
 ###############################################################################
+# Create geometry of predictions from centroid coordinates
 create_sf_csv_sfc <- reactive({
-  withProgress(message = "Creating polygons for .csv file", value = 0.3, {
+  withProgress(message = "Creating geometry for .csv predictions", value = 0.3, {
+    #--------------------------------------------------------------------------
     lon.idx <- as.numeric(input$model_csv_names_lon)
     lat.idx <- as.numeric(input$model_csv_names_lat)
     csv.data <- read_model_csv()[[2]][, c(lon.idx, lat.idx)]
@@ -112,10 +114,10 @@ create_sf_csv_sfc <- reactive({
       purrr::set_names(c("Lon", "Lat", "Pixels"))
 
 
-    #######################################################
-    # Create sf object
+    #--------------------------------------------------------------------------
+    # Create sfc object
 
-    #####################################
+    #------------------------------------------------------
     ### a) Initial check to see if there are any obvious data issues
     validate(
       need(!(lon.idx == lat.idx),
@@ -142,7 +144,7 @@ create_sf_csv_sfc <- reactive({
     )
 
 
-    #####################################
+    #------------------------------------------------------
     ### b) Get cell size and (if nec) adjust points to center of grid cells
     # Get cell size
     table.l <- table(round(diff(sort(csv.data$Lon)), 5))
@@ -186,9 +188,9 @@ create_sf_csv_sfc <- reactive({
     }
 
 
-    #####################################
-    ### c) Convert points to a list of sfc_POLYGONs
-    # If polygons are all in range 180-360, convert them to -180 to 180 range
+    #------------------------------------------------------
+    ### c) Convert points to sfc object
+    # If coords are all in range 180-360, convert them to -180 to 180 range
     if ((min(csv.data$Lon, na.rm = TRUE) - (cell.lw / 2)) > 180) {
       csv.data$Lon <- csv.data$Lon - 360
     }
@@ -206,24 +208,28 @@ create_sf_csv_sfc <- reactive({
     incProgress(0.3)
 
 
-    #####################################
+    #------------------------------------------------------
     ### d) Perform final checks
     # Ensure that sfc object is in -180 to 180 longitude range
+    # No check_valid() needed here
     sfc.poly <- check_dateline(sfc.poly, progress.detail = TRUE)
     incProgress(0.3)
 
+
+    #--------------------------------------------------------------------------
     list(sfc.poly, cell.lw)
   })
 })
 
 
 ###############################################################################
+# Create sf object from data and sfc object
 create_sf_csv <- eventReactive(input$model_create_csv, {
   csv.data <- create_sf_csv_data()
   csv.sfc <- create_sf_csv_sfc()[[1]]
 
   # Combine data df and sfc object
-  withProgress(message = "Combining .csv file data and polygons", value = 0.6, {
+  withProgress(message = "Importing predictions from .csv file", value = 0.6, {
     if (nrow(csv.data) == length(csv.sfc)) {
       sf.load.ll <- st_sf(
         csv.data[, 3:5], geometry = csv.sfc, agr = "constant"
@@ -241,12 +247,13 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
     model.name <- read_model_csv()[[1]]
     data.names <- model_csv_names_selected()
 
-    #### Code common to csv, raster, and gis_shp/gis_gdb functions ####
+    ###### Code common to all importing functions ######
     source(
       file.path("server_1_loadModels", "server_1_loadModels_create_local.R"),
       local = TRUE, echo = FALSE, chdir = TRUE
     )
+    ####################################################
 
-    "Model predictions loaded from .csv file"
+    "Predictions imported from .csv file"
   })
 })

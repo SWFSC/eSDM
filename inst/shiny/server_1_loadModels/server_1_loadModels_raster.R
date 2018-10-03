@@ -1,4 +1,4 @@
-### Code for reading in/loading predictions from a raster (.tif file)
+### Code for importing predictions from a raster (.tif file)
 
 
 ###############################################################################
@@ -11,15 +11,15 @@ model_gis_raster_NA_idx_pred <- reactive({
 ###############################################################################
 # Load and process data from raster
 
-### Read in data and return SPolyDFs
+### Read raster data and start processing
 read_model_gis_raster <- reactive({
   file.in <- req(input$model_gis_raster_file)
 
-  ### Ensure file extension is .tif
+  ### Ensure file extension is .tif or .img (recognized as "")
   if (!(file.in$type %in% c("image/tiff", ""))) return()
 
-  ### Load and (if possible process raster)
-  withProgress(message = "Loading GIS raster", value = 0.4, {
+  ### Read raster and start processing
+  withProgress(message = "Uploading raster", value = 0.4, {
     gis.file.raster <- try(
       raster(file.in$datapath, band = input$model_gis_raster_band),
       silent = TRUE
@@ -45,10 +45,9 @@ read_model_gis_raster <- reactive({
 })
 
 
-### Flag for if the raster was fully loaded and processed
+### Flag for if the raster was properly read and processed
 output$read_model_gis_raster_flag <- reactive({
-  if (is.null(read_model_gis_raster())) FALSE
-  else TRUE
+  if (is.null(read_model_gis_raster())) FALSE else TRUE
 })
 outputOptions(output, "read_model_gis_raster_flag", suspendWhenHidden = FALSE)
 
@@ -58,7 +57,7 @@ outputOptions(output, "read_model_gis_raster_flag", suspendWhenHidden = FALSE)
 create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
   sf.load.raster <- read_model_gis_raster()[[1]]
 
-  withProgress(message = "Adding model predictions to app", value = 0.2, {
+  withProgress(message = "Importing predictions from raster", value = 0.2, {
     # Check that pred and weight data are valid
     sf.load.raster <- check_pred_weight(
       sf.load.raster, 1, NA, model_gis_raster_NA_idx_pred(), NA
@@ -116,15 +115,15 @@ create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
     incProgress(0.1)
 
 
-    #### Code common to csv, raster, and gis_shp/gis_gdb functions ####
+    ###### Code common to all importing functions ######
     source(
       file.path("server_1_loadModels", "server_1_loadModels_create_local.R"),
       local = TRUE, echo = FALSE, chdir = TRUE
     )
-    ###################################################################
+    ####################################################
   })
 
-  "Model predictions loaded from raster"
+  "Predictions imported from raster"
 })
 
 ###############################################################################

@@ -1,8 +1,9 @@
-### Code for loading models and converting them to sf objects
+### Code for importing and converting them to sf objects
+# Note 'importing predictions' was 'loading models' when code was first written
 
 
 ###############################################################################
-### Flag for if any model predictions are loaded
+### Flag for if any predictions are imported
 output$loadModels_display_flag <- reactive({
   length(vals$models.ll) > 0
 })
@@ -16,13 +17,13 @@ outputOptions(output, "loaded_models_selected_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
-### Delete selected model
+### Delete selected predictions
 model_remove <- eventReactive(input$model_remove_execute, {
   idx <- as.numeric(input$models_loaded_table_rows_selected)
   req(length(idx) > 0)
 
   #########################################################
-  ### Remove the reactiveValue info for selected set(s) of model predicitons
+  ### Remove the reactiveValue info for selected set(s) of predicitons
   vals$models.ll <- vals$models.ll[-idx]
   vals$models.orig <- vals$models.orig[-idx]
   vals$models.names <- vals$models.names[-idx]
@@ -37,7 +38,7 @@ model_remove <- eventReactive(input$model_remove_execute, {
 
 
   #########################################################
-  # Handle relevant places this sdm was used/displayed
+  # Handle relevant places these preds was used/displayed
 
   ### If these predictions were interactively previewed, remove preview
   ###   Else, adjust vals idx
@@ -68,13 +69,13 @@ model_remove <- eventReactive(input$model_remove_execute, {
       vals$models.plot.idx <- vals$models.plot.idx - idx.adjust
       validate(
         need(all(vals$models.plot.idx > 0),
-             "Error: While deleting original model(s), error 1b")
+             "Error: While deleting original predictions(s), error 1b")
       )
     }
   }
 
-  ### Remove evaluation metrics if they're calculated for original model preds
-  # TODO: make this so it only removes the metrics of models being removed
+  ### Remove evaluation metrics if they're calculated for original preds
+  # TODO: make this so it only removes the metrics of preds being removed
   if (isTruthy(vals$eval.models.idx)) {
     if (!is.null(vals$eval.models.idx[[1]])){
       vals$eval.models.idx <- NULL
@@ -88,7 +89,7 @@ model_remove <- eventReactive(input$model_remove_execute, {
 
 
 ###############################################################################
-### Reset 'Prediction value type' to 'Relative' if new file is loaded
+### Reset 'Prediction value type' to 'Relative' if new file is uploaded
 observe({
   input$model_csv_file
   updateSelectInput(session, "model_csv_pred_type", selected = 2)

@@ -2,12 +2,11 @@
 
 
 ### Inputs: objects that must be defined before this code chunk is called
-# sf.load.ll       # Model predictions with crs = crs.ll
-# sf.load.orig     # Model predictions in original projection
-# spdf.pix         # Model predictions as a SpatialPixelsDF object
+# sf.load.ll       # Predictions with crs = crs.ll
+# sf.load.orig     # Predictions in original projection
 # pred.type        # Prediction type
-# model.res        # Resolution of model grid
-# model.name       # File name of model predictions
+# model.res        # Resolution of predictions
+# model.name       # File name of predictions
 # data.names       # Names of data columns with predictions and weights
 
 

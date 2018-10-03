@@ -1,9 +1,8 @@
-### Code for reading in and processing model predictions from .shp or .gdb
+### Code for importing predictions from .shp or .gdb file
 
 
 ###############################################################################
-# gis.model.check() and gis.res.calc() are in ensLoadModels_funcs.R
-
+# gis.model.check() and gis.res.calc() are in '..._loadModels_func.R'
 
 ###############################################################################
 # Reactive functions for renderUIs
@@ -69,13 +68,13 @@ model_gis_gdb_NA_idx_weight <- reactive({
 
 
 ###############################################################################
-# Load and process data from shapefile
+# Upload and process data from shapefile
 
 ### Read in data and return sf object
 read_model_gis_shp <- reactive({
   req(input$model_gis_shp_files)
 
-  withProgress(message = "Loading GIS shapefile", value = 0.4, {
+  withProgress(message = "Uploading shapefile", value = 0.4, {
     gis.file.shp <- read.shp.shiny(input$model_gis_shp_files)
     incProgress(0.6)
   })
@@ -89,7 +88,7 @@ read_model_gis_shp <- reactive({
   }
 })
 
-### Flag for if the shapefile was fully loaded and processed
+### Flag for if the shapefile was properly uploaded
 output$read_model_gis_shp_flag <- reactive({
   isTruthy(read_model_gis_shp())
 })
@@ -97,7 +96,7 @@ outputOptions(output, "read_model_gis_shp_flag", suspendWhenHidden = FALSE)
 
 
 #######################################
-### Process data and add it to list.all
+### Process shapefile data
 create_sf_gis_shp <- eventReactive(input$model_create_gis_shp, {
   # Prep for create_local code
   gis.file <- read_model_gis_shp()[[1]]
@@ -114,25 +113,26 @@ create_sf_gis_shp <- eventReactive(input$model_create_gis_shp, {
   # Continue create_local code prep
   model.name <-read_model_gis_shp()[[2]]
   pred.type <- input$model_gis_shp_pred_type
+  prog.message <- "Importing shapefile predictions"
 
-  #### The code from this file is the same as in create_spdf_gis_gdb() ####
+  #### The code from this file is the same as in create_sf_gis_gdb() ####
   source(file.path(
     "server_1_loadModels", "server_1_loadModels_shpgdb_create_local.R"
   ), local = TRUE, echo = FALSE, chdir = TRUE)
 
-  "Model predictions loaded from GIS shapefile"
+  "Predictions imported from shapefile"
 })
 
 
 ###############################################################################
-# Load and process data from file geodatabase (.gdb)
+# Upload and process data from file geodatabase (.gdb) feature class
 
 ### Read in data and return sf object
 read_model_gis_gdb <- eventReactive(input$model_gis_gdb_load, {
   gdb.path <- input$model_gis_gdb_path
   gdb.name <- input$model_gis_gdb_name
 
-  withProgress(message = "Loading GIS .gdb file", value = 0.4, {
+  withProgress(message = "Uploading feature class", value = 0.4, {
     gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),
                         silent = TRUE)
     incProgress(0.6)
@@ -151,7 +151,7 @@ output$read_model_gis_gdb_flag <- reactive({
 outputOptions(output, "read_model_gis_gdb_flag", suspendWhenHidden = FALSE)
 
 #######################################
-### Process data and add it to list.all
+### Process feature class data
 create_sf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
   # Prep for create_local code
   gis.file <- read_model_gis_gdb()[[1]]
@@ -168,11 +168,12 @@ create_sf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
   # Continue create_local code prep
   model.name <- read_model_gis_gdb()[[2]]
   pred.type <- input$model_gis_gdb_pred_type
+  prog.message <- "Importing feature class predictions"
 
-  #### The code from this file is the same as in create_spdf_gis_shp() ####
+  #### The code from this file is the same as in create_sf_gis_shp() ####
   source(file.path(
     "server_1_loadModels", "server_1_loadModels_shpgdb_create_local.R"
   ), local = TRUE, echo = FALSE, chdir = TRUE)
 
-  "Model predictions loaded from GIS .gdb"
+  "Predictions imported from feature class"
 })

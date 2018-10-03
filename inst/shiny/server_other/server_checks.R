@@ -1,5 +1,6 @@
 # Perform observe() checks of formatting of various vals components
 
+
 ###############################################################################
 ### Ensure all original model reactive values are correctly formatted
 observe({

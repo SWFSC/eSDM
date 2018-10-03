@@ -1,7 +1,7 @@
-### Code for loading model predicitons from both shp and gdb inputs
-### Used in create_spdf_gis_shp() and create_spdf_gis_gdb()
+### Code for importing predicitons for both .shp and .gdb inputs
+### Called in create_sf_gis_shp() and create_sf_gis_gdb()
 
-withProgress(message = "Adding model predictions to app", value = 0.3, {
+withProgress(message = prog.message, value = 0.3, {
   ### Check long extent, polygon validity, and generate crs.ll version if nec
   gis.file <- check_dateline(gis.file, progress.detail = TRUE)
   gis.file <- check_valid(gis.file, progress.detail = TRUE)
@@ -21,7 +21,7 @@ withProgress(message = "Adding model predictions to app", value = 0.3, {
   }
 
 
-  # Names of sf object columns set in ...create_local code
+  # Names of sf object columns set in other create_local code
   sf.load.ll <- sf.load.ll %>% st_set_geometry(NULL) %>%
     dplyr::select(pred.idx) %>%
     dplyr::mutate(toadd.w, 1:nrow(sf.load.ll)) %>%
@@ -33,7 +33,7 @@ withProgress(message = "Adding model predictions to app", value = 0.3, {
     st_sf(geometry = st_geometry(sf.load.orig), agr = "constant")
   incProgress(0.1)
 
-  # Calculate resolution of the model predictions
+  # Calculate resolution of the predictions
   model.res <- gis_res_calc(sf.load.ll, sf.load.orig)
   incProgress(0.2)
 
@@ -41,8 +41,8 @@ withProgress(message = "Adding model predictions to app", value = 0.3, {
   data.names <- list(names(sf.list[[1]])[c(pred.idx, weight.idx)])
 
 
-  ###### Code common to raster and gis_shp/gis_gdb functions ######
+  ###### Code common to all importing functions ######
   source("server_1_loadModels_create_local.R",
          local = TRUE, echo = FALSE, chdir = TRUE)
-  #################################################################
+  ####################################################
 })
