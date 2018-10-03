@@ -1,8 +1,8 @@
-### renderUI code for Export Model Predictions tab
+### renderUI code for Export Predictions tab
 
 
 ###############################################################################
-### Model with coord system in which to export selected model predictions
+### Predictions with coord system in which to export selected predictions
 output$export_proj_sdm_uiOut_select <- renderUI({
   req(vals$models.names, !input$export_proj_native,
       input$export_proj_method == 2)
@@ -30,19 +30,19 @@ output$export_filename_uiOut_text <- renderUI({
   #------------------------------------
   ### Extract first term of filename
   if (isTruthy(x)) {
-    # Orig model predictions
+    # Original predictions
     table.info <- table_orig()[x, ]
     filename.value <- paste(table.info[, 1:2], collapse = "__")
     filename.value <- paste0(filename.value, "__orig")
 
   } else if (isTruthy(y)) {
-    # Overlaid model predictions
+    # Overlaid predictions
     table.info <- table_overlaid()[y, ]
     filename.value <- paste(table.info[, 1:2], collapse = "__")
     filename.value <- paste0(filename.value, "__overlaid")
 
   } else {  # isTruthy(z)
-    # Ensemble model predictions
+    # Ensemble predictions
     table.info <- table_ensembles()[z, ]
 
     table.info$`Ensembling method` <- switch(
@@ -87,6 +87,7 @@ output$export_filename_uiOut_text <- renderUI({
 
 
 ###############################################################################
+### Message about whether predictions have weight data
 output$export_weight_inc_uiOut_text <- renderUI({
   req(length(vals$models.ll) > 0)
   x <- input$export_table_orig_out_rows_selected

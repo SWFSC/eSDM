@@ -1,4 +1,4 @@
-### Exporting (download) model predictions
+### Export (download) predictions
 
 
 ###############################################################################
@@ -48,7 +48,7 @@ observeEvent(input$export_table_ens_out_rows_selected, {
 ###############################################################################
 # Flags
 
-### Flag for if any models are loaded
+### Flag for if any predictions have been imported/created
 output$export_flag <- reactive({
   list.models.all <- list(
     vals$models.ll, vals$overlaid.models, vals$ensemble.models
@@ -57,7 +57,7 @@ output$export_flag <- reactive({
 })
 outputOptions(output, "export_flag", suspendWhenHidden = FALSE)
 
-### Flag for if one of orig, overlaid, and ensemble model preds are selected
+### Flag for if one set of predictions is selected
 output$export_tables_onesel_flag <- reactive({
   x <- input$export_table_orig_out_rows_selected
   y <- input$export_table_over_out_rows_selected
@@ -69,7 +69,7 @@ output$export_tables_onesel_flag <- reactive({
 })
 outputOptions(output, "export_tables_onesel_flag", suspendWhenHidden = FALSE)
 
-### Flag for if sdm will be exported in non-long/lat crs
+### Flag for if predictions will be exported in non-long/lat crs
 export_nonll <- reactive({
   req(export_crs()[[2]])
   input$export_format == 1 && !st_is_longlat(export_crs())
@@ -77,7 +77,7 @@ export_nonll <- reactive({
 output$export_nonll_flag <- reactive(export_nonll())
 outputOptions(output, "export_nonll_flag", suspendWhenHidden = FALSE)
 
-### Flag for if selected predictions span dateline
+### Flag for if selected predictions span antimeridian
 output$export_range360_flag <- reactive({
   check_360(export_model_selected())
 })
@@ -85,7 +85,7 @@ outputOptions(output, "export_range360_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
-### Export model predictions as csv, shp, or kml
+### Export predictions as csv, shp, or kml
 # Download shapefile code is adapted from
 #   https://gist.github.com/RCura/b6b1759ddb8ab4035f30
 output$export_out <- downloadHandler(
@@ -168,7 +168,7 @@ export_model_selected <- reactive({
 })
 
 
-### Get crs in which to export model predictions
+### Get crs in which to export predictions
 # No validate() or req() in this function so nothing is passed to export_csv_ll
 export_crs <- reactive({
   if (input$export_proj_native) {
@@ -206,7 +206,7 @@ export_model_selected_proj <- reactive({
 })
 
 
-### Return selected predictions in specified projection in desired format
+### Return selected predictions in specified crs in desired format
 export_model_selected_proj_format <- reactive({
   model.selected <- export_model_selected_proj() #handles req()
 
