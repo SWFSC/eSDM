@@ -2,9 +2,6 @@
 
 
 ###############################################################################
-# Naming convention, commonly used ui objects, and tab-specific ui scripts
-
-###########################################################
 ### Naming convention
 # File names: 'server/ui' + 'tab number' + camelCase + description
 # File names (cont): '_' used as separator
@@ -16,7 +13,6 @@
 
 
 ###############################################################################
-### Load packages needed by ui code
 library(DT)
 library(leaflet)
 library(shiny)
@@ -70,7 +66,7 @@ ui <- dashboardPage(
   dashboardBody(
     ### Use shinyjs package and window-closing functionlity
     useShinyjs(),
-    # extendShinyjs(text = jscode, functions = c("closeWindow")),
+    extendShinyjs(text = jscode, functions = c("closeWindow")),
 
     ### Control validate text output
     tags$head(

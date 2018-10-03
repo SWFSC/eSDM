@@ -57,9 +57,6 @@ leg.perc.esdm <- c(
   "15 - 20%", "10 - 15%", "5 - 10%", "2 - 5%", "Highest 2%"
 )
 
-# https://github.com/daattali/advanced-shiny/blob/master/close-window/app.R
-jscode <- "shinyjs.closeWindow = function() { window.close(); }"
-
 
 ###############################################################################
 ### Server function
@@ -71,12 +68,12 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$close_gui, {
-    # js$closeWindow()
+    js$closeWindow()
     stopApp(returnValue = "eSDM GUI was closed")
   })
 
   observeEvent(input$close_gui_error, {
-    # js$closeWindow()
+    js$closeWindow()
     stopApp(returnValue = "eSDM GUI was closed due to a data storage and processing error")
   })
 
@@ -96,7 +93,8 @@ server <- function(input, output, session) {
   source(file.path("server_other", "server_workspace.R"), local = TRUE, chdir = TRUE)
 
 
-  ### Roadmap: download sample data
+  ### Roadmap
+  # Download sample data
   output$download_sample_data <- downloadHandler(
     filename = "eSDM_sample_data.zip",
 
@@ -121,6 +119,7 @@ server <- function(input, output, session) {
     }
   )
 
+  # Download manual
   output$download_manual <- downloadHandler(
     filename = "eSDM_manual.pdf",
 
@@ -146,7 +145,7 @@ server <- function(input, output, session) {
   )
 
 
-  ### Load model predictions
+  ### Import predictions (previously called 'load model predictions')
   source(file.path("server_1_loadModels", "server_1_loadModels.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_csv.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_1_loadModels", "server_1_loadModels_funcs.R"), local = TRUE, chdir = TRUE)
@@ -155,7 +154,7 @@ server <- function(input, output, session) {
   source(file.path("server_1_loadModels", "server_1_loadModels_shpgdb.R"), local = TRUE, chdir = TRUE)
 
 
-  ### Overlay model predictions
+  ### Overlay predictions
   source(file.path("server_2_overlay", "server_2_overlay.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_funcs.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_2_overlay", "server_2_overlay_loadPoly_csv.R"), local = TRUE, chdir = TRUE)
@@ -196,7 +195,7 @@ server <- function(input, output, session) {
   source(file.path("server_5_prettyPlot", "server_5_prettyPlot_update_renderUI.R"), local = TRUE, chdir = TRUE)
 
 
-  ### Export model predictions
+  ### Export predictions
   source(file.path("server_6_export", "server_6_export.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_6_export", "server_6_export_renderUI.R"), local = TRUE, chdir = TRUE)
 

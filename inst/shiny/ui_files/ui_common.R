@@ -1,4 +1,9 @@
-### Lists, descriptions, and other text used multiple times in ui functions
+# Lists, descriptions, and other text used multiple times in ui functions
+
+
+###############################################################################
+# https://github.com/daattali/advanced-shiny/blob/master/close-window/app.R
+jscode <- "shinyjs.closeWindow = function() { window.close(); }"
 
 
 ###############################################################################
@@ -14,7 +19,7 @@ file.type.list2 <- list(
 
 
 ###############################################################################
-# Labels of widgets used in loading file geodatabase feature classes
+# Widget labels used in importing
 
 ### Excel csv
 label.csv.upload <- tags$h5("Upload Excel .csv file (.csv extension)")
@@ -77,7 +82,7 @@ ui.instructions.upload.gdb <- function() {
 
 
 ###########################################################
-# Instructions for loading specific type of files
+# Instructions for importing specific type of files
 
 #######################################
 ### Loading model predictions
@@ -119,7 +124,7 @@ ui.instructions.pred.shp.gdb <- function() {
 
 
 #######################################
-### Loading csv polygons
+### Importing csv polygons
 ui.instructions.poly.csv.single <- function() {
   helpText(
     "The first column must contain the longitude values, and the second column must contain the latitude values.",
@@ -195,7 +200,7 @@ ui.error.upload.gdb <- tags$strong(
 
 
 ###########################################################
-# Message displayed if tab functionality can't be used yet
+# Message displayed if tab can't be used yet
 
 ### No original predictions have been imported
 # ui.no.model.pred.loaded1
@@ -203,7 +208,7 @@ ui.notice.no.pred.original <- function() {
   box(
     width = 4,
     tags$h4("No original predictions have been imported"),
-    tags$h5("Please import original predictions or load a saved workspace",
+    tags$h5("Please import original predictions, or load a saved workspace",
             "with imported original predictions to use this section of the GUI")
   )
 }
@@ -214,7 +219,7 @@ ui.notice.no.pred.overlaid <- function(box.width = 4) {
   box(
     width = box.width,
     tags$h4("No overlaid predictions have been created"),
-    tags$h5("Please create overlaid predictions or load a saved workspace",
+    tags$h5("Please create overlaid predictions, or load a saved workspace",
             "with overlaid predictions to use this section of the GUI")
   )
 }

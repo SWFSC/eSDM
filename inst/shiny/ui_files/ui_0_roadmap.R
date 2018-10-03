@@ -128,12 +128,13 @@ ui.roadmap <- function() {
             tags$strong("GUI tips:"),
             tags$ul(
               tags$li("The GUI can only perform a single operation at a time. Thus, if a process is running (e.g. the overlay process)",
-                      "do not try to perform other actions (e.g. plotting a preview) as this may cause undefined behavior within the GUI."),
+                      "do not try to perform other actions (e.g. plotting a preview)",
+                      "as this may cause undefined behavior within the GUI."),
               tags$li("When a longer process is running, a progress bar will appear in the bottom right corner of the GUI.",
-                      "This progress bar has an 'X' that closes the progress bar, but closing this bar will not stop the",
-                      "currently running process."),
+                      "This progress bar has an 'X' that if clicked closes the progress bar,",
+                      "but closing this bar will not stop the currently running process."),
               tags$li("The larger the data sets, the longer all processes will take.",
-                      "In addition, plotting will take longer when predictions span the antimeridian (i.e. decimal 180 degrees).")
+                      "In particular, plotting will take longer when predictions span the antimeridian (i.e. decimal 180 degrees).")
             ),
             tags$br(),
             downloadButton("download_sample_data", "Download sample data"),
