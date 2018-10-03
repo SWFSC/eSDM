@@ -126,11 +126,6 @@ pretty_color_preview <- reactive({
   color.palette <- pretty_colorscheme_palette_num()[[1]]
   color.num     <- pretty_colorscheme_palette_num()[[2]]
   color.labels  <- color.num:1
-  # if (!input$pretty_color_na_transparent) {
-  #   color.labels <- c("NA", color.labels)
-  #   color.num <- color.num + 1
-  #   color.palette <- c(input$pretty_color_na ,color.palette)
-  # }
 
   # Set plot margins to minimal for top, right, and bottom to fill space
   par(mai = c(0.1, 0.82, 0.1, 0))

@@ -127,10 +127,9 @@ pretty_colorscheme_palette_num <- reactive({
 
   } else {
     color.num <- val.pretty.color.num()
-
-    # color.num is supposed to be NULL for color.palette.idx %in% c(1, 6)
-    # This forces func to wait until renderUI for color.num has caught up
-    if (color.palette.idx %in% 2:5) req(color.num)
+    validate(
+      need(color.num, "Error: The 'Number of colors' entry must be a number")
+    )
   }
 
   ### Set number of colors and color palette
@@ -163,7 +162,7 @@ pretty_colorscheme_palette_num <- reactive({
     color.palette <- dichromat::colorschemes$"DarkRedtoBlue.12"
 
   } else {
-    validate("Error: selecting color palette and number failed")
+    validate("Error: Error in Color Scheme processing")
   }
 
   list(color.palette, color.num)
@@ -303,6 +302,25 @@ pretty_margin_list <- reactive({
 ###############################################################################
 ### Generate list of coordinate grid line and label info
 pretty_tick_list <- reactive({
+  validate(
+    need(input$pretty_tick_lon_start,
+         "Error: The 'Longitude grid line start' entry must be a number"),
+    need(input$pretty_tick_lon_interval,
+         "Error: The 'Longitde grid line interval' entry must be a number"),
+    need(input$pretty_tick_lat_start,
+         "Error: The 'Latitude grid line start' entry must be a number"),
+    need(input$pretty_tick_lat_interval,
+         "Error: The 'Latitude grid line interval' entry must be a number"),
+    need(input$pretty_tick_lw,
+         "Error: The 'Grid line width' entry must be a number"),
+    need(input$pretty_tick_alpha,
+         "Error: The 'Grid line transparency' entry must be a number"),
+    if (input$pretty_tick_label_inc) {
+      need(input$pretty_tick_label_size,
+           "Error: The 'Coordinate label size' entry must be a number")
+    }
+  )
+
   validate(
     need(input$pretty_tick_lon_start < input$pretty_range_xmax,
          paste("Error: The 'Longitude grid line start' must be less than the",
