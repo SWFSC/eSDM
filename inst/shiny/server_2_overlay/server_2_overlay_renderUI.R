@@ -1,4 +1,4 @@
-# Items that are rendered for Overlay section of GUI
+# Items that are rendered for Overlay Predictions tab
 
 ###############################################################################
 ### Widget for user to select file with projection to use in overlay
@@ -17,7 +17,7 @@ output$overlay_proj_sdm_uiOut_select <- renderUI({
 
 
 ###############################################################################
-### Widget (button) to preview base geometry with land and study area polygons
+### Widget (button) to preview base geometry with erasing and study area polys
 output$overlay_preview_base_execute_uiOut_button <- renderUI({
   validate(
     need(isTruthy(input$overlay_loaded_table_rows_selected),
@@ -42,7 +42,7 @@ output$overlay_preview_base_execute_uiOut_button <- renderUI({
 
 
 ###############################################################################
-### Widget for user to select overlaid model(s) to plot
+### Widget for user to select overlaid predictions to plot
 output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
   validate(
     need(length(vals$overlaid.models) > 0,

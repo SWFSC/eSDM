@@ -1,13 +1,12 @@
-### Reactive functions for creating base.spdf object
-### Function to make polygons valid is in ...overlay_funcs.R
-### All of these functions have no req() lines and thus assume...
-### ...if they're called then all their inputs exist
+# Reactive functions for creating base geometry (sfc object)
+# Function to make polygons valid is in server_funcs.R
+# All of these functions have no req() lines and thus assume
+#   if they're called then all their inputs exist
 
 
 ###############################################################################
 ### Create base sf object
-# Boundary and land polygons checked for length = 1 in projection functions
-# TODO: Report any sort of 'stats', ie area erased?
+# Study area and erasing polys checked for length = 1 in projection functions
 
 overlay_create_base_sf <- reactive({
   #--------------------------------------------------------
@@ -39,11 +38,12 @@ overlay_create_base_sf <- reactive({
   }
 
   #--------------------------------------------------------
-  # Remove land from base polygon
+  # Remove land from base geometry
   if (!is.null(overlay.land.orig)) {
     # Adapted from https://github.com/r-spatial/sf/issues/346
-    base.sf <- try(suppressMessages(st_difference(base.sf, overlay.land)),
-                   silent = TRUE)
+    base.sf <- try(
+      suppressMessages(st_difference(base.sf, overlay.land)), silent = TRUE
+    )
 
     if (!isTruthy(base.sf)) {
       # Calling overlay_valid_land() means that the land isn't optimally
@@ -51,29 +51,28 @@ overlay_create_base_sf <- reactive({
       base.sf <- try(
         suppressMessages(
           st_difference(overlay_valid_base(), overlay_valid_land())
-        ),
-        silent = TRUE
+        ), silent = TRUE
       )
     }
 
     validate(
       need(isTruthy(base.sf),
-           paste("Error: Unable to erase land from base.",
-                 "Please try using a different land polygon"))
+           paste("Error: Unable to erase area from the base geometry;",
+                 "please try using a different erasing polygon"))
     )
 
     st_agr(base.sf) <- "constant"
   }
 
   #--------------------------------------------------------
-  # Ensure the final version of base polygon is valid
+  # Ensure the final version of base geometry is valid
   if (!all(st_is_valid(base.sf))) base.sf <- check_valid(base.sf)
 
   validate(
     need(isTruthy(base.sf),
-         "Error: Overlay cannot be performed with selected base polygon") %then%
+         "Error: Overlay cannot be performed with selected base geometry") %then%
       need(inherits(base.sf, "sf"),
-           "An error occurred during the overlay, please reload the eSDM app and try again")
+           "An error occurred during the overlay; please reload the GUI and try again")
   )
 
   #--------------------------------------------------------
@@ -107,8 +106,9 @@ overlay_clip_land_bound <- reactive({
 
   temp <- suppressMessages(st_intersects(overlay.bound, overlay.land))
   validate(
-    need(length(temp[[1]]) != 0,
-         "Error: The study area polygon and erasing polygon do not intersect")
+    need(length(temp[[1]]) > 0,
+         paste("Error: No part of the erasing polygon",
+               "is within the study area polygon"))
   )
   rm(temp)
 
@@ -154,12 +154,12 @@ overlay_clip_base_bound <- reactive({
 
     validate(
       need(isTruthy(base.bound.try),
-           "Error: Unable to trim base to study area polygon region. Please...")
+           paste("Error: Unable to clip base geometry to study area polygon.",
+                 "Please try a different study area polygon"))
     )
   }
 
-  st_agr(base.bound.try) <- "constant"
-  base.bound.try
+  st_set_agr(base.bound.try, "constant")
 })
 
 
@@ -174,11 +174,11 @@ overlay_valid_base <- reactive({
     base.sf <- check_valid(base.sf)
     validate(
       need(isTruthy(base.sf),
-           paste("Error: The eSDM was unable to make the base valid",
+           paste("Error: The GUI was unable to make the base valid",
                  "without compromising the area and predicted abundance.",
-                 "Please ensure that your loaded SDMs are valid polygons",
-                 "with no self-intersections and all polygons having",
-                 "at least four vertices"))
+                 "Please ensure that your imported SDMs all have valid",
+                 "geometries with no self-intersections and with",
+                 "all polygons having at least four vertices"))
     )
   }
 
@@ -193,9 +193,9 @@ overlay_valid_bound <- reactive({
     overlay.bound <- check_valid(overlay.bound)
     validate(
       need(isTruthy(overlay.bound),
-           paste("Error: The eSDM was unable to make the study area polygon",
+           paste("Error: The GUI was unable to make the study area polygon",
                  "valid without compromising the area of the polygon.",
-                 "Please ensure that your loaded boundary polygon is valid",
+                 "Please ensure that your loaded study area polygon is valid",
                  "with no self-intersections and at least four vertices"))
     )
   }
@@ -211,11 +211,12 @@ overlay_valid_land <- reactive({
     overlay.land <- check_valid(overlay.land)
     validate(
       need(isTruthy(overlay.land),
-           paste("Error: The eSDM was unable to make the land polygon valid",
+           paste("Error: The GUI was unable to make the erasing polygon valid",
                  "without compromising the area of the polygon",
-                 "Please use one of the provided polygons or",
-                 "ensure that your loaded land polygon(s) are valid",
-                 "with no self-intersections and at least four vertices"))
+                 "Please use the provided erasing polygon or",
+                 "ensure that your imported erasing polygon is valid",
+                 "with no self-intersections and with",
+                 "all polygons having at least four vertices"))
     )
   }
 
@@ -226,7 +227,7 @@ overlay_valid_land <- reactive({
 ###############################################################################
 # Project base, study area poly, and erasing polys if necessary
 
-### Output base model predictions in specified projection
+### Output base predictions in specified projection
 overlay_proj_base <- reactive({
   base.ll   <- overlay_base_pre()[[1]]
   base.orig <- overlay_base_pre()[[2]]

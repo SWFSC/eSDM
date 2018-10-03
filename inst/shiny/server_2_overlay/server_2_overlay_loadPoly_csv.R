@@ -1,4 +1,4 @@
-### Code for creating a study area or erasing polygon from loaded csv data
+### Code for creating a study area or erasing polygon from .csv data
 
 
 ############################################################################
@@ -22,17 +22,17 @@ overlay_bound_csv <- reactive({
   )
 
   validate(
-    need(ncol(csv.df) == 2,
-         paste("Error: The study area .csv file must only have two columns",
-               "(longitude and latitude, respectively)")),
+    need(ncol(csv.df) >= 2,
+         paste("Error: The study area .csv file must have at least two",
+               "columns (longitude and latitude, respectively)")),
     need(!anyNA(csv.df),
          paste("Error: The study area polygon must be one, single polygon.",
-               "Please load a csv file  without invalid entries (e.g. NA)",
+               "Please load a csv file without any invalid entries (e.g. NA)",
                "in the two columns"))
   )
 
   # Process input and make it into sfc object
-  withProgress(message = 'Loading study area polygon', value = 0.7, {
+  withProgress(message = 'Importing study area polygon', value = 0.7, {
     Sys.sleep(0.5)
 
     if (min(csv.df[, 1]) > 180) csv.df[, 1] <- csv.df[, 1] - 360
@@ -86,7 +86,7 @@ overlay_land_csv <- reactive({
   )
 
   # Create sfc object for land polygon
-  withProgress(message = 'Loading land polygon', value = 0.7, {
+  withProgress(message = 'Importing land polygon', value = 0.7, {
     Sys.sleep(0.5)
 
     if (min(csv.df[, 1], na.rm = TRUE) > 180) {

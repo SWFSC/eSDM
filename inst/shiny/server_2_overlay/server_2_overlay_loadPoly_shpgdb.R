@@ -15,7 +15,7 @@ overlay_bound_gis_shp <- reactive({
     bound.sf <- read.shp.shiny(input$overlay_bound_gis_shp_files)
 
     validate(
-      need(inherits(bound.sf, "sf"),
+      need(inherits(bound.sf, c("sf", "sfc")),
            "Error: Could not import shapefile using selected files")
     )
     incProgress(0.5)
@@ -49,7 +49,7 @@ overlay_bound_gis_gdb <- eventReactive(input$overlay_bound_gis_gdb_load, {
     )
 
     validate(
-      need(inherits(bound.sf, "sf"),
+      need(inherits(bound.sf, c("sf", "sfc")),
            "Error: Could not import object using provided path and name")
     )
     incProgress(0.5)
@@ -82,7 +82,7 @@ overlay_land_gis_shp <- reactive({
     land.sf <- read.shp.shiny(input$overlay_land_gis_shp_files)
 
     validate(
-      need(inherits(land.sf, "sf"),
+      need(inherits(land.sf, c("sf", "sfc")),
            "Error: Could not import shapefile using selected files")
     )
     incProgress(0.5)
@@ -117,7 +117,7 @@ overlay_land_gis_gdb <- eventReactive(input$overlay_land_gis_gdb_load, {
     )
 
     validate(
-      need(inherits(land.sf, "sf"),
+      need(inherits(land.sf, c("sf", "sfc")),
            "Error: Could not import object using provided path and name")
     )
     incProgress(0.5)

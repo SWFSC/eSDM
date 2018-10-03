@@ -7,7 +7,7 @@ observeEvent(input$overlay_create_overlaid_models_modal, {
     title = "Do you want to save your workspace before overlaying?",
     tags$h5("The overlay process can take several minutes,",
             "and if you are not running the GUI locally the server might time out",
-            "and you might lose your session progress.",
+            "and you might lose your session progress (workspace).",
             "Thus, it is recommended that you save your workspace before overlaying"),
 
     footer = tagList(
@@ -20,7 +20,6 @@ observeEvent(input$overlay_create_overlaid_models_modal, {
 
 ###############################################################################
 ### Where the overlay magic aka science happens
-
 overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   removeModal()
 
@@ -33,7 +32,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   #########################################################
   ### Overlay prep
-  # Get index of model predictions to be base geometry
+  # Get index of predictions to be base geometry
   base.idx <- overlay_base_idx()
   models.num <- length(vals$models.ll)
 
@@ -62,30 +61,27 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
   #########################################################
   ### Overlay process
-  withProgress(message = 'Model overlay step:', value = 0.1, {
+  withProgress(message = 'Overlay step:', value = 0.1, {
     prog.total <- length(vals$models.ll) + 1
 
     #--------------------------------------------
-    ### Transform model predictions as necessary
-    # Polys and base transformed in overlay_create_base_sf() suite of reac funcs
+    ### Transform original predictions as necessary
+    # Polys and base transformed in overlay_create_base_sf() suite of funcs
     # Polygons have already been checked for if they're valid
     incProgress(0, detail = "Projecting predictions if necessary")
 
     if (identical(overlay_crs(), crs.ll)) {
       models.preoverlay <- vals$models.ll[-base.idx]
+
     } else {
       models.preoverlay <- lapply(vals$models.orig[-base.idx], function(sdm) {
-        if (!identical(overlay_crs(), st_crs(sdm))) {
-          st_transform(sdm, overlay_crs())
-        } else {
-          sdm
-        }
+        st_transform(sdm, overlay_crs())
       })
     }
 
 
     #--------------------------------------------
-    ### Create base geometry (base.sfc) and 1st overlaid model predictions (base.sf)
+    ### Create base geometry (base.sfc) and 1st overlaid predictions (base.sf)
     incProgress(0.9 / prog.total, detail = paste(
       "Making the base geometry and thus also overlaying Original", base.idx
     ))
@@ -112,7 +108,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
     #--------------------------------------------
-    ### Check that all original models overlap with base.sfc
+    ### Check that all original predictions overlap with base.sfc
     base.sfc.union <- st_union(base.sfc)
     x <- sapply(models.preoverlay, function(i) {
       i <- suppressMessages(
@@ -134,7 +130,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
     #--------------------------------------------
-    ### Create overlaid models
+    ### Create overlaid predictions
     base.pix <- dplyr::select(base.sf, Pixels)
     models.orig.sfc <- lapply(vals$models.orig, st_geometry)
     samegeo.flag <- sapply(
@@ -149,7 +145,8 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       )
 
       if (samegeo.flag.ind) {
-        # SDM being overlaid has the SAME geometry as orig geom of base.sfc
+        # SDM being overlaid has the SAME geometry as not-clipped or erased
+        #   geometry of base.sfc
         #   If base.sfc is clipped geom of orig geom, then can index by Pixels
         sf.temp <- base.pix %>%
           dplyr::left_join(st_set_geometry(sdm, NULL), by = "Pixels") %>%
@@ -160,7 +157,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
         validate(
           need(identical(base.sfc, st_geometry(sf.temp)),
-               paste("Error: the eSDM was unable to overlay Original",
+               paste("Error: The GUI was unable to overlay Original",
                      sdm.num))
         )
 
@@ -175,7 +172,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
         validate(
           need(temp,
-               paste("Error: the eSDM was unable to overlay original model",
+               paste("Error: The GUI was unable to overlay Original",
                      sdm.num))
         )
 
@@ -223,7 +220,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
     #--------------------------------------------
     # Store overlaid info in vals
-    # All done here so that all error checks happen before storage
+    # All storage done here so that all error checks happen before storage
     vals$overlay.base.sfc <- base.sfc
     vals$overlay.crs <- overlay_crs()
     vals$overlay.info <- list(
@@ -259,7 +256,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
 
 ###############################################################################
-### Reset applicable vals elements before creating new overlaid things
+### Reset applicable vals elements before creating new overlaid objects
 overlay_reset <- function() {
   vals$overlay.crs           <- NULL
   vals$overlay.info          <- NULL
@@ -292,30 +289,26 @@ overlay_reset <- function() {
     }
   }
 
-  # Does not reset any saved pretty map info
-
   TRUE
 }
 
 
 ###############################################################################
-### Get crs object with projection to be used in overlay process
+### Get crs to be used in overlay process
 overlay_crs <- reactive({
   if (input$overlay_proj_native) {
     crs.selected <- st_crs(vals$models.orig[[overlay_base_idx()]])
 
   } else {
     crs.selected <- switch(
-      as.numeric(input$overlay_proj_method),
-      crs.ll,
+      as.numeric(input$overlay_proj_method), crs.ll,
       st_crs(vals$models.orig[[as.numeric(req(input$overlay_proj_sdm))]]),
       suppressWarnings(st_crs(input$overlay_proj_epsg))
     )
   }
 
-  # Use [[2]] in case of custom crs w/out epsg code
   validate(
-    need(isTruthy(crs.selected[[2]]),
+    need(isTruthy(crs.selected$proj4string),
          paste("Error: The entered EPSG code was not recognized,",
                "please enter a valid EPSG code"))
   )
@@ -324,7 +317,7 @@ overlay_crs <- reactive({
 })
 
 
-### Generate crs message to provide info about overlaid models
+### Generate crs message to provide info about overlaid predictions
 overlay_crs_message <- reactive({
   req(overlay_crs())
 
@@ -348,13 +341,14 @@ overlay_crs_message <- reactive({
 
 
 ###############################################################################
-### Get index of sdm to be used as base
+### Get index of predictions to be used as base geometry
 overlay_base_idx <- reactive({
   as.numeric(input$overlay_loaded_table_rows_selected)
 })
 
 
 ###############################################################################
+### Generate message about study area and/or erasing polygons used
 overlay_studyarea_land_message <- reactive({
   if (isTruthy(vals$overlay.land) & isTruthy(vals$overlay.bound)) {
     "Both a study area polygon and an erasing polygon were used"
@@ -369,6 +363,5 @@ overlay_studyarea_land_message <- reactive({
     "Neither a study area polygon nor an erasing polygon were used"
   }
 })
-
 
 ###############################################################################
