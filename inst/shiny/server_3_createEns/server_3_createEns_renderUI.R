@@ -1,4 +1,4 @@
-### renderUI() functions for Create (simple) Ensemble section
+### renderUI() functions for Create Ensemble section
 
 
 ###############################################################################
@@ -14,6 +14,7 @@ create_ens_rescale_type_helper <- reactive({
 
   models.which
 })
+
 ### Widget with options for rescaling
 output$create_ens_rescale_type_uiOut_radio <- renderUI({
   models.which <- create_ens_rescale_type_helper()
@@ -23,7 +24,6 @@ output$create_ens_rescale_type_uiOut_radio <- renderUI({
     "None" = 1, "Abundance" = 2, "Normalization" = 3, "Standardization" = 4,
     "Sum to 1" = 5
   )
-  # choices.list.sel <- ifelse(all(pred.type == "1"), 1, 2)
 
   radioButtons("create_ens_rescale_type", NULL, choices = choices.list,
                selected = 1)
@@ -58,7 +58,99 @@ output$create_ens_create_action_uiOut_button <- renderUI({
 
 
 ###############################################################################
-# 'Create Ensemble Predictions' box, weighted ensembling widgets
+# Regional weighting
+
+#----------------------------------------------------------
+### Widget to select overlaid predictions to which to apply loaded weight polys
+output$create_ens_reg_model_uiOut_selectize <- renderUI({
+  models.which <- seq_along(vals$overlaid.models)
+
+  if (input$create_ens_table_subset) {
+    ens.selected <- input$create_ens_datatable_rows_selected
+    models.which <- models.which[models.which %in% ens.selected]
+  }
+
+  input.val <- as.list(paste("Overlaid", models.which))
+  selectizeInput("create_ens_reg_model",
+                 tags$h5("Overlaid predictions to which to assign weight polygon(s)"),
+                 choices = input.val, selected = NULL, multiple = TRUE)
+})
+
+
+#----------------------------------------------------------
+### Select assigned weight polygons to delete
+output$create_ens_reg_remove_choices_uiOut_select <- renderUI({
+  req(!all(sapply(vals$ens.over.wpoly.filename, is.null)))
+
+  poly.table <- create_ens_reg_table()
+
+  choices.list.names <- apply(poly.table, 1, function(i) {
+    x <- unlist(strsplit(i[2], ", "))
+    y <- unlist(strsplit(i[3], ", "))
+    z <- unlist(strsplit(i[4], ", "))
+
+    if (length(x) != 0) {
+      paste(i[1], x, y, z, sep = " || ")
+    } else {
+      NULL
+    }
+  })
+
+  model.which <- which(!sapply(choices.list.names, is.null))
+  poly.num <- lapply(choices.list.names[model.which], seq_along)
+
+  choices.list <- unlist(mapply(function(i, j) {
+    paste(i, j, sep = ", ")
+  },
+  model.which, poly.num))
+  names(choices.list) <- unlist(choices.list.names)
+
+  selectizeInput("create_ens_reg_remove_choices",
+                 tags$h5("Select assigned weight polygon(s) to remove"),
+                 choices = choices.list, selected = NULL, multiple = TRUE)
+})
+
+
+#----------------------------------------------------------
+### Widget to select overlaid predictions for which to plot preds and wpolys
+output$create_ens_reg_preview_model_uiOut_select <- renderUI({
+  models.which <- seq_along(vals$overlaid.models)
+
+  if (input$create_ens_table_subset) {
+    ens.selected <- input$create_ens_datatable_rows_selected
+    req(any(models.which %in% ens.selected))
+    models.which <- models.which[models.which %in% ens.selected]
+  }
+
+  input.val <- as.list(paste("Overlaid", models.which))
+  choices.list <- as.list(models.which)
+  names(choices.list) <- input.val
+
+  selectInput("create_ens_reg_preview_model", NULL,
+              choices = choices.list, selected = NULL)
+})
+
+
+#----------------------------------------------------------
+### Button to plot overlaid predictions and their weight polys
+output$create_ens_reg_preview_execute_uiOut_button <- renderUI({
+  req(
+    vals$ens.over.wpoly.filename, input$create_ens_reg_preview_model
+  )
+
+  overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
+  validate(
+    need(isTruthy(vals$ens.over.wpoly.sf[[overlaid.which]]),
+         paste("These overlaid predictions do not have any",
+               "assigned weight polygons to preview"))
+  )
+
+  actionButton("create_ens_reg_preview_execute", "Plot preview")
+})
+
+
+###############################################################################
+# Weighted ensembling widgets
 
 #----------------------------------------------------------
 # Method 1
@@ -122,103 +214,6 @@ output$create_ens_weights_metric_uiOut_radio <- renderUI({
   radioButtons("create_ens_weights_metric",
                tags$h5("Metric to use for weights"),
                choices = choice.input, selected = NULL)
-})
-
-
-#----------------------------------------------------------
-# Method 3
-### None
-
-
-#----------------------------------------------------------
-# Method 4: Load polys with weights and apply them to overlaid predictions
-
-#######################################
-### Widget to select overlaid predictions to which to apply loaded poly weights
-output$create_ens_reg_model_uiOut_selectize <- renderUI({
-  models.which <- seq_along(vals$overlaid.models)
-
-  if (input$create_ens_table_subset) {
-    ens.selected <- input$create_ens_datatable_rows_selected
-    models.which <- models.which[models.which %in% ens.selected]
-  }
-
-  input.val <- as.list(paste("Overlaid", models.which))
-  selectizeInput("create_ens_reg_model",
-                 tags$h5("Overlaid predictions to which to assign weight polygon(s)"),
-                 choices = input.val, selected = NULL, multiple = TRUE)
-})
-
-
-#######################################
-### Select loaded polygons to delete
-output$create_ens_reg_remove_choices_uiOut_select <- renderUI({
-  req(!all(sapply(vals$ens.over.wpoly.filename, is.null)))
-
-  poly.table <- create_ens_reg_table()
-
-  choices.list.names <- apply(poly.table, 1, function(i) {
-    x <- unlist(strsplit(i[2], ", "))
-    y <- unlist(strsplit(i[3], ", "))
-    z <- unlist(strsplit(i[4], ", "))
-
-    if (length(x) != 0) {
-      paste(i[1], x, y, z, sep = " || ")
-    } else {
-      NULL
-    }
-  })
-
-  model.which <- which(!sapply(choices.list.names, is.null))
-  poly.num <- lapply(choices.list.names[model.which], seq_along)
-
-  choices.list <- unlist(mapply(function(i, j) {
-    paste(i, j, sep = ", ")
-  },
-  model.which, poly.num))
-  names(choices.list) <- unlist(choices.list.names)
-
-  selectizeInput("create_ens_reg_remove_choices",
-                 tags$h5("Select assigned weight polygon(s) to remove"),
-                 choices = choices.list, selected = NULL, multiple = TRUE)
-})
-
-
-#######################################
-### Widget to select overlaid predictions for which to plot preds and wpolys
-output$create_ens_reg_preview_model_uiOut_select <- renderUI({
-  models.which <- seq_along(vals$overlaid.models)
-
-  if (input$create_ens_table_subset) {
-    ens.selected <- input$create_ens_datatable_rows_selected
-    req(any(models.which %in% ens.selected))
-    models.which <- models.which[models.which %in% ens.selected]
-  }
-
-  input.val <- as.list(paste("Overlaid", models.which))
-  choices.list <- as.list(models.which)
-  names(choices.list) <- input.val
-
-  selectInput("create_ens_reg_preview_model", NULL,
-              choices = choices.list, selected = NULL)
-})
-
-
-#######################################
-### Button to plot overlaid predictions and their weight polys
-output$create_ens_reg_preview_execute_uiOut_button <- renderUI({
-  req(
-    vals$ens.over.wpoly.filename, input$create_ens_reg_preview_model
-  )
-
-  overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
-  validate(
-    need(isTruthy(vals$ens.over.wpoly.sf[[overlaid.which]]),
-         paste("These overlaid predictions do not have any",
-               "assigned weight polygons to preview"))
-  )
-
-  actionButton("create_ens_reg_preview_execute", "Plot preview")
 })
 
 

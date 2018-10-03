@@ -1,8 +1,8 @@
-### Code for creating weighted ensembles using method 4: weights from polygons
+### Code for regionally weighting overlaid predictions pre-ensemble
 
 
 ###############################################################################
-### Flag for is any weight polygons are loaded
+### Flag for if any weight polygons are loaded
 output$create_ens_weighted_poly_flag <- reactive({
   any(sapply(vals$ens.over.wpoly.filename, isTruthy))
 })
@@ -12,14 +12,14 @@ outputOptions(output, "create_ens_weighted_poly_flag", suspendWhenHidden = FALSE
 ###############################################################################
 ### create_ens_data_reg() is in '...createEns_create.R'
 
-### Get weights based on loaded polygons
+### Get weights based on assigned polygons
 create_ens_reg_weights <- reactive({
   idx <- create_ens_overlaid_idx()
 
   x <- as.data.frame(
     mapply(function(pred.sf, wpoly.sf.list, wpoly.coverage.vec) {
       if (is.null(wpoly.sf.list)) {
-        # If overlaid model has no weight polys, predictions have weight of 1
+        # If overlaid preds has no weight polys, predictions have weight of 1
         rep(1, nrow(pred.sf))
 
       } else {
@@ -73,12 +73,12 @@ poly_weight <- function(poly.pred, poly.w, coverage) {
 
 
 ###############################################################################
-### Remove loaded weight polygons
+### Remove assigned weight polygons
 create_ens_reg_remove <- eventReactive(
   input$create_ens_reg_remove_execute, {
     validate(
       need(!is.null(input$create_ens_reg_remove_choices),
-           "Error: Please select at least one weighted polygon to remove")
+           "Error: Please select at least one weight polygon to remove")
     )
 
     # Get indices of wpoly objects to remove
@@ -124,7 +124,7 @@ create_ens_reg_remove <- eventReactive(
 
     vals$ens.over.wpoly.plot <- NULL
 
-    "Weighted poly removed"
+    "Weight polygon(s) removed"
   }
 )
 
@@ -179,7 +179,7 @@ create_ens_reg_add <- eventReactive(
     validate(
       need(input$create_ens_reg_model,
            paste("Error: Please select at least one set of overlaid",
-                 "predictions to which to apply weight polygon"))
+                 "predictions to which to assign the weight polygon"))
     )
 
     #------------------------------------------------------
@@ -239,7 +239,7 @@ create_ens_reg_add <- eventReactive(
 
     validate(
       need(inherits(poly.sfc, "sfc"),
-           paste("Error: There was an error loading the weight polygon;",
+           paste("Error: There was an error processing the weight polygon;",
                  "please make sure the polygon is formatted correctly")) %then%
         need(length(poly.sfc) == 1,
              paste("Error: A weight polygon can only consist of one polygon;",
@@ -266,7 +266,7 @@ create_ens_reg_add <- eventReactive(
       validate(
         need(length(z[[1]]) > 0,
              paste("Error: The provided weight polygon does not overlap",
-                   "with overlaid model", o.idx))
+                   "with Overlaid", o.idx))
       )
     })
 
@@ -278,9 +278,10 @@ create_ens_reg_add <- eventReactive(
           x <- suppressMessages(st_intersection(poly.sf, poly.loaded))
           validate(
             need(nrow(x) == 0,
-                 paste("Error: The GUI cannot load weight polygon because",
-                       "polygon overlaps with weight polygon number",
-                       poly.idx, "of overlaid model", o.idx))
+                 paste("Error: The GUI cannot assign the current",
+                       "weight polygon because it overlaps with",
+                       "weight polygon number",
+                       poly.idx, "of Overlaid", o.idx))
           )
         },
         vals$ens.over.wpoly.sf[[o.idx]],
@@ -313,7 +314,7 @@ create_ens_reg_add <- eventReactive(
     #------------------------------------------------------
     ### Output message
     paste(
-      poly.filetype.txt, "weight polygon added as weight for:",
+      poly.filetype.txt, "weight polygon assigned as weight for:",
       paste(input$create_ens_reg_model, collapse = ", ")
     )
   }
@@ -347,7 +348,7 @@ create_ens_reg_csv_read <- reactive({
 })
 
 create_ens_reg_csv_process <- reactive({
-  withProgress(message = 'Processing csv polygon', value = 0.6, {
+  withProgress(message = 'Processing .csv file', value = 0.6, {
     csv.poly.list <- create_ens_reg_csv_read()
     csv.poly.filename <- csv.poly.list[[1]]
     csv.poly.data <- csv.poly.list[[2]]
@@ -449,7 +450,7 @@ create_ens_reg_shp_read <- reactive({
   files.in <- input$create_ens_reg_shp_files
   validate(need(files.in, "Error: Please upload the files of a shapefile"))
 
-  withProgress(message = "Processing GIS shapefile", value = 0.3, {
+  withProgress(message = "Processing shapefile", value = 0.3, {
     gis.file.shp <- read.shp.shiny(files.in)
     incProgress(0.4)
 
@@ -499,7 +500,7 @@ create_ens_reg_gdb_read <- eventReactive(
     gdb.path <- input$create_ens_reg_gdb_path
     gdb.name <- input$create_ens_reg_gdb_name
 
-    withProgress(message = "Processing GIS .gdb file", value = 0.3, {
+    withProgress(message = "Processing feature class", value = 0.3, {
       gis.file.gdb <- try(st_read(gdb.path, gdb.name, quiet = TRUE),
                           silent = TRUE)
       incProgress(0.4)
@@ -530,6 +531,5 @@ create_ens_reg_gdb_read <- eventReactive(
       list(gis.file.gdb, gdb.name)
     }
   })
-
 
 ###############################################################################

@@ -5,7 +5,7 @@
 ###############################################################################
 # Weighted ensembling method 1: 'Manual entry'
 
-### Process text inputs for model weights
+### Process text inputs for weights
 create_ens_weights_num <- reactive({
   models.weights <- suppressWarnings(
     as.numeric(unlist(strsplit(input$create_ens_weight_manual, ",")))
@@ -27,7 +27,7 @@ create_ens_weights_num <- reactive({
   validate(
     need(length(models.weights) == models.num,
          paste("Error: The number of provided weights does not",
-               "match the number of overlaid models"))
+               "match the number of selected overlaid predictions"))
   )
 
   models.weights
@@ -42,7 +42,8 @@ create_ens_weighted_manual <- reactive({
   # Check that length of weights == length of overlaid models to ensemble
   validate(
     need(length(data.weights) == ncol(data.rescaled),
-         "Weighted ens 1: number of weights != number of overlaid models")
+         paste("Error: Weighted ens 1: number of weights != number of",
+               "overlaid predictions; please report this as an issue"))
   )
 
   data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p) {
@@ -91,18 +92,20 @@ create_ens_weighted_metric <- reactive({
   validate(
     need(isTruthy(vals$eval.metrics),
          paste("Error: You must calculate at least one metric for all",
-               "selected overlaid model predictions"))
+               "selected overlaid predictions"))
   )
   data.weights <- create_ens_weights_metric_table()[, 2]
 
   # Check that length of weights == length of overlaid models to ensemble
   validate(
     need(length(data.weights) == ncol(data.rescaled),
-         "Weighted ens by metrics: number of weights != number of of model")
+         paste("Error: Weighted ens by metrics: number of weights != number",
+               "of overlaid predictions; please report this as an issue"))
   )
 
   data.ens <- data.frame(Pred.ens = apply(
-    data.rescaled, 1, function(p) stats::weighted.mean(p, data.weights, na.rm = TRUE)
+    data.rescaled, 1,
+    function(p) stats::weighted.mean(p, data.weights, na.rm = TRUE)
   ))
   data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
 
@@ -190,9 +193,11 @@ create_ens_weighted_pix <- reactive({
 
   validate(
     need(ncol(data.weights) == ncol(data.rescaled),
-         "Weighted ens 3: number of weights != number of overlaid models"),
+         paste("Error: Weighted ens 3: number of weights != number",
+               "of overlaid predictions; please report this as an issue")),
     need(nrow(data.weights) == nrow(data.rescaled),
-         "Weighted ens 3: len of weights != len of overlaid models")
+         paste("Error: Weighted ens 3: len of weights != number",
+               "of overlaid predictions; please report this as an issue"))
   )
 
   data.reweighted <- data.rescaled * data.weights
@@ -203,7 +208,6 @@ create_ens_weighted_pix <- reactive({
 
   st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
-
 
 ###############################################################################
 ###############################################################################

@@ -1,12 +1,12 @@
-### Create a simple ensemble from overlaid models...
-### ...and process ensembles once they're created
+# Create a simple ensemble from overlaid predictions and process ensembles
+#   once they're created
 
 
 ###############################################################################
 # Flags for conditionalPanel
 
 #------------------------------------------------
-### Flag for if overlaid models have been created
+### Flag for if overlaid predictions have been created
 output$ens_display_flag <- reactive({
   length(vals$overlaid.models) != 0
 })
@@ -14,7 +14,7 @@ outputOptions(output, "ens_display_flag", suspendWhenHidden = FALSE)
 
 
 #------------------------------------------------
-### Flag for if at least 2 overlaid models are selected to ensemble
+### Flag for if at least 2 overlaid predictions are selected to ensemble
 output$ens_overlaid_selected_flag <- reactive({
   length(create_ens_overlaid_idx_num()) >= 2
 })
@@ -22,7 +22,7 @@ outputOptions(output, "ens_overlaid_selected_flag", suspendWhenHidden = FALSE)
 
 
 #------------------------------------------------
-### Flag for if 1+ ensemble predictions have been created
+### Flag: any ensemble predictions created
 output$ens_display_ens_flag <- reactive({
   length(vals$ensemble.models) > 0
 })
@@ -30,7 +30,7 @@ outputOptions(output, "ens_display_ens_flag", suspendWhenHidden = FALSE)
 
 
 #------------------------------------------------
-### Flag for if 1+ created ensemble models are selected to be used in action
+### Flag: any created ensemble predictions selected to be used in action
 output$ens_models_selected_flag <- reactive({
   isTruthy(input$ens_datatable_ensembles_rows_selected)
 })
@@ -79,7 +79,8 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
       vals$ensemble.plot.leaf.idx <- vals$ensemble.plot.leaf.idx - idx.adjust
       validate(
         need(all(vals$ensemble.plot.leaf.idx > 0),
-             "Error: While deleting ensemble model(s), error 1")
+             paste("Error: While deleting ensemble predictions, error 1.",
+                   "Please report this as an issue"))
       )
     }
   }
@@ -97,7 +98,8 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
       vals$ensemble.plot.idx <- vals$ensemble.plot.idx - idx.adjust
       validate(
         need(all(vals$ensemble.plot.idx > 0),
-             "Error: While deleting ensemble model(s), error 1b")
+             paste("Error: While deleting ensemble predictions, error 1b.",
+                   "Please report this as an issue"))
       )
     }
   }

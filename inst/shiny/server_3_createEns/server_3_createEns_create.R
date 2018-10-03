@@ -1,13 +1,13 @@
-### Code for creating ensemble predictions from overlaid model predictions
+### Code for creating ensemble predictions from overlaid predictions
 
 
 ###############################################################################
 ### Top-level function for creating ensemble
 create_ensemble <- eventReactive(input$create_ens_create_action, {
-  # For the validation message if num of orig models != num of overlaid models
+  # For the validation message
   table_overlaid()
 
-  withProgress(message = "Creating ensemble", value = 0.6, {
+  withProgress(message = "Creating ensemble predictions", value = 0.6, {
     ### Create ensemble
     if (input$create_ens_type == "1") { # Unweighted
       ens.sf <- create_ens_unweighted()
@@ -85,7 +85,7 @@ create_ens_data_reg <- reactive({
   }
 })
 
-### Rescale predictions
+### Rescale overlaid predictions
 create_ens_data_rescale <- reactive({
   models.overlaid <- vals$overlaid.models[create_ens_overlaid_idx()]
   x.pred.idx <- switch(
@@ -116,7 +116,7 @@ create_ens_data_rescale <- reactive({
     )
   }
 
-  # For GUI, next function expects data.frame of prediction values
+  # For GUI, next function expects data frame of prediction values
   data.frame(lapply(temp, function(i) st_set_geometry(i, NULL)$Pred.overlaid)) %>%
     purrr::set_names(letters[1:length(temp)])
 })
@@ -126,8 +126,8 @@ create_ens_data_rescale <- reactive({
 # 'Level 3' functions
 
 #################################################
-### Get indices of overlaid models to be used in ensemble
-# This is it's own func since it is used in a flag in server_3_createEns.R
+### Get indices of overlaid prediction to be included in ensemble
+# This is its own func since it is used in a flag in server_3_createEns.R
 create_ens_overlaid_idx_num <- reactive({
   req(length(vals$overlaid.models) > 0)
 
@@ -150,8 +150,8 @@ create_ens_overlaid_idx <- reactive({
 
   validate(
     need(length(ens.models.which) >= 2,
-         paste("Error: Please choose at least two sets of",
-               "model predictions for the ensemble"))
+         paste("Error: Please select at least two sets of",
+               "overlaid predictions for the ensemble"))
   )
 
   ens.models.which
