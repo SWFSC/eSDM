@@ -1,8 +1,7 @@
 ###############################################################################
 ###############################################################################
-# Reads in a GIS shapefile from a fileInput ouptput in a Shiny app and
-#   returns a sf object
-# From \url{https://github.com/leonawicz/nwtapp/blob/master/mod_shpPoly.R}
+# Read in a GIS shapefile from a fileInput output in a Shiny app
+# From https://github.com/leonawicz/nwtapp/blob/master/mod_shpPoly.R
 
 read.shp.shiny <- function(file.in.list) {
   infiles <- file.in.list$datapath
@@ -10,153 +9,15 @@ read.shp.shiny <- function(file.in.list) {
   outfiles <- file.path(dir, file.in.list$name)
   purrr::walk2(infiles, outfiles, ~file.rename(.x, .y))
 
-  gis.file <- try(st_read(dir, strsplit(file.in.list$name[1], "\\.")[[1]][1],
-                          quiet = TRUE),
-                  silent = TRUE)
+  gis.file <- try(
+    st_read(dir, strsplit(file.in.list$name[1], "\\.")[[1]][1], quiet = TRUE),
+    silent = TRUE
+  )
 
   if (inherits(gis.file, "sf")) {
     gis.file
   } else {
     try(stopifnot(inherits(gis.file, "sf")), silent = TRUE)
-  }
-}
-
-
-###############################################################################
-###############################################################################
-# Attempt to make an invalid polygon (poly.invalid) valid
-# Perform checks to see if area/predicted abundance were changed much (?)
-#
-# TODO: What exactly to do if polygon can't be made valid -
-#   Return original poly along with ALERT about invalidity and possible errors if that polygon is used?
-
-make_poly_valid <- function(poly.invalid, dens.col = NA, poly.info = NA, message.invalid = NA) {
-  poly.maybe <- lwgeom::st_make_valid(poly.invalid)
-
-  #----------------------------------------------------------------------------
-  check1 <- !all(st_is_valid(poly.maybe))
-  if (inherits(poly.invalid, "sf")) {
-    check2 <- !identical(
-      class(st_geometry(poly.maybe)), class(st_geometry(poly.invalid))
-    )
-  } else {
-    check2 <- !identical(class(poly.maybe), class(poly.invalid))
-  }
-
-  #----------------------------------------------------------------------------
-  if (check1 || check2) {
-    alert1 <- ifelse(
-      is.na(poly.info), "The polygon currently being processed is invalid.",
-      paste("The", pol.info, "polygon is invalid.")
-    )
-    if (!is.na(message.invalid)) {
-      alert1 <- paste(
-        alert1, "The error output was:<br>", message.invalid
-      )
-    }
-
-    alert2 <- paste(
-      "The GUI was unable to make the polygon valid using the st_make_valid() function",
-      "from the lwgeom package (see the lwgeom package documentation",
-      "for more details about this function).",
-      "You may attempt to still use this polygon in the GUI, particularly if the",
-      "invlaid region will be clipped later, but this is NOT recommended as the",
-      "invlaid polygon likely will cause errors in the GUI."
-    )
-
-    showModal(modalDialog(
-      title = "Important message - imported polygon is invalid and the GUI was unable to fix it",
-      HTML(paste0(alert1, "<br><br>", alert2))
-    ))
-
-    poly.invalid
-
-    #--------------------------------------------------------------------------
-  } else {
-    # Get area difference
-    area1 <- as.numeric(sum(st_area(poly.invalid)))
-    area.dif <- abs(as.numeric(sum(st_area(poly.maybe))) - area1)
-
-    area.dif.char <- sprintf(as.character(round(area.dif / 1e+06, 4)), "%3")
-    if (identical(area.dif.char, "0")) area.dif.char <- "0.000"
-
-    area.dif.perc.char <- sprintf(as.character(round((area.dif / area1) * 100, 4)), "%3")
-    if (identical(area.dif.perc.char, "0")) area.dif.perc.char <- "0.000"
-
-    # Get predicted abundance difference
-    if (!is.na(dens.col)) {
-      abund1 <- eSDM::model_abundance(poly.invalid, dens.col)
-      abund.dif <- eSDM::model_abundance(poly.maybe, dens.col) - abund1
-
-      abund.dif.char <- sprintf(as.character(round(abund.dif / 1e+06, 4)), "%3")
-      if (identical(abund.dif.char, "0")) abund.dif.char <- "0.000"
-
-      abund.dif.perc.char <- sprintf(as.character(round((abund.dif / abund1) * 100, 4)), "%3")
-      if (identical(abund.dif.perc.char, "0")) abund.dif.perc.char <- "0.000"
-    }
-
-
-    ###################################
-    # Generate alert text to be displayed
-    alert1 <- ifelse(
-      is.na(poly.info), "The polygon currently being processed was invalid.",
-      paste("The", pol.info, "polygon was invalid.")
-    )
-    if (!anyNA(message.invalid)) {
-      alert1 <- paste(
-        alert1, "The error output was:<br>",
-        paste0(
-          "<span style=\"color: red;\">",
-          paste(message.invalid, collapse = "; "),
-          "</span>"
-        )
-      )
-    }
-
-    alert2 <- paste(
-      "The GUI made the polygon valid using the st_make_valid() function",
-      "from the lwgeom package (see the lwgeom package documentation",
-      "for more details about this function).",
-      "You may safely continue using this object in the GUI as long as",
-      "you are comfortable with the change in area reported below.",
-      "You can use the preview functionality or export this polygon to ensure",
-      "that no unexpected changes to the geometry occurred."
-    )
-
-    alert3 <- paste(
-      "The difference between the area of the valid polygon and",
-      "the area of the original polygon is",
-      area.dif.char,
-      "square km, which is",
-      area.dif.perc.char,
-      "percent different than the area of the original polygon."
-    )
-
-    if (!is.na(dens.col)) {
-      alert4 <- paste(
-        "The difference between the predicted abundance of the valid SDM",
-        "and the predicted abundance of the original SDM is",
-        abund.dif.char,
-        "animals, which is",
-        abund.dif.perc.char,
-        "percent different than the predicted abundance of the original SDM."
-      )
-    } else {
-      alert4 <- NULL
-    }
-
-    # shinyjs::alert(
-    #   paste0(alert1, "\n\n", alert2, "\n\n", alert3, "\n\n", alert4)
-    # )
-
-    showModal(modalDialog(
-      title = "Important message - polygon was invalid but made valid",
-      HTML(paste0(
-        alert1, "<br><br>", alert2, "<br><br>", alert3, "<br><br>", alert4
-      ))
-    ))
-
-    poly.maybe
   }
 }
 
@@ -185,40 +46,36 @@ pts_to_sfc_vertices_shiny <- function(x, crs.prov, progress.detail) {
 
 ###############################################################################
 ###############################################################################
-# check_ functions: run on imported GIS objects to ensure correct formatting
+# check_ functions: run on imported objects to ensure correct formatting
 
 #------------------------------------------------------------------------------
-### Sort by lat and then long; return crs.ll and orig proj version of file
-#    Requires that 'x' is an sf object
-
+### Check that x is sf object and has valid crs, then
+###   return crs.ll and orig proj version of file
 check_gis_crs <- function(x) {
   validate(
     need(inherits(x, "sf"),
          "Error: GIS object was not read in properly") %then%
       need(st_crs(x)$proj4string,
-           "Error: GIS file does not have defined projection")
+           "Error: GIS object does not have defined projection")
   )
 
-  if (identical(st_crs(x), crs.ll)) {
-    list(x, x)
-  } else {
-    list(st_transform(x, crs.ll), x)
-  }
+  list(st_transform(x, crs.ll), x)
 }
 
 
 #------------------------------------------------------------------------------
-### Adjust sf object from 0 - 360 range to -180 to 180 range and check range
+### Adjust sf object from 0 - 360 range to -180 to 180 range
+### Really should be check_antimeridian()
 check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
   stopifnot(
     inherits(x, c("sf", "sfc")),
-    inherits(wrap.offset, c("numeric", "integer")),
+    is.numeric(wrap.offset),
     inherits(progress.detail, "logical")
   )
 
   if (progress.detail) {
     on.exit(incProgress(0, detail = ""))
-    incProgress(0, detail = "Checking if object spans the dateline")
+    incProgress(0, detail = "Checking if object spans the antimeridian")
   }
 
   x.orig <- x
@@ -229,14 +86,12 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
          "Error: The object does not have a defined coordinate system")
   )
 
-  if (!grepl("proj=longlat", x.crs.orig$proj4string)) {
-    x <- st_transform(x, crs.ll)
-  }
+  if (!st_is_longlat(x.orig)) x <- st_transform(x, crs.ll)
 
   if (st_bbox(x)[3] > 180) {
     dateline.flag <- TRUE
     if (progress.detail) {
-      incProgress(0, detail = "Object does span the dateline; processing now")
+      incProgress(0, detail = "Object spans the antimeridian; processing now")
     }
     x <- suppressWarnings(st_wrap_dateline(
       x, c("WRAPDATELINE=YES", paste0("DATELINEOFFSET=", wrap.offset))
@@ -245,14 +100,16 @@ check_dateline <- function(x, wrap.offset = 10, progress.detail = FALSE) {
 
   ext <- st_bbox(x)
   validate(
-    need(all(ext["xmax"] <= 180 & ext["xmin"] >= -180),
-         paste("Error: The GUI was unable to process this object;",
+    need(ext["xmax"] <= 180 && ext["xmin"] >= -180,
+         paste("Error: The GUI was unable to properly process this object;",
                "please manually ensure that the longitude range of the",
-               "object is [-180, 180] and then re-import the object into the GUI")),
-    need(all(ext["ymax"] <= 90 & ext["ymin"] >= -90),
+               "object is the equivalent of [-180, 180] decimal degrees",
+               "and then re-import the object into the GUI")),
+    need(ext["ymax"] <= 90 && ext["ymin"] >= -90,
          paste("Error: The GUI was unable to process this object;",
                "please manually ensure that the latitude range of the",
-               "object is [-90, 90] and then re-import the object into the GUI"))
+               "object is the equivalent of [-90, 90] decimal degrees",
+               "and then re-import the object into the GUI"))
   )
 
   if (dateline.flag){
@@ -273,16 +130,18 @@ check_valid <- function(x, progress.detail = FALSE) {
 
   if (progress.detail) {
     on.exit(incProgress(0, detail = ""))
-    incProgress(0, detail = "Checking if polygons are valid")
+    incProgress(0, detail = "Checking if the object's geometry is valid")
   }
 
   x.valid <- st_is_valid(x, reason = TRUE)
 
   if (!isTruthy(all(x.valid == "Valid Geometry"))) { #isTruthy() is for NA cases
-    if (progress.detail) incProgress(0, detail = "Making polygons valid")
+    if (progress.detail) {
+      incProgress(0, detail = "Making the object's geometry valid")
+    }
     x.message <- x.valid[x.valid != "Valid Geometry"]
 
-    make_poly_valid(x, message.invalid = x.message)
+    make_geom_valid(x, message.invalid = x.message)
   } else {
     x
   }
@@ -291,31 +150,171 @@ check_valid <- function(x, progress.detail = FALSE) {
 
 #------------------------------------------------------------------------------
 ### Check that prediction and weight data is in proper format
-check_pred_weight <- function(x, pred.idx, weight.idx, pred.na.idx, weight.na.idx) {
-  stopifnot(inherits(pred.idx, c("numeric", "integer")))
-  if (inherits(x, "sf")) {
-    x.orig <- x
-    x <- st_set_geometry(x, NULL)
-  }
+check_pred_weight <- function(x, pred.idx, weight.idx,
+                              pred.na.idx, weight.na.idx) {
+  stopifnot(is.numeric(pred.idx))
+
+  x.orig <- x
+  if (inherits(x, "sf")) x <- st_set_geometry(x, NULL)
 
   if (!inherits(pred.na.idx, "logical")) x[pred.na.idx, pred.idx] <- NA
   if (!inherits(weight.na.idx, "logical")) x[weight.na.idx, weight.idx] <- NA
 
   validate(
-    need(inherits(x[, pred.idx], c("numeric", "integer")),
-         paste("Error: Unable to process the prediciton data, please...")),
+    need(is.numeric(x[, pred.idx]),
+         paste("Error: Unable to process the prediction data, please",
+               "ensure all values in the prediction column are numbers")),
     if (!is.na(weight.idx)) {
-      need(inherits(x[, weight.idx], c("numeric", "integer")),
-           paste("Error: Unable to process the weight data, please..."))
+      need(is.numeric(x[, weight.idx]),
+           paste("Error: Unable to process the weight data, please",
+                 "ensure all values in the weight column are numbers"))
     }
   )
 
-  if (exists("x.orig")) {
-    st_sf(x, st_geometry(x.orig), agr = "constant")
+  x.orig
+}
+
+
+###############################################################################
+###############################################################################
+# Attempt to make an invalid geometry (geom.invalid) valid
+# Perform checks to see if area/predicted abundance were changed much
+# Called only by check_valid()
+
+make_geom_valid <- function(geom.invalid, dens.col = NA, geom.info = NA,
+                            message.invalid = NA) {
+  #----------------------------------------------------------------------------
+  geom.maybe <- lwgeom::st_make_valid(geom.invalid)
+
+  check1 <- !all(st_is_valid(geom.maybe))
+  if (inherits(geom.invalid, "sf")) {
+    check2 <- !identical(
+      class(st_geometry(geom.maybe)), class(st_geometry(geom.invalid))
+    )
   } else {
-    x
+    check2 <- !identical(class(geom.maybe), class(geom.invalid))
+  }
+
+  #----------------------------------------------------------------------------
+  if (check1 || check2) {
+    alert1 <- ifelse(
+      is.na(geom.info),
+      "The geometry of the object currently being processed is invalid.",
+      paste("The geometry of", geom.info, "is invalid.")
+    )
+    if (!is.na(message.invalid)) {
+      alert1 <- paste(
+        alert1, "The error output was:<br>", message.invalid
+      )
+    }
+
+    alert2 <- paste(
+      "The GUI was unable to make the geometry valid using the st_make_valid()",
+      "function from the lwgeom package (see",
+      tags$a("the function documentation",
+             href = "https://r-spatial.github.io/lwgeom/reference/valid.html"),
+      "for more details).",
+      "You may attempt to still use this object in the GUI, particularly if the",
+      "invalid region will be clipped later, but this is NOT recommended as the",
+      "invalid geometry likely will cause errors in the GUI."
+    )
+
+    showModal(modalDialog(
+      title = paste("Important message - object geometry is invalid and",
+                    "the GUI was unable to make it valid"),
+      HTML(paste0(alert1, "<br><br>", alert2))
+    ))
+
+    geom.invalid
+
+    #--------------------------------------------------------------------------
+  } else {
+    # Get area difference
+    area1 <- as.numeric(sum(st_area(geom.invalid)))
+    area.dif <- abs(as.numeric(sum(st_area(geom.maybe))) - area1)
+
+    area.dif.char <- sprintf(as.character(round(area.dif / 1e+06, 4)), "%3")
+    if (identical(area.dif.char, "0")) area.dif.char <- "0.000"
+
+    area.dif.perc.char <- sprintf(as.character(round((area.dif / area1) * 100, 4)), "%3")
+    if (identical(area.dif.perc.char, "0")) area.dif.perc.char <- "0.000"
+
+    # Get predicted abundance difference
+    if (!is.na(dens.col)) {
+      abund1 <- eSDM::model_abundance(geom.invalid, dens.col)
+      abund.dif <- eSDM::model_abundance(geom.maybe, dens.col) - abund1
+
+      abund.dif.char <- sprintf(as.character(round(abund.dif / 1e+06, 4)), "%3")
+      if (identical(abund.dif.char, "0")) abund.dif.char <- "0.000"
+
+      abund.dif.perc.char <- sprintf(as.character(round((abund.dif / abund1) * 100, 4)), "%3")
+      if (identical(abund.dif.perc.char, "0")) abund.dif.perc.char <- "0.000"
+    }
+
+
+    ###################################
+    # Generate text to be displayed in modal
+    alert1 <- ifelse(
+      is.na(geom.info),
+      "The geometry of the object currently being processed was invalid.",
+      paste("The geometry of", geom.info, "was invalid.")
+    )
+    if (!anyNA(message.invalid)) {
+      alert1 <- paste(
+        alert1, "The error output was:<br>",
+        paste0(
+          "<span style=\"color: red;\">",
+          paste(message.invalid, collapse = "; "),
+          "</span>"
+        )
+      )
+    }
+
+    alert2 <- paste(
+      "The GUI made the geometry valid using the st_make_valid() function",
+      "from the lwgeom package (see",
+      tags$a("the function documentation",
+             href = "https://r-spatial.github.io/lwgeom/reference/valid.html"),
+      "for more details).",
+      "You may safely continue using this object in the GUI as long as",
+      "you are comfortable with the change in area reported below.",
+      "You can use the preview functionality or export this geometry to",
+      "ensure that no unexpected changes to the geometry occurred."
+    )
+
+    alert3 <- paste(
+      "The difference between the area of the valid geometry and",
+      "the area of the original geometry is",
+      area.dif.char,
+      "square km, which is",
+      area.dif.perc.char,
+      "percent different than the area of the original geometry."
+    )
+
+    if (!is.na(dens.col)) {
+      alert4 <- paste(
+        "The difference between the predicted abundance of the valid SDM",
+        "and the predicted abundance of the original SDM is",
+        abund.dif.char,
+        "animals, which is",
+        abund.dif.perc.char,
+        "percent different than the predicted abundance of the original SDM."
+      )
+    } else {
+      alert4 <- NULL
+    }
+
+    showModal(modalDialog(
+      title = "Important message - object geometry was invalid but made valid",
+      HTML(paste0(
+        alert1, "<br><br>", alert2, "<br><br>", alert3, "<br><br>", alert4
+      ))
+    ))
+
+    geom.maybe
   }
 }
+
 
 ###############################################################################
 ###############################################################################
@@ -355,8 +354,7 @@ na_which <- function(x) {
 }
 
 
-### Generate message reporting length of x
-# This message was built to refer to prediction values
+### Generate message reporting number of NA (prediction) values in x
 na_pred_message <- function(x) {
   if (anyNA(x)) {
     "No prediction values were classified as NA"
@@ -369,9 +367,8 @@ na_pred_message <- function(x) {
 }
 
 
-### Generate message reporting length of x
-# This message was built to refer to weight values, including if any non-NA
-#   prediction values corresponded to NA weight values
+### Generate message reporting number of NA (weight) values in x and
+###   number of non-NA y (pred) values with NA x (weight) values
 na_weight_message <- function(x, y) {
   len.x <- length(x)
   if (anyNA(x)) {

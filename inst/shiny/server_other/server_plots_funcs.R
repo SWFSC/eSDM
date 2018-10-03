@@ -437,11 +437,14 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
+### Get binpal and legend labels for values plot (not percentages plot)
+### Used by preds values and weights (always values)
 preview_interactive_vals_colscheme <- function(col.num, col.pal, data.vec) {
   if (col.num < 10) {
     binpal <- colorNumeric(col.pal, data.vec, na.color = "gray")
     data.breaks.labs <- format(
-      signif(sort(unique(na.omit(data.vec)), decreasing = TRUE), 3), justify = "right"
+      signif(sort(unique(na.omit(data.vec)), decreasing = TRUE), 3),
+      justify = "right"
     )
 
   } else {

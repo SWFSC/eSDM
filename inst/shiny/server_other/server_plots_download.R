@@ -1,5 +1,7 @@
+# Download static previews of original or ensemble predictions
+
 ###############################################################################
-### Load Models tab preview download
+### Import Predictions tab download
 output$model_download_preview_execute <- downloadHandler(
   filename = function() input$model_download_preview_name,
 
@@ -82,7 +84,7 @@ output$model_download_preview_execute <- downloadHandler(
 
 
 ###############################################################################
-### Create Ensemble Predictions tab preview download
+### Create Ensemble Predictions tab download
 output$ens_download_preview_execute <- downloadHandler(
   filename = function() input$ens_download_preview_name,
 

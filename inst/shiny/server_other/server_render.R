@@ -1,41 +1,41 @@
-### Render various outputs for Ensemble App
+### Render various non-UI outputs for GUI
 
 
+###############################################################################
 ###############################################################################
 ### Reactive functions that return tables are in server_render_tables.R
 dt.list <- list(dom = 't', pageLength = 50)
 
 ###############################################################################
-##### Load Models tab #####
+###############################################################################
+##### Import Predictions tab #####
 
 #----------------------------------------------------------
-### Load saved environment output
-output$load_envir_text <- renderText({
-  load_envir()
-})
+### Load saved workspace output
+output$load_envir_text <- renderText(load_envir())
 
 #----------------------------------------------------------
-# Created predictions messages
+# Imported predictions messages
 
-### Created predictions message for csv
+### Imported predictions message for csv
 output$create_sf_csv_text <- renderText({
   req(read_model_csv())
   create_sf_csv()
 })
 
-### Created predictions message for gis raster
+### Imported predictions message for raster
 output$create_sf_gis_raster_text <- renderText({
   req(read_model_gis_raster())
   create_sf_gis_raster()
 })
 
-### Created predictions message for gis shp
+### Imported predictions message for shp
 output$create_sf_gis_shp_text <- renderText({
   req(read_model_gis_shp())
   create_sf_gis_shp()
 })
 
-### Created predictions message for gis gdb
+### Imported predictions message for gdb
 output$create_sf_gis_gdb_text <- renderText({
   req(read_model_gis_gdb())
   create_sf_gis_gdb()
@@ -44,22 +44,22 @@ output$create_sf_gis_gdb_text <- renderText({
 #----------------------------------------------------------
 # Tables
 
-### Table of loaded original preds
+### Table of imported original predictions
 output$models_loaded_table <- renderDT({
   table_orig()
 }, options = dt.list, selection = "multiple")
 
-### Table of stats of loaded original preds
+### Table of stats of imported original predictions
 output$models_loaded_table_stats <- renderDT({
   table_orig_stats()
 }, options = dt.list, selection = "none")
 
 #----------------------------------------------------------
-# Remove loaded models
+# Remove imported predictions output
 output$model_remove_text <- renderText(model_remove())
 
 #----------------------------------------------------------
-### Plot/preview of loaded, original model(s)
+### Plot/preview of imported original predictions
 output$model_preview_interactive_plot <- renderLeaflet({
   x <- req(vals$models.plot.leaf)
 
@@ -82,30 +82,31 @@ output$model_preview_plot <- renderPlot({
 
 
 ###############################################################################
-##### Overlay tab #####
+###############################################################################
+##### Overlay Predictions tab #####
 
 #----------------------------------------------------------
 # Tables
 
-### Table of loaded predictions
+### Table of imported original predictions
 output$overlay_loaded_table <- renderDT({
   table_orig()
 }, options = dt.list, selection = "single")
 
-### Table of stats of loaded predictions
+### Table of stats of imported original predictions
 output$overlay_loaded_stats_table <- renderDT({
   table_orig_stats()
 }, options = dt.list, selection = "none")
 
 #----------------------------------------------------------
-# Polygon error outputs and loaded messages
+# Polygon error outputs and imported messages
 
-### Boundary (study area) polygon error outputs
+### Study area (boundary) polygon error outputs
 output$overlay_bound_csv_text     <- renderText(overlay_bound_csv())
 output$overlay_bound_gis_shp_text <- renderText(overlay_bound_gis_shp())
 output$overlay_bound_gis_gdb_text <- renderText(overlay_bound_gis_gdb())
 
-### Boundary polygon loaded messages
+### Study area polygon imported messages
 output$overlay_bound_csv_message <- renderText({
   req(vals$overlay.bound)
   "A study area polygon is imported"
@@ -119,13 +120,13 @@ output$overlay_bound_gis_gdb_message <- renderText({
   "A study area polygon is imported"
 })
 
-### Erasing polygon error outputs
+### Erasing (land) polygon error outputs
 output$overlay_land_prov_text    <- renderText(overlay_land_prov())
 output$overlay_land_csv_text     <- renderText(overlay_land_csv())
 output$overlay_land_gis_shp_text <- renderText(overlay_land_gis_shp())
 output$overlay_land_gis_gdb_text <- renderText(overlay_land_gis_gdb())
 
-### Erasing polygon loaded messages
+### Erasing polygon imported messages
 output$overlay_land_prov_message <- renderText({
   req(vals$overlay.land)
   "An erasing polygon is imported"
@@ -144,14 +145,12 @@ output$overlay_land_gis_gdb_message <- renderText({
 })
 
 #----------------------------------------------------------
-# Overlaying process outputs
+# Overlay process outputs
 
 ### Error output for overlay process
-output$overlay_overlay_all_text <- renderText({
-  overlay_all()
-})
+output$overlay_overlay_all_text <- renderText(overlay_all())
 
-### Message detailing that overlaid predictions have been created
+### Overlaid predictions info message
 output$overlay_overlaid_models_message <- renderUI({
   req(length(vals$overlaid.models) > 0)
 
@@ -171,7 +170,7 @@ output$overlay_overlaid_models_message <- renderUI({
   ))
 })
 
-### Error output for just base - used if previewing base
+### Error output for creating base geometry preview
 output$overlay_preview_base_create_text <- renderText({
   overlay_preview_base_create()
 })
@@ -179,12 +178,10 @@ output$overlay_preview_base_create_text <- renderText({
 #----------------------------------------------------------
 # Previews
 
-### Preview of base grid
-output$overlay_preview_base <- renderLeaflet({
-  req(vals$overlay.plot)
-})
+### Base geometry preview
+output$overlay_preview_base <- renderLeaflet(req(vals$overlay.plot))
 
-### Preview of overlaid predictions
+### Overlaid predictions preview
 output$overlay_preview_overlaid <- renderPlot({
   x <- req(vals$overlaid.plot)
 
@@ -198,10 +195,11 @@ output$overlay_preview_overlaid <- renderPlot({
 
 
 ###############################################################################
-##### Create Ensembles tab #####
+###############################################################################
+##### Create Ensemble Predictions tab #####
 
 #----------------------------------------------------------
-# Message about base grid
+# Message about base geometry
 output$create_ens_base_message <- renderText({
   req(length(vals$overlaid.models) > 0)
 
@@ -216,14 +214,10 @@ output$create_ens_base_message <- renderText({
 # Tables
 
 ### Display table of overlaid predictions and info
-output$create_ens_table <- renderTable({
-  table_overlaid()
-}, rownames = TRUE)
+output$create_ens_table <- renderTable(table_overlaid(), rownames = TRUE)
 
 ### Datatable of overlaid predictions and info
-output$create_ens_datatable <- renderDT({
-  table_overlaid()
-}, options = dt.list)
+output$create_ens_datatable <- renderDT(table_overlaid(), options = dt.list)
 
 #----------------------------------------------------------
 # Weights outputs
@@ -254,21 +248,15 @@ output$create_ens_reg_preview_plot <- renderPlot({
 })
 
 
-### Text output for removing loaded weight polygons
-output$create_ens_reg_remove_text <- renderText({
-  create_ens_reg_remove()
-})
+### Text output for removing imported weight polygons
+output$create_ens_reg_remove_text <- renderText(create_ens_reg_remove())
 
 ### Output for adding polygon weight(s) to reactiveValues
-output$create_ens_reg_add_text <- renderText({
-  create_ens_reg_add()
-})
+output$create_ens_reg_add_text <- renderText(create_ens_reg_add())
 
 #----------------------------------------------------------
 ### Create ensemble error/completion output
-output$ens_create_ensemble_text <- renderUI({
-  HTML(create_ensemble())
-})
+output$ens_create_ensemble_text <- renderUI(HTML(create_ensemble()))
 
 #----------------------------------------------------------
 # Created ensemble things
@@ -279,7 +267,7 @@ output$ens_datatable_ensembles <- renderDT({
 },
 options = dt.list)
 
-### Remove ensemble error output
+### Remove ensemble predictions output
 output$ens_remove_text <- renderText(ens_remove())
 
 ### Plot interactive preview of ensemble predictions
@@ -312,22 +300,23 @@ output$ens_abund_table_out <- renderTable({
 
 
 ###############################################################################
+###############################################################################
 ##### Evaluation Metrics tab #####
 
 #----------------------------------------------------------
 # Tables
 
-### Table of orig predictions
+### Table of original predictions; [, 1:3] removes pred type
 output$eval_models_table_orig_out <- renderDT({
   table_orig()[, 1:3]
 }, options = dt.list)
 
-### Table of overlaid predictions
+### Table of overlaid predictions; [, 1:3] removes pred type
 output$eval_models_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
 }, options = dt.list)
 
-### Table of ensemble models
+### Table of ensemble predictions
 output$eval_models_table_ens_out <- renderDT({
   table_ensembles()
 }, options = dt.list)
@@ -357,9 +346,7 @@ output$eval_metrics_message <- renderText({
 })
 
 # Validation data table
-output$table_eval_pts_out <- renderTable({
-  table_eval_pts()
-}, colnames = FALSE)
+output$table_eval_pts_out <- renderTable(table_eval_pts(), colnames = FALSE)
 
 #----------------------------------------------------------
 ### Metrics table
@@ -373,18 +360,20 @@ output$eval_metrics_overlap_text <- renderText({
   eval_metrics_overlap()
 })
 
+
+###############################################################################
 ###############################################################################
 ##### High Quality Maps #####
 
 #----------------------------------------------------------
 # Tables
 
-### Table of orig predictions
+### Table of original predictions; [, 1:3] removes pred type
 output$pretty_table_orig_out <- renderDT({
   table_orig()[, 1:3]
 }, options = dt.list, selection = "single")
 
-### Table of overlaid predictions
+### Table of overlaid predictions; [, 1:3] removes pred type
 output$pretty_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
 }, options = dt.list, selection = "single")
@@ -399,24 +388,15 @@ output$pretty_table_ens_out <- renderDT({
 
 ### Pretty plot manage to-plot
 # Add map output
-output$pretty_toplot_add_text <- renderText({
-  pretty_toplot_add()
-})
+output$pretty_toplot_add_text <- renderText(pretty_toplot_add())
 # Remove map output
-output$pretty_toplot_remove_text <- renderText({
-  pretty_toplot_remove()
-})
+output$pretty_toplot_remove_text <- renderText(pretty_toplot_remove())
 
 ### Pretty plot update
 # Table
 output$pretty_update_table_out <- renderDT({
   pretty_toplot_table()
 }, options = dt.list, rownames = FALSE, selection = "single")
-
-# Message
-output$pretty_update_text <- renderText({
-  pretty_update()
-})
 
 ### Pretty plot plot/download
 # Table
@@ -425,9 +405,7 @@ output$pretty_toplot_table_out <- renderDT({
 }, options = dt.list, rownames = FALSE)
 
 # Error output
-output$pretty_plot_text <- renderText({
-  pretty_plot()
-})
+output$pretty_plot_text <- renderText(pretty_plot())
 
 #----------------------------------------------------------
 # Additional object section
@@ -446,9 +424,7 @@ output$pretty_addobj_table_out <- renderDT({
 # Other outputs
 
 ### Color wheel for preview of color palette
-output$pretty_color_preview_plot <- renderPlot({
-  pretty_color_preview()
-})
+output$pretty_color_preview_plot <- renderPlot(pretty_color_preview())
 
 #----------------------------------------------------------
 # Pretty plot, plotting
@@ -462,7 +438,7 @@ output$pretty_display <- renderUI({
   )
 })
 
-### Section with button to save map
+### Section with button to save map; spinning wheel displayed during param prep
 # All needs to be within box() so single 'object' is returned
 output$pretty_save_map <- renderUI({
   # if () keeps req() within pretty_range() from being called
@@ -483,9 +459,7 @@ output$pretty_save_map <- renderUI({
 
 
 ### Pretty plot dimension warnings
-output$pretty_plot_dim_warnings_out <- renderText({
-  pretty_plot_dim_warnings()
-})
+output$pretty_plot_dim_warnings_out <- renderText(pretty_plot_dim_warnings())
 
 ### Pretty plot; observe() allows for calling vals$
 observe({
@@ -505,21 +479,23 @@ observe({
 
 
 ###############################################################################
+###############################################################################
 ##### Export Predictions #####
 
-### Table of orig predictions
+### Table of original predictions; [, 1:3] removes pred type
 output$export_table_orig_out <- renderDT({
   table_orig()[, 1:3]
 }, options = dt.list, selection = "single")
 
-### Table of overlaid predictions
+### Table of overlaid predictions; [, 1:3] removes pred type
 output$export_table_over_out <- renderDT({
   table_overlaid()[, 1:3]
 }, options = dt.list, selection = "single")
 
-### Table of ensemble models
+### Table of ensemble predictions
 output$export_table_ens_out <- renderDT({
   table_ensembles()
 }, options = dt.list, selection = "single")
 
+###############################################################################
 ###############################################################################

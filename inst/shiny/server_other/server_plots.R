@@ -1,12 +1,13 @@
-### Reactive plotting code for Ensemble App divided by tab
-### Download predictions code is in server_plots_download.R
+# Reactive plotting code for eSDM GUI organized by tab
+# Download code is in server_plots_download.R
+# High Quality Maps code is in server_5_prettyPlot folder
 
 
 ###############################################################################
 # Import Predictions tab
 
-#################################################
-### Generate interactive preview of predictions to display in-app
+#------------------------------------------------------------------------------
+### Generate interactive preview of original predictions to plot in-app
 observeEvent(input$model_preview_interactive_execute, {
   req(length(vals$models.ll) > 0)
 
@@ -25,8 +26,8 @@ observeEvent(input$model_preview_interactive_execute, {
 })
 
 
-#################################################
-### Generate static preview of predictions to display in-app
+#------------------------------------------------------------------------------
+### Generate static preview of original predictions to plot in-app
 observeEvent(input$model_preview_execute, {
   req(length(vals$models.ll) > 0)
 
@@ -49,14 +50,10 @@ observeEvent(input$model_preview_execute, {
 })
 
 
-#################################################
-### Download predictions code is in server_plots_download.R
-
-
 ###############################################################################
 # Overlay Predictions tab
 
-#################################################
+#------------------------------------------------------------------------------
 ### Generate preview of base geometry to plot in-app
 # Helper reactive functions are in server_2_overlay_plot.R
 overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute, {
@@ -152,7 +149,7 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
 })
 
 
-#################################################
+#------------------------------------------------------------------------------
 ### Generate preview of overlaid predictions to plot in-app
 observeEvent(input$overlay_preview_overlaid_execute, {
   perc.num <- as.numeric(input$overlay_preview_overlaid_models_perc)
@@ -172,14 +169,10 @@ observeEvent(input$overlay_preview_overlaid_execute, {
 })
 
 
-#################################################
-### Download model preview is in 'server_plots_download.R'
-
-
 ###############################################################################
-# Create Ensembles tab
+# Create Ensemble Predictions tab
 
-#################################################
+#------------------------------------------------------------------------------
 ### Preview overlaid predictions with assigned weight polygons
 observeEvent(input$create_ens_reg_preview_execute, {
   req(vals$ens.over.wpoly.filename)
@@ -193,8 +186,8 @@ observeEvent(input$create_ens_reg_preview_execute, {
 })
 
 
-#################################################
-### Generate interactive preview of ensemble predictions to display in-app
+#------------------------------------------------------------------------------
+### Generate interactive preview of ensemble predictions to plot in-app
 observeEvent(input$ens_preview_interactive_execute, {
   req(length(vals$ensemble.models) > 0)
 
@@ -217,8 +210,8 @@ observeEvent(input$ens_preview_interactive_execute, {
 })
 
 
-#################################################
-### Get preview of ensemble predictions to plot in-app
+#------------------------------------------------------------------------------
+### Generate static preview of ensemble predictions to plot in-app
 observeEvent(input$ens_preview_execute, {
   req(length(vals$ensemble.models) > 0)
 
@@ -239,9 +232,5 @@ observeEvent(input$ens_preview_execute, {
     plot.dims = multiplot_inapp(models.num)
   )
 })
-
-
-#################################################
-### Download ensemble preview is in 'server_plots_download.R'
 
 ###############################################################################

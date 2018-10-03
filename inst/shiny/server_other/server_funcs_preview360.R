@@ -3,8 +3,8 @@
 
 # All inspired by https://github.com/r-spatial/sf/issues/280
 # preview360_split(): Converts spatial object to range [0, 360] by splitting
-#   polygons that span the dateline and adding 360 to longitude coordinates of
-#   polygons in [-180, 0]. This function uses st_intersects(), so it should
+#   polygons that span the antimeridian and adding 360 to longitude coordinates
+#   of polygons in [-180, 0]. This function uses st_intersects(), so it should
 #   only be used when no polygons span the prime meridian.
 #
 #   Main advantage: Fastest method
@@ -14,17 +14,18 @@
 
 # preview360_mod(): Converts spatial object to range [0, 360] using the
 #   mod ('%%') function, and thus without splitting polygons that span the
-#   dateline.
+#   antimeridian.
 #
-#   Main advantage: Conserves polygons that span the dateline;
+#   Main advantage: Conserves polygons that span the antimeridian;
 #     best for exporting or union-ing single polygons that had been split
-#     along the dateline
+#     along the antimeridian
 #   Disadvantage: Slower
 #   Summary: Used for exporting objects
 
-# preview360_split_intersection(): Converts spatial object to range [0, 360] by splitting
-#   polygons that span the dateline and adding 360 to longitude coordinates of
-#   polygons in [-180, 0]. This function uses st_intersection(), so it can
+# preview360_split_intersection(): Converts spatial object to range [0, 360] by
+#   splitting polygons that span the antimeridian and adding 360 to
+#   longitude coordinates of polygons in [-180, 0].
+#   This function uses st_intersection(), so it can
 #   be used when polygons span the prime meridian, e.g. world polygons.
 #
 #   Main advantage: Can handle world polygons
@@ -34,7 +35,7 @@
 
 ###############################################################################
 #------------------------------------------------------------------------------
-### Tests if x spans the dateline
+### Tests if x spans the antimeridian
 check_360 <- function(x) {
   stopifnot(isTruthy(st_crs(x)[[2]]))
 
@@ -44,8 +45,10 @@ check_360 <- function(x) {
 
 
 #------------------------------------------------------------------------------
-### Top-level for converting dateline-spanning objects to 0-360 if nec
-# If any objects span meridian, then have to use intersection not intersects
+### Top-level for converting antimeridian-spanning objects to 0-360 if nec
+# If any objects span the meridian (0 decimal degrees),
+#   then we have to use intersection rather than intersects or mod
+#   or else the polygons will do a world / world2 thing
 check_preview360_split <- function (x, force.360 = FALSE) {
   if (check_360(x) || force.360) {
     meridian <- st_sfc(
@@ -85,7 +88,7 @@ check_preview360_mod <- function (x, force.360 = FALSE) {
 
 
 ###############################################################################
-#  See above for details
+#  See top of file for details
 preview360_split <- function(x) {
   UseMethod("preview360_split")
 }
@@ -166,7 +169,7 @@ preview360_split.sfc <- function(x) {
 
 
 ###############################################################################
-#  See above for details
+#  See top of file for details
 preview360_mod <- function (x) {
   UseMethod("preview360_mod", x)
 }
@@ -221,7 +224,7 @@ preview360_mod.sfc <- function(x) {
 
 
 ###############################################################################
-#  See above for details
+#  See top of file for details
 preview360_split_intersection <- function(x) {
   UseMethod("preview360_split_intersection")
 }
@@ -231,7 +234,7 @@ preview360_split_intersection.sf <- function(x) {
   x.agr <- st_agr(x)
   x.crs <- st_crs(x)
 
-  # Because we're using st_intersection(), sff geom doesn't have type reqs
+  # Because we're using st_intersection(), sf geom doesn't have type reqs
 
   y1 <- st_sfc(st_polygon(list(
     matrix(c(-180, 0, 0, -180, -180, -90, -90, 90, 90, -90), ncol = 2)

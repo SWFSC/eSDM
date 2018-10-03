@@ -1,4 +1,5 @@
 ### server.R for eSDM GUI by Sam Woodman
+# Note 'importing predictions' was 'loading models' when code was first written
 
 
 ###############################################################################

@@ -1,10 +1,10 @@
-### Reactive functions that return display tables for various tabs
+### Reactive functions that return data frames for tables for various tabs
 # Most tables use 'if... return()' rather than 'req()' so that
 # subsequent reactive functions won't be stopped
 
 
 ###############################################################################
-### Table of original models
+### Table of original predictions
 table_orig <- reactive({
   if (length(vals$models.ll) == 0) return()
 
@@ -21,7 +21,7 @@ table_orig <- reactive({
 
 
 ###############################################################################
-### Table of original models with stats
+### Table of original predictions with stats
 table_orig_stats <- reactive({
   req(table_orig())
 
@@ -36,7 +36,7 @@ table_orig_stats <- reactive({
 
 
 ###############################################################################
-### Table of overlaid models
+### Table of overlaid predictions
 table_overlaid <- reactive({
   if (length(vals$overlaid.models) == 0) return()
 
@@ -52,7 +52,7 @@ table_overlaid <- reactive({
 
 
 ###############################################################################
-### Table of created ensemble models
+### Table of created ensemble predictions
 table_ensembles <- reactive({
   if (length(vals$ensemble.models) == 0) return()
 

@@ -2,7 +2,7 @@
 
 ###############################################################################
 ###############################################################################
-### Save data
+### Save workspace
 # Nothing to validate or return, so we don't need eventReactive
 output$save_app_envir <- downloadHandler(
   filename = function() input$save_app_envir_name,
@@ -12,7 +12,7 @@ output$save_app_envir <- downloadHandler(
       # Convert reactiveValues
       vals.save <- reactiveValuesToList(vals)
 
-      # Reset plotting info in vals.save
+      # Reset plotting info in vals.save (not vals)
       vals.save$models.plot.leaf <- NULL
       vals.save$models.plot.leaf.idx <- NULL
       vals.save$models.plot <- NULL
@@ -55,9 +55,10 @@ output$save_app_envir <- downloadHandler(
 
 ###############################################################################
 ###############################################################################
-# Load data
+# Load saved workspace
 
 #------------------------------------------------------------------------------
+# Upload file with saved workspace and open modal
 observeEvent(input$load_app_envir_file, {
   req(input$load_app_envir_file)
 
@@ -81,6 +82,7 @@ observeEvent(input$load_app_envir_file, {
 
 
 #------------------------------------------------------------------------------
+# Modal asking if user wants to overwrite current workspace
 load_workspace_modal <- function(failed = FALSE) {
   if (failed) {
     modalDialog(
@@ -109,7 +111,7 @@ load_workspace_modal <- function(failed = FALSE) {
 
 
 #------------------------------------------------------------------------------
-# Actions after modal
+# Options from close modal buttons: cancel load or trigger val.load
 observeEvent(input$workspace_cancel, {
   removeModal()
   shinyjs::reset("load_app_envir_file")
@@ -121,8 +123,11 @@ observeEvent(input$workspace_load, {
 })
 
 
-
 #------------------------------------------------------------------------------
+# Ensures workspace is loaded and processed even if user quickly changes tabs
+observe(load_envir())
+
+# Load and process saved workspace when val.load is triggered
 load_envir <- eventReactive(val.load(), {
   file.load <-  req(input$load_app_envir_file)
 
@@ -135,9 +140,6 @@ load_envir <- eventReactive(val.load(), {
                   "a workspace saved using the eSDM GUI"))
     )
     incProgress(0.3)
-
-    # browser()
-    # val.workspace(inputs.save)
 
     #------------------------------------------------------
     vals$models.ll             <- vals.save[["models.ll"]]
@@ -209,7 +211,5 @@ load_envir <- eventReactive(val.load(), {
 
   paste("Workspace loaded from", file.load$name)
 }, ignoreInit = TRUE)
-
-observe(load_envir())
 
 ###############################################################################
