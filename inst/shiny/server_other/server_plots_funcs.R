@@ -1,5 +1,7 @@
+# Functions used by server_plots.R and server_plots_download.R
+
 ###############################################################################
-# Get dimensions for eSDM preview
+# Get dimensions for preview
 
 #------------------------------------------------------------------------------
 ### Within the app
@@ -24,7 +26,7 @@ multiplot_inapp <- function(x) {
 
 
 #------------------------------------------------------------------------------
-### Being downloaded
+### Downloaded file
 multiplot_download <- function(x) {
   plot.ncol <- case_when(
     x <= 2 ~ 1,
@@ -44,7 +46,7 @@ multiplot_download <- function(x) {
 
 
 #------------------------------------------------------------------------------
-### Called by both; params with same dimensions for inapp and download
+### Params with same dimensions for inapp and download
 multiplot_both <- function(x) {
   axis.cex.curr <- case_when(
     x == 1 ~ 1.1,
@@ -145,7 +147,7 @@ preview_ll_axes <- function(x) {
 
 ###############################################################################
 ###############################################################################
-# Plot layout of sf objects given number of rows and columns + other plot info
+### Plot layout of sf objects given number of rows and columns + other plot info
 multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
                              col.pal, leg.labels, plot.ncol, plot.nrow,
                              axis.cex.curr, main.cex.curr, leg.width,
@@ -254,8 +256,7 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 
 ###############################################################################
 ###############################################################################
-
-# Generate static plot of sf object
+### Generate static plot of sf object
 preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
                        axis.cex, main.cex) {
   # Convert to 0-360 longitude range if necessary
@@ -321,7 +322,7 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
 
 ###############################################################################
 ###############################################################################
-# Generate leaflet plot of provided sf object
+### Generate leaflet plot of provided sf object
 preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
                                 col.pal, leg.labels = NULL, leg.title = NULL) {
   stopifnot(
@@ -330,6 +331,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
     perc %in% c(1, 2),
     identical(st_crs(sdm.ll), st_crs(4326))
   )
+
   if (isTruthy(leg.labels) & !anyNA(col.pal) &
       length(col.pal) != length(leg.labels)) {
     stop("If 'leg.labels' is not NULL, then 'col.pal' and 'leg.labels' ",
@@ -383,27 +385,10 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
     col.pal <- preview_vals_break_col(data.vec)[[2]]
     col.num <- length(col.pal)
 
-    if (col.num < 10) {
-      binpal <- colorNumeric(
-        col.pal, data.vec, na.color = "gray"
-      )
-      data.breaks.labs <- format(
-        signif(sort(unique(na.omit(data.vec)), decreasing = TRUE), 3), justify = "right"
-      )
-
-    } else {
-      binpal <- colorBin(
-        col.pal, data.vec, bins = 10, pretty = FALSE, na.color = "gray"
-      )
-      data.breaks.vals <- seq(
-        max(data.vec, na.rm = TRUE), min(data.vec, na.rm = TRUE), length.out = col.num + 1
-      )
-      d <- max(3, nchar(format(signif(tail(data.breaks.vals, 2)[2], 1), scientific = FALSE)) - 2)
-      data.breaks.vals <- format(round(data.breaks.vals, d), justify = "right")
-      data.breaks.labs <- paste(
-        tail(data.breaks.vals, -1), "-", head(data.breaks.vals, -1)
-      )
-    }
+    temp <- preview_interactive_vals_colscheme(col.num, col.pal, data.vec)
+    binpal <- temp[[1]]
+    data.breaks.labs <- temp[[2]]
+    rm(temp)
 
     leaf.map <- leaf.map %>%
       addPolygons(
@@ -424,48 +409,57 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         position = "bottomright", options = layersControlOptions(collapsed = FALSE))
 
 
-  } else { # if (length(unique(data.vec.w)) >= 11)
+  } else {
     # Incldue weight data
-    w.num <- ifelse(
-      length(unique(data.vec.w)) > 10, 10, length(unique(data.vec.w))
-    )
+    data.vec.w.uniq <- length(unique(na.omit(data.vec.w)))
+    w.num <- ifelse(data.vec.w.uniq > 10, 10, data.vec.w.uniq)
+    w.pal <- viridis::viridis(w.num)
 
-    pal.w <- viridis::viridis(w.num)
-    binpal <- colorBin(
-      pal.w, data.vec.w, bins = w.num, pretty = FALSE, na.color = "gray"
-    )
-
-    data.breaks.vals.w <- seq(
-      max(data.vec.w, na.rm = TRUE), min(data.vec.w, na.rm = TRUE), length.out = w.num + 1
-    )
-    d <- max(3, nchar(format(signif(tail(data.breaks.vals.w, 2)[2], 1), scientific = FALSE)) - 2)
-    data.breaks.vals.w <- format(round(data.breaks.vals.w, d), justify = "right")
-    data.breaks.labs.w <- paste(
-      tail(data.breaks.vals.w, -1), "-", head(data.breaks.vals.w, -1)
-    )
+    w.temp <- preview_interactive_vals_colscheme(w.num, w.pal, data.vec.w)
+    w.binpal <- w.temp[[1]]
+    data.breaks.labs.w <- w.temp[[2]]
+    rm(w.temp)
 
     leaf.map %>%
       addPolygons(
-        stroke = FALSE, color = ~binpal(data.vec.w), fillOpacity = 0.6, group = "Weights") %>%
+        stroke = FALSE, color = ~w.binpal(data.vec.w), fillOpacity = 0.6, group = "Weights") %>%
       addLegend(
-        "topright", title = "Weights", colors = rev(pal.w),
-        labels = data.breaks.labs.w, opacity = 1, group = "Weights") %>%
+        "topright", title = "Weights", colors = c(rev(w.pal), "gray"),
+        labels = c(data.breaks.labs.w, "NA"), opacity = 1, group = "Weights") %>%
       addLayersControl(
         baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
         overlayGroups = c("Predictions", "Weights"),
         position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
       hideGroup("Weights")
-
   }
-  # else {
-  #   # Weight data deosn't have enough unique values
-  #   leaf.map %>%
-  #     addControl(
-  #       tags$h5("Weight data cannot be plotted"), layerId = "Weight info", position = "bottomright") %>%
-  #     addLayersControl(
-  #       baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
-  #       position = "bottomright", options = layersControlOptions(collapsed = FALSE))
-  # }
+}
+
+
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+preview_interactive_vals_colscheme <- function(col.num, col.pal, data.vec) {
+  if (col.num < 10) {
+    binpal <- colorNumeric(col.pal, data.vec, na.color = "gray")
+    data.breaks.labs <- format(
+      signif(sort(unique(na.omit(data.vec)), decreasing = TRUE), 3), justify = "right"
+    )
+
+  } else {
+    binpal <- colorBin(
+      col.pal, data.vec, bins = 10, pretty = FALSE, na.color = "gray"
+    )
+    data.breaks.vals <- seq(
+      max(data.vec, na.rm = TRUE), min(data.vec, na.rm = TRUE),
+      length.out = col.num + 1
+    )
+    d <- max(3, nchar(format(signif(tail(data.breaks.vals, 2)[2], 1), scientific = FALSE)) - 2)
+    data.breaks.vals <- format(round(data.breaks.vals, d), justify = "right")
+    data.breaks.labs <- paste(
+      tail(data.breaks.vals, -1), "-", head(data.breaks.vals, -1)
+    )
+  }
+
+  list(binpal, data.breaks.labs)
 }
 
 ###############################################################################
