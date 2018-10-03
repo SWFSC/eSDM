@@ -126,6 +126,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
   # Make range polygon for intersections
   # st_intersection()'s below happen here so users can update map range params
   range.poly <- pretty_range_poly_func(map.range, st_crs(model.toplot))
+  range.outline <- pretty_crsNA_func(st_cast(range.poly, "MULTILINESTRING"))
   rpoly.mat <- matrix(st_bbox(range.poly), ncol = 2)
   # tm_shape() does not currently handle bbox obj correctly for range [0, 360]
 
@@ -149,7 +150,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
 
   if (exists("tmap.obj")) {
     tmap.obj <- tmap.obj +
-      tm_shape(model.toplot) +
+      tm_shape(model.toplot, projection = st_crs(m.orig)) +
       tm_fill(col = l1$data.name, border.col = "transparent",
               style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
               colorNA = l1$col.na, textNA = "NA", showNA = NA,
@@ -158,7 +159,7 @@ plot_pretty <- function(model.toplot, map.range, background.color,
 
   } else {
     tmap.obj <- tm_shape(model.toplot, bbox = rpoly.mat,
-                         projection = st_crs(range.poly)) +
+                         projection = st_crs(m.orig)) +
       tm_fill(col = l1$data.name, border.col = "transparent",
               style = "fixed", breaks = l1$data.breaks, palette = l1$col.pal,
               colorNA = l1$col.na, textNA = "NA", showNA = NA,
@@ -223,7 +224,10 @@ plot_pretty <- function(model.toplot, map.range, background.color,
   rm(j)
 
   #----------------------------------------------------------------------------
-  tmap.obj
+  # tmap.obj
+  tmap.obj +
+    tm_shape(range.outline, projection = st_crs(m.orig)) +
+    tm_lines(col = background.color)
 }
 
 
