@@ -1,26 +1,27 @@
-### Calculate AUC, TSS, or RMSE of selected models given p/a or numerical points
-### 'p/a' or 'pa' refers to presence/absence points
+# Calculate AUC, TSS, or RMSE of selected predictions given
+#   count or pres/abs points
+# 'p/a' or 'pa' refers to presence/absence points
 
 
 ###############################################################################
 # Flags and resetting of inputs and reactiveValues
 
-### Flag for if any model predictions are in app
+### Flag for if any predictions are imported or created
 output$eval_display_flag <- reactive({
   list.models.all <- list(
     vals$models.ll, vals$overlaid.models, vals$ensemble.models
   )
-
   any(sapply(list.models.all, length) > 0)
 })
 outputOptions(output, "eval_display_flag", suspendWhenHidden = FALSE)
 
-### Flag for if validation data has been loaded
+### Flag for if validation data has been imported
 output$eval_display_calc_metrics_flag <- reactive({
   inherits(vals$eval.data, "sf")
 })
-outputOptions(output, "eval_display_calc_metrics_flag",
-              suspendWhenHidden = FALSE)
+outputOptions(
+  output, "eval_display_calc_metrics_flag", suspendWhenHidden = FALSE
+  )
 
 
 ###############################################################################
@@ -29,7 +30,7 @@ outputOptions(output, "eval_display_calc_metrics_flag",
 ###########################################################
 # Prep
 
-### Generate indicies of models for which to calculate metrics
+### Get indicies of predictions for which to calculate metrics
 eval_models_idx <- reactive({
   eval.models.idx <- list(
     input$eval_models_table_orig_out_rows_selected,
@@ -37,9 +38,7 @@ eval_models_idx <- reactive({
     input$eval_models_table_ens_out_rows_selected
   )
 
-  lapply(eval.models.idx, function(i) {
-    if (!is.null(i)) sort(i) else i
-  })
+  lapply(eval.models.idx, function(i) {if (isTruthy(i)) sort(i) else i})
 })
 
 ### Generate list of sdms in native projections with which to calculate metrics
@@ -65,14 +64,14 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 
   # Set necessary variables
   eval.data <- vals$eval.data
-  models.idx.any <- any(!sapply(eval_models_idx(), is.null))
+  models.idx.any <- any(sapply(eval_models_idx(), isTruthy))
   which.metrics <- input$eval_metrics_which
 
   # All validating done here so all messages are displayed at same time
   validate(
     need(inherits(eval.data, "sf"),
-         paste("Error: Please import validation data in order",
-               "to calculate evaluation metrics")),
+         paste("Error: Please import validation data to",
+               "calculate evaluation metrics")),
     need(models.idx.any,
          paste("Error: Please select at least one set of predictions for which ",
                "to calculate evaluation metrics")),
@@ -81,7 +80,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   )
 
   # Calculate metrics
-  withProgress(message = 'Evaluating models', value = 0, {
+  withProgress(message = 'Evaluating predictions', value = 0, {
     models.toeval <- eval_models()
     m.num <- length(models.toeval)
     incProgress(0.1)
@@ -92,7 +91,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 
       incProgress(
         amount = 0.8 / m.num,
-        detail = paste("Calculating metrics for model", idx, "of", m.num)
+        detail = paste("Calculating metrics for predictions", idx, "of", m.num)
       )
 
       if (vals$eval.data.specs[2] == 1) {
@@ -205,7 +204,7 @@ output$eval_metrics_table_save <- downloadHandler(
     eval.metrics <- table_eval_metrics()
     models.which <- vals$eval.models.idx
 
-    ### Get info of models that have eval metrics calculated for them
+    ### Get info of predictions that have eval metrics calculated for them
     orig.table <- cbind(table_orig(), table_orig_stats()[, -1])
     orig.table <- orig.table[models.which[[1]], ]
     over.table <- table_overlaid()[models.which[[2]], ]
@@ -237,8 +236,8 @@ output$eval_metrics_table_save <- downloadHandler(
         cbind(ens.table, NA, NA, NA, NA, NA), all.models.names
       )
     }
-    # Else: Either some combo of orig.table and over.table or it's only
-    #        the ens.table. Thus, names are already correct.
+    # Else: Either some combo of orig.table and over.table,
+    #   or it's only ens.table. Either way, names are already correct.
 
 
     ### Combine info tables

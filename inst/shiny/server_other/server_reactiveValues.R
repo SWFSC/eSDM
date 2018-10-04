@@ -66,7 +66,7 @@ vals <- reactiveValues(
 
   # Objects that store data for evaluation metrics section
   eval.data          = NULL,       # Validation data (sf obj) with 'count' and 'sight' columns
-  eval.data.specs    = NULL,       # Vlaidation data type (1 = count, 2 = pres/abs)
+  eval.data.specs    = NULL,       # Validation data type (1 = count, 2 = pres/abs)
   eval.data.gis.info = NULL,       # List with loaded GIS validation data (sf obj) and shp/gdb indicator (num 2 or 3, respectively)
   eval.models.idx    = NULL,       # List of indices of evaluated predictions
   eval.metrics       = NULL,       # Metric values

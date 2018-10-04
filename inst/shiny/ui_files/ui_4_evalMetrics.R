@@ -59,19 +59,18 @@ ui.evalMetrics <- function() {
                   ),
                   conditionalPanel(
                     condition = "output.eval_csv_error_flag == 2",
-                    helpText("There are more than 50 unique codes for the currently selected validation data column.",
-                             "Please select a different column or select \"Counts (numerical)\" for",
-                             tags$em("Validation data type"), ".")
+                    tags$h5("There are more than 50 unique codes for the currently selected validation data column;",
+                            "please select a different column or select \"Counts (numerical)\" for",
+                            tags$em("Validation data type"),
+                            style = "color: red;")
                   ),
                   fluidRow(
                     column(6, uiOutput("eval_csv_codes_p_uiOut_select")),
                     column(6, uiOutput("eval_csv_codes_a_uiOut_select"))
                   )
                 ),
-                fluidRow(
-                  column(6, uiOutput("eval_csv_execute_uiOut_button")),
-                  column(6, textOutput("eval_csv_data_text"))
-                )
+                uiOutput("eval_csv_execute_uiOut_button"),
+                textOutput("eval_csv_data_text")
               )
             )
           ),
@@ -105,17 +104,18 @@ ui.evalMetrics <- function() {
                 condition = "input.eval_data_type == 2",
                 conditionalPanel(
                   condition = "output.eval_gis_error_flag == 2",
-                  helpText("There are more than 50 unique codes for the currently selected validation data column.",
-                           "Please select a different column or select \"Counts (numerical)\" for",
-                           tags$em("Validation data type"), ".")
+                  tags$h5("There are more than 50 unique codes for the currently selected validation data column;",
+                          "please select a different column or select \"Counts (numerical)\" for",
+                          tags$em("Validation data type"),
+                          style = "color: red;")
                 ),
-                column(6, uiOutput("eval_gis_codes_p_uiOut_select")),
-                column(6, uiOutput("eval_gis_codes_a_uiOut_select"))
+                fluidRow(
+                  column(6, uiOutput("eval_gis_codes_p_uiOut_select")),
+                  column(6, uiOutput("eval_gis_codes_a_uiOut_select"))
+                )
               ),
-              fluidRow(
-                column(6, uiOutput("eval_gis_execute_uiOut_button")),
-                column(6, textOutput("eval_data_gis_text"))
-              )
+              uiOutput("eval_gis_execute_uiOut_button"),
+              textOutput("eval_data_gis_text")
             )
           ),
           tags$span(textOutput("eval_data_message"), style = "color: blue")

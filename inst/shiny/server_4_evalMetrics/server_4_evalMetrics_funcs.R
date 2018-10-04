@@ -1,11 +1,10 @@
-### Non-reactive functions for ensEvalMetrics tab
-
+### Non-reactive functions for Evaluation Metrics tab
 
 ###############################################################################
 # Process evaluation metric validation data
 
-### Process data.frame (x) with long, lat, and data column
-###   Processing method depends on data type (y)
+### Process data.frame (x) with long, lat, and data column;
+###   processing method depends on data type (y)
 eval_proc_df <- function(x, y, p.codes, a.codes) {
   stopifnot(
     is.data.frame(x),
