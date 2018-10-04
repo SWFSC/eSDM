@@ -21,7 +21,7 @@ output$eval_display_calc_metrics_flag <- reactive({
 })
 outputOptions(
   output, "eval_display_calc_metrics_flag", suspendWhenHidden = FALSE
-  )
+)
 
 
 ###############################################################################
@@ -159,13 +159,23 @@ eval_metrics_overlap <- eventReactive(input$eval_metrics_execute, {
   )
 
   # Make text pretty
-  if (length(pt.over.len) == 1) {
+  #--------------------------------------------------------
+  if (all(pt.over.len == 0)) {
+    paste(
+      "The predictions being evaluated had 0 validation points",
+      "that fell on the boundary between two or more prediction polygons"
+    )
+
+    #------------------------------------------------------
+  } else if (length(pt.over.len) == 1) {
     paste(
       "The predictions being evaluated had", pt.over.len, "validation points",
       "that fell on the boundary between two or more prediction polygons;" ,
-      "the predictions from these polygons were averaged for the evaluation"
+      "the predictions from these polygons were averaged for the evaluation.",
+      "See the manual for more details."
     )
 
+    #------------------------------------------------------
   } else {
     if (zero_range(pt.over.len)) {
       temp <- paste(
@@ -188,7 +198,8 @@ eval_metrics_overlap <- eventReactive(input$eval_metrics_execute, {
     paste(
       temp, "validation points, respectively,",
       "that fell on the boundary between two or more prediction polygons;" ,
-      "the predictions from these polygons were averaged for the evaluation"
+      "the predictions from these polygons were averaged for the evaluation.",
+      "See the manual for more details."
     )
   }
 })

@@ -5,9 +5,11 @@
 #' @param x object of class sf; SDM predictions
 #' @param x.idx name or index of column in \code{x} with prediction values
 #' @param y object of class sf; validation data
-#' @param y.idx name or index of column in \code{y} with validation data
+#' @param y.idx name or index of column in \code{y} with validation data.
+#'   This validation data column must have at least two unique values, e.g. 0 and 1
 #' @param count.flag logical; \code{TRUE} indicates that the data in column \code{y.idx} is count data,
-#'   while \code{FALSE} indicates that the data is presence/absence
+#'   while \code{FALSE} indicates that the data is presence/absence.
+#'   See details for differences in data processing based on this flag.
 #'
 #' @importFrom methods slot
 #' @importFrom ROCR performance
@@ -55,7 +57,12 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   if (!is.numeric(y.data)) {
     stop("The data in column y.idx of object y must all be numbers")
   }
-
+  if (length(unique(y.data)) < 2) {
+    stop("The data in column y.idx of object y must have at least ",
+         "two unqiue values, e.g. 0 and 1. ",
+         "Calculating metrics using presence-only or absence-only data ",
+         "is not currently supported by this function")
+  }
 
   #------------------------------------------------------------------
   x <- x[!is.na(st_set_geometry(x, NULL)[, 1]), ]
@@ -104,21 +111,18 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
     is.numeric(y.sight),
     is.numeric(y.count)
   )
-  # browser()
-  stopifnot(length(unique(y.sight)) == 2)
 
 
   #------------------------------------------------------------------
-  xy.data.overlap <- data.frame(do.call(
-    rbind,
-    mapply(function(i, j) {
-      if (length(j) == 0) {
-        NULL
-      } else {
-        c(mean(x.dens[i]), y.sight[j], mean(x.abund[i]), y.count[j])
-      }
-    }, yx.sgbp, seq_along(yx.sgbp), SIMPLIFY = FALSE)
-  ))
+  xy.data.overlap.list <- mapply(function(i, j) {
+    if (length(j) == 0) {
+      NULL
+    } else {
+      c(mean(x.dens[i]), y.sight[j], mean(x.abund[i]), y.count[j])
+    }
+  }, yx.sgbp, seq_along(yx.sgbp), SIMPLIFY = FALSE)
+
+  xy.data.overlap <- data.frame(do.call(rbind, xy.data.overlap.list))
 
 
   #------------------------------------------------------------------

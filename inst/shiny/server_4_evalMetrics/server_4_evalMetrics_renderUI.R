@@ -49,14 +49,19 @@ output$eval_csv_execute_uiOut_button <- renderUI({
 
   } else {
     req(!any(c("error1", "error2") %in% eval_data_csv_pacodes()))
-    validate(
-      need(length(eval_data_csv_pacodes()) > 1,
-           paste("The validation data column must contain at least two",
-                 "unique values for it to be used as presence/absence data")),
-      errorClass = "validation2"
-    )
   }
 
+  # Check that validation data column has at least 2 unique, non-NA values
+  col.pa <- as.numeric(input$eval_csv_names[3])
+  choice.input.names <- na.omit(unique(eval_data_csv_load()[[2]][, col.pa]))
+  validate(
+    need(length(choice.input.names) >= 2,
+         paste("The validation data column must contain at least two",
+               "unique values to be used to in the GUI")),
+    errorClass = "validation2"
+  )
+
+  # Action
   actionButton("eval_csv_execute", "Import validation data")
 })
 
@@ -113,14 +118,21 @@ output$eval_gis_execute_uiOut_button <- renderUI({
 
   } else {
     req(!("error2" %in% eval_data_gis_pacodes()))
-    validate(
-      need(length(eval_data_gis_pacodes()) > 1,
-           paste("The validation data column must contain at least two",
-                 "unique values for it to be used as presence/absence data")),
-      errorClass = "validation2"
-    )
   }
 
+  # Check that validation data column has at least 2 unique, non-NA values
+  col.pa <- as.numeric(req(input$eval_gis_names))
+  choice.input.names <- na.omit(unique(
+    st_set_geometry(vals$eval.data.gis.info[[2]], NULL)[, col.pa]
+  ))
+  validate(
+    need(length(choice.input.names) >= 2,
+         paste("The validation data column must contain at least two",
+               "unique values to be used to in the GUI")),
+    errorClass = "validation2"
+  )
+
+  # Action
   actionButton("eval_gis_execute", "Import validation data")
 })
 
@@ -133,8 +145,13 @@ output$eval_metrics_which_uiOut_check <- renderUI({
   choices.list <- list("AUC", "TSS", "RMSE")
   if (vals$eval.data.specs[[2]] == 2) choices.list <- choices.list[1:2]
 
-  checkboxGroupInput("eval_metrics_which", tags$h5("Metric(s) to calculate"),
-                     choices = choices.list)
+  input.lab <- tags$h5(
+    helpText("See 'Metrics Descriptions and References'",
+             "section below for metric information"),
+    "Metric(s) to calculate"
+  )
+
+  checkboxGroupInput("eval_metrics_which", input.lab, choices = choices.list)
 })
 
 ###############################################################################

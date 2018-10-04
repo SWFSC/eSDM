@@ -129,7 +129,7 @@ eval_data_csv <- eventReactive(input$eval_csv_execute, {
 
   ifelse(
     length(csv.df.na) > 0,
-    paste("Imported validation data -", length(csv.df.na),
+    paste("Imported validation data;", length(csv.df.na),
           "points were removed because they had values of NA in the",
           "validation data column"),
     "Imported validation data"
@@ -261,7 +261,7 @@ eval_data_gis <- eventReactive(input$eval_gis_execute, {
 
   ifelse(
     length(x.df.na) > 0,
-    paste("Imported validation data -", length(x.df.na),
+    paste("Imported validation data;", length(x.df.na),
           "points were removed because they had values of NA in the",
           "validation data column"),
     "Imported validation data"

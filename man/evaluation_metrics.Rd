@@ -13,10 +13,12 @@ evaluation_metrics(x, x.idx, y, y.idx, count.flag = FALSE)
 
 \item{y}{object of class sf; validation data}
 
-\item{y.idx}{name or index of column in \code{y} with validation data}
+\item{y.idx}{name or index of column in \code{y} with validation data.
+This validation data column must have at least two unique values, e.g. 0 and 1}
 
 \item{count.flag}{logical; \code{TRUE} indicates that the data in column \code{y.idx} is count data,
-while \code{FALSE} indicates that the data is presence/absence}
+while \code{FALSE} indicates that the data is presence/absence.
+See details for differences in data processing based on this flag.}
 }
 \value{
 A numeric vector with AUC, TSS and RMSE values, respectively.

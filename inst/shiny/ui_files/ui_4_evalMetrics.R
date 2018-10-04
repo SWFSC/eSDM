@@ -48,14 +48,14 @@ ui.evalMetrics <- function() {
                   condition = "input.eval_data_type == 1",
                   conditionalPanel(
                     condition = "output.eval_csv_error_flag == 1",
-                    helpText("Please select exactly three columns above")
+                    tags$h5("Please select exactly three columns above", style = "color: red;")
                   )
                 ),
                 conditionalPanel(
                   condition = "input.eval_data_type == 2",
                   conditionalPanel(
                     condition = "output.eval_csv_error_flag == 1",
-                    helpText("Please select exactly three columns above to select presence and absence codes")
+                    tags$h5("Please select exactly three columns above to select presence and absence codes", style = "color: red;")
                   ),
                   conditionalPanel(
                     condition = "output.eval_csv_error_flag == 2",
@@ -145,7 +145,6 @@ ui.evalMetrics <- function() {
                   ),
                   column(
                     width = 5, offset = 1,
-                    helpText("See 'Metrics Descriptions and References' section below for metric information"),
                     uiOutput("eval_metrics_which_uiOut_check"),
                     tags$br(),
                     actionButton("eval_metrics_execute", "Calculate metrics"),
