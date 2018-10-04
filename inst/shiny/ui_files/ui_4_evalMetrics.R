@@ -138,6 +138,7 @@ ui.evalMetrics <- function() {
                   column(
                     width = 6,
                     tags$strong("Validation data info"),
+                    textOutput("table_eval_pts_filename_out"),
                     tableOutput("table_eval_pts_out"),
                     tags$style(type="text/css", "#table_pa_pts_out td:first-child {font-weight:bold;}")
                     #tr:first-child for first row

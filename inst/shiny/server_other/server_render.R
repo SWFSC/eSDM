@@ -345,7 +345,9 @@ output$eval_metrics_message <- renderText({
   "Metrics calculated"
 })
 
-# Validation data table
+# Validation data filename and table
+# Filename separate in case filename is extra long
+output$table_eval_pts_filename_out <- renderText(table_eval_pts_filename())
 output$table_eval_pts_out <- renderTable(table_eval_pts(), colnames = FALSE)
 
 #----------------------------------------------------------

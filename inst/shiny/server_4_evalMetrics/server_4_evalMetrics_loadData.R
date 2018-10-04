@@ -224,7 +224,7 @@ eval_data_gis_pacodes <- reactive({
 })
 
 ###########################################################
-### GIS: process and then save validation data to reactiveVar
+### GIS: process and then save validation data to vals
 eval_data_gis <- eventReactive(input$eval_gis_execute, {
   req(vals$eval.data.gis.info)
 
@@ -271,6 +271,14 @@ eval_data_gis <- eventReactive(input$eval_gis_execute, {
 
 ###############################################################################
 ### Generate table with validation data stats
+table_eval_pts_filename <- reactive({
+  eval.data <- vals$eval.data
+  data.type <- vals$eval.data.specs[2]
+  req(inherits(eval.data, "sf"), data.type)
+
+  paste("Filename:", vals$eval.data.specs[1])
+})
+
 table_eval_pts <- reactive({
   eval.data <- vals$eval.data
   data.type <- vals$eval.data.specs[2]
@@ -289,20 +297,21 @@ table_eval_pts <- reactive({
     )
 
     data.frame(
-      c("Filename", "Data type", "Number of points with non-zero counts",
+      c("Data type", "Number of points with non-zero counts",
         "Number of points with counts of 0", "Range of non-zero counts"),
-      c(vals$eval.data.specs[1], data.type.txt, pres.num, abs.num, count.range)
+      c(data.type.txt, pres.num, abs.num, count.range),
+      stringsAsFactors = FALSE
     )
 
   } else if (data.type == 2) {
     data.frame(
-      c("Filename", "Data type", "Number of presence points",
-        "Number of absence points"),
-      c(vals$eval.data.specs[1], data.type.txt, pres.num, abs.num)
+      c("Data type", "Number of presence points", "Number of absence points"),
+      c(data.type.txt, pres.num, abs.num),
+      stringsAsFactors = FALSE
     )
 
   } else {
-    stop("table_eval_pts(): vals$eval.data.specs[[2]] is not 1 or 2")
+    validate("Error in evaluation metric table creation")
   }
 })
 
