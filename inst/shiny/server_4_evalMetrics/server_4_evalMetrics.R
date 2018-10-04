@@ -67,7 +67,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
   models.idx.any <- any(sapply(eval_models_idx(), isTruthy))
   which.metrics <- input$eval_metrics_which
 
-  # All validating done here so all messages are displayed at same time
+  # All validate()'s here so all messages are displayed at same time
   validate(
     need(inherits(eval.data, "sf"),
          paste("Error: Please import validation data to",

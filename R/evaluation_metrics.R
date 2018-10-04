@@ -100,10 +100,11 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   rm(y.data)
 
   stopifnot(
-    inherits(x.abund, c("numeric", "integer")),
-    inherits(y.sight, c("numeric", "integer")),
-    inherits(y.count, c("numeric", "integer"))
+    is.numeric(x.abund),
+    is.numeric(y.sight),
+    is.numeric(y.count)
   )
+  # browser()
   stopifnot(length(unique(y.sight)) == 2)
 
 
