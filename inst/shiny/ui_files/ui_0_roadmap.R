@@ -134,7 +134,7 @@ ui.roadmap <- function() {
                       "This progress bar has an 'X' that if clicked closes the progress bar,",
                       "but closing this bar will not stop the currently running process."),
               tags$li("The larger the data sets, the longer all processes will take.",
-                      "In particular, plotting will take longer when predictions span the antimeridian (i.e. decimal 180 degrees).")
+                      "In particular, plotting will take longer when predictions span the antimeridian (i.e. 180 decimal degrees).")
             ),
             tags$br(),
             downloadButton("download_sample_data", "Download sample data"),

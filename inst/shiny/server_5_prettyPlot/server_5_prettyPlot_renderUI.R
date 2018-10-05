@@ -189,12 +189,14 @@ output$pretty_color_num_uiOut_num <- renderUI({
 # These do things - 'val.pretty.color.num' is a reactiveVal() output
 observe(val.pretty.color.num(input$pretty_color_num))
 observeEvent(input$pretty_color_palette, {
-  req(input$pretty_color_palette == 2)
-  val.pretty.color.num(11)
+  if (input$pretty_color_palette == 2) val.pretty.color.num(11)
+  if (input$pretty_color_palette == 3) val.pretty.color.num(9)
 })
-observeEvent(input$pretty_color_palette, {
-  req(input$pretty_color_palette == 3)
-  val.pretty.color.num(9)
+observeEvent(input$pretty_color_perc, {
+  if (input$pretty_color_perc == 2) {
+    if (input$pretty_color_palette == 1) val.pretty.color.num(10)
+    if (input$pretty_color_palette == 6) val.pretty.color.num(12)
+  }
 })
 
 
