@@ -6,9 +6,9 @@
 
 ## Description
 
-`eSDM` is an R package designed to allow users to create ensembles predictions using predictions from species distribution models (SDMs) made at different spatial scales or with different units. Included in the package is the eSDM GUI, an R Shiny tool that provides the user with a graphical user interface that they can use to load, overlay, and create ensembles from SDM predictions.
+`eSDM` is an R package designed to allow users to create ensembles from predictions from species distribution models (SDMs) made at different spatial scales or with different prediction units. Included in the package is the eSDM GUI, an R Shiny tool that provides the user with a graphical user interface that they can use to import, overlay, and create ensembles from SDM predictions.
 
-## Installation
+## Install R package
 
 To install the latest version from GitHub:
 
@@ -18,11 +18,11 @@ if (!require('devtools')) install.packages('devtools')
 devtools::install_github('smwoodman/eSDM')
 ```
 
-## How to use
+## `eSDM` GUI
 
-To access the GUI online, go to https://swoodman.shinyapps.io/eSDM/
+To access the GUI online without installing it locally, go to https://swoodman.shinyapps.io/eSDM/
 
-To run the eSDM GUI locally, after installing the eSDM package run the following code in your RStudio console:
+To run the GUI locally, install the `eSDM` package and then run the following code in your RStudio console:
 
 ```r
 eSDM::eSDM_GUI()
