@@ -129,7 +129,7 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
 #'   (if desired) rescaling the overlaid predictions with \code{\link{ensemble_rescale}},
 #'   which is why all elments of \code{x} must have the same geometry.
 #'
-#'   \code{ensemble_create} includes functionality for ensembling methods provided in \link{esdm_gui},
+#'   \code{ensemble_create} includes functionality for ensembling methods provided in \link{eSDM_GUI},
 #'   although not for regional weighting', which currently must be done manually if not using the GUI.
 #'   For instance, if \code{y.weights} is a data frame, then the 'Pixel-level spatial weights' ensembling method is performed.
 #'

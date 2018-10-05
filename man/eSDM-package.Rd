@@ -8,7 +8,7 @@
 \description{
 eSDM provides functionality for overlaying SDM predictions onto a single base geometry
   and creating and evaluating ensemble predictions.
-  This can be done manually in R, or using the eSDM GUI (an R Shiny app) opened through \link{esdm_gui}
+  This can be done manually in R, or using the eSDM GUI (an R Shiny app) opened through \link{eSDM_GUI}
 }
 \details{
 eSDM allows users to overlay SDM predictions onto a single base geometry,
