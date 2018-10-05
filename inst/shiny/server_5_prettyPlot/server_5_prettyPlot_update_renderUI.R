@@ -10,7 +10,15 @@ output$pretty_toplot_update_which_addobj_uiOut_select <- renderUI({
     y.list.addobj <- req(y$list.addobj)
 
     choices.list <- seq_along(y.list.addobj) %>%
-      set_names(sapply(y.list.addobj, function(i) i$obj.text))
+      purrr::set_names(sapply(y.list.addobj, function(i) i$obj.text))
+    addobj.len <- pretty_toplot_update_addobj_len()
+    if (addobj.len > 1) {
+      choices.list <- c(
+        choices.list,
+        "Other - Change additional object plot order" = addobj.len + 1
+      )
+    }
+
     input.lab <- "Choose additional object to update"
 
     selectInput("pretty_toplot_update_which_addobj", tags$h5(input.lab),
@@ -24,9 +32,11 @@ output$pretty_toplot_update_which_addobj_uiOut_select <- renderUI({
 
 ### Remove additional object
 output$pretty_toplot_update_addobj_remove_uiOut_button <- renderUI({
-  req(input$pretty_toplot_update_which_addobj,
-      input$pretty_toplot_update_which == 6,
+  d <- req(input$pretty_toplot_update_which_addobj)
+  req(input$pretty_toplot_update_which == 6,
       val.pretty.toplot.update()$list.addobj)
+  req(d < pretty_toplot_update_addobj_len() + 1)
+
   actionButton("pretty_toplot_update_addobj_remove",
                "Remove selected additional object")
 })
@@ -37,6 +47,8 @@ output$pretty_toplot_update_addobj_remove_uiOut_button <- renderUI({
 output$pretty_toplot_update_which_param_uiOut_select <- renderUI({
   if (input$pretty_toplot_update_which == 6) { #needs to update based off table
     addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    req(addobj.which <= pretty_toplot_update_addobj_len())
+
     isolate({
       y <- req(val.pretty.toplot.update())
       y.addobj <- y$list.addobj[[addobj.which]]
@@ -78,35 +90,55 @@ output$pretty_toplot_update_message360_uiOut_text <- renderUI({
 output$pretty_toplot_update_message_uiOut_text <- renderUI({
   y <- req(val.pretty.toplot.update())
   z <- input$pretty_toplot_update_which
-  z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
-  z.names <- req(pretty_toplot_update_table())$Name
-  z.vals <- req(pretty_toplot_update_table())$Value
 
-  if (z == 1 & z2 != 1) {
+  if (z == 6) {
+    addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    req(addobj.which > pretty_toplot_update_addobj_len())
     temp <- HTML(paste(
-      "Please ensure that the 'minimum' values remain less than their",
-      "respective 'maximum' values.", tags$br(),
-      "Grid line locations will be automatically updated when you change",
-      "the map range. These updates will attemp to keep",
-      "the grid line interval consistent."
+      "The plot order of the additional objects does not supersede the",
+      tags$em("Object draw order"), "argument. Rather, this plot order",
+      "controls the order in which additional objects with the same",
+      tags$em("Object draw order"), "are plotted.",
+      "Additional objects that are selected first here will be drawn first",
+      "(i.e. behind the other additional objects).", tags$br(),
+      "Be sure to select all additional objects in the plot order selection.",
+      "Plot order changes will be reflected in the order of",
+      "additional objects in the",
+      tags$em("Choose additional object to update"), "dropdown."
     ))
 
-  } else if (z == 5 & z2 == 2) {
-    temp <- paste(
-      "Please ensure that the 'Longitude start value' is between",
-      "the specified longitude limits:",
-      paste(y$map.range[1:2], collapse = " and ")
-    )
-
-  }  else if (z == 5 & z2 == 3) {
-    temp <- paste(
-      "Please ensure that the 'Latitude start value' is between",
-      "the specified latitude limits:",
-      paste(y$map.range[3:4], collapse = " and ")
-    )
-
   } else {
-    req(NULL)
+    z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
+    z.names <- req(pretty_toplot_update_table())$Name
+    z.vals <- req(pretty_toplot_update_table())$Value
+
+    if (z == 1 & z2 != 1) {
+      temp <- HTML(paste(
+        "Please ensure that the 'minimum' values remain less than their",
+        "respective 'maximum' values.", tags$br(),
+        "Grid line locations will be automatically updated when you change",
+        "the map range. These updates will attemp to keep",
+        "the grid line interval consistent."
+      ))
+
+    } else if (z == 5 & z2 == 2) {
+      temp <- paste(
+        "Please ensure that the 'Longitude start value' is between",
+        "the specified longitude limits:",
+        paste(y$map.range[1:2], collapse = " and ")
+      )
+
+    }  else if (z == 5 & z2 == 3) {
+      temp <- paste(
+        "Please ensure that the 'Latitude start value' is between",
+        "the specified latitude limits:",
+        paste(y$map.range[3:4], collapse = " and ")
+      )
+
+
+    } else {
+      req(NULL)
+    }
   }
 
   tags$h5(temp, style = "color: red;")
@@ -121,6 +153,7 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
   z.names <- req(pretty_toplot_update_table())$Name
   z.vals <- req(pretty_toplot_update_table())$Value
+
 
   #--------------------------------------------------------
   if (z == 1) {
@@ -288,8 +321,8 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
 
     #------------------------------------------------------
   } else if (z == 6) {
-    input.lab <- z.names[z2]
     addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    input.lab <- z.names[z2]
     y.addobj <- y$list.addobj[[addobj.which]]
 
     if (z2 %in% 1:2) {
@@ -297,10 +330,10 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
 
     } else if (z2 == 3) {
       val.curr <- as.numeric(y.addobj$obj.order)
-      selectInput("pretty_toplot_update_thing1", tags$h5(input.lab),
-                  choices = list("Draw object behind SDM" = 1,
-                                 "Draw object in front of SDM" = 2),
-                  selected = val.curr)
+      radioButtons("pretty_toplot_update_thing1", tags$h5(input.lab),
+                   choices = list("Draw object behind SDM" = 1,
+                                  "Draw object in front of SDM" = 2),
+                   selected = val.curr)
 
     } else if (z2 == 4) {
       val.curr <- is.na(y.addobj$col.ptfill)
@@ -341,6 +374,24 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
     textInput("pretty_toplot_update_thing1", tags$h5("Map ID"),
               value = val.curr)
   }
+})
+
+# Widget for changing order of additional objects
+# Will never be 'on' at same time as 'pretty_toplot_update_thing1'
+output$pretty_toplot_update_thing1_addobj_uiOut_mult <- renderUI({
+  y <- req(val.pretty.toplot.update())
+  req(input$pretty_toplot_update_which == 6)
+
+  addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+  req(addobj.which > pretty_toplot_update_addobj_len())
+
+  input.lab <- "Select the plot order of the additional objects"
+  choices.list <- seq_along(y$list.addobj) %>%
+    purrr::set_names(sapply(y$list.addobj, function(i) i$obj.text))
+
+  selectizeInput("pretty_toplot_update_thing1_addobj", tags$h5(input.lab),
+                 choices = choices.list, selected = NULL, multiple = TRUE)
+
 })
 
 
@@ -415,4 +466,25 @@ output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
   }
 })
 
+
 ###############################################################################
+# 'Save parameter' button
+output$pretty_toplot_update_execute_uiOut_action <- renderUI({
+  req(val.pretty.toplot.update())
+  if (input$pretty_toplot_update_which == 6) {
+    addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    req(addobj.which <= pretty_toplot_update_addobj_len())
+  }
+  actionButton("pretty_toplot_update_execute", "Save parameter")
+})
+
+# 'Save parameter' button for additional object plot order
+output$pretty_toplot_update_execute_addobj_uiOut_action <- renderUI({
+  req(val.pretty.toplot.update(), input$pretty_toplot_update_which == 6)
+  addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+  req(addobj.which > pretty_toplot_update_addobj_len())
+
+  actionButton("pretty_toplot_update_execute_addobj", "Save parameter")
+})
+###############################################################################
+

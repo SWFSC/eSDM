@@ -69,11 +69,12 @@ toplot_update_modal <- function(failed) {
           uiOutput("pretty_toplot_update_message360_uiOut_text"),
           uiOutput("pretty_toplot_update_message_uiOut_text"),
           fluidRow(
-            column(6, uiOutput("pretty_toplot_update_thing1_uiOut_mult")),
+            column(6, uiOutput("pretty_toplot_update_thing1_uiOut_mult"), uiOutput("pretty_toplot_update_thing1_addobj_uiOut_mult")),
             column(6, uiOutput("pretty_toplot_update_thing2_uiOut_mult"))
           )
         ),
-        actionButton("pretty_toplot_update_execute", "Save parameter"),
+        uiOutput("pretty_toplot_update_execute_uiOut_action"),
+        uiOutput("pretty_toplot_update_execute_addobj_uiOut_action"),
         uiOutput("pretty_toplot_update_temp_out_text"),
         tags$br(), tags$br(), tags$br(),
         tags$h5("Saved parameters for selected additional object. Any color values will be 'NA' if transparent;",
@@ -92,6 +93,7 @@ toplot_update_modal <- function(failed) {
 
 
 ###############################################################################
+# Flag for (if add obj is selected) if selected map has add objects
 output$pretty_toplot_update_addobj_flag <- reactive({
   if (isTruthy(input$pretty_toplot_update_which)) {
     isTruthy(val.pretty.toplot.update()$list.addobj) |
@@ -100,8 +102,15 @@ output$pretty_toplot_update_addobj_flag <- reactive({
     TRUE
   }
 })
-outputOptions(output, "pretty_toplot_update_addobj_flag", suspendWhenHidden = FALSE)
+outputOptions(
+  output, "pretty_toplot_update_addobj_flag", suspendWhenHidden = FALSE
+)
 
+# Reactive for if map includes multiple additional objects
+pretty_toplot_update_addobj_len <- reactive({
+  req(input$pretty_toplot_update_which == 6)
+  length(req(val.pretty.toplot.update()$list.addobj))
+})
 
 ###############################################################################
 ### Table display current parameters
@@ -398,6 +407,7 @@ observeEvent(input$pretty_toplot_update_execute, {
     #------------------------------------------------------
   } else if (z == 6) {
     addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    req(addobj.which <= pretty_toplot_update_addobj_len())
     y.addobj <- y$list.addobj[[addobj.which]]
     input.lab <- req(pretty_toplot_update_table())$Name[z2]
 
@@ -434,6 +444,24 @@ observeEvent(input$pretty_toplot_update_execute, {
 
 
   #--------------------------------------------------------
+
+  val.pretty.toplot.update(y)
+})
+
+# Update additional object plot order
+observeEvent(input$pretty_toplot_update_execute_addobj, {
+  y <- req(val.pretty.toplot.update())
+  z <- input$pretty_toplot_update_which
+
+  if (z == 6) {
+    addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
+    if (addobj.which > pretty_toplot_update_addobj_len()) {
+      plot.order <- as.numeric(req(input$pretty_toplot_update_thing1_addobj))
+      req(length(plot.order) == length(y$list.addobj))
+      y$list.addobj <- y$list.addobj[plot.order]
+    }
+  }
+
   val.pretty.toplot.update(y)
 })
 
