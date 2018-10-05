@@ -22,7 +22,7 @@ devtools::install_github('smwoodman/eSDM')
 
 To access the GUI online without installing it locally, go to https://swoodman.shinyapps.io/eSDM/
 
-To run the GUI locally, install the `eSDM` package and then run the following code in your RStudio console:
+To run the GUI locally, install `eSDM` and then run the following code in your RStudio console:
 
 ```r
 eSDM::eSDM_GUI()
