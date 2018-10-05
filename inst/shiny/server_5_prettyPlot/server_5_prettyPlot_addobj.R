@@ -1,5 +1,5 @@
 ###############################################################################
-# Functions; renderUI's below
+# Additional objects, adding and removing
 
 #------------------------------------------------------------------------------
 #pretty_addobj_list() is in sever_5_prettyPlot_prep.R
@@ -15,21 +15,43 @@ observeEvent(input$pretty_addobj, {
 ### Add additional poly information to reactive values
 pretty_addobj_add <- eventReactive(input$pretty_addobj_add_execute, {
   #--------------------------------------------------------
+  valid.message <- ifelse(
+    input$pretty_addobj_type == 1,
+    "Error: The point size entry must be a number",
+    "Error: The line width of polygon borders entry must be a number"
+  )
+  validate(
+    need(input$pretty_addobj_cexlwd, valid.message)
+  )
+
   # Prep
   #------------------------------------
   withProgress(message = "Processing additional polygon", value = 0.3, {
     if (input$pretty_addobj_which == 4) {
       if (input$pretty_addobj_own_type == 1) {
+        validate(
+          need(input$pretty_addobj_own_csv_file,
+               "Error: Please upload a .csv file")
+        )
         addobj.obj      <- pretty_addobj_own_csv_process()
         addobj.obj.text <- pretty_addobj_own_csv_read()[[2]]
         addobj.obj.own  <- 1
 
       } else if (input$pretty_addobj_own_type == 2) {
+        validate(
+          need(input$input$pretty_addobj_own_shp_files,
+               "Error: Please upload shapefile files")
+        )
         addobj.obj      <- req(pretty_addobj_own_shp_process())
         addobj.obj.text <- req(pretty_addobj_own_shp_read())[[2]]
         addobj.obj.own  <- 2
 
       } else { #input$pretty_addobj_own_type == 3
+        validate(
+          need(isTruthy(input$input$pretty_addobj_own_gdb_load) &&
+                 isTruthy(input$pretty_addobj_own_gdb_name),
+               "Error: Please upload a feature class")
+        )
         addobj.obj      <- req(pretty_addobj_own_gdb_process())
         addobj.obj.text <- req(pretty_addobj_own_gdb_read())[[2]]
         addobj.obj.own  <- 3

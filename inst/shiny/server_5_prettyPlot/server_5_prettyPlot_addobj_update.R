@@ -222,16 +222,6 @@ observeEvent(input$pretty_addobj_update_execute, {
   y <- val.pretty.addobj.update()
   z <- req(input$pretty_addobj_update_which)
 
-  # if (z == 1 & (y$obj.type != input$pretty_addobj_update_thing1)) {
-  # y$obj.type <- input$pretty_addobj_update_thing1
-  # if (input$pretty_addobj_update_thing1 == 1) {
-  #   y$col.absborder <- NA
-  #   y$pchlty <- 19
-  # } else {
-  #   y$col.absborder <- "#000000"
-  #   y$pchlty <- 1
-  # }
-  # } else
   if (z == 2) {
     y$obj.order <- input$pretty_addobj_update_thing1
 
@@ -253,10 +243,10 @@ observeEvent(input$pretty_addobj_update_execute, {
     y$pchlty <- as.numeric(input$pretty_addobj_update_thing1)
 
   } else if (z == 6) {
-    y$cexlwd <- input$pretty_addobj_update_thing1
+    y$cexlwd <- req(input$pretty_addobj_update_thing1)
 
   } else {
-    validate(need(FALSE, "pretty_addobj_update_execute error"))
+    validate("Error updating additional object - please report an issue")
   }
 
   val.pretty.addobj.update(y)
