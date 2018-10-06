@@ -53,7 +53,7 @@ ui.createEns <- function() {
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 1",
                         helpText(tags$u("Description:"), "Overlaid predictions will not be changed"),
-                        tags$span(uiOutput("create_ens_rescale_type_message"), style = "color: red")
+                        uiOutput("create_ens_rescale_type_message")
                       ),
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 2",

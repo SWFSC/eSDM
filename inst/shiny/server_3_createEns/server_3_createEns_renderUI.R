@@ -35,11 +35,12 @@ output$create_ens_rescale_type_message <- renderUI({
   models.which <- create_ens_rescale_type_helper()
   pred.type <- vals$models.pred.type[models.which]
 
-  req(!(all(pred.type == "1") | all(pred.type == "3")))
+  req(!all(pred.type %in% c("1", "3")))
 
-  paste(
-    "All selected overlaid predictions are not either \"Absolute density\" or",
-    "\"Abundance\", and thus they likely need to be rescaled"
+  tags$h5(
+    "The selected overlaid predictions likely need to be rescaled, as",
+    "their units are not all \"Absolute density\" or \"Abundance\"",
+    style = "color: red;"
   )
 })
 

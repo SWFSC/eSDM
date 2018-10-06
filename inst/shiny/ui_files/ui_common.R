@@ -94,7 +94,7 @@ ui.instructions.pred.csv <- function() {
     tags$em("Column with prediction data:"), "Please ensure that missing prediction values are one of the following:",
     "'NA', 'NaN', 'N/A', 'n/a', 'na', 'Null', blank, or a negative number.",
     tags$br(),
-    tags$em("Prediction value type:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
+    tags$em("Prediction unit:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
     tags$br(),
     tags$em("Column with weight data:"), "Select \"N/A - No pixel-level spatial weight data\" if the data",
     "does not have weight data."
@@ -106,7 +106,7 @@ ui.instructions.pred.raster <- function() {
     "Please ensure that missing prediction values are one of the following:",
     "'NA', 'NaN', 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.",
     tags$br(),
-    tags$em("Prediction value type:"), "select \"Relative density\" if the predictions are probabilities of occurrence."
+    tags$em("Prediction unit:"), "select \"Relative density\" if the predictions are probabilities of occurrence."
   )
 }
 
@@ -115,7 +115,7 @@ ui.instructions.pred.shp.gdb <- function() {
     tags$em("Column with prediction data:"), "Please ensure that missing prediction values are one of the following:",
     "'NA', 'NaN', 'N/A', 'n/a', 'na', 'NULL', blank, or a negative number.",
     tags$br(),
-    tags$em("Prediction value type:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
+    tags$em("Prediction unit:"), "Select \"Relative density\" if the predictions are probabilities of occurrence.",
     tags$br(),
     tags$em("Column with weight data:"), "Select \"N/A - No pixel-level spatial weight data\" if the data",
     "does not have weight data."
