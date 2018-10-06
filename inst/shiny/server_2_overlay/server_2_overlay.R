@@ -10,7 +10,7 @@ outputOptions(output, "overlay_display_flag", suspendWhenHidden = FALSE)
 
 ### Flag for if overlaid predictions have been created
 output$overlay_preview_display_flag <- reactive({
-  length(vals$overlaid.models) != 0
+  length(vals$overlaid.models) > 0
 })
 outputOptions(
   output, "overlay_preview_display_flag", suspendWhenHidden = FALSE

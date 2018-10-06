@@ -53,7 +53,7 @@ output$export_flag <- reactive({
   list.models.all <- list(
     vals$models.ll, vals$overlaid.models, vals$ensemble.models
   )
-  any(sapply(list.models.all, length) > 0)
+  any(vapply(list.models.all, length, 1) > 0)
 })
 outputOptions(output, "export_flag", suspendWhenHidden = FALSE)
 

@@ -8,7 +8,7 @@
 #------------------------------------------------
 ### Flag for if overlaid predictions have been created
 output$ens_display_flag <- reactive({
-  length(vals$overlaid.models) != 0
+  length(vals$overlaid.models) > 0
 })
 outputOptions(output, "ens_display_flag", suspendWhenHidden = FALSE)
 
