@@ -94,18 +94,19 @@ output$pretty_toplot_update_message_uiOut_text <- renderUI({
   if (z == 6) {
     addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
     req(addobj.which > pretty_toplot_update_addobj_len())
-    temp <- HTML(paste(
-      "The plot order of the additional objects does not supersede the",
-      tags$em("Object draw order"), "argument. Rather, this plot order",
-      "controls the order in which additional objects with the same",
-      tags$em("Object draw order"), "are plotted.",
+    tags$h5(
+      "The plot order controls the order in which additional objects",
+      "with the same",
+      tags$em("Object draw order"), "are plotted; it does not supersede the",
+      tags$em("Object draw order"), "argument.",
+      tags$br(), tags$br(),
       "Additional objects that are selected first here will be drawn first",
-      "(i.e. behind the other additional objects).", tags$br(),
+      "(i.e. behind the other additional objects).",
       "Be sure to select all additional objects in the plot order selection.",
       "Plot order changes will be reflected in the order of",
       "additional objects in the",
       tags$em("Choose additional object to update"), "dropdown."
-    ))
+    )
 
   } else {
     z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
@@ -139,9 +140,9 @@ output$pretty_toplot_update_message_uiOut_text <- renderUI({
     } else {
       req(NULL)
     }
-  }
 
-  tags$h5(temp, style = "color: red;")
+    tags$h5(temp, style = "color: red;")
+  }
 })
 
 
