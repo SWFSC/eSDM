@@ -73,8 +73,12 @@ overlay_preview_base_model <- reactive({
 
 ### Crop (clip) erasing polygon by bbox of base geometry
 overlay_preview_base_land <- reactive({
+  base.bbox <- st_bbox(overlay_preview_base_model())
+  base.bbox[1:2] <- base.bbox[1:2] - 2
+  base.bbox[3:4] <- base.bbox[3:4] + 2
+
   suppressMessages(
-    st_crop(vals$overlay.land, st_bbox(overlay_preview_base_model()))
+    st_crop(vals$overlay.land, base.bbox)
   )
 })
 
