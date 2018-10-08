@@ -106,18 +106,11 @@ output$overlay_bound_csv_text     <- renderText(overlay_bound_csv())
 output$overlay_bound_gis_shp_text <- renderText(overlay_bound_gis_shp())
 output$overlay_bound_gis_gdb_text <- renderText(overlay_bound_gis_gdb())
 
-### Study area polygon imported messages
-output$overlay_bound_csv_message <- renderText({
+### Study area polygon imported message
+# h5() inside renderUI() makes for more whitespace than renderText() in span()
+output$overlay_bound_message <- renderText({
   req(vals$overlay.bound)
-  "A study area polygon is imported"
-})
-output$overlay_bound_gis_shp_message <- renderText({
-  req(vals$overlay.bound)
-  "A study area polygon is imported"
-})
-output$overlay_bound_gis_gdb_message <- renderText({
-  req(vals$overlay.bound)
-  "A study area polygon is imported"
+  "A study area polygon has been imported"
 })
 
 ### Erasing (land) polygon error outputs
@@ -126,22 +119,11 @@ output$overlay_land_csv_text     <- renderText(overlay_land_csv())
 output$overlay_land_gis_shp_text <- renderText(overlay_land_gis_shp())
 output$overlay_land_gis_gdb_text <- renderText(overlay_land_gis_gdb())
 
-### Erasing polygon imported messages
-output$overlay_land_prov_message <- renderText({
+### Erasing polygon imported message
+# h5() inside renderUI() makes for more whitespace than renderText() in span()
+output$overlay_land_message <- renderText({
   req(vals$overlay.land)
-  "An erasing polygon is imported"
-})
-output$overlay_land_csv_message <- renderText({
-  req(vals$overlay.land)
-  "An erasing polygon is imported"
-})
-output$overlay_land_gis_shp_message <- renderText({
-  req(vals$overlay.land)
-  "An erasing polygon is imported"
-})
-output$overlay_land_gis_gdb_message <- renderText({
-  req(vals$overlay.land)
-  "An erasing polygon is imported"
+  "An erasing polygon has been imported"
 })
 
 #----------------------------------------------------------

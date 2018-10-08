@@ -44,7 +44,7 @@ label.gdb.upload <- "Upload feature class"
 ui.instructions.upload.csv <- function() {
   helpText(
     "Browse to and open the desired file with the extension '.csv'.",
-    "This file must have headers. Note that larger files will take longer to load."
+    "This file must have headers. Note that larger files will take longer to upload."
   )
 }
 
@@ -53,14 +53,14 @@ ui.instructions.upload.raster <- function() {
     "Browse to and open the desired file, which should have the extension '.img' or '.tif'.",
     "The raster can be in any coordinate system, but the raster coordinates must be",
     "between the equivalent of -180 and 180 decimal degrees.",
-    "Note that larger files will take longer to load."
+    "Note that larger files will take longer to upload."
   )
 }
 
 ui.instructions.upload.shp <- function() {
   helpText(
     "Browse to and open all files (.shp, .dbf, etc.) associated with",
-    "the GIS shapefile. Note that larger files will take longer to load."
+    "the GIS shapefile. Note that larger files will take longer to upload."
   )
 }
 
@@ -75,7 +75,7 @@ ui.instructions.upload.gdb <- function() {
       "Enter the full file path of the file geodatabase that contains the desired file geodatabase feature class.",
       "The path and the name of the feature class should be exactly as they appear in ArcCatalog.",
       "The GUI does not currently support importing a file geodatabase raster dataset or data from an ESRI personal geodatabase.",
-      "Note that larger files will take longer to load."
+      "Note that larger files will take longer to upload."
     )
   )
 }
@@ -85,7 +85,7 @@ ui.instructions.upload.gdb <- function() {
 # Instructions for importing specific type of files
 
 #######################################
-### Loading model predictions
+### Importing predictions
 ui.instructions.pred.csv <- function() {
   helpText(
     tags$em("Column with longitude data"), "and", tags$em("Column with latitude data:"),

@@ -18,7 +18,7 @@ ui.overlay <- function() {
                 column(
                   width = 12,
                   tags$h5("Uncheck the above checkbox to remove an imported study area polygon"),
-                  selectInput("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1, width = "50%")
+                  selectInput("overlay_bound_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1, width = "70%")
                 ),
                 box(
                   width = 12,
@@ -26,45 +26,25 @@ ui.overlay <- function() {
                     condition = "input.overlay_bound_file_type == 1",
                     ui.instructions.upload.csv(),
                     ui.instructions.poly.csv.single(),
-                    fluidRow(
-                      column(6, fileInput("overlay_bound_csv_file", label.csv.upload, accept = ".csv")),
-                      column(
-                        width = 6,
-                        tags$br(), tags$br(),
-                        tags$span(textOutput("overlay_bound_csv_message"), style = "color:blue"),
-                        textOutput("overlay_bound_csv_text")
-                      )
-                    )
+                    fileInput("overlay_bound_csv_file", label.csv.upload, accept = ".csv"),
+                    textOutput("overlay_bound_csv_text")
                   ),
                   conditionalPanel(
                     condition = "input.overlay_bound_file_type == 2",
                     ui.instructions.upload.shp(),
-                    fluidRow(
-                      column(6, fileInput("overlay_bound_gis_shp_files", label.shp.upload, multiple = TRUE)),
-                      column(
-                        width = 6,
-                        tags$br(),
-                        tags$br(),
-                        tags$span(textOutput("overlay_bound_gis_shp_message"), style = "color:blue"),
-                        textOutput("overlay_bound_gis_shp_text")
-                      )
-                    )
+                    fileInput("overlay_bound_gis_shp_files", label.shp.upload, multiple = TRUE),
+                    textOutput("overlay_bound_gis_shp_text")
                   ),
                   conditionalPanel(
                     condition = "input.overlay_bound_file_type == 3",
                     ui.instructions.upload.gdb(),
                     textInput("overlay_bound_gis_gdb_path", label.gdb.path, value = ".../folder.gdb"),
                     textInput("overlay_bound_gis_gdb_name", label.gdb.name, value = ""),
-                    fluidRow(
-                      column(7, actionButton("overlay_bound_gis_gdb_load", label.gdb.upload)),
-                      column(
-                        width = 5,
-                        tags$span(textOutput("overlay_bound_gis_gdb_message"), style = "color:blue"),
-                        textOutput("overlay_bound_gis_gdb_text")
-                      )
-                    )
+                    actionButton("overlay_bound_gis_gdb_load", label.gdb.upload),
+                    textOutput("overlay_bound_gis_gdb_text")
                   )
-                )
+                ),
+                column(12, tags$span(textOutput("overlay_bound_message"), style = "color: blue;"))
               )
             ),
 
@@ -76,23 +56,18 @@ ui.overlay <- function() {
                 column(
                   width = 12,
                   tags$h5("Uncheck the above checkbox to remove an imported erasing polygon"),
-                  fluidRow(
-                    column(6, radioButtons("overlay_land_load_type", NULL,
-                                           choices = list("Use provided erasing polygon" = 1, "Upload personal erasing polygon" = 2),
-                                           selected = 1)),
-                    column(
-                      width = 6,
-                      conditionalPanel(
-                        condition = "input.overlay_land_load_type == 2 ",
-                        selectInput("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1)
-                      )
-                    )
+                  radioButtons("overlay_land_load_type", NULL,
+                               choices = list("Use provided erasing polygon" = 1, "Upload personal erasing polygon" = 2),
+                               selected = 1),
+                  conditionalPanel(
+                    condition = "input.overlay_land_load_type == 2 ",
+                    selectInput("overlay_land_file_type", tags$h5("File type"), choices = file.type.list1, selected = 1, width = "70%")
                   )
                 ),
-                conditionalPanel(
-                  condition = "input.overlay_land_load_type == 1",
-                  box(
-                    width = 12,
+                box(
+                  width = 12,
+                  conditionalPanel(
+                    condition = "input.overlay_land_load_type == 1",
                     helpText(
                       "The provided erasing polygon is from the Global Self-consistent, Hierarchical, ",
                       "High-resolution Geography (GSHHG) Database. It is a low-resolution polygon that",
@@ -103,71 +78,42 @@ ui.overlay <- function() {
                       "for more information about the provided erasing polygon,",
                       "or to download polygons with higher resolutions."
                     ),
-                    fluidRow(
-                      column(6, actionButton("overlay_land_provided", "Import provided erasing polygon")),
-                      column(
-                        width = 6,
-                        tags$span(textOutput("overlay_land_prov_message"), style = "color: blue"),
-                        textOutput("overlay_land_prov_text")
-                      )
+                    actionButton("overlay_land_provided", "Import provided erasing polygon"),
+                    tags$span(textOutput("overlay_land_prov_message"), style = "color: blue"),
+                    textOutput("overlay_land_prov_text")
+                  ),
+                  conditionalPanel(
+                    condition = "input.overlay_land_load_type == 2",
+                    conditionalPanel(
+                      condition = "input.overlay_land_file_type == 1",
+                      ui.instructions.upload.csv(),
+                      ui.instructions.poly.csv(),
+                      fileInput("overlay_land_csv_file", label.csv.upload, accept = ".csv"),
+                      textOutput("overlay_land_csv_text")
+                    ),
+                    conditionalPanel(
+                      condition = "input.overlay_land_file_type == 2",
+                      ui.instructions.upload.shp(),
+                      fileInput("overlay_land_gis_shp_files", label.shp.upload, multiple = TRUE),
+                      textOutput("overlay_land_gis_shp_text")
+                    ),
+                    conditionalPanel(
+                      condition = "input.overlay_land_file_type == 3",
+                      ui.instructions.upload.gdb(),
+                      textInput("overlay_land_gis_gdb_path", label.gdb.path, value = ".../folder.gdb"),
+                      textInput("overlay_land_gis_gdb_name", label.gdb.name, value = ""),
+                      actionButton("overlay_land_gis_gdb_load", label.gdb.upload),
+                      textOutput("overlay_land_gis_gdb_text")
                     )
                   )
                 ),
-                conditionalPanel(
-                  condition = "input.overlay_land_load_type == 2 && input.overlay_land_file_type == 1",
-                  box(
-                    width = 12,
-                    ui.instructions.upload.csv(),
-                    ui.instructions.poly.csv(),
-                    fluidRow(
-                      column(6, fileInput("overlay_land_csv_file", label.csv.upload, accept = ".csv")),
-                      column(
-                        width = 6,
-                        tags$br(), tags$br(),
-                        tags$span(textOutput("overlay_land_csv_message"), style = "color: blue"),
-                        textOutput("overlay_land_csv_text")
-                      )
-                    )
-                  )
-                ),
-                conditionalPanel(
-                  condition = "input.overlay_land_load_type == 2 && input.overlay_land_file_type == 2",
-                  box(
-                    width = 12,
-                    ui.instructions.upload.shp(),
-                    fluidRow(
-                      column(6, fileInput("overlay_land_gis_shp_files", label.shp.upload, multiple = TRUE)),
-                      column(
-                        width = 6,
-                        tags$br(), tags$br(),
-                        tags$span(textOutput("overlay_land_gis_shp_message"), style = "color: blue"),
-                        textOutput("overlay_land_gis_shp_text")
-                      )
-                    )
-                  )
-                ),
-                conditionalPanel(
-                  condition = "input.overlay_land_load_type == 2 && input.overlay_land_file_type == 3",
-                  box(
-                    width = 12,
-                    ui.instructions.upload.gdb(),
-                    textInput("overlay_land_gis_gdb_path", label.gdb.path, value = ".../folder.gdb"),
-                    textInput("overlay_land_gis_gdb_name", label.gdb.name, value = ""),
-                    fluidRow(
-                      column(7, actionButton("overlay_land_gis_gdb_load", label.gdb.upload)),
-                      column(
-                        width = 5,
-                        tags$span(textOutput("overlay_land_gis_gdb_message"), style = "color: blue"),
-                        textOutput("overlay_land_gis_gdb_text")
-                      )
-                    )
-                  )
-                )
+                column(12, tags$span(textOutput("overlay_land_message"), style = "color: blue;"))
               )
             )
           )
         ),
 
+        #######################################################################
         column(
           width = 8,
           fluidRow(
