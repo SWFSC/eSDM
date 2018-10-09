@@ -71,7 +71,7 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
         st_intersects(st_union(vals$overlay.bound), model.toplot)
       )
       validate(
-        need(length(temp[[1]]) != 0,
+        need(length(temp[[1]]) > 0,
              paste("Error: The study area polygon and specified base",
                    "geometry do not intersect"))
       )
@@ -82,7 +82,7 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
         st_intersects(st_union(overlay_preview_base_land()), model.toplot)
       )
       validate(
-        need(length(temp[[1]]) != 0,
+        need(length(temp[[1]]) > 0,
              paste("Error: The erasing polygon and specified base geometry",
                    "do not intersect"))
       )

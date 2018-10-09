@@ -131,7 +131,7 @@ preview360_split.sf <- function(x) {
     purrr::set_names(names(x.df)) %>%
     st_sf(geometry = x.geom[y.x.no], agr = x.agr)
 
-  stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x1), st_area(x2))) < 1)
+  preview360.areacheck(x, x1, x2)
 
   st_set_agr(rbind(x1, x2)[order(c(y.x, y.x.no)), ], x.agr)
 }
@@ -162,7 +162,7 @@ preview360_split.sfc <- function(x) {
   x1 <- st_sfc(x[y.x] + c(lon.add, 0), crs = x.crs)
   x2 <- x[y.x.no]
 
-  stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x1), st_area(x2))) < 1)
+  preview360.areacheck(x, x1, x2)
 
   st_sfc(c(x1, x2)[order(c(y.x, y.x.no))], crs = x.crs)
 }
@@ -256,7 +256,7 @@ preview360_split_intersection.sf <- function(x) {
   x.y1.360 <- x.y1.df %>%
     st_sf(geometry = x.y1.geom + c(lon.add, 0), crs = x.crs, agr = x.agr)
 
-  stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x.y1.360), st_area(x.y2))) < 1)
+  preview360.areacheck(x, x.y1.360, x.y2)
 
   st_set_agr(rbind(x.y2, x.y1.360), x.agr)
 }
@@ -283,9 +283,23 @@ preview360_split_intersection.sfc <- function(x) {
 
   x.y1.360 <- st_sfc(x.y1 + c(lon.add, 0), crs = x.crs)
 
-  stopifnot(as.numeric(sum(st_area(x)) - sum(st_area(x.y1.360), st_area(x.y2))) < 1)
+  preview360.areacheck(x, x.y1.360, x.y2)
 
   st_sfc(c(x.y2, x.y1.360), crs = x.crs)
+}
+
+###############################################################################
+preview360.areacheck <- function(x, y1, y2) {
+  x.area <- as.numeric(sum(st_area(x)))
+  y.area <- as.numeric(sum(st_area(y1), st_area(y2)))
+  area.diff.perc <- (x.area - y.area) / x.area
+
+  if (area.diff.perc > 0.001) {
+    stop("The GUI was unable to convert the polygon ",
+         "to the longitude range of [0, 360] decimal degrees")
+  }
+
+  TRUE
 }
 
 ###############################################################################
