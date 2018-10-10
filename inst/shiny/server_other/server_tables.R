@@ -29,14 +29,14 @@ table_orig_stats <- reactive({
              stringsAsFactors = FALSE,
              row.names = paste("Original", 1:length(vals$models.names))) %>%
     purrr::set_names(
-      c("SDM filename", "Resolution", "Cell count", "Non-NA prediction count",
-        "Abundance", "Long, lat range")
+      c("SDM filename", "Resolution", "Polygon count",
+        "Non-NA prediction count", "Abundance", "Long, lat range")
     )
 })
 
 
 ###############################################################################
-### Table of overlaid predictions
+### Table of overlaid predictions in 'Create ensemble predictions' tab
 table_overlaid <- reactive({
   if (length(vals$overlaid.models) == 0) return()
 
@@ -45,7 +45,7 @@ table_overlaid <- reactive({
              row.names = paste("Overlaid", seq_along(vals$overlaid.models))) %>%
     purrr::set_names(
       c("SDM filename", "Predictions", "Weights", "Prediction unit",
-        "Resolution", "Cell count", "Non-NA prediction count", "Abundance",
+        "Resolution", "Polygon count", "Non-NA prediction count", "Abundance",
         "Long, lat range")
     )
 })
