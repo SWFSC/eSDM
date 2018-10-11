@@ -35,13 +35,13 @@ sf.load.orig <- st_set_geometry(sf.load.orig, NULL) %>%
 
 ### Process prediction values based on prediction type
 if (pred.type == 1) {
-  abund <- unname(round(eSDM::model_abundance(sf.load.orig, "Pred"), 0))
+  abund <- unname(round(eSDM::model_abundance(sf.load.orig, "Pred"), 1))
 
 } else if (pred.type == 2) {
   abund <- "N/A"
 
 } else if (pred.type == 3) {
-  abund <- sum(sf.load.orig$Pred)
+  abund <- round(sum(sf.load.orig$Pred), 1)
 
   sdm.area <- st_area(sf.load.orig)
   validate(
