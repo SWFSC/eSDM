@@ -142,8 +142,9 @@ output$create_ens_reg_preview_execute_uiOut_button <- renderUI({
   overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
   validate(
     need(isTruthy(vals$ens.over.wpoly.sf[[overlaid.which]]),
-         paste("These overlaid predictions do not have any",
-               "assigned weight polygons to preview"))
+         paste("The selected overlaid predictions do not have any",
+               "assigned weight polygons to preview")),
+    errorClass = "validation2"
   )
 
   actionButton("create_ens_reg_preview_execute", "Plot preview")

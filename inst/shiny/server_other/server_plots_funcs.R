@@ -159,17 +159,24 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
                              leg.txt.cex, leg.mai) {
 
   # -------------------------------------------------------
+  models.num <- length(models.toplot)
+
+  validate(
+    need(models.num > 0,
+         paste("Error: Please select at least one set of",
+               "predictions to preview"))
+  )
+
   stopifnot(
     is.list(models.toplot),
-    length(models.toplot) == length(data.names),
-    length(models.toplot) == length(plot.titles),
-    is.na(col.pal) | length(col.pal) == length(leg.labels),
+    models.num == length(data.names),
+    models.num == length(plot.titles),
+    is.na(col.pal) | (length(col.pal) == length(leg.labels)),
     perc.num %in% c(1, 2)
   )
   on.exit(layout(1))
 
   # -------------------------------------------------------
-  models.num <- length(models.toplot)
   layout.num <- plot.nrow * plot.ncol
   models.layout.diff <- layout.num - models.num
 
