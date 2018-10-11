@@ -122,9 +122,10 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       need(all(x),
            paste("Error: The following set(s) of predictions do not have any",
                  "non-NA prediction polygons that overlap with",
-                 "the specified base geometry:\n",
-                 paste("Original", ifelse(y >= base.idx, y + 1, y),
-                       collapse = ", ")))
+                 paste0(
+                   "the specified base geometry:\n",
+                   paste("Original", ifelse(y >= base.idx, y + 1, y),
+                         collapse = ", "))))
     )
     rm(base.sfc.union, x, y)
 
