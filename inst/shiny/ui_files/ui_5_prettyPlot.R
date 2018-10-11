@@ -141,11 +141,16 @@ ui.prettyPlot <- function() {
                         column(3, numericInput("pretty_height_inch", NULL, value = 8, step = 1, min = 1))
                       ),
                       tags$br(),
+                      tags$h5("If not running the GUI locally, save your workspace in case of a server timeout",
+                              "while plotting or downloading map(s)",
+                              style = "color: blue;"),
                       fluidRow(
                         box(
                           width = 6,
-                          helpText("The plot will have the dimensions specified above.", tags$br(),
-                                   "Note that plotting may take several minutes depending on the number of maps and their size"),
+                          helpText("The plot will likely have the dimensions specified above; the plotting functions used may change",
+                                   "the number of rows or columns depending on the plot width and height. See the manual for more details.",
+                                   tags$br(), tags$br(),
+                                   "Plotting may take several minutes depending on the number of maps and their size."),
                           tags$span(textOutput("pretty_plot_dim_warnings_out"), style = "color: red;"),
                           actionButton("pretty_plot_event", "Plot map(s)"),
                           textOutput("pretty_plot_text")

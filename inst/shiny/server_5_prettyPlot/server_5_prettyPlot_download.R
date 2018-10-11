@@ -98,21 +98,37 @@ output$pretty_download_name_uiOut_text <- renderUI({
 output$pretty_download_execute_uiOut_download <- renderUI({
   req(vals$pretty.params.toplot)
 
-  row.sel.len <- length(input$pretty_toplot_table_out_rows_selected)
-  plot.nrow <- input$pretty_nrow
-  plot.ncol <- input$pretty_ncol
+  plot.which  <- input$pretty_toplot_table_out_rows_selected
+  plot.nrow   <- input$pretty_nrow
+  plot.ncol   <- input$pretty_ncol
+  plot.width  <- input$pretty_width_inch
+  plot.height <- input$pretty_height_inch
 
   validate(
-    need(row.sel.len > 0,
-         "Select at least one saved map to download")
-    %then%
-      need(inherits(plot.nrow, "integer") & inherits(plot.ncol, "integer"),
-           paste("'Number of rows' and 'Number of columns'",
-                 "must be whole numbers to download a map"))
-    %then%
-      need((plot.nrow * plot.ncol) >= row.sel.len,
-           paste("'Number of rows' * 'Number of columns' must be",
-                 "greater than or equal to the number of selected map(s)")),
+    need(plot.which,
+         "You must select at least one saved map to download"),
+    errorClass = "validation2"
+  )
+
+  validate(
+    need(inherits(plot.nrow, "integer") && inherits(plot.ncol, "integer"),
+         paste("'Number of rows' and 'Number of columns'",
+               "must be whole numbers")),
+    need(isTruthy(plot.width) && isTruthy(plot.height) &&
+           is.numeric(plot.width) && is.numeric(plot.height),
+         paste("'Plot width (in)' and 'Plot height (in)'",
+               "must be numbers")),
+    errorClass = "validation2"
+  )
+
+  validate(
+    need((plot.nrow * plot.ncol) >= length(plot.which),
+         paste("'Number of rows' * 'Number of columns' must be",
+               "greater than or equal to the number of items",
+               "selected from the to-plot list to plot")),
+    need(plot.width > 0 && plot.height > 0,
+         paste("'Plot width (in)' and 'Plot height (in)' must both",
+               "be greater than 0")),
     errorClass = "validation2"
   )
 

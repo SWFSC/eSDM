@@ -7,7 +7,7 @@
 ###############################################################################
 # Warnings for if plot dimensions are larger than window size
 pretty_plot_dim_warnings <- reactive({
-  plot.width  <- input$pretty_width_inch * 96
+  plot.width  <- req(input$pretty_width_inch) * 96
   x <- req(session$clientData$output_pretty_plot_out_width)
 
   if (x < plot.width) {
@@ -37,23 +37,25 @@ pretty_plot <- eventReactive(input$pretty_plot_event, {
     need(plot.which,
          "Error: You must select at least one saved map to plot")
   )
+
   validate(
-    need(inherits(plot.nrow, "integer") & inherits(plot.ncol, "integer"),
+    need(inherits(plot.nrow, "integer") && inherits(plot.ncol, "integer"),
          paste("Error: 'Number of rows' and 'Number of columns'",
-               "must be whole numbers")) %then%
-      need((plot.nrow * plot.ncol) >= length(plot.which),
-           paste("Error: 'Number of rows' * 'Number of columns' must be",
-                 "greater than or equal to the number of items",
-                 "selected from the to-plot list to plot"))
-  )
-  validate(
-    need(inherits(plot.width, c("integer", "numeric")) &
-           inherits(plot.height, c("integer", "numeric")),
+               "must be whole numbers")),
+    need(isTruthy(plot.width) && isTruthy(plot.height) &&
+           is.numeric(plot.width) && is.numeric(plot.height),
          paste("Error: 'Plot width (in)' and 'Plot height (in)'",
-               "must be numbers")) %then%
-      need(plot.width > 0 & plot.height > 0,
-           paste("Error: 'Plot width (in)' and 'Plot height (in)' must both",
-                 "be greater than 0"))
+               "must be numbers"))
+  )
+
+  validate(
+    need((plot.nrow * plot.ncol) >= length(plot.which),
+         paste("Error: 'Number of rows' * 'Number of columns' must be",
+               "greater than or equal to the number of items",
+               "selected from the to-plot list to plot")),
+    need(plot.width > 0 && plot.height > 0,
+         paste("Error: 'Plot width (in)' and 'Plot height (in)' must both",
+               "be greater than 0"))
   )
 
   vals$pretty.plot <- list(
@@ -97,6 +99,7 @@ plot_pretty_top <- function(dims, idx.list, params.list) {
   })
 
   # tmap_arrange call ~0.3s slower than just printing tmap object
+  # outer.margins arg ignored by tmap_arrange
   if (length(tmap.list) == 1) {
     tmap.list[[1]]
   } else {
