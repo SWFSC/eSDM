@@ -207,9 +207,9 @@ ui.error.upload.gdb <- tags$strong(
 ui.notice.no.pred.original <- function() {
   box(
     width = 4,
-    tags$h4("No original predictions have been imported"),
-    tags$h5("Please import original predictions, or load a saved workspace",
-            "with imported original predictions to use this section of the GUI")
+    tags$h4("No original or overlaid predictions are available to use"),
+    tags$h5("Please either import original predictions or load a saved workspace",
+            "with original or overlaid predictions to use this section of the GUI")
   )
 }
 
@@ -219,8 +219,19 @@ ui.notice.no.pred.overlaid <- function(box.width = 4) {
   box(
     width = box.width,
     tags$h4("No overlaid predictions have been created"),
-    tags$h5("Please create overlaid predictions, or load a saved workspace",
+    tags$h5("Please either create overlaid predictions or load a saved workspace",
             "with overlaid predictions to use this section of the GUI")
+  )
+}
+
+### No predictions have been imported/loaded/created
+# ui.no.model.pred.loaded2
+ui.notice.no.pred.general <- function(box.width = 4) {
+  box(
+    width = box.width,
+    tags$h4("No predictions are available to use"),
+    tags$h5("Please either import predictions or load a saved workspace",
+            "with predictions to use this section of the GUI")
   )
 }
 

@@ -3,7 +3,7 @@
 ui.export <- function() {
   tabItem(
     tabName = "export",
-    conditionalPanel("output.export_flag == false", ui.notice.no.pred.original()),
+    conditionalPanel("output.export_flag == false", ui.notice.no.pred.general()),
     conditionalPanel(
       condition = "output.export_flag",
       fluidRow(

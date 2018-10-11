@@ -3,7 +3,7 @@
 ui.evalMetrics <- function() {
   tabItem(
     tabName = "evalMetrics",
-    conditionalPanel(condition = "output.eval_display_flag == false", ui.notice.no.pred.original()),
+    conditionalPanel(condition = "output.eval_display_flag == false", ui.notice.no.pred.general()),
     conditionalPanel(
       condition = "output.eval_display_flag",
       fluidRow(

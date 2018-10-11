@@ -3,7 +3,7 @@
 ui.prettyPlot <- function() {
   tabItem(
     tabName = "prettyPlot",
-    conditionalPanel(condition = "output.pretty_display_flag == false", ui.notice.no.pred.original()),
+    conditionalPanel(condition = "output.pretty_display_flag == false", ui.notice.no.pred.general()),
     conditionalPanel(
       condition = "output.pretty_display_flag",
       fluidRow(
