@@ -232,14 +232,12 @@ output$model_download_preview_name_uiOut_text <- renderUI({
                      "perc_", "values_")
   res.txt <- ifelse(input$model_download_preview_res == "1",
                     "300ppi", "72ppi")
-  file.ext <- switch(input$model_download_preview_format,
-                     "1" = ".jpeg", "2" = ".pdf", "3" = ".png")
 
   models.num <- length(input$models_loaded_table_rows_selected)
   if (models.num > 1) {
     # Multi
     f.val <- paste0(
-      "eSDM_multi_", models.num, "_", perc.txt, res.txt, file.ext
+      "eSDM_multi_", models.num, "_", perc.txt, res.txt
     )
 
   } else {
@@ -248,11 +246,12 @@ output$model_download_preview_name_uiOut_text <- renderUI({
     pred.name <- vals$models.data.names[[idx.selected]][1]
 
     f.val <- paste0(
-      "eSDM_", model.name, "__", pred.name, "__", perc.txt, res.txt, file.ext
+      "eSDM_", model.name, "__", pred.name, "__", perc.txt, res.txt
     )
   }
 
-  textInput("model_download_preview_name", tags$h5("Filename"), value = f.val)
+  input.lab <- "Filename (without file extension)"
+  textInput("model_download_preview_name", tags$h5(input.lab), value = f.val)
 })
 
 output$model_download_preview_execute_uiOut_download <- renderUI({

@@ -86,14 +86,19 @@ outputOptions(output, "export_range360_flag", suspendWhenHidden = FALSE)
 
 ###############################################################################
 ### Export predictions as csv, shp, or kml
-# Download shapefile code is adapted from
+# Download shapefile code is adapted from:
 #   https://gist.github.com/RCura/b6b1759ddb8ab4035f30
 output$export_out <- downloadHandler(
   filename = function() {
-    if (input$export_format == 2) {
+    if (input$export_format == 1) {
+      paste0(input$export_filename, ".csv")
+
+    } else if (input$export_format == 2) {
       "eSDM_shpExport.zip"
+
     } else {
-      input$export_filename
+      file.ext <- ifelse(input$export_format_kml == 1, ".kml", ".kmz")
+      paste0(input$export_filename, file.ext)
     }
   },
 
@@ -109,7 +114,7 @@ output$export_out <- downloadHandler(
         write.csv(data.out, file = file, row.names = FALSE)
 
       } else if (export.format == 2) {
-        name.base <- gsub(".{4}$", "", input$export_filename)
+        name.base <- input$export_filename
         name.glob <- paste0(name.base, ".*")
         name.shp <- paste0(name.base, ".shp")
         name.zip <- paste0(name.base, ".zip")

@@ -4,7 +4,11 @@
 ###############################################################################
 # Download handler - High Quality Maps
 output$pretty_download_execute <- downloadHandler(
-  filename = function() input$pretty_download_name,
+  filename = function() {
+    download_plot_ext(
+      input$pretty_download_format, input$pretty_download_name
+    )
+  },
 
   content = function(file) {
     withProgress(message = "Downloading high quality map", value = 0.4, {
@@ -23,14 +27,6 @@ output$pretty_download_execute <- downloadHandler(
       plot.res <- ifelse(input$pretty_download_res == "1", 300, 72)
       plot.format <- input$pretty_download_format
       incProgress(0.2)
-
-
-      #----------------------------------------------------
-      # Check that file extension is as expected
-      ext.curr <- switch(
-        as.numeric(input$pretty_download_format), ".jpg", ".pdf", ".png"
-      )
-      req(substr_right(file, 4) == ext.curr)
 
 
       #----------------------------------------------------
@@ -74,10 +70,6 @@ output$pretty_download_name_uiOut_text <- renderUI({
   maps.selected <- input$pretty_toplot_table_out_rows_selected
 
   res.txt <- ifelse(input$pretty_download_res == 1, "300ppi", "72ppi")
-  file.ext <- switch(
-    input$pretty_download_format,
-    "1" = ".jpg", "2" = ".pdf", "3" = ".png"
-  )
 
   if (length(maps.selected) == 1) {
     req(maps.selected <= length(vals$pretty.params.toplot))
@@ -85,13 +77,14 @@ output$pretty_download_name_uiOut_text <- renderUI({
       unlist(strsplit(vals$pretty.params.toplot[[maps.selected]]$id, " ")),
       collapse = "_"
     )
-    f.val <- paste0("eSDM_", id.txt, res.txt, file.ext)
+    f.val <- paste0("eSDM_", id.txt, res.txt)
 
   } else {
-    f.val <- paste0("eSDM_map_", res.txt, file.ext)
+    f.val <- paste0("eSDM_map_", res.txt)
   }
 
-  textInput("pretty_download_name", tags$h5("Filename"), value = f.val)
+  input.lab <- "Filename (without file extension)"
+  textInput("pretty_download_name", tags$h5(input.lab), value = f.val)
 })
 
 ### Download button

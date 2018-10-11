@@ -82,7 +82,7 @@ ui.export <- function() {
                               value = TRUE),
                 conditionalPanel(
                   condition = "input.export_proj_native == false",
-                  radioButtons("export_proj_method", NULL, #tags$h5("Overlay coordinate system"),
+                  radioButtons("export_proj_method", NULL,
                                choices = list("Export predictions in WGS 84 geographic coordinates" = 1,
                                               "Select predictions with desired coordinate system" = 2,
                                               "Enter numeric EPSG code" = 3),
@@ -105,22 +105,17 @@ ui.export <- function() {
                                     "[0, 360] decimal degrees rather than [-180, 180] decimal degrees"),
                               value = FALSE),
                 conditionalPanel(
-                  condition = "input.export_proj_360 && input.export_format == 2",
+                  condition = "input.export_proj_360 && input.export_format == 1",
+                  column(12, helpText("It is recommended use the 'native' or 'WGS 84' coordinate systems when using this feature."))
+                ),
+                conditionalPanel(
+                  condition = "input.export_proj_360 && input.export_format != 1",
                   column(
                     width = 12,
-                    helpText("Prediction polygons that span the dateline will be multipart polygons split along the dateline")
+                    helpText("It is recommended use the 'native' or 'WGS 84' coordinate systems when using this feature.",
+                             "Prediction polygons that span the dateline will be multipart polygons split along the dateline.")
                   )
-                ) #,
-                # conditionalPanel(
-                #   condition = "output.export_nonll_flag",
-                #   tags$hr(style = "border-color: black;"), #-------------------------------------
-                #   tags$h5("The selected predictions are set to be exported in a coordinate system where the units are",
-                #           "not degrees", style = "color: red;"),
-                #   checkboxInput("export_csv_ll",
-                #                 paste("Include the longitudes and latitudes of the centroids in decimal degrees",
-                #                       "(WGS 84 geographic coordinates) in additional columns in the .csv file"),
-                #                 value = TRUE)
-                # )
+                )
               )
             ),
             ########################################## Filename and export

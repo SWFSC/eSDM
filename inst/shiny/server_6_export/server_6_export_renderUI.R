@@ -71,18 +71,13 @@ output$export_filename_uiOut_text <- renderUI({
   if (input$export_proj_360) filename.value <- paste0(filename.value, "_360")
 
   #------------------------------------
-  ### Prefix and extensions
-  filename.ext <- switch(
-    input$export_format, "1" = ".csv", "2" = ".shp",
-    "3" = ifelse(input$export_format_kml == 1, ".kml", ".kmz")
-  )
-  filename.value <- gsub("\\.", "_", filename.value)
-  filename.value <- paste0("eSDM_", filename.value, filename.ext)
+  ### Prefix
+  filename.value <- paste0("eSDM_", gsub("\\.", "_", filename.value))
 
   #------------------------------------
 
-  ### textInput()
-  textInput("export_filename", tags$h5("Filename"), value = filename.value)
+  input.lab <- "Filename (without file extension)"
+  textInput("export_filename", tags$h5(input.lab), value = filename.value)
 })
 
 
@@ -119,22 +114,9 @@ output$export_weight_inc_uiOut_text <- renderUI({
 output$export_out_uiOut_download <- renderUI({
   validate(
     need(!identical(input$export_filename, ""),
-         "Error: Please enter a valid filename")
+         "Error: Please enter a filename")
   )
   req(input$export_filename)
-
-  isolate({
-    ext.text <- switch(
-      as.numeric(input$export_format),
-      ".csv", ".shp", ifelse(input$export_format_kml == 1, ".kml", ".kmz")
-    )
-  })
-
-  validate(
-    need(substr_right(input$export_filename, 4) == ext.text,
-         paste("Error: The file extension of the filename must match the",
-               "file extension required by the specified file format"))
-  )
 
   export_crs() #to get validate()
 

@@ -22,10 +22,21 @@ download_check <- function(x, perc) {
   TRUE
 }
 
+# x is the file extension widget value and y is the filename
+download_plot_ext <- function(x, y) {
+  file.ext <- switch(as.numeric(x), ".jpeg", ".pdf", ".png")
+  paste0(y, file.ext)
+}
+
 ###############################################################################
 ### Import Predictions tab download
+# 'filename' arg needs 'function()' so that it will change as widgets change
 output$model_download_preview_execute <- downloadHandler(
-  filename = input$model_download_preview_name,
+  filename = function() {
+    download_plot_ext(
+      input$model_download_preview_format, input$model_download_preview_name
+    )
+  },
 
   content = function(file) {
     withProgress(message = "Downloading preview", value = 0.6, {
@@ -107,8 +118,13 @@ output$model_download_preview_execute <- downloadHandler(
 
 ###############################################################################
 ### Create Ensemble Predictions tab download
+# 'filename' arg needs 'function()' so that it will change as widgets change
 output$ens_download_preview_execute <- downloadHandler(
-  filename = input$ens_download_preview_name,
+  filename = function() {
+    download_plot_ext(
+      input$ens_download_preview_format, input$ens_download_preview_name
+    )
+  },
 
   content = function(file) {
     withProgress(message = "Downloading preview", value = 0.6, {

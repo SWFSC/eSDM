@@ -246,14 +246,10 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
   # Same for multi- and single- preview
   perc.txt <- ifelse(input$ens_download_preview_perc == 1, "perc_", "values_")
   res.txt <- ifelse(input$ens_download_preview_res == 1, "300ppi", "72ppi")
-  file.ext <- switch(
-    input$ens_download_preview_format,
-    "1" = ".jpeg", "2" = ".pdf", "3" = ".png"
-  )
 
   if (length(input$ens_datatable_ensembles_rows_selected) > 1) {
     # Multi
-    f.val <- paste0("eSDM_multi_", perc.txt, res.txt, file.ext)
+    f.val <- paste0("eSDM_multi_", perc.txt, res.txt)
 
   } else {
     # Single
@@ -281,11 +277,12 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
 
     f.val <- paste0(
       "eSDM_", ens.method.txt, ens.weights.txt, ens.rescale.txt, ens.idx.txt,
-      perc.txt, res.txt, file.ext
+      perc.txt, res.txt
     )
   }
 
-  textInput("ens_download_preview_name", tags$h5("Filename"), value = f.val)
+  input.lab <- "Filename (without file extension)"
+  textInput("ens_download_preview_name", tags$h5(input.lab), value = f.val)
 })
 
 
