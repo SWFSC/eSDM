@@ -4,7 +4,7 @@
 ###############################################################################
 ### Flag for whether or not to display overlay tab items
 output$overlay_display_flag <- reactive({
-  length(vals$models.ll) != 0
+  (length(vals$models.ll) > 0) | length(vals$overlaid.models) > 0
 })
 outputOptions(output, "overlay_display_flag", suspendWhenHidden = FALSE)
 

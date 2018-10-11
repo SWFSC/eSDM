@@ -90,6 +90,10 @@ output$model_preview_plot <- renderPlot({
 
 ### Table of imported original predictions
 output$overlay_loaded_table <- renderDT({
+  validate(
+    need(table_orig(), "Import predictions to select a base geometry"),
+    errorClass = "validation2"
+  )
   table_orig()
 }, options = dt.list, selection = "single")
 

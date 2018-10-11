@@ -22,12 +22,15 @@ observeEvent(input$overlay_create_overlaid_models_modal, {
 ### Where the overlay magic aka science happens
 overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   removeModal()
+  validate(
+    need(length(vals$models.ll) > 0,
+         "You must import original predictions to perform an overlay")
+  )
 
   #########################################################
   ### Reset/hide reactive values, preview plots, and eval metrics
   validate(
-    need(overlay_reset(),
-         "An error occurred; please restart the GUI and report an issue")
+    need(overlay_reset(), "An error occurred; please report an issue")
   )
 
   #########################################################
