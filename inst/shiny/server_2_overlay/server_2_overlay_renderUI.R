@@ -42,7 +42,7 @@ output$overlay_preview_base_execute_uiOut_button <- renderUI({
 
 
 ###############################################################################
-### Widget for user to select overlaid predictions to plot
+### Widgets for user to select overlaid predictions and value type to plot
 output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
   validate(
     need(length(vals$overlaid.models) > 0,
@@ -59,6 +59,13 @@ output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
             "correspond to 'Original' numbers in the table above"),
     choices = choices.list, selected = NULL, multiple = TRUE
   )
+})
+
+
+output$overlay_preview_overlaid_models_perc_uiOut_radio <- renderUI({
+  req(length(vals$overlaid.models) > 0)
+  radioButtons("overlay_preview_overlaid_models_perc", tags$h5("Units"),
+               choices = list("Percentages" = 1, "Values" = 2), selected = 1)
 })
 
 
