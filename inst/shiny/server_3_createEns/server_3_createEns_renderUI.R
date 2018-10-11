@@ -300,6 +300,14 @@ output$ens_download_preview_execute_uiOut_download <- renderUI({
     )
   }
 
+  idx.selected <- as.numeric(req(input$ens_datatable_ensembles_rows_selected))
+  for (i in idx.selected) {
+    download_check(
+      st_set_geometry(vals$ensemble.models[[i]], NULL)$Pred.ens,
+      input$ens_download_preview_perc
+    )
+  }
+
   downloadButton("ens_download_preview_execute", "Download")
 })
 

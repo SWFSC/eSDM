@@ -266,6 +266,14 @@ output$model_download_preview_execute_uiOut_download <- renderUI({
     )
   }
 
+  idx.selected <- as.numeric(req(input$models_loaded_table_rows_selected))
+  for (i in idx.selected) {
+    download_check(
+      st_set_geometry(vals$models.ll[[i]], NULL)$Pred,
+      input$model_download_preview_perc
+    )
+  }
+
   downloadButton("model_download_preview_execute", "Download")
 })
 

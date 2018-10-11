@@ -1,9 +1,25 @@
 # Download static previews of original or ensemble predictions
 
+##############################################################################
+# Function for checking if download can be performed
+download_check <- function(x, perc) {
+  if (perc == 1) {
+    validate(
+      need(length(unique(breaks_calc(x))) >= 11,
+           paste("At least one of the selected predictions does not",
+                 "have enough unique prediction values to download",
+                 "a preview with a 'percentage' unit type")),
+      errorClass = "validation2"
+    )
+  }
+
+  TRUE
+}
+
 ###############################################################################
 ### Import Predictions tab download
 output$model_download_preview_execute <- downloadHandler(
-  filename = function() input$model_download_preview_name,
+  filename = input$model_download_preview_name,
 
   content = function(file) {
     withProgress(message = "Downloading preview", value = 0.6, {
@@ -86,7 +102,7 @@ output$model_download_preview_execute <- downloadHandler(
 ###############################################################################
 ### Create Ensemble Predictions tab download
 output$ens_download_preview_execute <- downloadHandler(
-  filename = function() input$ens_download_preview_name,
+  filename = input$ens_download_preview_name,
 
   content = function(file) {
     withProgress(message = "Downloading preview", value = 0.6, {
