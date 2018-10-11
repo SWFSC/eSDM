@@ -30,16 +30,20 @@ gdb_names_choice_input <- reactive({
 ### Identify NA prediction values
 model_gis_shp_NA_idx_pred <- reactive({
   data.shp <- st_set_geometry(req(read_model_gis_shp())[[1]], NULL)
-  data.shp.pred <- data.shp[, as.numeric(req(input$model_gis_shp_names_pred))]
 
-  na_which(data.shp.pred)
+  data.col <- as.numeric(req(input$model_gis_shp_names_pred))
+  req(data.col <= ncol(data.shp))
+
+  na_which(data.shp[, data.col])
 })
 
 model_gis_gdb_NA_idx_pred <- reactive({
   data.gdb <- st_set_geometry(req(read_model_gis_gdb())[[1]], NULL)
-  data.gdb.pred <- data.gdb[, as.numeric(req(input$model_gis_gdb_names_pred))]
 
-  na_which(data.gdb.pred)
+  data.col <- as.numeric(req(input$model_gis_gdb_names_pred))
+  req(data.col <= ncol(data.gdb))
+
+  na_which(data.gdb[, data.col])
 })
 
 
@@ -47,6 +51,7 @@ model_gis_gdb_NA_idx_pred <- reactive({
 model_gis_shp_NA_idx_weight <- reactive({
   data.shp <- st_set_geometry(req(read_model_gis_shp())[[1]], NULL)
   weight.col <- as.numeric(req(input$model_gis_shp_names_weight))
+  req((weight.col - 1) <= ncol(data.shp))
 
   if (weight.col > 1) {
     na_which(data.shp[, weight.col - 1])
@@ -58,6 +63,7 @@ model_gis_shp_NA_idx_weight <- reactive({
 model_gis_gdb_NA_idx_weight <- reactive({
   data.gdb <- st_set_geometry(req(read_model_gis_gdb())[[1]], NULL)
   weight.col <- as.numeric(req(input$model_gis_gdb_names_weight))
+  req((weight.col - 1) <= ncol(data.gdb))
 
   if (weight.col > 1) {
     na_which(data.gdb[, weight.col - 1])

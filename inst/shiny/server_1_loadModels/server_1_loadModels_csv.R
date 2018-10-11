@@ -49,15 +49,18 @@ model_csv_names_selected <- reactive({
 model_csv_NA_idx_pred <- reactive({
   data.csv <- req(read_model_csv())[[2]]
 
-  na_which(data.csv[, as.numeric(req(input$model_csv_names_pred))])
+  data.col <- as.numeric(req(input$model_csv_names_pred))
+  req(data.col <= ncol(data.csv))
+
+  na_which(data.csv[, data.col])
 })
 
 ### Identify row indices of NA values in given weight column
 model_csv_NA_idx_weight <- reactive({
-  req(input$model_csv_names_weight)
   data.csv <- read_model_csv()[[2]]
 
-  weight.col <- as.numeric(input$model_csv_names_weight)
+  weight.col <- as.numeric(req(input$model_csv_names_weight))
+  req((weight.col - 1) <= ncol(data.csv))
   if (weight.col > 1) {
     na_which(data.csv[, (weight.col - 1)])
   } else {
@@ -155,10 +158,11 @@ create_sf_csv_sfc <- reactive({
     test2 <- as.numeric(names(table.l[2])) == as.numeric(names(table.w[2]))
 
     validate(
-      need(all(c(test1, test2)),
+      need(all(test1, test2),
            paste("Error: The points in the .csv file are not lat/long regular;",
                  "note that the longitude spacing must be the same",
-                 "as the latitude spacing"))
+                 "as the latitude spacing.",
+                 "See the manual for more details about file requirements"))
     )
     cell.lw <- as.numeric(names(table.l[2]))
     rm(table.l, table.w, test1, test2)

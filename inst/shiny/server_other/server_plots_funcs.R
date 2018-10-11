@@ -88,6 +88,11 @@ breaks_calc <- function(x, breaks = c(seq(0.4, 0.05, by = -0.05), 0.02)) {
 preview_vals_break_col <- function(data.vec) {
   data.vec.uniq <- length(unique(na.omit(data.vec)))
   d <- ifelse(data.vec.uniq > 10, 10, data.vec.uniq)
+  validate(
+    need(data.vec,
+         paste("Error: The GUI was unable to plot the selected predictions",
+               "because all of the prediction values are NA"))
+  )
 
   b.model <- seq(
     from = min(data.vec, na.rm = TRUE), to = max(data.vec, na.rm = TRUE),

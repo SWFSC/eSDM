@@ -1,6 +1,10 @@
 ### Code for importing predicitons for both .shp and .gdb inputs
 ### Called in create_sf_gis_shp() and create_sf_gis_gdb()
 
+### req() checks
+req(pred.idx <= (ncol(gis.file) - 1))
+req((weight.idx - 1) <= (ncol(gis.file) - 1))
+
 withProgress(message = prog.message, value = 0.3, {
   ### Check long extent, polygon validity, and generate crs.ll version if nec
   gis.file <- check_dateline(gis.file, progress.detail = TRUE)

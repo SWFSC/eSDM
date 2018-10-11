@@ -3,6 +3,12 @@
 ##############################################################################
 # Function for checking if download can be performed
 download_check <- function(x, perc) {
+  validate(
+    need(x,
+         paste("The GUI cannot download a preview of the selected",
+               "predictions because all of the prediction values are NA"))
+  )
+
   if (perc == 1) {
     validate(
       need(length(unique(breaks_calc(x))) >= 11,
