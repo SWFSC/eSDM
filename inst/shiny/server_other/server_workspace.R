@@ -5,7 +5,7 @@
 ### Save workspace
 # Nothing to validate or return, so we don't need eventReactive
 output$save_app_envir <- downloadHandler(
-  filename = function() input$save_app_envir_name,
+  filename = function() paste0(input$save_app_envir_name, ".RDATA"),
 
   content = function(file) {
     withProgress(message = "Preparing workspace to be saved", value = 0.3, {
