@@ -28,4 +28,4 @@ To run the GUI locally, install `eSDM` and then run the following code in your R
 eSDM::eSDM_GUI()
 ```
 
-If text or images overlap within the GUI, please adjust the text size in your browser (e.g. Ctrl - minus ('-') on Windows systems)
+If text or images overlap within the GUI, please make the browser window full screen or adjust the text size in your browser (e.g. Ctrl - minus ('-') on Windows systems)
