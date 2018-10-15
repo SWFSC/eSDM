@@ -27,3 +27,5 @@ To run the GUI locally, install `eSDM` and then run the following code in your R
 ```r
 eSDM::eSDM_GUI()
 ```
+
+If text or images overlap within the GUI, please adjust the text size in your browser (e.g. Ctrl - minus ('-') on Windows systems)
