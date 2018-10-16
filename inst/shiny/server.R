@@ -95,55 +95,7 @@ server <- function(input, output, session) {
 
 
   ### Roadmap
-  # Download sample data
-  output$download_sample_data <- downloadHandler(
-    filename = "eSDM_sample_data.zip",
-
-    content = function(file) {
-      withProgress(message = "Downloading sample data", value = 0.6, {
-        sample.try <- try(
-          download.file(
-            "https://github.com/smwoodman/eSDM-data/raw/master/data_provided.zip",
-            destfile = file, quiet = TRUE
-          ),
-          silent = TRUE
-        )
-
-        validate(
-          need(sample.try,
-               paste("The sample data could not be downloaded; please check",
-                     "your internet connection. If this problem persists, please",
-                     "report this issue at https://github.com/smwoodman/eSDM/issues"))
-        )
-        incProgress(0.4)
-      })
-    }
-  )
-
-  # Download manual
-  output$download_manual <- downloadHandler(
-    filename = "eSDM_manual.pdf",
-
-    content = function(file) {
-      withProgress(message = "Downloading manual", value = 0.6, {
-        sample.try <- try(
-          download.file(
-            "https://github.com/smwoodman/eSDM/raw/master/inst/shiny/www/eSDM_manual.pdf",
-            destfile = file, quiet = TRUE, mode = "wb"
-          ),
-          silent = TRUE
-        )
-
-        validate(
-          need(sample.try,
-               paste("The manual could not be downloaded; please check",
-                     "your internet connection. If this problem persists, please",
-                     "report this issue at https://github.com/smwoodman/eSDM/issues"))
-        )
-        incProgress(0.4)
-      })
-    }
-  )
+  source(file.path("server_other", "server_roadmap_download.R"), local = TRUE, chdir = TRUE)
 
 
   ### Import predictions (previously called 'load model predictions')

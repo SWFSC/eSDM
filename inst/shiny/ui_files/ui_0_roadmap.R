@@ -126,6 +126,7 @@ ui.roadmap <- function() {
             #------------------------------------------------------------------
             tags$strong("GUI tips:"),
             tags$ul(
+              tags$li("If text or images overlap, please adjust the text size in your browser (e.g. Ctrl - minus ('-') on Windows systems)"),
               tags$li("The GUI can only perform a single operation at a time. Thus, if a process is running (e.g. the overlay process)",
                       "do not try to perform other actions (e.g. plotting a preview)",
                       "as this may cause undefined behavior within the GUI."),
@@ -136,7 +137,8 @@ ui.roadmap <- function() {
                       "In particular, plotting will take longer when predictions span the antimeridian (i.e. 180 decimal degrees).")
             ),
             tags$br(),
-            downloadButton("download_sample_data", "Download sample data"),
+            # downloadButton("download_data_manuscript", "Download manuscript data"),
+            downloadButton("download_data_sample", "Download sample data"),
             downloadButton("download_manual", "Download manual")
           )
         )
