@@ -8,6 +8,7 @@ addons:
   apt:
     packages:
       - libgdal-dev
+      - libnetcdf-dev
       - libudunits2-dev
 
 r:
