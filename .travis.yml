@@ -10,6 +10,7 @@ addons:
       - libgdal-dev
       - libnetcdf-dev
       - libudunits2-dev
+      - netcdf-bin
 
 r:
   - release
