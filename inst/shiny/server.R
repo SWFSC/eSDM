@@ -38,7 +38,7 @@ library(viridis)
 ###############################################################################
 # Pre-server work
 
-### ax file upload size is now 150MB
+### Max file upload size is now 150MB
 options(shiny.maxRequestSize = 150 * 1024^2)
 
 ### Use to perform sequential rather than concurrent validate checks
