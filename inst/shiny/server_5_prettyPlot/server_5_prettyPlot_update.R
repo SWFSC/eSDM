@@ -3,9 +3,19 @@
 ###############################################################################
 # Show modal when button is clicked.
 observeEvent(input$pretty_update_toplot_show, {
+  val.pretty.update.mess(NULL)
   showModal(toplot_update_modal(
     failed = !isTruthy(input$pretty_update_table_out_rows_selected)
   ))
+})
+
+
+### Reset update message when necessary
+observe({
+  input$tabs
+  input$pretty_mapcontrol
+
+  val.pretty.update.mess(NULL)
 })
 
 
@@ -471,6 +481,7 @@ observeEvent(input$pretty_toplot_update_execute_addobj, {
 observeEvent(input$pretty_toplot_update_cancel, {
   removeModal()
 
+  val.pretty.update.mess(list(1, val.pretty.toplot.update()$id))
   val.pretty.toplot.update(NULL)
 })
 
@@ -493,6 +504,7 @@ observeEvent(input$pretty_toplot_update_done, {
     val.pretty.toplot.update(y)
   }
 
+  val.pretty.update.mess(list(2, val.pretty.toplot.update()$id))
   vals$pretty.params.toplot[[x]] <- val.pretty.toplot.update()
   val.pretty.toplot.update(NULL)
 })

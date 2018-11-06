@@ -68,7 +68,7 @@ ui.instructions.upload.gdb <- function() {
   helpText(
     tags$h5(
       "Note that you can only import SDM predictions from a GIS file geodatabase feature class while",
-      "running the eSDM locally through RStudio.",
+      "running the GUI locally through RStudio.",
       style = "color: red"
     ),
     helpText(

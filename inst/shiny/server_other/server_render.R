@@ -414,6 +414,20 @@ output$pretty_addobj_table_out <- renderDT({
 ### Color wheel for preview of color palette
 output$pretty_color_preview_plot <- renderPlot(pretty_color_preview())
 
+
+#----------------------------------------------------------
+# Update section
+output$pretty_update_message <- renderText({
+  d <- req(val.pretty.update.mess())
+  d.id <- paste0("'", d[[2]], "'")
+
+  paste(
+    ifelse(d[[1]] == 1, "Update cancelled;", "Update successful;"),
+    "changes to parameters of map", d.id,
+    ifelse(d[[1]] == 1, "were discarded", "were saved")
+  )
+})
+
 #----------------------------------------------------------
 # Pretty plot, plotting
 

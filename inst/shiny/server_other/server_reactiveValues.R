@@ -17,6 +17,8 @@ val.pretty.color.num <- reactiveVal(value = NULL)
 val.pretty.addobj.update <- reactiveVal(value = NULL)
 ### Update params of hqm saved maps
 val.pretty.toplot.update <- reactiveVal(value = NULL)
+### Update message
+val.pretty.update.mess <- reactiveVal(value = NULL)
 
 
 ###############################################################################

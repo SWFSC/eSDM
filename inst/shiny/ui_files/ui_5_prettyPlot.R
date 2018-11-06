@@ -87,7 +87,11 @@ ui.prettyPlot <- function() {
                     conditionalPanel(
                       condition = "output.pretty_display_toplot_flag",
                       fluidRow(
-                        column(6, actionButton("pretty_update_toplot_show", "Update saved map parameters")),
+                        column(
+                          width = 6,
+                          actionButton("pretty_update_toplot_show", "Update saved map parameters"),
+                          tags$span(textOutput("pretty_update_message"), style = "color: blue;")
+                        ),
                         column(
                           width = 6,
                           actionButton("pretty_toplot_remove_execute", "Remove saved map"),
