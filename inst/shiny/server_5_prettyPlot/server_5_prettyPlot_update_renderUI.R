@@ -45,7 +45,14 @@ output$pretty_toplot_update_addobj_remove_uiOut_button <- renderUI({
 ###############################################################################
 ### Selection dropdown for specific parameters
 output$pretty_toplot_update_which_param_uiOut_select <- renderUI({
-  if (input$pretty_toplot_update_which == 6) { #needs to update based off table
+  z <- input$pretty_toplot_update_which
+
+  if (z == 1) {
+    isolate(choices.list.names <- c(
+      req(pretty_toplot_update_table())$Name[1], "Longitude", "Latitude"
+    ))
+
+  } else if (z == 6) { #needs to update based off table
     addobj.which <- as.numeric(req(input$pretty_toplot_update_which_addobj))
     req(addobj.which <= pretty_toplot_update_addobj_len())
 
@@ -118,7 +125,7 @@ output$pretty_toplot_update_message_uiOut_text <- renderUI({
         "Please ensure that the 'minimum' values remain less than their",
         "respective 'maximum' values.", tags$br(),
         "Grid line locations will be automatically updated when you change",
-        "the map range. These updates will attemp to keep",
+        "the map range. These automatic updates prioritize keeping",
         "the grid line interval consistent."
       ))
 
@@ -160,9 +167,21 @@ output$pretty_toplot_update_thing1_uiOut_mult <- renderUI({
   if (z == 1) {
     if (z2 == 1) {
       tags$h5("Cannot update this parameter", style = "color: red;")
-    } else {
-      val.curr <- y$map.range[z2 - 1]
-      input.lab <- z.names[z2]
+      # } else {
+      #   val.curr <- y$map.range[z2 - 1]
+      #   input.lab <- z.names[z2]
+      #   numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+      #                value = val.curr)
+      # }
+    } else if (z2 == 2) {
+      val.curr <- y$map.range[1] # lon min
+      input.lab <- z.names[2]
+      numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
+                   value = val.curr)
+
+    } else { #z2 == 3
+      val.curr <- y$map.range[3] # lat min
+      input.lab <- z.names[4]
       numericInput("pretty_toplot_update_thing1", tags$h5(input.lab),
                    value = val.curr)
     }
@@ -402,8 +421,23 @@ output$pretty_toplot_update_thing2_uiOut_mult <- renderUI({
   y <- req(val.pretty.toplot.update())
   z <- input$pretty_toplot_update_which
   z2 <- as.numeric(req(input$pretty_toplot_update_which_param))
+  z.names <- req(pretty_toplot_update_table())$Name
 
-  if (z == 2 & z2 == 2) {
+  if (z == 1) {
+    if (z2 == 2) {
+      val.curr <- y$map.range[2] # lon max
+      input.lab <- z.names[3]
+      numericInput("pretty_toplot_update_thing2", tags$h5(input.lab),
+                   value = val.curr)
+
+    } else if (z2 == 3) {
+      val.curr <- y$map.range[4] # lat max
+      input.lab <- z.names[5]
+      numericInput("pretty_toplot_update_thing2", tags$h5(input.lab),
+                   value = val.curr)
+    }
+
+  } else if (z == 2 & z2 == 2) {
     req(is.logical(input$pretty_toplot_update_thing1))
     req(!input$pretty_toplot_update_thing1)
 

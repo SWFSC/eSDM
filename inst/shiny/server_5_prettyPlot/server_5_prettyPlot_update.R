@@ -275,10 +275,44 @@ observeEvent(input$pretty_toplot_update_execute, {
 
   #--------------------------------------------------------
   if (z == 1 && z2 != 1) {
-    y$map.range[z2 - 1] <- req(input$pretty_toplot_update_thing1)
+    # y$map.range[z2 - 1] <- req(input$pretty_toplot_update_thing1)
+    #
+    # # May need to update grid line locations
+    # if (z2 %in% 2:3) {
+    #   x.tf <- dplyr::between(y$list.tick$x.vals, y$map.range[1], y$map.range[2])
+    #   y$list.tick$x.vals <- y$list.tick$x.vals[x.tf]
+    #
+    #   if (length(y$list.tick$x.vals) == 0) {
+    #     y$list.tick$x.vals <- y$map.range[1:2]
+    #   } else {
+    #     x.interval <- unique(diff(y$list.tick$x.vals))
+    #     y$list.tick$x.vals <- unique(c(
+    #       rev(seq(from = y$list.tick$x.vals[1], to = y$map.range[1], by = -x.interval)),
+    #       seq(from = y$list.tick$x.vals[1], to = y$map.range[2], by = x.interval)
+    #     ))
+    #   }
+    #
+    # } else { #z2 %in% 4:5
+    #   y.tf <- dplyr::between(y$list.tick$y.vals, y$map.range[3], y$map.range[4])
+    #   y$list.tick$y.vals <- y$list.tick$y.vals[y.tf]
+    #
+    #   if (length(y$list.tick$y.vals) == 0) {
+    #     y$list.tick$y.vals <- y$map.range[1:2]
+    #   } else {
+    #     y.interval <- unique(diff(y$list.tick$y.vals))
+    #     y$list.tick$y.vals <- unique(c(
+    #       rev(seq(from = y$list.tick$y.vals[1], to = y$map.range[3], by = -y.interval)),
+    #       seq(from = y$list.tick$y.vals[1], to = y$map.range[4], by = y.interval)
+    #     ))
+    #   }
+    # }
+
 
     # May need to update grid line locations
-    if (z2 %in% 2:3) {
+    if (z2 == 2) {
+      y$map.range[1] <- req(input$pretty_toplot_update_thing1)
+      y$map.range[2] <- req(input$pretty_toplot_update_thing2)
+
       x.tf <- dplyr::between(y$list.tick$x.vals, y$map.range[1], y$map.range[2])
       y$list.tick$x.vals <- y$list.tick$x.vals[x.tf]
 
@@ -292,7 +326,10 @@ observeEvent(input$pretty_toplot_update_execute, {
         ))
       }
 
-    } else { #z2 %in% 4:5
+    } else { #z2 == 3
+      y$map.range[3] <- req(input$pretty_toplot_update_thing1)
+      y$map.range[4] <- req(input$pretty_toplot_update_thing2)
+
       y.tf <- dplyr::between(y$list.tick$y.vals, y$map.range[3], y$map.range[4])
       y$list.tick$y.vals <- y$list.tick$y.vals[y.tf]
 
