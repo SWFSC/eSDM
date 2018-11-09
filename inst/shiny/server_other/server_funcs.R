@@ -209,13 +209,14 @@ make_geom_valid <- function(geom.invalid, dens.col = NA, geom.info = NA,
     }
 
     alert2 <- paste(
-      "The GUI was unable to make the geometry valid using the st_make_valid()",
-      "function from the lwgeom package (see",
+      "The GUI was unable to make the geometry valid using the",
+      "st_make_valid() function from the lwgeom package (see",
       tags$a("the function documentation",
              href = "https://r-spatial.github.io/lwgeom/reference/valid.html"),
       "for more details).",
-      "You may attempt to still use this object in the GUI, particularly if the",
-      "invalid region will be clipped later, but this is NOT recommended as the",
+      "You may attempt to still use this object in the GUI,",
+      "particularly if the invalid region will be clipped later,",
+      "but this is NOT recommended as the",
       "invalid geometry likely will cause errors in the GUI."
     )
 
@@ -236,7 +237,9 @@ make_geom_valid <- function(geom.invalid, dens.col = NA, geom.info = NA,
     area.dif.char <- sprintf(as.character(round(area.dif / 1e+06, 4)), "%3")
     if (identical(area.dif.char, "0")) area.dif.char <- "0.000"
 
-    area.dif.perc.char <- sprintf(as.character(round((area.dif / area1) * 100, 4)), "%3")
+    area.dif.perc.char <- sprintf(
+      as.character(round((area.dif / area1) * 100, 4)), "%3"
+    )
     if (identical(area.dif.perc.char, "0")) area.dif.perc.char <- "0.000"
 
     # Get predicted abundance difference
@@ -247,7 +250,9 @@ make_geom_valid <- function(geom.invalid, dens.col = NA, geom.info = NA,
       abund.dif.char <- sprintf(as.character(round(abund.dif / 1e+06, 4)), "%3")
       if (identical(abund.dif.char, "0")) abund.dif.char <- "0.000"
 
-      abund.dif.perc.char <- sprintf(as.character(round((abund.dif / abund1) * 100, 4)), "%3")
+      abund.dif.perc.char <- sprintf(
+        as.character(round((abund.dif / abund1) * 100, 4)), "%3"
+      )
       if (identical(abund.dif.perc.char, "0")) abund.dif.perc.char <- "0.000"
     }
 
@@ -279,7 +284,8 @@ make_geom_valid <- function(geom.invalid, dens.col = NA, geom.info = NA,
       "You may safely continue using this object in the GUI as long as",
       "you are comfortable with the change in area reported below.",
       "You can use the preview functionality or export this geometry to",
-      "ensure that no unexpected changes to the geometry occurred."
+      "ensure that no unexpected changes to the geometry occurred.",
+      "See Appendix 3 of the manual for more information."
     )
 
     alert3 <- paste(

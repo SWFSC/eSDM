@@ -101,4 +101,66 @@ eval_proc_df <- function(x, y, p.codes, a.codes) {
 #   check_dateline(pts)
 # }
 
+
+###############################################################################
+# Generate message detailing the number of validation pts on polygon boundaries
+eval_overlap_message <- function(models.toeval, eval.data) {
+  pt.over.len <- sapply(
+    lapply(models.toeval, function(m) {
+      eval.data <- st_transform(eval.data, st_crs(m))
+      which(sapply(suppressMessages(st_intersects(eval.data, m)), length) > 1)
+    }),
+    length
+  )
+
+  # Make text pretty
+  #--------------------------------------------------------
+  if (all(pt.over.len == 0)) {
+    paste(
+      "The predictions being evaluated had 0 validation points",
+      "that fell on the boundary between two or more prediction polygons"
+    )
+
+    #------------------------------------------------------
+  } else if (length(pt.over.len) == 1) {
+    paste(
+      "The predictions being evaluated had", pt.over.len, "validation points",
+      "that fell on the boundary between two or more prediction polygons;" ,
+      "the predictions from these polygons were averaged for the evaluation.",
+      "See Appendix 2 of the manual for more details."
+    )
+
+    #------------------------------------------------------
+  } else {
+    if (zero_range(pt.over.len)) {
+      temp <- paste(
+        "The predictions being evaluated each had", unique(pt.over.len),
+        "validation points"
+      )
+
+    } else if (length(pt.over.len) == 2) {
+      temp <- paste(
+        "The predictions being evaluated had",
+        paste(pt.over.len, collapse = " and "),
+        "validation points, respectively,"
+      )
+
+    } else {
+      temp <- paste(
+        "The predictions being evaluated had",
+        paste0(paste(head(pt.over.len, -1), collapse = ", "), ","),
+        "and", tail(pt.over.len, 1), "validation points, respectively,"
+      )
+    }
+
+    paste(
+      temp,
+      "that fell on the boundary between two or more prediction polygons;",
+      "the predictions from these polygons were averaged for the evaluation.",
+      "See Appendix 2 of the manual for more details."
+    )
+  }
+}
+
+
 ###############################################################################

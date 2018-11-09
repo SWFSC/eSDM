@@ -71,7 +71,7 @@ vals <- reactiveValues(
   eval.data.specs    = NULL,       # Validation data type (1 = count, 2 = pres/abs)
   eval.data.gis.info = NULL,       # List with loaded GIS validation data (sf obj) and shp/gdb indicator (num 2 or 3, respectively)
   eval.models.idx    = NULL,       # List of indices of evaluated predictions
-  eval.metrics       = NULL,       # Metric values
+  eval.metrics       = NULL,       # List of metric values and message detailing overlap
   eval.metrics.names = NULL,       # Names of metrics calculated
 
   # Objects that store data for high quality (pretty) plots

@@ -109,9 +109,11 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
     eval.results <- eval.results[c("AUC", "TSS", "RMSE") %in% which.metrics, ]
   })
 
+  eval.overlap.message <- eval_overlap_message(eval_models(), eval.data)
+
   # Save model idx and metrics to reactiveValues
   vals$eval.models.idx <- eval_models_idx()
-  vals$eval.metrics <- eval.results
+  vals$eval.metrics <- list(eval.results, eval.overlap.message)
   vals$eval.metrics.names <- which.metrics
 
   ""
@@ -126,7 +128,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 table_eval_metrics <- reactive({
   req(vals$eval.metrics, vals$eval.metrics.names)
 
-  metrics.table <- as.data.frame(t(as.data.frame(vals$eval.metrics)))
+  metrics.table <- as.data.frame(t(as.data.frame(vals$eval.metrics[[1]])))
   names(metrics.table) <- vals$eval.metrics.names
 
   models.idx <- vals$eval.models.idx
@@ -142,66 +144,6 @@ table_eval_metrics <- reactive({
     ),
     metrics.table, stringsAsFactors = FALSE
   )
-})
-
-
-### Generate message detailing number of points that landed on poly boundaries
-eval_metrics_overlap <- eventReactive(input$eval_metrics_execute, {
-  req(vals$eval.data)
-  models.toeval <- eval_models()
-
-  pt.over.len <- sapply(
-    lapply(models.toeval, function(m) {
-      eval.data <- st_transform(vals$eval.data, st_crs(m))
-      which(sapply(suppressMessages(st_intersects(eval.data, m)), length) > 1)
-    }),
-    length
-  )
-
-  # Make text pretty
-  #--------------------------------------------------------
-  if (all(pt.over.len == 0)) {
-    paste(
-      "The predictions being evaluated had 0 validation points",
-      "that fell on the boundary between two or more prediction polygons"
-    )
-
-    #------------------------------------------------------
-  } else if (length(pt.over.len) == 1) {
-    paste(
-      "The predictions being evaluated had", pt.over.len, "validation points",
-      "that fell on the boundary between two or more prediction polygons;" ,
-      "the predictions from these polygons were averaged for the evaluation.",
-      "See the manual for more details."
-    )
-
-    #------------------------------------------------------
-  } else {
-    if (zero_range(pt.over.len)) {
-      temp <- paste(
-        "The predictions being evaluated each had", unique(pt.over.len)
-      )
-
-    } else if (length(pt.over.len) == 2) {
-      temp <- paste(
-        "The predictions being evaluated had", paste(pt.over.len, collapse = " and ")
-      )
-
-    } else {
-      temp <- paste(
-        "The predictions being evaluated had",
-        paste0(paste(head(pt.over.len, -1), collapse = ", "), ","),
-        "and", tail(pt.over.len, 1)
-      )
-    }
-
-    paste(
-      temp, "validation points, respectively,",
-      "that fell on the boundary between two or more prediction polygons;" ,
-      "the predictions from these polygons were averaged for the evaluation.",
-      "See the manual for more details."
-    )
-  }
 })
 
 

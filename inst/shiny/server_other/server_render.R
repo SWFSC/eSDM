@@ -344,8 +344,7 @@ output$table_eval_metrics_out <- renderTable({
 
 
 output$eval_metrics_overlap_text <- renderText({
-  req(table_eval_metrics())
-  eval_metrics_overlap()
+  req(vals$eval.metrics)[[2]]
 })
 
 
