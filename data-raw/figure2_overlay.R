@@ -1,4 +1,4 @@
-# Code for generating Figure 2 for eSDM manuscript (Woodman et al. in prep)
+# Code for creating Figure 2 for eSDM manuscript (Woodman et al. in prep)
 
 ###################################################################################################
 library(eSDM) #devtools::install_github("smwoodman/eSDM")
@@ -6,10 +6,9 @@ library(RColorBrewer)
 library(sf)
 library(tmap)
 
-
 ### Prep work
-x <- st_geometry(preds.2)
-y <- st_geometry(preds.3)
+x <- st_geometry(eSDM::preds.2)
+y <- st_geometry(eSDM::preds.3)
 
 x.mid <- x[1496] #x[1496] is the 'current' base geometry polygon
 overlap <- st_intersection(x.mid, y)
