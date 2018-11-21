@@ -1,27 +1,23 @@
 # Code for generating Figure 2 for eSDM manuscript (Woodman et al. in prep)
 
 ###################################################################################################
-library(eSDM)
+library(eSDM) #devtools::install_github("smwoodman/eSDM")
 library(RColorBrewer)
 library(sf)
 library(tmap)
+
 
 ### Prep work
 x <- st_geometry(preds.2)
 y <- st_geometry(preds.3)
 
-# x[1496] is the 'current' base geometry polygon
-overlap <- st_intersection(x[1496], y)
-y.which <- st_intersects(x[1496], y)[[1]]
+x.mid <- x[1496] #x[1496] is the 'current' base geometry polygon
+overlap <- st_intersection(x.mid, y)
+y.which <- st_intersects(x.mid, y)[[1]]
 
-# lim.xmin <- -120.022
-# lim.xmax <- -119.777
-# lim.ymin <- 34.3
-# lim.ymax <- 34.5
-
-lim.xmin <- -120.01
-lim.xmax <- -119.79
-lim.ymin <- 34.31
+lim.xmin <- -120.022
+lim.xmax <- -119.777
+lim.ymin <- 34.3
 lim.ymax <- 34.5
 
 lim.bbox <- c(lim.xmin, lim.xmax, lim.ymin, lim.ymax)
@@ -32,6 +28,7 @@ rm(lim.xmin, lim.xmax, lim.ymin, lim.ymax)
 area.poly <- st_sfc(st_polygon(list(matrix(lim.poly, ncol = 2))), crs = st_crs(x))
 
 y.clip <- st_crop(y, area.poly)
+x.mid.clip <- st_intersection(x.mid, y.clip)
 
 
 ###################################################################################################
@@ -41,7 +38,7 @@ b.pal <- brewer.pal(9, "YlGnBu")
 z.base <- tm_shape(x, bbox = matrix(lim.bbox, nrow = 2, byrow = TRUE)) +
   tm_polygons(col = "navajowhite2", border.col = "black", lwd = 2)
 
-z.base.mid <- tm_shape(x[1496]) +
+z.base.mid <- tm_shape(x.mid) +
   tm_borders(col = "dodgerblue", lwd = 3)
 
 z.over <- tm_shape(y.clip, bbox = matrix(lim.bbox, nrow = 2, byrow = TRUE)) +
@@ -50,15 +47,18 @@ z.over <- tm_shape(y.clip, bbox = matrix(lim.bbox, nrow = 2, byrow = TRUE)) +
   tm_borders(col = "red", lwd = 2)
 
 z.int.poly <- tm_shape(overlap) +
-  tm_polygons(col = b.pal[2], border.col = NA) +
-  tm_shape(x[1496]) +
-  tm_borders(col = "dodgerblue", lwd = 3) +
+  tm_polygons(col = b.pal[2], border.col = NA, border.alpha = 0) +
+  tm_shape(x.mid) +
+  tm_borders(col = "dodgerblue", lwd = 3, alpha = 1) +
+  tm_shape(x.mid.clip) +
+  tm_borders(col = "grey", lwd = 3, alpha = 0.45) +
   tm_shape(y.clip) +
   tm_borders(col = "red", lwd = 2)
 
 z.label <- function(x) tm_credits(x, size = 1.3, position = c("LEFT", "TOP"))
 
-z.layout <- tm_layout(frame = "white", inner.margins = 0.02)
+# Making inner.margins anything other than 0 creates awkward space at map edges
+z.layout <- tm_layout(frame = "white", frame.lwd = 6, inner.margins = 0.0)
 
 
 ###################################################################################################
@@ -71,11 +71,10 @@ f4 <- z.base + z.base.mid + z.over + z.int.poly + z.layout + z.label("(d)")
 
 ###################################################################################################
 ### Save tmap maps
-f1234 <- tmap_arrange(list(f1, f2, f3, f4 + tm_grid()), ncol = 2)
-# tmap_save(f1234, filename = "../eSDM paper/Figures/Overlay.png", width = 8, height = 8)
-tmap_save(f1234, filename = "../eSDM paper/Figures/Overlay_exp.png", width = 8, height = 8)
+f1234 <- tmap_arrange(list(f1, f2, f3, f4), ncol = 2)
+tmap_save(f1234, filename = "../eSDM paper/Figures/Fig 2.png", width = 8, height = 8)
 
-  # # Save individual panels
+# # Save individual panels
 # tmap_save(f1, filename = "../eSDM paper/Figures/Overlay1.png", width = 4, height = 4)
 # tmap_save(f2, filename = "../eSDM paper/Figures/Overlay2.png", width = 4, height = 4)
 # tmap_save(f3, filename = "../eSDM paper/Figures/Overlay3.png", width = 4, height = 4)
