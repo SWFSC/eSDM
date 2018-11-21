@@ -8,7 +8,7 @@
 # File names (cont): '_' used as separator
 # Separator for variable and function names: '_'
 # Separator for variables that aren't being passed from server to ui: '.'
-#    This includes reactiveValues
+#   This includes reactiveValues
 # renderUI output names for widgets: 'output$inputId_uiOut_(widget type)'
 
 

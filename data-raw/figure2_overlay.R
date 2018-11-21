@@ -1,24 +1,27 @@
-###################################################################################################
-# Code for generating figure 4 for eSDM paper
+# Code for generating Figure 2 for eSDM manuscript (Woodman et al. in prep)
 
+###################################################################################################
 library(eSDM)
 library(RColorBrewer)
 library(sf)
 library(tmap)
 
-# mapview::mapview(preds.3)
-# display.brewer.pal(9, "YlGnBu")
-
+### Prep work
 x <- st_geometry(preds.2)
 y <- st_geometry(preds.3)
 
-# x[1496] is the base geometry polygon
+# x[1496] is the 'current' base geometry polygon
 overlap <- st_intersection(x[1496], y)
 y.which <- st_intersects(x[1496], y)[[1]]
 
-lim.xmin <- -120.022
-lim.xmax <- -119.777
-lim.ymin <- 34.3
+# lim.xmin <- -120.022
+# lim.xmax <- -119.777
+# lim.ymin <- 34.3
+# lim.ymax <- 34.5
+
+lim.xmin <- -120.01
+lim.xmax <- -119.79
+lim.ymin <- 34.31
 lim.ymax <- 34.5
 
 lim.bbox <- c(lim.xmin, lim.xmax, lim.ymin, lim.ymax)
@@ -32,8 +35,8 @@ y.clip <- st_crop(y, area.poly)
 
 
 ###################################################################################################
+### Create tmap pieces of maps (polygons and other objects)
 b.pal <- brewer.pal(9, "YlGnBu")
-######## TODO fix whitespace
 
 z.base <- tm_shape(x, bbox = matrix(lim.bbox, nrow = 2, byrow = TRUE)) +
   tm_polygons(col = "navajowhite2", border.col = "black", lwd = 2)
@@ -53,21 +56,29 @@ z.int.poly <- tm_shape(overlap) +
   tm_shape(y.clip) +
   tm_borders(col = "red", lwd = 2)
 
-z.int.other <- tm_shape(y[y.which]) +
-  tm_borders(col = "forestgreen", lwd = 3)
+z.label <- function(x) tm_credits(x, size = 1.3, position = c("LEFT", "TOP"))
 
-z.layout <- tm_layout(frame = "white", inner.margins = 0)
-###################################################################################################
-f1 <- z.base + z.base.mid + z.layout
-f2 <- z.over + z.layout
-f3 <- z.base + z.base.mid + z.over + z.layout
-f4 <- z.base + z.base.mid + z.over + z.int.poly + z.layout
+z.layout <- tm_layout(frame = "white", inner.margins = 0.02)
 
 
 ###################################################################################################
-tmap_save(f1, filename = "../eSDM paper/Figures/Overlay1.png", width = 4, height = 4)
-tmap_save(f2, filename = "../eSDM paper/Figures/Overlay2.png", width = 4, height = 4)
-tmap_save(f3, filename = "../eSDM paper/Figures/Overlay3.png", width = 4, height = 4)
-tmap_save(f4, filename = "../eSDM paper/Figures/Overlay4.png", width = 4, height = 4)
+### Create tmap maps
+f1 <- z.base + z.base.mid + z.layout + z.label("(a)")
+f2 <- z.over + z.layout + z.label("(b)")
+f3 <- z.base + z.base.mid + z.over + z.layout + z.label("(c)")
+f4 <- z.base + z.base.mid + z.over + z.int.poly + z.layout + z.label("(d)")
+
+
+###################################################################################################
+### Save tmap maps
+f1234 <- tmap_arrange(list(f1, f2, f3, f4 + tm_grid()), ncol = 2)
+# tmap_save(f1234, filename = "../eSDM paper/Figures/Overlay.png", width = 8, height = 8)
+tmap_save(f1234, filename = "../eSDM paper/Figures/Overlay_exp.png", width = 8, height = 8)
+
+  # # Save individual panels
+# tmap_save(f1, filename = "../eSDM paper/Figures/Overlay1.png", width = 4, height = 4)
+# tmap_save(f2, filename = "../eSDM paper/Figures/Overlay2.png", width = 4, height = 4)
+# tmap_save(f3, filename = "../eSDM paper/Figures/Overlay3.png", width = 4, height = 4)
+# tmap_save(f4, filename = "../eSDM paper/Figures/Overlay4.png", width = 4, height = 4)
 
 ###################################################################################################
