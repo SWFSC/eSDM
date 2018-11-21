@@ -8,27 +8,29 @@
 overlay_bound_gis_shp <- reactive({
   req(input$overlay_bound_gis_shp_files)
 
-  # Reset vals object here in case validate() is triggered
-  vals$overlay.bound <- NULL
+  isolate({
+    # Reset vals object here in case validate() is triggered
+    vals$overlay.bound <- NULL
 
-  withProgress(message = 'Importing study area polygon', value = 0.3, {
-    bound.sf <- read.shp.shiny(input$overlay_bound_gis_shp_files)
+    withProgress(message = 'Importing study area polygon', value = 0.3, {
+      bound.sf <- read.shp.shiny(input$overlay_bound_gis_shp_files)
 
-    validate(
-      need(inherits(bound.sf, c("sf", "sfc")),
-           "Error: Could not import shapefile using selected files")
-    )
-    incProgress(0.5)
+      validate(
+        need(inherits(bound.sf, c("sf", "sfc")),
+             "Error: Could not import shapefile using selected files")
+      )
+      incProgress(0.5)
 
-    temp.bound <- overlay_gis_check(st_geometry(bound.sf))
+      temp.bound <- overlay_gis_check(st_geometry(bound.sf))
 
-    if (length(temp.bound) != 1) {
-      vals$overlay.bound <- st_union(temp.bound)
-    } else {
-      vals$overlay.bound <- temp.bound
-    }
+      if (length(temp.bound) != 1) {
+        vals$overlay.bound <- st_union(temp.bound)
+      } else {
+        vals$overlay.bound <- temp.bound
+      }
 
-    incProgress(0.2)
+      incProgress(0.2)
+    })
   })
 
   ""
@@ -75,26 +77,28 @@ overlay_bound_gis_gdb <- eventReactive(input$overlay_bound_gis_gdb_load, {
 overlay_land_gis_shp <- reactive({
   req(input$overlay_land_gis_shp_files)
 
-  # Reset vals object here in case validate() is triggered
-  vals$overlay.land <- NULL
+  isolate({
+    # Reset vals object here in case validate() is triggered
+    vals$overlay.land <- NULL
 
-  withProgress(message = 'Importing erasing polygon', value = 0.3, {
-    land.sf <- read.shp.shiny(input$overlay_land_gis_shp_files)
+    withProgress(message = 'Importing erasing polygon', value = 0.3, {
+      land.sf <- read.shp.shiny(input$overlay_land_gis_shp_files)
 
-    validate(
-      need(inherits(land.sf, c("sf", "sfc")),
-           "Error: Could not import shapefile using selected files")
-    )
-    incProgress(0.5)
+      validate(
+        need(inherits(land.sf, c("sf", "sfc")),
+             "Error: Could not import shapefile using selected files")
+      )
+      incProgress(0.5)
 
-    temp.land <- overlay_gis_check(st_geometry(land.sf))
+      temp.land <- overlay_gis_check(st_geometry(land.sf))
 
-    if (length(temp.land) != 1) {
-      vals$overlay.land <- st_union(temp.land)
-    } else {
-      vals$overlay.land <- temp.land
-    }
-    incProgress(0.2)
+      if (length(temp.land) != 1) {
+        vals$overlay.land <- st_union(temp.land)
+      } else {
+        vals$overlay.land <- temp.land
+      }
+      incProgress(0.2)
+    })
   })
 
   ""

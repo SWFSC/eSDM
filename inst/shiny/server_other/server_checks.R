@@ -67,7 +67,7 @@ observe({
 #------------------------------------------------------------------------------
 ### Prep
 sf.attr  <- c("names", "row.names", "class", "sf_column", "agr")
-sfc.attr <- c("n_empty", "crs", "class", "precision", "bbox", "classes")
+sfc.attr <- c("n_empty", "crs", "class", "precision", "bbox", "classes", "names")
 # TODO: research 'classes' attribute
 
 modal.attr <- function(x) {
