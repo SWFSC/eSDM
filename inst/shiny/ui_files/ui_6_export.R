@@ -77,7 +77,8 @@ ui.export <- function() {
                 tags$hr(style = "border-color: black;"), #-------------------------------------
                 helpText("Note that if you export predictions to an Excel .csv file in a longitude/latitude",
                          "coordinate system, the eSDM assumes the longitude/latitude coordinates are planar",
-                         "and thus the centroids may not be geographically accurate. See", tags$strong("TODO"), "for more information"),
+                         "and thus the centroids may not be geographically accurate. See",
+                         tags$a("this link", href = "https://github.com/r-spatial/sf/issues/493"), "for more information"),
                 checkboxInput("export_proj_native", "Export predictions in the native coordinate system of the selected SDM",
                               value = TRUE),
                 conditionalPanel(
