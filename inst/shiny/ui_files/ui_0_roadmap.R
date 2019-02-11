@@ -41,7 +41,7 @@ ui.roadmap <- function() {
                 width = 7, offset = 1,
                 tags$h5(
                   tags$strong("Credits"),
-                  tags$p("This project was made possible by the Office of Science and Technology",
+                  tags$p("This project was made possible by the NOAA Fisheries Office of Science and Technology",
                          "as part of the National Protected Species Toolbox initiative.")
                 ),
                 tags$h5(
