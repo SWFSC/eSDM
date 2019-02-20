@@ -47,7 +47,13 @@ ui.createEns <- function() {
                   box(
                     width = 12,
                     tags$strong("1) Ensemble options: rescaling method"),
-                    uiOutput("create_ens_rescale_type_uiOut_radio"),
+                    # radioButtons("create_ens_rescale_type", NULL,
+                    #              choices = list("None" = 1, "Abundance" = 2, "Normalization" = 3,
+                    #                             "Standardization" = 4, "Sum to 1" = 5),
+                    #              selected = 1),
+                    radioButtons("create_ens_rescale_type", NULL,
+                                 choices = list("None" = 1, "Abundance" = 2, "Sum to 1" = 3),
+                                 selected = 1),
                     column(
                       width = 12,
                       conditionalPanel(
@@ -66,27 +72,33 @@ ui.createEns <- function() {
                       conditionalPanel(
                         condition = "input.create_ens_rescale_type == 3",
                         helpText(tags$u("Description:"),
-                                 "For each set of overlaid predictions, rescale them (X) into a range of [0, 1]",
-                                 "using the following formula:"),
-                        column(
-                          width = 12,
-                          helpText(HTML(paste0("X", tags$sub("new")), "= (X -",
-                                        paste0("X", tags$sub("min"), ")"), "/",
-                                        paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")")))
-                        )
-                      ),
-                      conditionalPanel(
-                        condition = "input.create_ens_rescale_type == 4",
-                        helpText(tags$u("Description:"),
-                                 "For each set of overlaid predictions, rescale them (X) to have a mean", HTML("(&mu;)"),
-                                 "of 0 and", "standard deviation", HTML("(&sigma;)"),
-                                 "of 1 (unit variance) using the following formula:"),
-                        column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
-                      ),
-                      conditionalPanel(
-                        condition = "input.create_ens_rescale_type == 5",
-                        helpText(tags$u("Description:"), "For each model, rescale the predictions so that they sum to one")
+                                 "For each set of overlaid predictions, rescale them so they sum to one")
                       )
+                      # conditionalPanel(
+                      #   condition = "input.create_ens_rescale_type == 3",
+                      #   helpText(tags$u("Description:"),
+                      #            "For each set of overlaid predictions, rescale them (X) into a range of [0, 1]",
+                      #            "using the following formula:"),
+                      #   column(
+                      #     width = 12,
+                      #     helpText(HTML(paste0("X", tags$sub("new")), "= (X -",
+                      #                   paste0("X", tags$sub("min"), ")"), "/",
+                      #                   paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")")))
+                      #   )
+                      # ),
+                      # conditionalPanel(
+                      #   condition = "input.create_ens_rescale_type == 4",
+                      #   helpText(tags$u("Description:"),
+                      #            "For each set of overlaid predictions, rescale them (X) to have a mean", HTML("(&mu;)"),
+                      #            "of 0 and", "standard deviation", HTML("(&sigma;)"),
+                      #            "of 1 (unit variance) using the following formula:"),
+                      #   column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
+                      # ),
+                      # conditionalPanel(
+                      #   condition = "input.create_ens_rescale_type == 5",
+                      #   helpText(tags$u("Description:"),
+                      #            "For each set of overlaid predictions, rescale them so they sum to one")
+                      # )
                     )
                   ),
                   ################################################### Weight polygon preview

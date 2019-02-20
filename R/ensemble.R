@@ -6,9 +6,9 @@
 #'   all objects must have the same number of rows
 #' @param x.pred.idx character or numeric vector of names or column indices of predicted density column
 #'   to be rescaled for each element of \code{x}; must be the same length as \code{x}
-#' @param y rescaling method; must be one of: "abundance", "normalization", "standardization", or "sumto1".
+#' @param y rescaling method; must be either "abundance" or "sumto1".
 #'   See 'Details' section for descriptions of the rescaling methods
-#' @param y.abund numeric value; ignored if \code{y != "abundance"}
+#' @param y.abund numeric value; ignored if \code{y} is not \code{"abundance"}
 #'
 #' @importFrom purrr set_names
 #' @importFrom sf st_sf
@@ -21,19 +21,17 @@
 #'   The rescaling methods are as follows:
 #'   \describe{
 #'   \item{'abundance' - Rescale the density values so that the predicted abundance is \code{y.abund}}{}
-#'   \item{'normalization' - Rescale the density values to a range of [0, 1]}{}
-#'   \item{'standardization' - Rescale the density values to have a mean of 0 and standard deviation of 1}{}
 #'   \item{'sumto1' - Rescale the density values so their sum is 1}{}
 #'   }
 #'
-#' @return The list \code{x}, but with the specified columns rescaled
+#' @return The list \code{x}, but with the columns specified by \code{x.pred.idx} rescaled
 #'
 #' @examples
 #' x <- list(
 #'   preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
 #' )
 #' ensemble_rescale(x, c("Density", "Density.overlaid"), "abundance", 50)
-#' ensemble_rescale(x, c(1, 1), "normalization")
+#' ensemble_rescale(x, c(1, 1), "sumto1")
 #'
 #' @export
 ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
@@ -46,9 +44,9 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
   if (length(x.pred.idx) != length(x)) {
     stop("x and x.pred.idx must have the same number of elements")
   }
-  if (!(y %in% c("abundance", "normalization", "standardization", "sumto1"))) {
-    stop("y must be one of: 'abundance', 'normalization', ",
-         "'standardization', or 'sumto1'")
+  # if (!(y %in% c("abundance", "normalization", "standardization", "sumto1"))) {
+  if (!(y %in% c("abundance", "sumto1"))) {
+      stop("y must be one of: 'abundance' or 'sumto1'")
   }
 
   #----------------------------------------------------------------------------
@@ -72,31 +70,35 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
       }, x, x.pred.idx, SIMPLIFY = FALSE)
     ) %>% set_names(paste0("x.", 1:length(x)))
 
-    if (y == "normalization") {
-      data.rescaled <- as.data.frame(apply(data.extracted, 2, function(i) {
-        if (diff(range(i, na.rm = TRUE)) == 0) {
-          stop("At least one of the specified data columns has a range of 0; ",
-               "you cannot normalize a vector of numbers with a range of 0")
-        } else {
-          esdm_normalize(i)
-        }
-      }))
+    data.rescaled <- as.data.frame(
+      apply(data.extracted, 2, function(i) {i / sum(i, na.rm = TRUE)})
+    )
 
-    } else if (y == "standardization") {
-      data.rescaled <- as.data.frame( apply(data.extracted, 2, function(i) {
-        if (diff(range(i, na.rm = TRUE)) == 0) {
-          stop("At least one of the specified data columns has a range of 0; ",
-               "you cannot standardize a vector of numbers with a range of 0")
-        } else {
-          base::scale(i)
-        }
-      }))
-
-    } else { #y == "sumto1"
-      data.rescaled <- as.data.frame(
-        apply(data.extracted, 2, function(i) {i / sum(i, na.rm = TRUE)})
-      )
-    }
+    # if (y == "normalization") {
+    #   data.rescaled <- as.data.frame(apply(data.extracted, 2, function(i) {
+    #     if (diff(range(i, na.rm = TRUE)) == 0) {
+    #       stop("At least one of the specified data columns has a range of 0; ",
+    #            "you cannot normalize a vector of numbers with a range of 0")
+    #     } else {
+    #       esdm_normalize(i)
+    #     }
+    #   }))
+    #
+    # } else if (y == "standardization") {
+    #   data.rescaled <- as.data.frame( apply(data.extracted, 2, function(i) {
+    #     if (diff(range(i, na.rm = TRUE)) == 0) {
+    #       stop("At least one of the specified data columns has a range of 0; ",
+    #            "you cannot standardize a vector of numbers with a range of 0")
+    #     } else {
+    #       base::scale(i)
+    #     }
+    #   }))
+    #
+    # } else { #y == "sumto1"
+    #   data.rescaled <- as.data.frame(
+    #     apply(data.extracted, 2, function(i) {i / sum(i, na.rm = TRUE)})
+    #   )
+    # }
   }
 
   #----------------------------------------------------------------------------

@@ -15,20 +15,6 @@ create_ens_rescale_type_helper <- reactive({
   models.which
 })
 
-### Widget with options for rescaling
-output$create_ens_rescale_type_uiOut_radio <- renderUI({
-  models.which <- create_ens_rescale_type_helper()
-  pred.type <- vals$models.pred.type[models.which]
-
-  choices.list <- list(
-    "None" = 1, "Abundance" = 2, "Normalization" = 3, "Standardization" = 4,
-    "Sum to 1" = 5
-  )
-
-  radioButtons("create_ens_rescale_type", NULL, choices = choices.list,
-               selected = 1)
-})
-
 
 ### Message for if not all predictions are absolute abundance
 output$create_ens_rescale_type_message <- renderUI({
@@ -267,10 +253,11 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
     ens.rescale.txt <- ifelse(
       grepl("Abund", ens.rescale.txt),
       paste0("Abund", strsplit(ens.rescale.txt, ": ")[[1]][2], "_"),
-      switch(
-        ens.rescale.txt, "None" = "None_", "Normalization" = "Norm_",
-        "Standardization" = "Stand_", "Sum to 1" = "Sumto1_"
-      )
+      switch(ens.rescale.txt, "None" = "None_", "Sum to 1" = "Sumto1_")
+      # switch(
+      #   ens.rescale.txt, "None" = "None_", "Normalization" = "Norm_",
+      #   "Standardization" = "Stand_", "Sum to 1" = "Sumto1_"
+      # )
     )
     ens.idx.txt <- vals$ensemble.overlaid.idx[idx.selected]
     ens.idx.txt <- paste0(gsub(", ", "+", ens.idx.txt), "_")
@@ -316,7 +303,8 @@ abund_reac_flag <- reactive({
   req(input$ens_select_action == 5, ens.rows)
 
   ens.rescalings <- vals$ensemble.rescaling[ens.rows]
-  rescaling.abund.bad <- c("Normalization", "Standardization", "Sum to 1")
+  rescaling.abund.bad <- c("Sum to 1")
+  # rescaling.abund.bad <- c("Normalization", "Standardization", "Sum to 1")
 
   all(!(ens.rescalings %in% rescaling.abund.bad))
 })
@@ -326,8 +314,10 @@ output$ens_calc_abund_execute_uiOut_text <- renderUI({
   validate(
     need(abund_reac_flag(),
          paste("Abundance cannot be reasonably calculated for ensembles",
-               "made with predictions rescaled using the 'Normalization',",
-               "'Standardization', or 'Sum to 1' methods")),
+               "made with predictions rescaled using the 'Sum to 1' method")),
+    # paste("Abundance cannot be reasonably calculated for ensembles",
+    #       "made with predictions rescaled using the 'Normalization',",
+    #       "'Standardization', or 'Sum to 1' methods")),
     errorClass = "validation2"
   )
 

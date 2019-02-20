@@ -90,7 +90,8 @@ create_ens_data_rescale <- reactive({
   models.overlaid <- vals$overlaid.models[create_ens_overlaid_idx()]
   x.pred.idx <- switch(
     as.numeric(input$create_ens_rescale_type),
-    "none", "abundance", "normalization", "standardization", "sumto1"
+    "none", "abundance", "sumto1"
+    # "none", "abundance", "normalization", "standardization", "sumto1"
   )
 
   if (x.pred.idx == "abundance") {
@@ -109,10 +110,10 @@ create_ens_data_rescale <- reactive({
     ), silent = TRUE)
 
     validate(
-      need(temp,
-           paste("Error: At least one of the selected sets of overlaid",
-                 "predictions has a range of 0; you cannot normalize or",
-                 "standardize a vector of numbers with a range of 0"))
+      need(temp, "Error: error in rescaling, please report this as an issue")
+           # paste("Error: At least one of the selected sets of overlaid",
+           #       "predictions has a range of 0; you cannot normalize or",
+           #       "standardize a vector of numbers with a range of 0"))
     )
   }
 
@@ -204,8 +205,8 @@ create_ens_info_weights <- reactive({
 create_ens_info_rescaling <- reactive ({
   switch(
     as.numeric(input$create_ens_rescale_type),
-    "None", paste("Abundance:", input$create_ens_rescale_abund),
-    "Normalization", "Standardization", "Sum to 1"
+    "None", paste("Abundance:", input$create_ens_rescale_abund), "Sum to 1"
+    # "Normalization", "Standardization", "Sum to 1"
   )
 })
 
@@ -214,8 +215,8 @@ create_ens_info_rescaling_message <- reactive({
   input.rescale <- input$create_ens_rescale_type
   str.rescale <- switch(
     as.numeric(input.rescale),
-    "Predictions not rescaled", "abundance",
-    "normalization", "standardization", "sum to 1"
+    "Predictions not rescaled", "abundance", "sum to 1"
+    # "normalization", "standardization", "sum to 1"
   )
 
   if (input.rescale != 1) {
