@@ -103,10 +103,9 @@ create_ens_weighted_metric <- reactive({
                "of overlaid predictions; please report this as an issue"))
   )
 
-  data.ens <- data.frame(Pred.ens = apply(
-    data.rescaled, 1,
-    function(p) stats::weighted.mean(p, data.weights, na.rm = TRUE)
-  ))
+  data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p) {
+    stats::weighted.mean(p, data.weights, na.rm = TRUE)
+  }))
   data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
 
   st_sf(data.ens, geometry = base.sfc, agr = "constant")

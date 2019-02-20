@@ -68,7 +68,7 @@ create_ens_unweighted <- reactive({
 ###############################################################################
 # 'Level 2' functions
 
-### Retrun data to be ensembled, including apply regional weights if necessary
+### Return data to be ensembled, icl. applying regional weights if necessary
 create_ens_data_reg <- reactive({
   if (input$create_ens_reg) {
     validate(
