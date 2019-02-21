@@ -1,0 +1,78 @@
+#' Create polygons from centroid coordinates
+#'
+#' Create polygon(s) from a data frame with coordinates of the polygon centroid(s)
+#'
+#' @param x data frame with at least two columns;
+#'   the first two columns must contain longitude and latitude coordinates, respectively
+#' @param y numeric; shortest distance from centroid to any of the sides
+#'   (i.e. half the length of one side of a polygon)
+#' @param ... passed on to \link[sf]{st_sf} or on to \link[sf]{st_sfc},
+#'   might included named arguments \code{crs} or \code{agr}
+#'
+#' @importFrom dplyr select
+#' @importFrom purrr set_names
+#' @importFrom rlang .data
+#' @importFrom sf st_polygon
+#' @importFrom sf st_sfc
+#' @importFrom sf st_sf
+#'
+#' @details This function was designed for someone who reads in a .csv file
+#'   with a grid of coordinates representing SDM prediction points and needs to create
+#'   non-overlapping prediction polygons with the .csv file coordinates as the polygon centroids.
+#'   However, the function can be used to create square polygons around any points, even if those polygons overlap.
+#'
+#'   The created polygons are oriented so that, in a 2D plane, their edges are parallel to either the x or the y axis.
+#'
+#'   If a \code{crs} is not specified in \code{...},
+#'   then the \code{crs} attribute of the polygon(s) will be \code{NULL}.
+#'
+#' @return Object of class \code{sfc} (if \code{x} has exactly two columns) or class \code{sf}
+#'   (if \code{x} has exactly more than columns). The object will have a geometry type of \code{POLYGON}
+#'
+#' @examples
+#' # Create an sfc object from a data frame of two columns
+#' x <- data.frame(
+#'   lon = c(5, 10, 15, 20, 5, 10, 15, 20),
+#'   lat = c(5, 5, 5, 5, 10, 10, 10, 10)
+#' )
+#' pts_to_poly_centroids(x, 2.5, crs = 4326)
+#'
+#' # Create an sf object from a data frame of more than two columns
+#' x <- data.frame(
+#'   lon = c(5, 10, 15, 20, 5, 10, 15, 20),
+#'   lat = c(5, 5, 5, 5, 10, 10, 10, 10),
+#'   sdm.pred = runif(8),
+#'   sdm.pred2 = runif(8)
+#' )
+#' pts_to_poly_centroids(x, 2.5, crs = 4326, agr = "constant")
+#'
+#' @export
+pts_to_poly_centroids <- function(x, y, ...) {
+  stopifnot(
+    inherits(x, "data.frame"),
+    ncol(x) >= 2,
+    is.numeric(y)
+  )
+
+  # Use first two (lon and lat) columns to create list of sfg objects
+  x.lonlat <- x %>%
+    select(c(1, 2)) %>%
+    set_names(c("lon", "lat"))
+
+  sfg.list <- unname(apply(x.lonlat, 1, function(i, j) {
+    st_polygon(list(matrix(
+      c(i[1] + j, i[1] - j, i[1] - j, i[1] + j, i[1] + j,
+        i[2] + j, i[2] + j, i[2] - j, i[2] - j, i[2] + j),
+      ncol = 2
+    )))
+  }, j = y))
+
+  # Create sf or sfc object, as appropriate
+  if (ncol(x) > 2) {
+    x %>%
+      select(-c(1, 2)) %>%
+      st_sf(geometry = st_sfc(sfg.list), ...)
+  } else {
+    st_sfc(sfg.list, ...)
+  }
+}
