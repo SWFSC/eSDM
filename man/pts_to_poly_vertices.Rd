@@ -8,7 +8,8 @@ pts_to_poly_vertices(x, ...)
 }
 \arguments{
 \item{x}{data frame with at least two columns;
-the first two columns must contain longitude and latitude coordinates, respectively}
+the first two columns must contain longitude and latitude coordinates, respectively.
+See 'Details' section for how additional columns are handled}
 
 \item{...}{passed on to \link[sf]{st_sfc}, might included named argument \code{crs}}
 }
@@ -21,16 +22,16 @@ Create polygon(s) from a data frame with the coordinates of the polygon vertices
 \details{
 Vertices of different polygons must be demarcated by rows with values of \code{NA}
   in both the first and second columns (i.e. the longitude and latitude columns).
-  All columns in \code{x} besides the first two columns are ignored
+
+  All columns in \code{x} besides the first two columns are ignored.
 
   If a \code{crs} is not specified in \code{...},
   then the \code{crs} attribute of the polygon(s) will be \code{NULL}.
 }
 \examples{
 x <- data.frame(
-  lon = c(40, 40, 50, 50, 40, NA, 20, 20, 30, 30, 20),
-  lat = c(0, 10, 10, 0, 0, NA, 0, 10, 10, 0, 0),
-  sdm.pred = runif(11)
+  lon = c(40, 40, 50, 50, 40),
+  lat = c(0, 10, 10, 0, 0)
 )
 pts_to_poly_vertices(x, crs = 4326)
 

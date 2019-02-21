@@ -3,7 +3,8 @@
 #' Create polygon(s) from a data frame with coordinates of the polygon centroid(s)
 #'
 #' @param x data frame with at least two columns;
-#'   the first two columns must contain longitude and latitude coordinates, respectively
+#'   the first two columns must contain longitude and latitude coordinates, respectively.
+#'   See 'Details' section for how additional columns are handled
 #' @param y numeric; shortest distance from centroid to any of the sides
 #'   (i.e. half the length of one side of a polygon)
 #' @param ... passed on to \link[sf]{st_sf} or on to \link[sf]{st_sfc},
@@ -18,10 +19,13 @@
 #'
 #' @details This function was designed for someone who reads in a .csv file
 #'   with a grid of coordinates representing SDM prediction points and needs to create
-#'   non-overlapping prediction polygons with the .csv file coordinates as the polygon centroids.
-#'   However, the function can be used to create square polygons around any points, even if those polygons overlap.
-#'
+#'   prediction polygons with the .csv file coordinates as the polygon centroids.
+#'   However, the function can be used to create square polygons of any size around the provided points,
+#'   regardless of if those polygons touch or overlap.
 #'   The created polygons are oriented so that, in a 2D plane, their edges are parallel to either the x or the y axis.
+#'
+#'   If \code{x} contains more than two column, then additional columns will be treated as simple feature attributes,
+#'   i.e. passed along as the first argument to \link[sf]{st_sf}
 #'
 #'   If a \code{crs} is not specified in \code{...},
 #'   then the \code{crs} attribute of the polygon(s) will be \code{NULL}.
