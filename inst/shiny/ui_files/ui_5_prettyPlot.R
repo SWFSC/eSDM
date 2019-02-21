@@ -292,7 +292,7 @@ ui.prettyPlot <- function() {
                       ),
                       conditionalPanel(
                         condition = "input.pretty_legend_inout == 2",
-                        helpText("Legend width is the horizontal proportion of the plot window taken up by the legend")
+                        helpText("'Legend width' is the horizontal proportion of the plot window taken up by the legend")
                       ),
                       fluidRow(
                         column(6, uiOutput("pretty_legend_width_uiOut_numeric")),
