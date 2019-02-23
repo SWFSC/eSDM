@@ -5,7 +5,7 @@
 #' @param x data frame with at least two columns;
 #'   the first two columns must contain longitude and latitude coordinates, respectively.
 #'   See 'Details' section for how additional columns are handled
-#' @param ... passed on to \link[sf]{st_sfc}, might included named argument \code{crs}
+#' @param ... passed on to \link[sf:sfc]{st_sfc}, might included named argument \code{crs}
 #
 #' @importFrom dplyr %>%
 #' @importFrom dplyr filter

@@ -14,7 +14,7 @@ See 'Details' section for how additional columns are handled}
 \item{y}{numeric; shortest distance from centroid to any of the sides
 (i.e. half the length of one side of a polygon)}
 
-\item{...}{passed on to \link[sf]{st_sf} or on to \link[sf]{st_sfc},
+\item{...}{passed on to \link[sf:sf]{st_sf} or on to \link[sf:sfc]{st_sfc},
 might included named arguments \code{crs} or \code{agr}}
 }
 \value{
@@ -33,7 +33,7 @@ This function was designed for someone who reads in a .csv file
   The created polygons are oriented so that, in a 2D plane, their edges are parallel to either the x or the y axis.
 
   If \code{x} contains more than two column, then additional columns will be treated as simple feature attributes,
-  i.e. passed along as the first argument to \link[sf]{st_sf}
+  i.e. passed along as the first argument to \link[sf:sf]{st_sf}
 
   If a \code{crs} is not specified in \code{...},
   then the \code{crs} attribute of the polygon(s) will be \code{NULL}.
