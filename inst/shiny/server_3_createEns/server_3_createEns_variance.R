@@ -1,0 +1,96 @@
+### Code for calculating and plotting among-model variance
+
+
+###############################################################################
+# Functions for calculating among-model variance. Specific to eSDM
+#   Ensemble preds are in last column of i
+#   j is model weights; will be equal for unweighted ensemble
+variance_func_esdm <- function(i, j) {
+  i.o <- head(i, -1)
+  i.e <- tail(i, 1)
+
+  if (sum(!is.na(i.o)) > 1 && !is.na(i.e)) {
+    sum(((unname(i.o) - i.e) ^ 2) * (j ^ 2), na.rm = TRUE)
+
+  } else {
+    NA
+  }
+}
+
+
+###############################################################################
+# _temp because this needs to get changed to:
+#   observeEvent() -> reactiveVal -> plot pipeline
+ens_var_temp <- eventReactive(input$ens_var_execute, {
+  var.sf <- ens_var_sf()
+
+  plot(
+    var.sf[1], axes = TRUE, border = NA,
+    nbreaks = 6, breaks = "equal", key.length = 1
+  )
+})
+
+
+### Calculate among-model variance
+ens_var_sf <- reactive({
+  e.which <- input$ens_datatable_ensembles_rows_selected
+  req(length(e.which) == 1)
+
+  #----------------------------------------------------
+  ### Which overlaid predictions were used to create the ensemble?
+  o.which <- vals$ensemble.overlaid.idx[[e.which]]
+  if (o.which == "All") {
+    o.which <- seq_along(vals$overlaid.models)
+  } else {
+    o.which <- as.numeric(strsplit(o.which, ", ")[[1]])
+  }
+  o.count <- length(o.which)
+
+  #----------------------------------------------------
+  ### Rescale overlaid predictions (if necessary)
+  e.rescale <- vals$ensemble.rescaling[[e.which]]
+
+  if (grepl("Abundance", e.rescale)) {
+    abund.val <- as.numeric(strsplit(e.rescale, ": ")[[1]][2])
+    o.rescaled <- eSDM::ensemble_rescale(
+      vals$overlaid.models[o.which], rep("Pred.overlaid", o.count),
+      y = "abundance", abund.val
+    )
+
+  } else if (grepl("Sum to 1", e.rescale)) {
+    o.rescaled <- eSDM::ensemble_rescale(
+      vals$overlaid.models[o.which], rep("Pred.overlaid", o.count),
+      y = "sumto1"
+    )
+
+  } else {
+    o.rescaled <- vals$overlaid.models[o.which]
+  }
+
+  #----------------------------------------------------
+  ### TODO: what to do about regional weighting?
+
+  #----------------------------------------------------
+  ### Create data frame with rescaled overlaid preds and ensemble preds
+  pred.all <- data.frame(
+    lapply(o.rescaled, function(i) i$Pred.overlaid),
+    ens_preds = vals$ensemble.models[[e.which]]$Pred.ens
+  ) %>%
+    purrr::set_names(c(paste0("o.rescale", 1:o.count), "ens_preds"))
+
+  #----------------------------------------------------
+  ### Get weights (1/n if unweighted) and calculate variance
+  e.weights <- vals$ensemble.weights[[e.which]]
+  if (is.na(e.weights)) { #i.e. unweighted
+    pred.weights <- rep(1 / o.count, o.count)
+
+  } else {
+    pred.weights <- as.numeric(strsplit(e.weights, ", ")[[1]])
+    pred.weights <- pred.weights / sum(pred.weights)
+  }
+
+  st_sf(
+    var_val = apply(pred.all, 1, variance_func_esdm, j = pred.weights),
+    geometry = vals$overlay.base.sfc, agr = "constant"
+  )
+})

@@ -124,6 +124,7 @@ server <- function(input, output, session) {
   source(file.path("server_3_createEns", "server_3_createEns_create_regionalweighting.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_3_createEns", "server_3_createEns_create_weighted.R"), local = TRUE, chdir = TRUE)
   source(file.path("server_3_createEns", "server_3_createEns_renderUI.R"), local = TRUE, chdir = TRUE)
+  source(file.path("server_3_createEns", "server_3_createEns_variance.R"), local = TRUE, chdir = TRUE)
 
 
   ### Calculate evaluation metrics

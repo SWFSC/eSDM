@@ -378,11 +378,14 @@ ui.createEns <- function() {
             ui.instructions.table.select(text.pre = "ensemble", text.in = "with which to perform an action:"),
             DTOutput("ens_datatable_ensembles"),
             tags$br(),
-            column(4, radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"),
-                                   choices = list("Plot interactive preview" = 1, "Plot static preview" = 2,
-                                                  "Download static preview" = 3, "Remove from GUI" = 4,
-                                                  "Calculate predicted abundance" = 5),
-                                   selected = 1)),
+            column(
+              width = 4,
+              radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"),
+                           choices = list("Plot interactive preview" = 1, "Plot static preview" = 2,
+                                          "Download static preview" = 3, "Remove from GUI" = 4,
+                                          "Calculate predicted abundance" = 5, "Plot among-model variance" = 6),
+                           selected = 1)
+            ),
             column(
               width = 8,
               conditionalPanel(
@@ -452,6 +455,20 @@ ui.createEns <- function() {
                         # tags$style(type = "text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
                         # #tr:first-child for first row
                       )
+                    ),
+                    conditionalPanel(
+                      condition = "input.ens_select_action == 6",
+                      helpText("TODO"),
+                      fluidRow(
+                        column(4, checkboxInput("ens_var_withens", "Plot with ensemble - TODO", value = FALSE)),
+                        column(4, radioButtons("ens_var_perc", tags$h5("Plot units - TODO"),
+                                               choices = list("Percentages" = 1, "Values" = 2),
+                                               selected = 1)),
+                        column(4, radioButtons("ens_var", tags$h5("Units - TODO"),
+                                               choices = list("Variance" = 1, "SE" = 2, "95% CI" = 3),
+                                               selected = 1))
+                      ),
+                      uiOutput("ens_var_execute_uiOut_button")
                     )
                   )
                 )
@@ -468,6 +485,10 @@ ui.createEns <- function() {
             conditionalPanel(
               condition = "input.ens_select_action == 2",
               shinycssloaders::withSpinner(plotOutput("ens_preview_plot", height = 500), type = 1)
+            ),
+            conditionalPanel(
+              condition = "input.ens_select_action == 6",
+              shinycssloaders::withSpinner(plotOutput("ens_var_plot", height = 500), type = 1)
             )
           )
         )

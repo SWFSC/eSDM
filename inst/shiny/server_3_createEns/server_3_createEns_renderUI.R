@@ -208,6 +208,7 @@ output$create_ens_weights_metric_uiOut_radio <- renderUI({
 ###############################################################################
 # 'Created Ensemble Predictions' box
 
+#------------------------------------------------------------------------------
 ### actionButton for interactive preview
 output$ens_preview_interactive_execute_uiOut_button <- renderUI({
   req(input$ens_select_action == 1)
@@ -223,6 +224,7 @@ output$ens_preview_interactive_execute_uiOut_button <- renderUI({
 })
 
 
+#------------------------------------------------------------------------------
 ### textInput with default filename for download of ensemble preview
 output$ens_download_preview_name_uiOut_text <- renderUI({
   req(
@@ -297,6 +299,7 @@ output$ens_download_preview_execute_uiOut_download <- renderUI({
 })
 
 
+#------------------------------------------------------------------------------
 ### Flag for if appropriate ensembles are selected for abundance calc
 abund_reac_flag <- reactive({
   ens.rows <- input$ens_datatable_ensembles_rows_selected
@@ -329,5 +332,21 @@ output$ens_calc_abund_execute_uiOut_button <- renderUI({
   req(abund_reac_flag())
   actionButton("ens_calc_abund_execute", "Calculate abundance(s)")
 })
+
+
+#------------------------------------------------------------------------------
+### actionButton for among-model variance
+output$ens_var_execute_uiOut_button <- renderUI({
+  req(input$ens_select_action == 6)
+
+  validate(
+    need(length(input$ens_datatable_ensembles_rows_selected) == 1,
+         "Please select exactly one set of ensemble predictions"),
+    errorClass = "validation2"
+  )
+
+  actionButton("ens_var_execute", "Plot among-model variance")
+})
+
 
 ###############################################################################
