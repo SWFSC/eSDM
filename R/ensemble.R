@@ -2,8 +2,7 @@
 #'
 #' Rescale specified columns for each element in a list of SDM predictions
 #'
-#' @param x list of objects of class \code{sf};
-#'   all objects must have the same number of rows
+#' @param x list of objects of class \code{sf}, all of which must have the same geometry
 #' @param x.pred.idx character or numeric vector of names or column indices of predicted density column
 #'   to be rescaled for each element of \code{x}; must be of length one (if the name/index of the predicted
 #'   density column is the same for all elements of x) or the same length as \code{x}
@@ -52,7 +51,7 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
 
   # if (!(y %in% c("abundance", "normalization", "standardization", "sumto1"))) {
   if (!(y %in% c("abundance", "sumto1"))) {
-      stop("y must be one of: 'abundance' or 'sumto1'")
+    stop("y must be one of: 'abundance' or 'sumto1'")
   }
 
   #----------------------------------------------------------------------------

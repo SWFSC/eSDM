@@ -7,8 +7,7 @@
 ensemble_rescale(x, x.pred.idx, y, y.abund = NULL)
 }
 \arguments{
-\item{x}{list of objects of class \code{sf};
-all objects must have the same number of rows}
+\item{x}{list of objects of class \code{sf}, all of which must have the same geometry}
 
 \item{x.pred.idx}{character or numeric vector of names or column indices of predicted density column
 to be rescaled for each element of \code{x}; must be of length one (if the name/index of the predicted

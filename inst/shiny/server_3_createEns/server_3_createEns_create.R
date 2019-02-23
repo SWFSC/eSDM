@@ -111,9 +111,9 @@ create_ens_data_rescale <- reactive({
 
     validate(
       need(temp, "Error: error in rescaling, please report this as an issue")
-           # paste("Error: At least one of the selected sets of overlaid",
-           #       "predictions has a range of 0; you cannot normalize or",
-           #       "standardize a vector of numbers with a range of 0"))
+      # paste("Error: At least one of the selected sets of overlaid",
+      #       "predictions has a range of 0; you cannot normalize or",
+      #       "standardize a vector of numbers with a range of 0"))
     )
   }
 
@@ -191,11 +191,16 @@ create_ens_info_weighting <- reactive({
 create_ens_info_weights <- reactive({
   if (input$create_ens_type == 1) {
     NA
+
   } else {
     switch(
       as.numeric(input$create_ens_weight_type),
       input$create_ens_weight_manual,
-      paste(round(create_ens_weights_metric_table()[,3], 3), collapse = ", "),
+      paste(
+        format(round(create_ens_weights_metric_table()$Weights, 3),
+               nsmall = 3, justify = "right"),
+        collapse = ", "
+      ),
       "Spatial by pixel"
     )
   }

@@ -7,13 +7,13 @@
 
 ### Process text inputs for weights
 create_ens_weights_num <- reactive({
-  models.weights <- suppressWarnings(
+  preds.weights <- suppressWarnings(
     esdm_parse_num(req(input$create_ens_weight_manual))
     # as.numeric(unlist(strsplit(req(input$create_ens_weight_manual), ",")))
   )
 
   validate(
-    need(!anyNA(models.weights),
+    need(!anyNA(preds.weights),
          paste("Error: One or more of the weights was not recognized as",
                "a number; please ensure that all of the weights are numbers",
                "separated by a comma and a space"))
@@ -26,16 +26,16 @@ create_ens_weights_num <- reactive({
 
   # Validate weights input
   validate(
-    need(length(models.weights) == models.num,
+    need(length(preds.weights) == models.num,
          paste("Error: The number of entered weights does not",
                "match the number of selected overlaid predictions")) %then%
-      need(all(model.weights > 0),
+      need(all(preds.weights > 0),
            "Error: All entered weights must be greater than zero") %then%
-      need(round(sum(models.weights), 3) == 1,
+      need(round(sum(preds.weights), 3) == 1,
            "Error: The entered weights do not sum to 1")
   )
 
-  models.weights
+  preds.weights
 })
 
 
