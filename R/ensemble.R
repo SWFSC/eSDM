@@ -5,7 +5,8 @@
 #' @param x list of objects of class \code{sf};
 #'   all objects must have the same number of rows
 #' @param x.pred.idx character or numeric vector of names or column indices of predicted density column
-#'   to be rescaled for each element of \code{x}; must be the same length as \code{x}
+#'   to be rescaled for each element of \code{x}; must be of length one (if the name/index of the predicted
+#'   density column is the same for all elements of x) or the same length as \code{x}
 #' @param y rescaling method; must be either "abundance" or "sumto1".
 #'   See 'Details' section for descriptions of the rescaling methods
 #' @param y.abund numeric value; ignored if \code{y} is not \code{"abundance"}
@@ -31,7 +32,7 @@
 #'   preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
 #' )
 #' ensemble_rescale(x, c("Density", "Density.overlaid"), "abundance", 50)
-#' ensemble_rescale(x, c(1, 1), "sumto1")
+#' ensemble_rescale(x, 1, "sumto1")
 #'
 #' @export
 ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
@@ -41,9 +42,14 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
     stop("All elements of x must have the same number of rows, ",
          "as should be the case if they are overlaid")
   }
-  if (length(x.pred.idx) != length(x)) {
-    stop("x and x.pred.idx must have the same number of elements")
+
+  if (length(x.pred.idx) == 1) {
+    x.pred.idx <- rep(x.pred.idx, length(x))
+  } else if (length(x.pred.idx) != length(x)) {
+    stop("x.pred.idx must either have one element or ",
+         "the same number of elements as x")
   }
+
   # if (!(y %in% c("abundance", "normalization", "standardization", "sumto1"))) {
   if (!(y %in% c("abundance", "sumto1"))) {
       stop("y must be one of: 'abundance' or 'sumto1'")
@@ -116,7 +122,8 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
 #'
 #' @param x list of objects of class \code{sf}, all of which must have the same geometry
 #' @param x.pred.idx vector of names or column indices giving the predictions column for each element of \code{x};
-#'   must be the same length as \code{x}
+#'   must be of length one (if the name/index of the prediction column is the same for all elements of x) or
+#'   the same length as \code{x}
 #' @param y ensembling method; one of: "unweighted", "weighted"
 #' @param y.weights either a numeric vector the same length as \code{x} or
 #'   a data frame with \code{ncol(y.weights) == length(x)} and the same number of rows as each element of \code{x};
@@ -144,7 +151,7 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
 #'   preds.1, preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
 #' )
 #' ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "unweighted")
-#' ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "weighted", c(0.5, 1, 0.8))
+#' ensemble_create(x, 1, "weighted", c(0.5, 1, 0.8))
 #'
 #' weights.df <- data.frame(runif(325), runif(325), c(rep(NA, 100), runif(225)))
 #' ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "weighted", weights.df)
@@ -153,12 +160,17 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
 ensemble_create <- function(x, x.pred.idx, y, y.weights = NULL) {
   #--------------------------------------------------------
   stopifnot(all(sapply(x, inherits, "sf")))
-  if (length(x.pred.idx) != length(x)) {
-    stop("x and x.pred.idx must have the same number of elements")
+  if (length(x.pred.idx) == 1) {
+    x.pred.idx <- rep(x.pred.idx, length(x))
+  } else if (length(x.pred.idx) != length(x)) {
+    stop("x.pred.idx must either have one element or ",
+         "the same number of elements as x")
   }
+
   if (!(y %in% c("unweighted", "weighted"))) {
     stop("y must be one of: 'unweighted' or 'weighted'")
   }
+
   x1.geom <- st_geometry(x[[1]])
   if (!all(sapply(x[-1], function(i) identical(x1.geom, st_geometry(i))))) {
     stop("All elements of x must have the same geometry")

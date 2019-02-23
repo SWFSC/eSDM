@@ -10,7 +10,8 @@ ensemble_create(x, x.pred.idx, y, y.weights = NULL)
 \item{x}{list of objects of class \code{sf}, all of which must have the same geometry}
 
 \item{x.pred.idx}{vector of names or column indices giving the predictions column for each element of \code{x};
-must be the same length as \code{x}}
+must be of length one (if the name/index of the prediction column is the same for all elements of x) or
+the same length as \code{x}}
 
 \item{y}{ensembling method; one of: "unweighted", "weighted"}
 
@@ -40,7 +41,7 @@ x <- list(
   preds.1, preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
 )
 ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "unweighted")
-ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "weighted", c(0.5, 1, 0.8))
+ensemble_create(x, 1, "weighted", c(0.5, 1, 0.8))
 
 weights.df <- data.frame(runif(325), runif(325), c(rep(NA, 100), runif(225)))
 ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "weighted", weights.df)

@@ -11,7 +11,8 @@ ensemble_rescale(x, x.pred.idx, y, y.abund = NULL)
 all objects must have the same number of rows}
 
 \item{x.pred.idx}{character or numeric vector of names or column indices of predicted density column
-to be rescaled for each element of \code{x}; must be the same length as \code{x}}
+to be rescaled for each element of \code{x}; must be of length one (if the name/index of the predicted
+density column is the same for all elements of x) or the same length as \code{x}}
 
 \item{y}{rescaling method; must be either "abundance" or "sumto1".
 See 'Details' section for descriptions of the rescaling methods}
@@ -39,6 +40,6 @@ x <- list(
   preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
 )
 ensemble_rescale(x, c("Density", "Density.overlaid"), "abundance", 50)
-ensemble_rescale(x, c(1, 1), "sumto1")
+ensemble_rescale(x, 1, "sumto1")
 
 }
