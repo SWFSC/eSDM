@@ -151,7 +151,7 @@ output$create_ens_weight_manual_uiOut_text <- renderUI({
     models.num <- length(input$create_ens_datatable_rows_selected)
   }
 
-  text.val <- paste(rep("1.0", models.num), collapse = ", ")
+  text.val <- paste(rep(paste0("1/", models.num), models.num), collapse = ", ")
   textInput("create_ens_weight_manual", tags$h5("Ensemble weights"),
             value = text.val, width = "40%")
 })
@@ -159,7 +159,8 @@ output$create_ens_weight_manual_uiOut_text <- renderUI({
 ### Warning for if any weights are > 1
 output$create_ens_weight_manual_warning_uiOut_text <- renderUI({
   models.weights <- suppressWarnings(
-    as.numeric(unlist(strsplit(req(input$create_ens_weight_manual), ",")))
+    esdm_parse_num(req(input$create_ens_weight_manual))
+    # as.numeric(unlist(strsplit(req(input$create_ens_weight_manual), ",")))
   )
   models.num <- length(vals$overlaid.models)
   if (input$create_ens_table_subset) {
@@ -169,9 +170,8 @@ output$create_ens_weight_manual_warning_uiOut_text <- renderUI({
   # Req() weights input
   req(length(models.weights) == models.num, !anyNA(models.weights))
 
-  if (any(models.weights > 1)) {
-    paste("Warning: One or more of the entered weights is greater than 1;",
-          "is this intentional?")
+  if (round(sum(models.weights), 3) != 1) {
+    paste("Warning: The entered model weights do not sum to 1")
   } else {
     NULL
   }

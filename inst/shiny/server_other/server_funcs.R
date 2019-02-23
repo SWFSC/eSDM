@@ -422,4 +422,13 @@ esdm_simple_cap <- function(x, all = FALSE) {
   }
 }
 
+### Parse string wiht numbers in it, e.g. "3, 1/3, 4.5"
+esdm_parse_num <- function(x) {
+  temp <- try(unname(
+    vapply(strsplit(x, ",")[[1]], function(i) eval(parse(text = i)), 0.1)
+  ), silent = TRUE)
+
+  if (isTruthy(temp)) temp else NA
+}
+
 ###############################################################################

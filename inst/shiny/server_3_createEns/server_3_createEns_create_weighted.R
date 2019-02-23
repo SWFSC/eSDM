@@ -8,7 +8,8 @@
 ### Process text inputs for weights
 create_ens_weights_num <- reactive({
   models.weights <- suppressWarnings(
-    as.numeric(unlist(strsplit(input$create_ens_weight_manual, ",")))
+    esdm_parse_num(req(input$create_ens_weight_manual))
+    # as.numeric(unlist(strsplit(req(input$create_ens_weight_manual), ",")))
   )
 
   validate(
@@ -26,12 +27,17 @@ create_ens_weights_num <- reactive({
   # Validate weights input
   validate(
     need(length(models.weights) == models.num,
-         paste("Error: The number of provided weights does not",
-               "match the number of selected overlaid predictions"))
+         paste("Error: The number of entered weights does not",
+               "match the number of selected overlaid predictions")) %then%
+      need(all(model.weights > 0),
+           "Error: All entered weights must be greater than zero") %then%
+      need(round(sum(models.weights), 3) == 1,
+           "Error: The entered weights do not sum to 1")
   )
 
   models.weights
 })
+
 
 ### Create weighted ensemble from manually entered weights
 create_ens_weighted_manual <- reactive({
@@ -76,8 +82,8 @@ create_ens_weights_metric_table <- reactive({
   weights.table <- eval.metrics[idx.row, c(1, idx.col)]
 
   # Prep for display
-  weights.table$R.weights <- weights.table[, 2] / max(weights.table[, 2])
-  names(weights.table)[3] <- "Relative weights"
+  weights.table$R.weights <- weights.table[, 2] / sum(weights.table[, 2])
+  names(weights.table)[3] <- "Weights"
   row.names(weights.table) <- 1:nrow(weights.table)
 
   weights.table
@@ -94,7 +100,7 @@ create_ens_weighted_metric <- reactive({
          paste("Error: You must calculate at least one metric for all",
                "selected overlaid predictions"))
   )
-  data.weights <- create_ens_weights_metric_table()[, 2]
+  data.weights <- create_ens_weights_metric_table()[, 3]
 
   # Check that length of weights == length of overlaid models to ensemble
   validate(
