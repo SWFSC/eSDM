@@ -5,14 +5,20 @@
 
 read.shp.shiny <- function(file.in.list) {
   infiles <- file.in.list$datapath
-  dir <- unique(dirname(infiles))
-  outfiles <- file.path(dir, file.in.list$name)
-  purrr::walk2(infiles, outfiles, ~file.rename(.x, .y))
 
-  gis.file <- try(
-    st_read(dir, strsplit(file.in.list$name[1], "\\.")[[1]][1], quiet = TRUE),
-    silent = TRUE
-  )
+  # Check that .csv file was not uploaded
+  if (length(infiles) == 1 & grepl(".csv", infiles[1])) {
+    gis.file <- NA
+  } else {
+    dir <- unique(dirname(infiles))
+    outfiles <- file.path(dir, file.in.list$name)
+    purrr::walk2(infiles, outfiles, ~file.rename(.x, .y))
+
+    gis.file <- try(
+      st_read(dir, strsplit(file.in.list$name[1], "\\.")[[1]][1], quiet = TRUE),
+      silent = TRUE
+    )
+  }
 
   if (inherits(gis.file, "sf")) {
     gis.file
