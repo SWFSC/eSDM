@@ -39,7 +39,7 @@
 #'   lon = c(5, 10, 15, 20, 5, 10, 15, 20),
 #'   lat = c(5, 5, 5, 5, 10, 10, 10, 10)
 #' )
-#' pts_to_poly_centroids(x, 2.5, crs = 4326)
+#' pts2poly_centroids(x, 2.5, crs = 4326)
 #'
 #' # Create an sf object from a data frame of more than two columns
 #' x <- data.frame(
@@ -48,10 +48,10 @@
 #'   sdm.pred = runif(8),
 #'   sdm.pred2 = runif(8)
 #' )
-#' pts_to_poly_centroids(x, 2.5, crs = 4326, agr = "constant")
+#' pts2poly_centroids(x, 2.5, crs = 4326, agr = "constant")
 #'
 #' @export
-pts_to_poly_centroids <- function(x, y, ...) {
+pts2poly_centroids <- function(x, y, ...) {
   stopifnot(
     inherits(x, "data.frame"),
     ncol(x) >= 2,

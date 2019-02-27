@@ -201,7 +201,7 @@ create_sf_csv_sfc <- reactive({
 
     # Make sf object
     sfc.poly <- try(
-      eSDM::pts_to_poly_centroids(csv.data[, c("Lon", "Lat")], cell.lw / 2, crs = crs.ll),
+      eSDM::pts2poly_centroids(csv.data[, c("Lon", "Lat")], cell.lw / 2, crs = crs.ll),
       silent = TRUE
     )
     validate(

@@ -92,7 +92,7 @@ overlay_land_csv <- reactive({
     if (min(csv.df[, 1], na.rm = TRUE) > 180) {
       csv.df[, 1] <- csv.df[, 1] - 360
     }
-    land.sfc <- pts_to_poly_vertices_shiny(csv.df[, 1:2], crs.ll, TRUE)
+    land.sfc <- pts2poly_vertices_shiny(csv.df[, 1:2], crs.ll, TRUE)
     #^ Calls check_dateline() and check_valid()
     incProgress(0.3)
   })

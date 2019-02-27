@@ -358,7 +358,7 @@ create_ens_reg_csv_process <- reactive({
       csv.poly.data[, 1] <- csv.poly.data[, 1] - 360
     }
 
-    csv.poly.sfc <- pts_to_poly_vertices_shiny(csv.poly.data[, 1:2], crs.ll, TRUE)
+    csv.poly.sfc <- pts2poly_vertices_shiny(csv.poly.data[, 1:2], crs.ll, TRUE)
     # ^ Performs check_dateline()
     incProgress(0.3)
 

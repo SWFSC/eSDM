@@ -33,17 +33,17 @@
 #'   lon = c(40, 40, 50, 50, 40),
 #'   lat = c(0, 10, 10, 0, 0)
 #' )
-#' pts_to_poly_vertices(x, crs = 4326)
+#' pts2poly_vertices(x, crs = 4326)
 #'
 #' # Create an sf object
 #' x <- data.frame(
 #'   lon = c(40, 40, 50, 50, 40, NA, 20, 20, 30, 30, 20),
 #'   lat = c(0, 10, 10, 0, 0, NA, 0, 10, 10, 0, 0)
 #' )
-#' sf::st_sf(Pred = 1:2, geometry = pts_to_poly_vertices(x, crs = 4326))
+#' sf::st_sf(Pred = 1:2, geometry = pts2poly_vertices(x, crs = 4326))
 #'
 #' @export
-pts_to_poly_vertices <- function(x, ...) {
+pts2poly_vertices <- function(x, ...) {
   stopifnot(
     inherits(x, "data.frame"),
     ncol(x) >= 2,

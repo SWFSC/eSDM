@@ -26,8 +26,8 @@ read.shp.shiny <- function(file.in.list) {
 ###############################################################################
 # Create sfc object from data frame (from csv) with only long and lat,
 #   respectively, as columns. crs set as crs.prov
-pts_to_poly_vertices_shiny <- function(x, crs.prov, progress.detail) {
-  obj.sfc <- try(eSDM::pts_to_poly_vertices(x, crs = crs.prov), silent = TRUE)
+pts2poly_vertices_shiny <- function(x, crs.prov, progress.detail) {
+  obj.sfc <- try(eSDM::pts2poly_vertices(x, crs = crs.prov), silent = TRUE)
 
   validate(
     need(inherits(obj.sfc, "sfc"),
