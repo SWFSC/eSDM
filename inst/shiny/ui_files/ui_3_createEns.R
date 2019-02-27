@@ -101,24 +101,24 @@ ui.createEns <- function() {
                       # )
                     )
                   ),
-                  ################################################### Weight polygon preview
+                  ################################################### Exclusion polygon preview
                   conditionalPanel(
                     condition = "input.create_ens_reg",
                     box(
-                      title = "Preview of polygon(s) with weights", width = 12, status = "primary", solidHeader = TRUE,
+                      title = "Preview exclusion polygon(s)", width = 12, status = "primary", solidHeader = TRUE,
                       collapsible = TRUE,
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag == false",
-                        helpText("No weight polygons have been assigned")
+                        helpText("No exclusion polygons have been assigned")
                       ),
                       conditionalPanel(
                         condition = "output.create_ens_weighted_poly_flag",
-                        tags$h5("Select overlaid predictions to preview with their weight polygon(s)"),
+                        tags$h5("Select overlaid predictions to preview with their exclusion polygon(s)"),
                         fluidRow(
                           column(6, uiOutput("create_ens_reg_preview_model_uiOut_select")),
                           column(6, uiOutput("create_ens_reg_preview_execute_uiOut_button"))
                         ),
-                        helpText("The overlaid predictions will be black and the weight polygon(s) will have a red border"),
+                        helpText("The overlaid predictions will be black and the exclusion polygon(s) will have a red border"),
                         shinycssloaders::withSpinner(plotOutput("create_ens_reg_preview_plot"), type = 1)
                       )
                     )
@@ -128,26 +128,26 @@ ui.createEns <- function() {
               column(
                 width = 7,
                 fluidRow(
-                  ####################################################### Regional weighting by weight polygon
+                  ####################################################### Regional exclusion
                   box(
                     width = 12,
-                    tags$strong("2) Ensemble options: regional weighting"),
-                    checkboxInput("create_ens_reg", "Regionally weight overlaid predictions before creating ensemble", value = FALSE),
+                    tags$strong("2) Ensemble options: regional exclusion"),
+                    checkboxInput("create_ens_reg", "Exclude specific regions of overlaid predictions when creating ensemble", value = FALSE),
                     conditionalPanel(
                       condition = "input.create_ens_reg",
                       box(
                         width = 4,
-                        helpText(tags$strong("Regional weighting:"),
-                                 "Weight specified overlaid predictions in desired region(s) before creating the ensemble"),
-                        helpText(tags$strong("Weight polygon(s)"),
-                                 "Import and assign weight polygon(s) to overlaid predictions.",
-                                 "Area(s) of the specified predictions that intersect with the imported weight polygon will be weighted.",
-                                 "You can only assign one weight per weight polygon, but you may import and assign",
-                                 "multiple polygons to apply unique weights to different regions.",
-                                 "However, weight polygons must not overlap.", tags$br(),
-                                 "All predictions not assigned a weight polygon will not be weighted."),
+                        # helpText(tags$strong("Regional exclusion:"),
+                        #          "Exclude specific regions of overlaid predictions when creating ensemble"),
+                        helpText(tags$strong("Exclusion polygon(s)"),
+                                 "Import and assign exclusion polygon(s) to overlaid predictions.",
+                                 "Area(s) of the specified predictions that intersect with the imported exclusion polygon will",
+                                 "not be included in the ensemble",
+                                 "You may import and assign multiple polygons to exclude multiple regions for a single set of predictions.",
+                                 "However, exclusion polygons must not overlap.", tags$br(),
+                                 "All predictions not assigned an exclusion polygon will be included in the ensemble."),
                         uiOutput("create_ens_reg_model_uiOut_selectize"),
-                        selectInput("create_ens_reg_type", tags$h5("Weight polygon file type"),
+                        selectInput("create_ens_reg_type", tags$h5("Exclusion polygon file type"),
                                     choices = file.type.list1, selected = 1)
                       ),
                       box(
@@ -158,53 +158,14 @@ ui.createEns <- function() {
                           ui.instructions.upload.csv(),
                           ui.instructions.poly.csv.single(),
                           ui.instructions.ens.weightpolyNA(),
-                          fluidRow(
-                            column(
-                              width = 6, fileInput("create_ens_reg_csv_file", label.csv.upload, accept = ".csv")),
-                            column(
-                              width = 5, offset = 1,
-                              checkboxInput("create_ens_reg_csv_weight_na", "Use 'NA' as weight", value = FALSE),
-                              conditionalPanel(
-                                condition = "input.create_ens_reg_csv_weight_na == false",
-                                numericInput("create_ens_reg_csv_weight", tags$h5("Weight"), min = 0, value = 1, step = 0.1)
-                              )
-                            )
-                          )
+                          fileInput("create_ens_reg_csv_file", label.csv.upload, accept = ".csv")
                         ),
-                        # ############## File type: raster
-                        # conditionalPanel(
-                        #   condition = "input.create_ens_reg_type == 2",
-                        #   ui.instructions.upload.raster(),
-                        #   ui.instructions.ens.weightpolyNA(),
-                        #   fluidRow(
-                        #     column(6, fileInput("create_ens_reg_raster_file", label.raster.upload, accept = ".tif")),
-                        #     column(
-                        #       width = 5, offset = 1,
-                        #       checkboxInput("create_ens_reg_raster_weight_na", "Use 'NA' as weight", value = FALSE),
-                        #       conditionalPanel(
-                        #         condition = "input.create_ens_reg_raster_weight_na == false",
-                        #         numericInput("create_ens_reg_raster_weight", tags$h5("Weight"), value = 1, min = 0, step = 0.1)
-                        #       )
-                        #     )
-                        #   ),
-                        #   conditionalPanel("output.create_ens_reg_raster_flag == false", ui.error.upload.raster)
-                        # ),
                         ############## File type: shp
                         conditionalPanel(
                           condition = "input.create_ens_reg_type == 2",
                           ui.instructions.upload.shp(),
                           ui.instructions.ens.weightpolyNA(),
-                          fluidRow(
-                            column(6, fileInput("create_ens_reg_shp_files", label.shp.upload, multiple = TRUE)),
-                            column(
-                              width = 5, offset = 1,
-                              checkboxInput("create_ens_reg_shp_weight_na", "Use 'NA' as weight", value = FALSE),
-                              conditionalPanel(
-                                condition = "input.create_ens_reg_shp_weight_na == false",
-                                numericInput("create_ens_reg_shp_weight", tags$h5("Weight"), value = 1, min = 0, step = 0.1)
-                              )
-                            )
-                          ),
+                          fileInput("create_ens_reg_shp_files", label.shp.upload, multiple = TRUE),
                           conditionalPanel("output.create_ens_reg_shp_flag == false", ui.error.upload.shp)
                         ),
                         ############## File type: gdb
@@ -216,34 +177,25 @@ ui.createEns <- function() {
                             column(
                               width = 6,
                               textInput("create_ens_reg_gdb_path", label.gdb.path, value = ".../folder.gdb"),
-                              textInput("create_ens_reg_gdb_name", label.gdb.name, value = ""),
                               actionButton("create_ens_reg_gdb_load", label.gdb.upload)
                             ),
-                            column(
-                              width = 5, offset = 1,
-                              checkboxInput("create_ens_reg_gdb_weight_na", "Use 'NA' as weight", value = FALSE),
-                              conditionalPanel(
-                                condition = "input.create_ens_reg_gdb_weight_na == false",
-                                numericInput("create_ens_reg_gdb_weight", tags$h5("Weight"), value = 1, min = 0, step = 0.1)
-                              )
-                            )
+                            column(6, textInput("create_ens_reg_gdb_name", label.gdb.name, value = ""))
                           ),
                           conditionalPanel("output.create_ens_reg_gdb_flag == false", ui.error.upload.gdb)
                         ),
                         ############## General
                         sliderInput("create_ens_reg_coverage",
-                                    tags$h5("Percentage of prediction polygon that must intersect with the weight polygon(s)",
-                                            "for the prediction polygon to be weighted.",
-                                            "If '0' is selected then the prediction polygon will be weighted",
-                                            "if there is any overlap."),
+                                    tags$h5("Overlap percentage: Percentage of prediction polygon that must intersect with",
+                                            "the exclusion polygon(s) for the prediction polygon to be excluded.",
+                                            "If '0' is selected then the prediction polygon will be excluded if there is any overlap."),
                                     min = 0, max = 100, value = 100),
                         tags$br(),
-                        actionButton("create_ens_reg_add_execute", "Assign weight polygon to selected predictions"),
+                        actionButton("create_ens_reg_add_execute", "Assign exclusion polygon to selected predictions"),
                         tags$span(textOutput("create_ens_reg_add_text"), style = "color: blue")
                       ),
                       box(
                         width = 12,
-                        helpText(tags$strong("Assigned weight polygons")),
+                        helpText(tags$strong("Assigned exculsion polygons")),
                         conditionalPanel(
                           condition = "output.create_ens_weighted_poly_flag == false",
                           helpText("No weight polygons have been assigned")
@@ -255,7 +207,7 @@ ui.createEns <- function() {
                             column(
                               width = 6,
                               uiOutput("create_ens_reg_remove_choices_uiOut_select"),
-                              actionButton("create_ens_reg_remove_execute", "Remove selected weight polygons"),
+                              actionButton("create_ens_reg_remove_execute", "Remove selected exclusion polygons"),
                               tags$span(textOutput("create_ens_reg_remove_text"), style = "color: blue")
                             )
                           )
@@ -384,7 +336,7 @@ ui.createEns <- function() {
               radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"),
                            choices = list("Plot interactive preview" = 1, "Plot static preview" = 2,
                                           "Download static preview" = 3, "Remove from GUI" = 4,
-                                          "Calculate predicted abundance" = 5), #, "Plot among-model variance" = 6),
+                                          "Calculate predicted abundance" = 5, "Plot among-model variance" = 6),
                            selected = 1)
             ),
             column(
@@ -456,21 +408,13 @@ ui.createEns <- function() {
                         # tags$style(type = "text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
                         # #tr:first-child for first row
                       )
-                    ) #,
-                    # conditionalPanel(
-                    #   condition = "input.ens_select_action == 6",
-                    #   helpText("TODO"),
-                    #   fluidRow(
-                    #     column(4, checkboxInput("ens_var_withens", "Plot with ensemble - TODO", value = FALSE)),
-                    #     column(4, radioButtons("ens_var_perc", tags$h5("Plot units - TODO"),
-                    #                            choices = list("Percentages" = 1, "Values" = 2),
-                    #                            selected = 1)),
-                    #     column(4, radioButtons("ens_var", tags$h5("Units - TODO"),
-                    #                            choices = list("Variance" = 1, "SE" = 2, "95% CI" = 3),
-                    #                            selected = 1))
-                    #   ),
-                    #   uiOutput("ens_var_execute_uiOut_button")
-                    # )
+                    ),
+                    conditionalPanel(
+                      condition = "input.ens_select_action == 6",
+                      helpText("Plot the ensemble predictions and standard deviation of the rescaled overlaid predictions side-by-side.",
+                               "Both plot will have the same scale"),
+                      uiOutput("ens_var_execute_uiOut_button")
+                    )
                   )
                 )
               )

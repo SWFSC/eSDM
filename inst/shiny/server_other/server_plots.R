@@ -173,7 +173,7 @@ observeEvent(input$overlay_preview_overlaid_execute, {
 # Create Ensemble Predictions tab
 
 #------------------------------------------------------------------------------
-### Preview overlaid predictions with assigned weight polygons
+### Preview overlaid predictions with assigned exclusion polygons
 observeEvent(input$create_ens_reg_preview_execute, {
   req(vals$ens.over.wpoly.filename)
 

@@ -45,10 +45,10 @@ output$create_ens_create_action_uiOut_button <- renderUI({
 
 
 ###############################################################################
-# Regional weighting
+# Regional exclusion
 
 #----------------------------------------------------------
-### Widget to select overlaid predictions to which to apply loaded weight polys
+### Widget to select overlaid predictions to which to apply uploaded polys
 output$create_ens_reg_model_uiOut_selectize <- renderUI({
   models.which <- seq_along(vals$overlaid.models)
 
@@ -59,13 +59,13 @@ output$create_ens_reg_model_uiOut_selectize <- renderUI({
 
   input.val <- as.list(paste("Overlaid", models.which))
   selectizeInput("create_ens_reg_model",
-                 tags$h5("Overlaid predictions to which to assign weight polygon(s)"),
+                 tags$h5("Overlaid predictions to which to assign exclusion polygon(s)"),
                  choices = input.val, selected = NULL, multiple = TRUE)
 })
 
 
 #----------------------------------------------------------
-### Select assigned weight polygons to delete
+### Select assigned exclusion polygons to remove
 output$create_ens_reg_remove_choices_uiOut_select <- renderUI({
   req(!all(sapply(vals$ens.over.wpoly.filename, is.null)))
 
@@ -74,13 +74,8 @@ output$create_ens_reg_remove_choices_uiOut_select <- renderUI({
   choices.list.names <- apply(poly.table, 1, function(i) {
     x <- unlist(strsplit(i[2], ", "))
     y <- unlist(strsplit(i[3], ", "))
-    z <- unlist(strsplit(i[4], ", "))
 
-    if (length(x) != 0) {
-      paste(i[1], x, y, z, sep = " || ")
-    } else {
-      NULL
-    }
+    if (length(x) != 0) paste(i[1], x, y, sep = " || ") else NULL
   })
 
   model.which <- which(!sapply(choices.list.names, is.null))
@@ -93,7 +88,7 @@ output$create_ens_reg_remove_choices_uiOut_select <- renderUI({
   names(choices.list) <- unlist(choices.list.names)
 
   selectizeInput("create_ens_reg_remove_choices",
-                 tags$h5("Select assigned weight polygon(s) to remove"),
+                 tags$h5("Select assigned exclusion polygon(s) to remove"),
                  choices = choices.list, selected = NULL, multiple = TRUE)
 })
 
@@ -119,7 +114,7 @@ output$create_ens_reg_preview_model_uiOut_select <- renderUI({
 
 
 #----------------------------------------------------------
-### Button to plot overlaid predictions and their weight polys
+### Button to plot overlaid predictions and their exclusion polys
 output$create_ens_reg_preview_execute_uiOut_button <- renderUI({
   req(
     vals$ens.over.wpoly.filename, input$create_ens_reg_preview_model
@@ -129,7 +124,7 @@ output$create_ens_reg_preview_execute_uiOut_button <- renderUI({
   validate(
     need(isTruthy(vals$ens.over.wpoly.sf[[overlaid.which]]),
          paste("The selected overlaid predictions do not have any",
-               "assigned weight polygons to preview")),
+               "assigned exclusion polygons to preview")),
     errorClass = "validation2"
   )
 

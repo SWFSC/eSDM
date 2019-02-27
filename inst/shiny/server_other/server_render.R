@@ -223,11 +223,12 @@ output$create_ens_reg_table_out <- renderTable({
   create_ens_reg_table()
 }, rownames = FALSE)
 
-### Preview plot of weight polygons
+### Preview plot of exclusion polygons
 output$create_ens_reg_preview_plot <- renderPlot({
   x <- req(vals$ens.over.wpoly.plot)
 
-  plot(x[[1]], axes = TRUE, col = "black", border = NA)
+  plot(x[[1]], axes = TRUE, col = "black", border = NA,
+       main = paste("Overlaid", x[[2]]))
   for(sf.toplot in vals$ens.over.wpoly.sf[[x[[2]]]]) {
     plot(st_geometry(sf.toplot), add = TRUE, col = NA, border = "red")
   }

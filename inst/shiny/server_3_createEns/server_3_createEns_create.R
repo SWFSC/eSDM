@@ -68,14 +68,14 @@ create_ens_unweighted <- reactive({
 ###############################################################################
 # 'Level 2' functions
 
-### Return data to be ensembled, icl. applying regional weights if necessary
+### Return data to be ensembled, icl. applying regional excl if necessary
 create_ens_data_reg <- reactive({
   if (input$create_ens_reg) {
     validate(
       need(sum(!sapply(vals$ens.over.wpoly.filename, is.null)) > 0,
-           paste("Error: Please either load and assign at least one",
-                 "weight polygon or uncheck the",
-                 "'Regionally weight overlaid predictions...' checkbox"))
+           paste("Error: Please either upload and assign at least one",
+                 "exclusion polygon or uncheck the",
+                 "'Exclude specific regions...' checkbox"))
     )
 
     create_ens_data_rescale() * create_ens_reg_weights()
@@ -177,7 +177,7 @@ create_ens_info_overlaid_idx <- reactive({
 create_ens_info_weighting <- reactive({
   if (input$create_ens_reg) {
     paste(
-      "Regionally weighted +",
+      "Regional exclusion +",
       ifelse(input$create_ens_type == 1, "unweighted", "weighted"
       )
     )

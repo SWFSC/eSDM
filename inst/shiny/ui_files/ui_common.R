@@ -239,9 +239,9 @@ ui.notice.no.pred.general <- function(box.width = 4) {
 ###############################################################################
 ui.instructions.ens.weightpolyNA <- function() {
   helpText(
-    "If the 'Use 'NA' as weight' box is checked, then the predictions",
-    "that intersect with the weight polygon will be set to NA",
-    "and thus will not be included in the ensemble"
+    "The predictions that intersect with the uploaded polygon,",
+    "with at least the specified overlap percentage,",
+    "will be given values of NA and thus excluded from the ensemble."
   )
 }
 

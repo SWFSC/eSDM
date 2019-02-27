@@ -1,8 +1,8 @@
-### Code for regionally weighting overlaid predictions pre-ensemble
+### Code for regionally excludingg overlaid predictions pre-ensemble
 
 
 ###############################################################################
-### Flag for if any weight polygons are loaded
+### Flag for if any exclusion polygons are loaded
 output$create_ens_weighted_poly_flag <- reactive({
   any(sapply(vals$ens.over.wpoly.filename, isTruthy))
 })
@@ -12,14 +12,14 @@ outputOptions(output, "create_ens_weighted_poly_flag", suspendWhenHidden = FALSE
 ###############################################################################
 ### create_ens_data_reg() is in '...createEns_create.R'
 
-### Get weights based on assigned polygons
+### Get weights based on assigned exclusion polygons
 create_ens_reg_weights <- reactive({
   idx <- create_ens_overlaid_idx()
 
   x <- as.data.frame(
     mapply(function(pred.sf, wpoly.sf.list, wpoly.coverage.vec) {
       if (is.null(wpoly.sf.list)) {
-        # If overlaid preds has no weight polys, predictions have weight of 1
+        # If overlaid preds has no exclusion polys, predictions have weight of 1
         rep(1, nrow(pred.sf))
 
       } else {
@@ -73,12 +73,12 @@ poly_weight <- function(poly.pred, poly.w, coverage) {
 
 
 ###############################################################################
-### Remove assigned weight polygons
+### Remove assigned exclusion polygons
 create_ens_reg_remove <- eventReactive(
   input$create_ens_reg_remove_execute, {
     validate(
       need(!is.null(input$create_ens_reg_remove_choices),
-           "Error: Please select at least one weight polygon to remove")
+           "Error: Please select at least one exclusion polygon to remove")
     )
 
     # Get indices of wpoly objects to remove
@@ -124,13 +124,13 @@ create_ens_reg_remove <- eventReactive(
 
     vals$ens.over.wpoly.plot <- NULL
 
-    "Weight polygon(s) removed"
+    "Exclusion polygon(s) removed"
   }
 )
 
 
 ###############################################################################
-### Table summarizing overlaid predicitons and their assigned weight polygons
+### Table summarizing overlaid preds and their assigned exclusion polygons
 create_ens_reg_table <- reactive({
   req(vals$ens.over.wpoly.filename)
 
@@ -146,27 +146,21 @@ create_ens_reg_table <- reactive({
 
   if (all(sapply(vals$ens.over.wpoly.filename[models.which], is.null))) {
     overlaid.filenames <- ""
-    overlaid.weights   <- ""
     overlaid.coverage  <- ""
 
   } else {
-    overlaid.filenames <- sapply(vals$ens.over.wpoly.filename,
-                                 paste, collapse = ", ")[models.which]
-
-    overlaid.weights <- sapply(vals$ens.over.wpoly.sf, function(i) {
-      paste(lapply(i, function(j) {
-        ifelse(length(unique(j$Weight)) > 1, "Multiple", j$Weight[1])
-      }), collapse = ", ")
-    })[models.which]
+    overlaid.filenames <- sapply(
+      vals$ens.over.wpoly.filename, paste, collapse = ", "
+    )[models.which]
 
     overlaid.coverage <- sapply(
       vals$ens.over.wpoly.coverage, paste, collapse = ", "
     )[models.which]
   }
 
-  data.frame(overlaid.names, overlaid.filenames, overlaid.weights,
-             overlaid.coverage, stringsAsFactors = FALSE) %>%
-    purrr::set_names(c("Predictions", "File(s)", "Weight(s)", "Coverage(s)"))
+  data.frame(overlaid.names, overlaid.filenames, overlaid.coverage,
+             stringsAsFactors = FALSE) %>%
+    purrr::set_names(c("Predictions", "File(s)", "Coverage(s)"))
 })
 
 
@@ -179,7 +173,7 @@ create_ens_reg_add <- eventReactive(
     validate(
       need(input$create_ens_reg_model,
            paste("Error: Please select at least one set of overlaid",
-                 "predictions to which to assign the weight polygon"))
+                 "predictions to which to assign the exclusion polygon"))
     )
 
     #------------------------------------------------------
@@ -188,7 +182,6 @@ create_ens_reg_add <- eventReactive(
     overlaid.selected <- sapply(overlaid.list, function(i) as.numeric(i[[2]]))
 
     poly.filetype <- as.numeric(input$create_ens_reg_type)
-    # poly.filetype.txt <- switch(poly.filetype, "CSV", "Raster", "SHP", "GDB")
     poly.filetype.txt <- switch(
       poly.filetype, "Excel .csv", "Shapefile", "Feature class"
     )
@@ -200,28 +193,13 @@ create_ens_reg_add <- eventReactive(
       # .csv filetype
       poly.filename <- create_ens_reg_csv_process()[[2]]
       poly.sfc      <- create_ens_reg_csv_process()[[1]]
-      weight.val <- ifelse(
-        input$create_ens_reg_csv_weight_na,
-        NA, input$create_ens_reg_csv_weight
-      )
-
-    # } else if (poly.filetype == 2) {
-    #   # raster filetype
-    #   poly.filename <- create_ens_reg_raster_read()[[2]]
-    #   poly.sfc      <- create_ens_reg_raster_read()[[1]]
-    #   weight.val <- ifelse(
-    #     input$create_ens_reg_raster_weight_na,
-    #     NA, input$create_ens_reg_raster_weight
-    #   )
+      weight.val    <- NA
 
     } else if (poly.filetype == 2) {
       # .shp filetype
       poly.filename <- create_ens_reg_shp_read()[[2]]
       poly.sfc      <- create_ens_reg_shp_read()[[1]]
-      weight.val <- ifelse(
-        input$create_ens_reg_shp_weight_na,
-        NA, input$create_ens_reg_shp_weight
-      )
+      weight.val    <- NA
 
     } else { #poly.filetype == 3
       # .gdb filetype
@@ -231,18 +209,15 @@ create_ens_reg_add <- eventReactive(
       )
       poly.filename <- create_ens_reg_gdb_read()[[2]]
       poly.sfc      <- create_ens_reg_gdb_read()[[1]]
-      weight.val <- ifelse(
-        input$create_ens_reg_gdb_weight_na,
-        NA, input$create_ens_reg_gdb_weight
-      )
+      weight.val    <- NA
     }
 
     validate(
       need(inherits(poly.sfc, "sfc"),
-           paste("Error: There was an error processing the weight polygon;",
+           paste("Error: There was an error processing the exclusion polygon;",
                  "please make sure the polygon is formatted correctly")) %then%
         need(length(poly.sfc) == 1,
-             paste("Error: A weight polygon can only consist of one polygon;",
+             paste("Error: An exclusion polygon must be a single polygon;",
                    "please ensure that your file only has one polygon"))
     )
 
@@ -257,7 +232,7 @@ create_ens_reg_add <- eventReactive(
 
 
     #------------------------------------------------------
-    ### Ensure that weight polygon overlaps with overlaid model(s)
+    ### Ensure that polygon overlaps with overlaid pred(s)
     sapply(overlaid.selected, function(o.idx) {
       z <- suppressMessages(
         st_intersects(st_union(poly.sf), vals$overlaid.models[[o.idx]])
@@ -265,7 +240,7 @@ create_ens_reg_add <- eventReactive(
       stopifnot(length(z) == 1)
       validate(
         need(length(z[[1]]) > 0,
-             paste("Error: The provided weight polygon does not overlap",
+             paste("Error: The provided exclusion polygon does not overlap",
                    "with Overlaid", o.idx))
       )
     })
@@ -279,8 +254,8 @@ create_ens_reg_add <- eventReactive(
           validate(
             need(nrow(x) == 0,
                  paste("Error: The GUI cannot assign the current",
-                       "weight polygon because it overlaps with",
-                       "weight polygon number",
+                       "exclusion polygon because it overlaps with",
+                       "exclusion polygon number",
                        poly.idx, "of Overlaid", o.idx))
           )
         },
@@ -314,7 +289,7 @@ create_ens_reg_add <- eventReactive(
     #------------------------------------------------------
     ### Output message
     paste(
-      poly.filetype.txt, "weight polygon assigned as weight for:",
+      poly.filetype.txt, "exclusion polygon assigned to:",
       paste(input$create_ens_reg_model, collapse = ", ")
     )
   }
@@ -362,7 +337,7 @@ create_ens_reg_csv_process <- reactive({
     # ^ Performs check_dateline()
     incProgress(0.3)
 
-    # Transform weight polygon as necesary
+    # Transform polygon as necesary
     if (!identical(st_crs(csv.poly.sfc), vals$overlay.crs)) {
       csv.poly.sfc <- st_transform(csv.poly.sfc, vals$overlay.crs)
     }
@@ -371,67 +346,6 @@ create_ens_reg_csv_process <- reactive({
 
   list(csv.poly.sfc, csv.poly.filename)
 })
-
-
-# #----------------------------------------------------------
-# # GIS raster
-#
-# ### Flag for successfully loaded file
-# output$create_ens_reg_raster_flag <- reactive({
-#   isTruthy(create_ens_reg_raster_read())
-# })
-# outputOptions(output, "create_ens_reg_raster_flag",
-#               suspendWhenHidden = FALSE)
-#
-#
-# ### Load and process
-# create_ens_reg_raster_read <- reactive({
-#   file.in <- input$create_ens_reg_raster_file
-#   validate(need(file.in, "Error: please upload a raster file"))
-#
-#   # Ensure file extension is .tif
-#   if (!file.in$type %in% c("image/tiff", "")) return()
-#
-#
-#   withProgress(message = "Loading GIS raster", value = 0.2, {
-#     gis.file.raster <- try(
-#       raster(file.in$datapath, band = 1), silent = TRUE
-#     )
-#     gis.file.success <- isTruthy(gis.file.raster)
-#     incProgress(0.4)
-#
-#     # If specified file could be loaded as a raster, process raster
-#     if (gis.file.success) {
-#       gis.file.raster <- suppressMessages(st_union(
-#         st_as_sfc(as(gis.file.raster, "SpatialPolygons"))
-#       ))
-#       stopifnot(inherits(gis.file.raster, "sfc"))
-#       incProgress(0.1)
-#
-#       # Check that raster has valid crs
-#       check_gis_crs(gis.file.raster)
-#
-#       # Adjust 0 - 360 data to -180 - 180 if needed
-#       gis.file.raster <- check_dateline(gis.file.raster, 60)
-#       incProgress(0.1)
-#
-#       # Transform weight polygon as necesary
-#       if (!identical(st_crs(gis.file.raster), vals$overlay.crs)) {
-#         gis.file.raster <- st_transform(gis.file.raster, vals$overlay.crs)
-#       }
-#
-#       # Check that polygon(s) are valid
-#       gis.file.raster <- check_valid(gis.file.raster, progress.detail = TRUE)
-#       incProgress(0.1)
-#     }
-#   })
-#
-#   if(!gis.file.success) {
-#     NULL
-#   } else {
-#     list(gis.file.raster, file.in$name)
-#   }
-# })
 
 
 #----------------------------------------------------------
@@ -464,7 +378,7 @@ create_ens_reg_shp_read <- reactive({
       gis.file.shp <- check_dateline(gis.file.shp, 60)
       incProgress(0.1)
 
-      # Transform weight polygon as necesary
+      # Transform polygon as necesary
       if (!identical(st_crs(gis.file.shp), vals$overlay.crs)) {
         gis.file.shp <- st_transform(gis.file.shp, vals$overlay.crs)
       }
@@ -514,7 +428,7 @@ create_ens_reg_gdb_read <- eventReactive(
         gis.file.gdb <- check_dateline(gis.file.gdb, 60)
         incProgress(0.1)
 
-        # Transform weight polygon as necesary
+        # Transform polygon as necesary
         if (!identical(st_crs(gis.file.gdb), vals$overlay.crs)) {
           gis.file.gdb <- st_transform(gis.file.gdb, vals$overlay.crs)
         }

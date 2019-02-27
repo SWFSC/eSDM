@@ -6,11 +6,11 @@
 #   Ensemble preds are in last column of i
 #   j is model weights; will be equal for unweighted ensemble
 variance_func_esdm <- function(i, j) {
-  i.o <- head(i, -1)
-  i.e <- tail(i, 1)
+  i.o <- unname(head(i, -1))
+  i.e <- unname(tail(i, 1))
 
   if (sum(!is.na(i.o)) > 1 && !is.na(i.e)) {
-    sum(((unname(i.o) - i.e) ^ 2) * (j ^ 2), na.rm = TRUE)
+    sum(((i.o - i.e) ^ 2) * j, na.rm = TRUE)
 
   } else {
     NA
@@ -23,9 +23,10 @@ variance_func_esdm <- function(i, j) {
 #   observeEvent() -> reactiveVal -> plot pipeline
 ens_var_temp <- eventReactive(input$ens_var_execute, {
   var.sf <- ens_var_sf()
+  # browser()
 
   plot(
-    var.sf[1], axes = TRUE, border = NA,
+    var.sf["sd_val"], axes = TRUE, border = NA,
     nbreaks = 6, breaks = "equal", key.length = 1
   )
 })
@@ -89,8 +90,16 @@ ens_var_sf <- reactive({
     pred.weights <- pred.weights / sum(pred.weights)
   }
 
+  validate(
+    need(round(sum(pred.weights), 3) == 1,
+         paste0("Error in among-model variance calculations;",
+                "please report this as an issue"))
+  )
+
   st_sf(
     var_val = apply(pred.all, 1, variance_func_esdm, j = pred.weights),
-    geometry = vals$overlay.base.sfc, agr = "constant"
-  )
+    geometry = vals$overlay.base.sfc
+  ) %>%
+    mutate(sd_val = sqrt(var_val)) %>%
+    st_set_agr("constant")
 })
