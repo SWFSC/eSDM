@@ -233,4 +233,29 @@ observeEvent(input$ens_preview_execute, {
   )
 })
 
-###############################################################################
+
+#------------------------------------------------------------------------------
+### Generate preview of ensemble predictions + their SD
+observeEvent(input$ens_var_execute, {
+  req(length(vals$ensemble.models) > 0)
+
+  withProgress(message = "Calculating among-model variance", value = 0.7, {
+    model.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
+
+    ens.toplot <- vals$ensemble.models[[model.idx]]
+    var.toplot <- ens_var_sf()
+    incProgress(0.3)
+    Sys.sleep(0.1)
+  })
+
+  plot.titles <- paste("Ensemble", model.idx, c("- Predictions", "- SD"))
+
+  vals$ensemble.plot.var.idx <- model.idx
+  vals$ensemble.plot.var <- list(
+    models.toplot = list(ens.toplot, var.toplot),
+    data.name = c("Pred.ens", "sd_val"), plot.titles = plot.titles,
+    pal = NA, plot.dims = multiplot_inapp(2)
+  )
+})
+
+  ###############################################################################

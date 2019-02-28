@@ -27,6 +27,9 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     vals$ensemble.overlaid.idx <- c(
       vals$ensemble.overlaid.idx, create_ens_info_overlaid_idx()
     )
+    vals$ensemble.overlaid.res <- c(
+      vals$ensemble.overlaid.res, list(create_ens_data_reg())
+    )
     vals$ensemble.method <- c(
       vals$ensemble.method, create_ens_info_weighting()
     )
@@ -68,7 +71,7 @@ create_ens_unweighted <- reactive({
 ###############################################################################
 # 'Level 2' functions
 
-### Return data to be ensembled, icl. applying regional excl if necessary
+### Return data to be ensembled, icl. applying regional exclusion if necessary
 create_ens_data_reg <- reactive({
   if (input$create_ens_reg) {
     validate(

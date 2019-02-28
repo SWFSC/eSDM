@@ -150,13 +150,44 @@ preview_ll_axes <- function(x) {
 }
 
 
+#------------------------------------------------------------------------------
+### Vertical legend for preview plots
+preview_legend <- function(l.col.pal, l.leg.mai, l.leg.labels, l.leg.txt.cex,
+                           l.perc) {
+  l.col.num <- length(l.col.pal)
+  l.col.num.leg <- l.col.num + 1
+  l.col.pal.leg <- c("gray", l.col.pal)
+
+  l.at <- if (l.perc == 2) c(1, (1:l.col.num.leg) + 0.5) else 1:l.col.num.leg
+  # if (l.perc == 2) {
+  #   l.at <- c(1, (1:l.col.num.leg) + 0.5)
+  # } else {
+  #   l.at <- 1:l.col.num.leg
+  # }
+
+  opar <- par(mai = l.leg.mai)
+  on.exit(par(opar), add = TRUE)
+
+  graphics::image(
+    1, 1:l.col.num.leg, t(as.matrix(1:l.col.num.leg)), col = l.col.pal.leg,
+    axes = FALSE, xlab = "", ylab = ""
+  )
+  graphics::box(col = "black")
+  graphics::axis(
+    4, at = l.at, labels = c("NA", l.leg.labels),
+    tick = FALSE, las = 1, cex.axis = l.leg.txt.cex
+  )
+}
+
+
 ###############################################################################
 ###############################################################################
 ### Plot layout of sf objects given number of rows and columns + other plot info
 multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
                              col.pal, leg.labels, plot.ncol, plot.nrow,
                              axis.cex.curr, main.cex.curr, leg.width,
-                             leg.txt.cex, leg.mai) {
+                             leg.txt.cex, leg.mai,
+                             var.breaks = NULL, var.pal = NULL) {
 
   # -------------------------------------------------------
   models.num <- length(models.toplot)
@@ -200,11 +231,14 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
   }
 
   # -------------------------------------------------------
+  # Special behavior if plotting among-model variance preview
+  if (isTruthy(var.pal)) col.pal <- var.pal
+
   # Plot SDM previews
   for (i in 1:models.num) {
     preview_ll(
       models.toplot[[i]], data.names[[i]], plot.titles[[i]], perc.num, col.pal,
-      axis.cex.curr, main.cex.curr
+      axis.cex.curr, main.cex.curr, var.breaks = var.breaks
     )
 
     # Add a legend for each value plot
@@ -216,26 +250,10 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
       col.pal <- temp[[2]]
       rm(temp)
 
-      col.num <- length(col.pal)
-      col.num.leg <- col.num + 1
-      col.pal.leg <- c("gray", col.pal)
-
       d <- max(3, nchar(format(signif(b.model[2], 1), scientific = FALSE)) - 2)
-      b.model.lab <- format(round(b.model, d), justify = "right") #, scientific = FALSE
+      b.model.lab <- format(round(b.model, d), justify = "right"); rm(d)
 
-      opar <- par(mai = leg.mai)
-      on.exit(par(opar), add = TRUE)
-
-      graphics::image(
-        1, 1:col.num.leg, t(as.matrix(1:col.num.leg)), col = col.pal.leg,
-        axes = FALSE, xlab = "", ylab = ""
-      )
-      graphics::box(col = "black")
-      graphics::axis(
-        4, at = c(1, (1:col.num.leg) + 0.5),
-        labels = c("NA", b.model.lab),
-        tick = FALSE, las = 1, cex.axis = leg.txt.cex
-      )
+      preview_legend(col.pal, leg.mai, b.model.lab, leg.txt.cex, 2)
     }
   }
 
@@ -246,22 +264,14 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
       for (j in 1:models.layout.diff) graphics::plot.new()
     }
 
-    col.num <- length(col.pal)
-    col.num.leg <- col.num + 1
-    col.pal.leg <- c("gray", col.pal)
+    if (isTruthy(var.pal)) {
+      d <- max(3, nchar(format(signif(var.breaks[2], 1), scientific = FALSE)) - 2)
+      var.lab <- format(round(var.breaks, d), justify = "right"); rm(d)
+      preview_legend(col.pal, leg.mai, var.lab, leg.txt.cex, 2)
 
-    opar <- par(mai = leg.mai)
-    on.exit(par(opar), add = TRUE)
-
-    graphics::image(
-      0.3, 1:col.num.leg, t(as.matrix(1:col.num.leg)), col = col.pal.leg,
-      axes = FALSE, xlab = "", ylab = ""
-    )
-    graphics::box(col = "black")
-    graphics::axis(
-      4, at = 1:col.num.leg, labels = c("NA", leg.labels),
-      tick = FALSE, las = 1, cex.axis = leg.txt.cex
-    )
+    } else {
+      preview_legend(col.pal, leg.mai, leg.labels, leg.txt.cex, 1)
+    }
   }
 }
 
@@ -270,20 +280,25 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 ###############################################################################
 ### Generate static plot of sf object
 preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
-                       axis.cex, main.cex) {
+                       axis.cex, main.cex, var.breaks = NULL) {
   # Convert to 0-360 longitude range if necessary
   sdm.ll <- check_preview360_split(sdm.ll)
   data.vec <- st_set_geometry(sdm.ll, NULL)[, data.name]
 
   # Plot predictions
   if (perc == 1) {
-    b.model <- breaks_calc(data.vec)
-    validate(
-      need(length(unique(b.model)) >= 11,
-           paste("Error: At least one of the selected predictions does not",
-                 "have enough unique prediction values to plot",
-                 "a preview with a 'percentage' unit type"))
-    )
+    # Special behavior if plotting among-model variance preview
+    if (isTruthy(var.breaks)) {
+      b.model <- var.breaks
+    } else {
+      b.model <- breaks_calc(data.vec)
+      validate(
+        need(length(unique(b.model)) >= 11,
+             paste("Error: At least one of the selected predictions does not",
+                   "have enough unique prediction values to plot",
+                   "a preview with a 'percentage' unit type"))
+      )
+    }
 
     plot(
       sdm.ll[data.name], axes = TRUE, border = NA,

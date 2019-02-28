@@ -22,7 +22,7 @@ val.pretty.update.mess <- reactiveVal(value = NULL)
 
 
 ###############################################################################
-# 'Initialize' all 42 elements of vals
+# 'Initialize' all 45 elements of vals
 
 vals <- reactiveValues(
   # Objects that store imported predictions and related info
@@ -61,10 +61,13 @@ vals <- reactiveValues(
   ensemble.method        = NULL,   # Vector of ensembling methods used
   ensemble.weights       = NULL,   # Vector of strings of weights used (if any)
   ensemble.overlaid.idx  = NULL,   # Strings of indices of overlaid predictions used in ensemble
+  ensemble.overlaid.res  = NULL,   # List of data frame(s) of overlaid preds post-rescaling and regional exclusion for each ensemble
   ensemble.plot.leaf     = NULL,   # Plot info of currently interactively previewed ensemble predictions
   ensemble.plot.leaf.idx = NULL,   # Plot index of currently interactively previewed ensemble predictions
   ensemble.plot          = NULL,   # Plot info of currently static-previewed ensemble predictions
   ensemble.plot.idx      = NULL,   # Plot index of currently static-previewed ensemble predictions
+  ensemble.plot.var      = NULL,   # Plot info of current plot of among-model variance (SD)
+  ensemble.plot.var.idx  = NULL,   # Plot index of ensemble for current plot of among-model variance
 
   # Objects that store data for evaluation metrics section
   eval.data          = NULL,       # Validation data (sf obj) with 'count' and 'sight' columns
@@ -95,6 +98,7 @@ observe({
   vals$models.plot.leaf.idx
   vals$models.plot
   vals$models.plot.idx
+
   vals$overlay.bound
   vals$overlay.land
   vals$overlay.plot
@@ -104,6 +108,7 @@ observe({
   vals$overlaid.models
   vals$overlaid.models.specs
   vals$overlaid.plot
+
   vals$ens.over.wpoly.filename
   vals$ens.over.wpoly.sf
   vals$ens.over.wpoly.coverage
@@ -113,30 +118,36 @@ observe({
   vals$ensemble.method
   vals$ensemble.weights
   vals$ensemble.overlaid.idx
+  vals$ensemble.overlaid.res
   vals$ensemble.plot.leaf
   vals$ensemble.plot.leaf.idx
   vals$ensemble.plot
   vals$ensemble.plot.idx
+  vals$ensemble.plot.var
+  vals$ensemble.plot.var.idx
+
   vals$eval.models.idx
   vals$eval.data
   vals$eval.data.specs
   vals$eval.data.gis.info
   vals$eval.metrics
   vals$eval.metrics.names
+
   vals$pretty.addobj
   vals$pretty.params.toplot
   vals$pretty.toplot.idx
   vals$pretty.plot
 
 
-  if (length(reactiveValuesToList(vals)) != 42) {
+  if (length(reactiveValuesToList(vals)) != 45) {
     showModal(modalDialog(
       title = "Error in eSDM GUI data storage and processing",
 
       tags$h5("There was an error in eSDM GUI data storage and processing.",
-              "Please restart the GUI and report this as an issue at",
+              "Please report this as an issue at",
               tags$a("https://github.com/smwoodman/eSDM/issues",
-                     href = "https://github.com/smwoodman/eSDM/issues")),
+                     href = "https://github.com/smwoodman/eSDM/issues"),
+              "and then restart the GUI."),
 
       footer = tagList(actionButton("close_gui_error", "Close GUI"))
     ))

@@ -24,6 +24,8 @@ output$save_app_envir <- downloadHandler(
       vals.save$ensemble.plot.leaf.idx <- NULL
       vals.save$ensemble.plot <- NULL
       vals.save$ensemble.plot.idx <- NULL
+      vals.save$ensemble.plot.var <- NULL
+      vals.save$ensemble.plot.var.idx <- NULL
       vals.save$pretty.plot <- NULL
       incProgress(0.5)
 
@@ -173,10 +175,13 @@ load_envir <- eventReactive(val.load(), {
     vals$ensemble.weights       <- vals.save[["ensemble.weights"]]
     vals$ensemble.rescaling     <- vals.save[["ensemble.rescaling"]]
     vals$ensemble.overlaid.idx  <- vals.save[["ensemble.overlaid.idx"]]
+    vals$ensemble.overlaid.res  <- vals.save[["ensemble.overlaid.res"]]
     vals$ensemble.plot.leaf     <- vals.save[["ensemble.plot.leaf"]]
     vals$ensemble.plot.leaf.idx <- vals.save[["ensemble.plot.leaf.idx"]]
     vals$ensemble.plot          <- vals.save[["ensemble.plot"]]
     vals$ensemble.plot.idx      <- vals.save[["ensemble.plot.idx"]]
+    vals$ensemble.plot.var      <- vals.save[["ensemble.plot"]]
+    vals$ensemble.plot.var.idx  <- vals.save[["ensemble.plot.idx"]]
 
     vals$eval.data          <- vals.save[["eval.data"]]
     vals$eval.data.specs    <- vals.save[["eval.data.specs"]]

@@ -58,11 +58,13 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
   vals$ensemble.weights <- vals$ensemble.weights[-idx]
   vals$ensemble.rescaling <- vals$ensemble.rescaling[-idx]
   vals$ensemble.overlaid.idx <- vals$ensemble.overlaid.idx[-idx]
+  vals$ensemble.overlaid.res <- vals$ensemble.overlaid.res[-idx]
 
   if(length(vals$ensemble.method) == 0) vals$ensemble.method <- NULL
   if(length(vals$ensemble.weights) == 0) vals$ensemble.weights <- NULL
   if(length(vals$ensemble.rescaling) == 0) vals$ensemble.rescaling <- NULL
   if(length(vals$ensemble.overlaid.idx) == 0) vals$ensemble.overlaid.idx <- NULL
+  if(length(vals$ensemble.overlaid.res) == 0) vals$ensemble.overlaid.res <- NULL
 
 
   # Handle other places this data was used

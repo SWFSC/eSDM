@@ -21,15 +21,15 @@ variance_func_esdm <- function(i, j) {
 ###############################################################################
 # _temp because this needs to get changed to:
 #   observeEvent() -> reactiveVal -> plot pipeline
-ens_var_temp <- eventReactive(input$ens_var_execute, {
-  var.sf <- ens_var_sf()
-  # browser()
-
-  plot(
-    var.sf["sd_val"], axes = TRUE, border = NA,
-    nbreaks = 6, breaks = "equal", key.length = 1
-  )
-})
+# ens_var_temp <- eventReactive(input$ens_var_execute, {
+#   var.sf <- ens_var_sf()
+#   # browser()
+#
+#   plot(
+#     var.sf["sd_val"], axes = TRUE, border = NA,
+#     nbreaks = 6, breaks = "equal", key.length = 1
+#   )
+# })
 
 
 ### Calculate among-model variance
@@ -38,45 +38,13 @@ ens_var_sf <- reactive({
   req(length(e.which) == 1)
 
   #----------------------------------------------------
-  ### Which overlaid predictions were used to create the ensemble?
-  o.which <- vals$ensemble.overlaid.idx[[e.which]]
-  if (o.which == "All") {
-    o.which <- seq_along(vals$overlaid.models)
-  } else {
-    o.which <- as.numeric(strsplit(o.which, ", ")[[1]])
-  }
-  o.count <- length(o.which)
-
-  #----------------------------------------------------
-  ### Rescale overlaid predictions (if necessary)
-  e.rescale <- vals$ensemble.rescaling[[e.which]]
-
-  if (grepl("Abundance", e.rescale)) {
-    abund.val <- as.numeric(strsplit(e.rescale, ": ")[[1]][2])
-    o.rescaled <- eSDM::ensemble_rescale(
-      vals$overlaid.models[o.which], rep("Pred.overlaid", o.count),
-      y = "abundance", abund.val
-    )
-
-  } else if (grepl("Sum to 1", e.rescale)) {
-    o.rescaled <- eSDM::ensemble_rescale(
-      vals$overlaid.models[o.which], rep("Pred.overlaid", o.count),
-      y = "sumto1"
-    )
-
-  } else {
-    o.rescaled <- vals$overlaid.models[o.which]
-  }
-
-  #----------------------------------------------------
-  ### TODO: what to do about regional weighting?
-
-  #----------------------------------------------------
   ### Create data frame with rescaled overlaid preds and ensemble preds
-  pred.all <- data.frame(
-    lapply(o.rescaled, function(i) i$Pred.overlaid),
-    ens_preds = vals$ensemble.models[[e.which]]$Pred.ens
-  ) %>%
+  o.preds.res <- vals$ensemble.overlaid.res[[e.which]]
+  o.count <- ncol(o.preds.res)
+
+  e.preds <- vals$ensemble.models[[e.which]]$Pred.ens
+
+  pred.all <- data.frame(o.preds.res, e.preds) %>%
     purrr::set_names(c(paste0("o.rescale", 1:o.count), "ens_preds"))
 
   #----------------------------------------------------
@@ -90,11 +58,12 @@ ens_var_sf <- reactive({
     pred.weights <- pred.weights / sum(pred.weights)
   }
 
-  validate(
-    need(round(sum(pred.weights), 3) == 1,
-         paste0("Error in among-model variance calculations;",
-                "please report this as an issue"))
-  )
+  # validate(
+  #   need(round(sum(pred.weights), 3) == 1,
+  #        paste0("Error in among-model variance calculations;",
+  #               "please report this as an issue"))
+  # )
+  stopifnot(round(sum(pred.weights), 3) == 1)
 
   st_sf(
     var_val = apply(pred.all, 1, variance_func_esdm, j = pred.weights),
