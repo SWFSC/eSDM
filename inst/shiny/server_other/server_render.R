@@ -473,6 +473,9 @@ output$pretty_save_map <- renderUI({
     helpText("Note that most plot parameters below (including loaded additional objects)",
              "will stay the same unless changed by user, even when a different set of predictions is selected.",
              "Thus, be sure to check the parameters before saving a new map"),
+    tags$br(),
+    uiOutput("pretty_toplot_amvariance_uiOut_check"),
+    uiOutput("pretty_toplot_amvariance_uiOut_text"),
     actionButton("pretty_toplot_add_execute", "Save map"),
     tags$br(), tags$br(),
     tags$span(textOutput("pretty_toplot_add_text"), style = "color: blue;")

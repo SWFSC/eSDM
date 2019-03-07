@@ -77,6 +77,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     model.int <- pretty_int_func( #contains validate()
       model.toplot, range.poly, "selected predictions"
     )
+    rm(model.int)
     incProgress(0.2)
 
 
@@ -85,7 +86,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     incProgress(0, detail = "Processing additional objects")
     list.colorscheme <- pretty_colorscheme_list()
     list.addobj <- if (input$pretty_addobj) pretty_addobj_list() else NULL
-    incProgress(0.3, detail = "")
+    incProgress(0.2, detail = "")
 
 
     #--------------------------------------------------------------------------
@@ -103,9 +104,73 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       ))
     )
     vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
+
+
+    #--------------------------------------------------------------------------
+    # If applicable, save a second plot of the among-model variance
+    if (isTruthy(input$pretty_toplot_amvariance)) {
+      #input$pretty_toplot_amvariance is NULL is ensemble isn't selected
+      if (input$pretty_toplot_amvariance) {
+        incProgress(0, detail = "Creating map of among-model variance")
+
+        #--------------------------------------------------
+        # Update values as necessary
+        # ens_var_helper_esdm() is in 'server_3_createEns_variance.R'
+        sd.sf <- ens_var_helper_esdm(pretty_models_idx_list()[[3]]) %>%
+          dplyr::select(sd_val) %>%
+          st_transform(st_crs(model.toplot))
+
+        if (check_360(sd.sf)) sd.sf <- preview360_split(sd.sf)
+        validate(
+          need(identical(st_geometry(model.toplot), st_geometry(sd.sf)),
+               paste("Error in creating map of among-model variance;",
+                     "please report this as an issue")
+          )
+        )
+        incProgress(0.1)
+
+        #--------------------------------------------------
+        # Update other values as necessary
+        list.colorscheme.var <- list.colorscheme
+        list.colorscheme.var$data.name <- "sd_val"
+
+        list.titlelab.var <- list.titlelab
+        if (list.titlelab.var$title != "") {
+          list.titlelab.var$title <- paste(list.titlelab.var$title, "SD")
+        }
+
+        pretty.id.sd <- paste0(pretty.id, "_SD")
+
+        #--------------------------------------------------
+        # Save SD map
+        vals$pretty.params.toplot <- c(
+          vals$pretty.params.toplot,
+          list(list(
+            model.toplot = sd.sf, map.range = map.range,
+            background.color = background.color,
+            list.titlelab = list.titlelab.var, list.margin = list.margin,
+            list.tick = list.tick,
+            list.colorscheme = list.colorscheme.var, list.legend = list.legend,
+            list.addobj = list.addobj,
+            id = pretty.id.sd
+          ))
+        )
+        vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
+
+      } else {
+        incProgress(0.1, detail = )
+      }
+    } else {
+      incProgress(0.1, detail = )
+    }
+
   })
 
-  paste0("Saved map '", pretty.id, "'")
+  if (exists("pretty.id.sd")) {
+    paste0("Saved maps '", pretty.id, "'", "and ", "'", pretty.id.sd, "'")
+  } else {
+    paste0("Saved map '", pretty.id, "'")
+  }
 })
 
 
@@ -150,7 +215,5 @@ pretty_toplot_remove <- eventReactive(input$pretty_toplot_remove_execute, {
 
   ""
 })
-
-
 
 ###############################################################################

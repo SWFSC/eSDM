@@ -2,7 +2,9 @@
 
 
 ###############################################################################
-# Default title for map to be saved
+# 'Specify map ID and save map' box
+
+### Default title for map to be saved
 output$pretty_toplot_add_id_uiOut_text <- renderUI({
   if (pretty_models_idx_count() == 1) {
     table.idx <- pretty_table_row_idx()[1]
@@ -22,9 +24,52 @@ output$pretty_toplot_add_id_uiOut_text <- renderUI({
             value = val.default)
 })
 
+#------------------------------------------------------------------------------
+### Checkbox to save map of the among-model variance (SD)
+output$pretty_toplot_amvariance_uiOut_check <- renderUI({
+  if (pretty_models_idx_count() == 1) {
+    if (pretty_table_row_idx()[1] == 3) {
+      input.lab <- paste(
+        "Also save a map of the among-model variance of the rescaled,",
+        "overlaid predictions that were used to create this ensemble"
+      )
+
+      checkboxInput("pretty_toplot_amvariance", input.lab, value = FALSE)
+
+    } else {
+      NULL
+    }
+
+  } else  {
+    NULL
+  }
+})
+
+### Helptext about among-model variance (SD)
+output$pretty_toplot_amvariance_uiOut_text <- renderUI({
+  if (pretty_models_idx_count() == 1) {
+    if (pretty_table_row_idx()[1] == 3) {
+      model.idx <- pretty_table_row_idx()[2]
+      helpText(
+        "This map will be exactly the same as the map sepcified below,",
+        "except that it will plot the standard deviation of the rescaled,",
+        "overlaid predictions rather than the ensemble predictions.",
+        "The map name will be the same as specified above with \"_SD\"",
+        "appended to the end."
+      )
+
+    } else {
+      NULL
+    }
+
+  } else  {
+    NULL
+  }
+})
+
 
 ###############################################################################
-# Range and projection of map
+# Map coordinate system and range
 
 ### Select object with desired projection for map
 output$pretty_proj_idx_uiOut_select <- renderUI({

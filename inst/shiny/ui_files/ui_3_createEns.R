@@ -336,7 +336,7 @@ ui.createEns <- function() {
               radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"),
                            choices = list("Plot interactive preview" = 1, "Plot static preview" = 2,
                                           "Download static preview" = 3, "Remove from GUI" = 4,
-                                          "Calculate predicted abundance" = 5, "Plot among-model variance" = 6),
+                                          "Calculate predicted abundance" = 5, "Among-model variance" = 6),
                            selected = 1)
             ),
             column(
@@ -412,7 +412,7 @@ ui.createEns <- function() {
                     conditionalPanel(
                       condition = "input.ens_select_action == 6",
                       helpText("Plot the ensemble predictions and standard deviation of the rescaled overlaid predictions side-by-side.",
-                               "Both plot will have the same scale"),
+                               "Both plots will have the same color scheme."),
                       uiOutput("ens_var_execute_uiOut_button")
                     )
                   )

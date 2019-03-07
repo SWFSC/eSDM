@@ -55,6 +55,7 @@ ui.prettyPlot <- function() {
                 tags$strong("3) Specify map ID and save map"),
                 fluidRow(
                   shinycssloaders::withSpinner(uiOutput("pretty_save_map"), type = 3, color.background = "white")
+                  # output$pretty_save_map is in 'server_render.R'
                 )
               )
             ),
