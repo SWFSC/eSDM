@@ -110,63 +110,58 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     # If applicable, save a second plot of the among-model variance
     if (isTruthy(input$pretty_toplot_amvariance)) {
       #input$pretty_toplot_amvariance is NULL is ensemble isn't selected
-      if (input$pretty_toplot_amvariance) {
-        incProgress(0, detail = "Creating map of among-model variance")
+      incProgress(0, detail = "Creating map of among-model variance")
 
-        #--------------------------------------------------
-        # Update values as necessary
-        # ens_var_helper_esdm() is in 'server_3_createEns_variance.R'
-        sd.sf <- ens_var_helper_esdm(pretty_models_idx_list()[[3]]) %>%
-          dplyr::select(sd_val) %>%
-          st_transform(st_crs(model.toplot))
+      #--------------------------------------------------
+      # Update values as necessary
+      # ens_var_helper_esdm() is in 'server_3_createEns_variance.R'
+      sd.sf <- ens_var_helper_esdm(pretty_models_idx_list()[[3]]) %>%
+        dplyr::select(sd_val) %>%
+        st_transform(st_crs(model.toplot))
 
-        if (check_360(sd.sf)) sd.sf <- preview360_split(sd.sf)
-        validate(
-          need(identical(st_geometry(model.toplot), st_geometry(sd.sf)),
-               paste("Error in creating map of among-model variance;",
-                     "please report this as an issue")
-          )
+      if (check_360(sd.sf)) sd.sf <- preview360_split(sd.sf)
+      validate(
+        need(identical(st_geometry(model.toplot), st_geometry(sd.sf)),
+             paste("Error in creating map of among-model variance;",
+                   "please report this as an issue")
         )
-        incProgress(0.1)
+      )
+      incProgress(0.1)
 
-        #--------------------------------------------------
-        # Update other values as necessary
-        list.colorscheme.var <- list.colorscheme
-        list.colorscheme.var$data.name <- "sd_val"
-        if (identical(list.colorscheme.var$leg.labs[1], "Lowest 60%")) {
-          list.colorscheme.var$data.breaks <- breaks_calc(sd.sf$sd_val)
-        }
-
-        list.titlelab.var <- list.titlelab
-        if (list.titlelab.var$title != "") {
-          list.titlelab.var$title <- paste(list.titlelab.var$title, "SD")
-        }
-
-        pretty.id.sd <- paste0(pretty.id, "_SD")
-
-        #--------------------------------------------------
-        # Save SD map
-        vals$pretty.params.toplot <- c(
-          vals$pretty.params.toplot,
-          list(list(
-            model.toplot = sd.sf, map.range = map.range,
-            background.color = background.color,
-            list.titlelab = list.titlelab.var, list.margin = list.margin,
-            list.tick = list.tick,
-            list.colorscheme = list.colorscheme.var, list.legend = list.legend,
-            list.addobj = list.addobj,
-            id = pretty.id.sd, sd.flag = TRUE
-          ))
-        )
-        vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
-
-      } else {
-        incProgress(0.1, detail = )
+      #--------------------------------------------------
+      # Update other values as necessary
+      list.colorscheme.var <- list.colorscheme
+      list.colorscheme.var$data.name <- "sd_val"
+      if (identical(list.colorscheme.var$leg.labs[1], "Lowest 60%")) {
+        list.colorscheme.var$data.breaks <- breaks_calc(sd.sf$sd_val)
       }
+
+      list.titlelab.var <- list.titlelab
+      if (list.titlelab.var$title != "") {
+        list.titlelab.var$title <- paste(list.titlelab.var$title, "SD")
+      }
+
+      pretty.id.sd <- paste0(pretty.id, "_SD")
+
+      #--------------------------------------------------
+      # Save SD map
+      vals$pretty.params.toplot <- c(
+        vals$pretty.params.toplot,
+        list(list(
+          model.toplot = sd.sf, map.range = map.range,
+          background.color = background.color,
+          list.titlelab = list.titlelab.var, list.margin = list.margin,
+          list.tick = list.tick,
+          list.colorscheme = list.colorscheme.var, list.legend = list.legend,
+          list.addobj = list.addobj,
+          id = pretty.id.sd, sd.flag = TRUE
+        ))
+      )
+      vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
+
     } else {
       incProgress(0.1, detail = )
     }
-
   })
 
   if (exists("pretty.id.sd")) {
