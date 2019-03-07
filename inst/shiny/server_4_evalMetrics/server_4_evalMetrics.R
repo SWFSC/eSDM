@@ -90,7 +90,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
       # eSDM::evaluation_metrics() removes NA predictions
 
       incProgress(
-        amount = 0.8 / m.num,
+        amount = 0.7 / m.num,
         detail = paste("Calculating metrics for predictions", idx, "of", m.num)
       )
 
@@ -107,14 +107,17 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
 
     incProgress(0.1, "Processing metrics")
     eval.results <- eval.results[c("AUC", "TSS", "RMSE") %in% which.metrics, ]
+    if (length(which.metrics) == 1) {
+      eval.results <- matrix(eval.results, nrow = 1)
+    }
+    eval.overlap.message <- eval_overlap_message(eval_models(), eval.data)
+    incProgress(0.1)
+
+    # Save model idx and metrics to reactiveValues
+    vals$eval.models.idx <- eval_models_idx()
+    vals$eval.metrics <- list(eval.results, eval.overlap.message)
+    vals$eval.metrics.names <- which.metrics
   })
-
-  eval.overlap.message <- eval_overlap_message(eval_models(), eval.data)
-
-  # Save model idx and metrics to reactiveValues
-  vals$eval.models.idx <- eval_models_idx()
-  vals$eval.metrics <- list(eval.results, eval.overlap.message)
-  vals$eval.metrics.names <- which.metrics
 
   ""
 })
