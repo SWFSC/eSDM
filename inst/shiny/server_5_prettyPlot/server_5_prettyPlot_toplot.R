@@ -100,7 +100,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
         list.tick = list.tick,
         list.colorscheme = list.colorscheme, list.legend = list.legend,
         list.addobj = list.addobj,
-        id = pretty.id
+        id = pretty.id, sd.flag = TRUE
       ))
     )
     vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
@@ -133,6 +133,9 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
         # Update other values as necessary
         list.colorscheme.var <- list.colorscheme
         list.colorscheme.var$data.name <- "sd_val"
+        if (identical(list.colorscheme.var$leg.labs[1], "Lowest 60%")) {
+          list.colorscheme.var$data.breaks <- breaks_calc(sd.sf$sd_val)
+        }
 
         list.titlelab.var <- list.titlelab
         if (list.titlelab.var$title != "") {
@@ -152,7 +155,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
             list.tick = list.tick,
             list.colorscheme = list.colorscheme.var, list.legend = list.legend,
             list.addobj = list.addobj,
-            id = pretty.id.sd
+            id = pretty.id.sd, sd.flag = TRUE
           ))
         )
         vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
