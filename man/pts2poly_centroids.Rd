@@ -19,7 +19,7 @@ might included named arguments \code{crs} or \code{agr}}
 }
 \value{
 Object of class \code{sfc} (if \code{x} has exactly two columns) or class \code{sf}
-  (if \code{x} has exactly more than columns). The object will have a geometry type of \code{POLYGON}.
+  (if \code{x} has exactly more than two columns). The object will have a geometry type of \code{POLYGON}.
   If the object is of class \code{sf}, the name of the geometry list-column will be "geometry"
 }
 \description{
