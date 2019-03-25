@@ -25,7 +25,7 @@ Object of class \code{sf} with the geometry of \code{base.geom} and
 Overlay specfied SDM predictions that meet the percent overlap threshold requirement onto base geometry
 }
 \details{
-See *paper reference* for details about the overlay process
+See the eSDM GUI manual for specifics about the overlay process
 }
 \examples{
 overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
