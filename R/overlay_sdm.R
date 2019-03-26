@@ -16,6 +16,7 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr left_join
 #' @importFrom dplyr mutate
+#' @importFrom dplyr rename
 #' @importFrom dplyr select
 #' @importFrom purrr set_names
 #' @importFrom rlang .data
@@ -54,7 +55,7 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   }
 
   stopifnot(
-    st_crs(base.geom) == st_crs(sdm),
+    identical(st_crs(base.geom), st_crs(sdm)),
     all(sdm.idx %in% names(sdm)) | inherits(sdm.idx, "numeric") |
       inherits(sdm.idx, "integer")
   )
@@ -112,7 +113,12 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
          "class sfc and sf, respectively")
   }
 
-  int <- int[as.numeric(st_area(int)) > 1, ]
+  int <- int %>%
+    rename(geometry = !!attr(int, "sf_column")) %>%
+    mutate(area_km = as.numeric(st_area(.data$geometry))) %>%
+    filter(.data$area_km > 1) %>%
+    select(-.data$area_km)
+
   if (nrow(int) == 0) {
     stop("No 'base.geom' polygons overlap with any 'sdm' polygons")
   }
