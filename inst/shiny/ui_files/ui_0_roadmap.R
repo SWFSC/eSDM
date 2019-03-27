@@ -97,7 +97,8 @@ ui.roadmap <- function() {
                     "create ensemble predications via a weighted or unweighted average.",
                     "Weights can be the evaluation metrics of the overlaid predictions or",
                     "assigned by you to the overlaid predictions at several resolutions:",
-                    "the entire study area, selected regions, or the individual prediction polygons of the overlaid predictions."),
+                    "the entire study area, selected regions, or the individual prediction polygons of the overlaid predictions.",
+                    "You can also calculate and map the among-model standard deviation."),
             #------------------------------------------------------------------
             tags$h5(tags$strong("4) Calculate metrics, plot maps, and export predictions:"),
                     "Within the 'Evaluation Metrics', 'High Quality Maps', and 'Export Predictions' tabs",
