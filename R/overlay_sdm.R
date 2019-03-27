@@ -1,13 +1,14 @@
 #' Overlay SDM predictions onto base geometry
 #'
-#' Overlay specfied SDM predictions that meet the percent overlap threshold requirement onto base geometry
+#' Overlay specified SDM predictions that meet the percent overlap threshold requirement onto base geometry
 #'
 #' @param base.geom object of class \code{sfc}; base geometry
 #' @param sdm object of class \code{sf}; original SDM predictions
 #' @param sdm.idx names or indices of column(s) with data to be overlaid
 #' @param overlap.perc numeric; percent overlap threshold,
-#'   i.e. percentage of each base geometry polygon must overlap with SDM polygons
-#'   for overlaid density value to be calculated and not set as NA
+#'   i.e. percentage of each base geometry polygon must overlap with SDM
+#'   prediction polygons for overlaid density value to be calculated and
+#'   not set as NA
 #'
 #' @importFrom dplyr %>%
 #' @importFrom dplyr arrange
@@ -18,6 +19,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr rename
 #' @importFrom dplyr select
+#' @importFrom purrr map
 #' @importFrom purrr set_names
 #' @importFrom rlang .data
 #' @importFrom rlang sym
@@ -33,10 +35,16 @@
 #' @importFrom units set_units
 #' @importFrom utils head
 
-#' @details See the eSDM GUI manual for specifics about the overlay process
+#' @details See the eSDM GUI manual for specifics about the overlay process.
+#'
+#' Note that \code{overlay_sdm} removes rows in \code{sdm} that have NA values
+#' in the first column specified in \code{sdm.idx} (i.e. \code{sdm.idx[1]}),
+#' before the overlay. Thus, for valid overlay results, all columns of
+#' \code{sdm} specified in \code{sdm.idx} must have NA values in the same rows.
 #'
 #' @return Object of class \code{sf} with the geometry of \code{base.geom} and
-#'   the data in the \code{sdm.idx} columns of \code{sdm} overlaid onto that geometry
+#'   the data in the \code{sdm.idx} columns of \code{sdm} overlaid onto that
+#'   geometry.
 #'
 #' @examples
 #' overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
@@ -46,6 +54,9 @@
 overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   #----------------------------------------------------------------------------
   # 0) Check that inputs meet requirements
+
+  #--------------------------------------------------------
+  ### Formats
   if (!inherits(base.geom, "sfc")) {
     stop("'base.geom' must be of class 'sfc'")
   }
@@ -59,22 +70,6 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
     all(sdm.idx %in% names(sdm)) | inherits(sdm.idx, "numeric") |
       inherits(sdm.idx, "integer")
   )
-  if (identical(base.geom, st_geometry(sdm))) {
-    warning("'base.geom' and 'sdm' have the same geometry and thus ",
-            "you shouldn't need to use the full overlay procedure")
-  }
-
-  # If sdm.idx is numeric, get column names and check that they don't start
-  #   with a number. Such columns get renamed as 'X...' by base R funcs
-  if (inherits(sdm.idx, "numeric") | inherits(sdm.idx, "integer")) {
-    sdm.idx <- names(sdm)[sdm.idx]
-  }
-  if (any(substr(sdm.idx, 1, 1) %in% as.character(0:9))) {
-    col.idx <- which(substr(sdm.idx, 1, 1) %in% as.character(0:9))
-    stop("The columns specified in 'sdm.idx' cannot begin with a number. ",
-         "Please rename the following columns in 'sdm': ",
-         paste0("'", paste(names(sdm)[col.idx], collapse = "' ; '"), "'"))
-  }
 
   base.area.m2 <- st_area(base.geom)
   if (!all(units(base.area.m2)$numerator == c("m", "m"))) {
@@ -84,6 +79,43 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   if (!all(units(sdm.area.m2)$numerator == c("m", "m"))) {
     stop("Units of st_area(sdm.area.m2) must be m^2")
   }
+
+  #--------------------------------------------------------
+  ### Other input checks and some processing
+  # Throw warning if base.geom and geometry of sdm are identical
+  if (identical(base.geom, st_geometry(sdm))) {
+    warning("'base.geom' and 'sdm' have the same geometry and thus ",
+            "you shouldn't need to use the full overlay procedure")
+  }
+
+  # If sdm.idx is numeric, get column names and check that they don't start
+  #   with a number
+  #   Columns that start with a number get renamed as 'X...' by base R funcs
+  if (inherits(sdm.idx, "numeric") | inherits(sdm.idx, "integer")) {
+    sdm.idx <- names(sdm)[sdm.idx]
+  }
+  if (any(substr(sdm.idx, 1, 1) %in% as.character(0:9))) {
+    col.idx <- which(substr(sdm.idx, 1, 1) %in% as.character(0:9))
+    stop("The columns specified in 'sdm.idx' cannot begin with a number. ",
+         "Please rename the following columns in 'sdm':\n",
+         paste0("'", paste(names(sdm)[col.idx], collapse = "' ; '"), "'"))
+  }
+
+  # Throw warning if not all columns in sdm.idx have NAs in the same rows
+  sdm.df <- st_set_geometry(sdm, NULL)[, sdm.idx]
+  sdm.na <- map(sdm.df, function(i) which(is.na(i)))
+  sdm.temp <- vapply(
+    sdm.na, function(i, j) {identical(i, j)}, as.logical(1), j = sdm.na[[1]]
+  )
+  if (any(!sdm.temp)) {
+    warning("The following columns have 'NA' prediction values for different",
+            "prediction polygons than the first column specified ",
+            "in 'sdm.idx', and thus their overlaid values will be invalid ",
+            "(see the function documentation for more details):\n",
+            paste(names(which(!sdm.temp)), collapse = "; "))
+  }
+  rm(sdm.df, sdm.na, sdm.temp)
+
 
   #----------------------------------------------------------------------------
   # 1) Get intersection of sdm (sdm being overlaid) and base.geom (base)

@@ -14,18 +14,25 @@ overlay_sdm(base.geom, sdm, sdm.idx, overlap.perc)
 \item{sdm.idx}{names or indices of column(s) with data to be overlaid}
 
 \item{overlap.perc}{numeric; percent overlap threshold,
-i.e. percentage of each base geometry polygon must overlap with SDM polygons
-for overlaid density value to be calculated and not set as NA}
+i.e. percentage of each base geometry polygon must overlap with SDM
+prediction polygons for overlaid density value to be calculated and
+not set as NA}
 }
 \value{
 Object of class \code{sf} with the geometry of \code{base.geom} and
-  the data in the \code{sdm.idx} columns of \code{sdm} overlaid onto that geometry
+  the data in the \code{sdm.idx} columns of \code{sdm} overlaid onto that
+  geometry.
 }
 \description{
-Overlay specfied SDM predictions that meet the percent overlap threshold requirement onto base geometry
+Overlay specified SDM predictions that meet the percent overlap threshold requirement onto base geometry
 }
 \details{
-See the eSDM GUI manual for specifics about the overlay process
+See the eSDM GUI manual for specifics about the overlay process.
+
+Note that \code{overlay_sdm} removes rows in \code{sdm} that have NA values
+in the first column specified in \code{sdm.idx} (i.e. \code{sdm.idx[1]}),
+before the overlay. Thus, for valid overlay results, all columns of
+\code{sdm} specified in \code{sdm.idx} must have NA values in the same rows.
 }
 \examples{
 overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
