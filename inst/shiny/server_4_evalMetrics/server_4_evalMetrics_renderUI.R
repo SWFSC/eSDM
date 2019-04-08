@@ -53,6 +53,7 @@ output$eval_csv_execute_uiOut_button <- renderUI({
 
   # Check that validation data column has at least 2 unique, non-NA values
   col.pa <- as.numeric(input$eval_csv_names[3])
+  req(col.pa <= ncol(eval_data_csv_load()[[2]]))
   choice.input.names <- na.omit(unique(eval_data_csv_load()[[2]][, col.pa]))
   validate(
     need(length(choice.input.names) >= 2,
