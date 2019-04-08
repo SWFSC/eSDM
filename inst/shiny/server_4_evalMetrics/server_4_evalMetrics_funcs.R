@@ -51,7 +51,6 @@ eval_proc_df <- function(x, y, p.codes, a.codes) {
       dplyr::select(1, 2, 5, 4)
   }
 
-  # eval_proc_sf(x)
   #----------------------------------------------------------------------------
   stopifnot(
     ncol(x) == 4,
@@ -74,32 +73,6 @@ eval_proc_df <- function(x, y, p.codes, a.codes) {
   # Don't need check_valid() for pts
   check_dateline(pts)
 }
-
-
-#----------------------------------------------------------
-### Convert data.frame, x,  with long, lat, sight, and count cols to sf object
-# eval_proc_sf <- function(x) {
-#   stopifnot(
-#     ncol(x) == 4,
-#     names(x) == c("lon", "lat", "sight", "count")
-#   )
-#
-#   if (min(x$lon, na.rm = TRUE) > 180) x$lon <- x$lon - 360
-#
-#   # Sort by lat (primary) then long for bottom up sort and then create sf obj
-#   pts <- st_as_sf(
-#     data_sort(x, 2, 1), coords = c(1, 2), agr = "constant", crs = crs.ll
-#   )
-#
-#   # Perform checks
-#   validate(
-#     need(inherits(st_geometry(pts), "sfc_POINT"),
-#          "Error processing validation data")
-#   )
-#
-#   # Don't need check_valid() for pts
-#   check_dateline(pts)
-# }
 
 
 ###############################################################################

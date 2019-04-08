@@ -59,7 +59,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     }
   )
 
-  overlap.perc <- input$overlay_grid_coverage / 100
+  overlap.perc <- input$overlay_grid_coverage #/ 100
 
 
   #########################################################

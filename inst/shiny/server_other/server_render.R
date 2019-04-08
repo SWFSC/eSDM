@@ -152,7 +152,7 @@ output$overlay_overlaid_models_message <- renderUI({
     paste("3)", vals$overlay.info[[3]]),
     tags$br(),
     paste("4) With a percent overlap threshold of",
-          paste0(vals$overlay.info[[4]] * 100, "%"))
+          paste0(vals$overlay.info[[4]], "%"))
   ))
 })
 
