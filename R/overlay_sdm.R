@@ -39,8 +39,10 @@
 #'
 #' Note that \code{overlay_sdm} removes rows in \code{sdm} that have NA values
 #' in the first column specified in \code{sdm.idx} (i.e. \code{sdm.idx[1]}),
-#' before the overlay. Thus, for valid overlay results, all columns of
-#' \code{sdm} specified in \code{sdm.idx} must have NA values in the same rows.
+#' before the overlay.
+#' Thus, for valid overlay results, all columns of \code{sdm} specified in
+#' \code{sdm.idx} must either have NA values in the same rows
+#' or contain only NAs.
 #'
 #' @return Object of class \code{sf} with the geometry of \code{base.geom} and
 #'   the data in the \code{sdm.idx} columns of \code{sdm} overlaid onto that
@@ -101,20 +103,25 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
          paste0("'", paste(names(sdm)[col.idx], collapse = "' ; '"), "'"))
   }
 
-  # Throw warning if not all columns in sdm.idx have NAs in the same rows
-  sdm.df <- st_set_geometry(sdm, NULL)[, sdm.idx]
-  sdm.na <- map(sdm.df, function(i) which(is.na(i)))
-  sdm.temp <- vapply(
-    sdm.na, function(i, j) {identical(i, j)}, as.logical(1), j = sdm.na[[1]]
-  )
-  if (any(!sdm.temp)) {
-    warning("The following columns have 'NA' prediction values for different",
-            "prediction polygons than the first column specified ",
-            "in 'sdm.idx', and thus their overlaid values will be invalid ",
-            "(see the function documentation for more details):\n",
-            paste(names(which(!sdm.temp)), collapse = "; "))
+  # Throw warning if not all columns in sdm.idx either have NAs in the same
+  #   rows of sdm.idx[1] or contain only NAs (i.e. unused weight column in GUI)
+  if (length(sdm.idx) > 1) {
+    sdm.df <- st_set_geometry(sdm, NULL)[, sdm.idx]
+    sdm.na <- map(sdm.df, function(i) which(is.na(i)))
+    sdm.temp <- vapply(
+      sdm.na, function(i, j, k) {
+        identical(i, j) | (length(i) == k)
+      }, as.logical(1), j = sdm.na[[1]], k = nrow(sdm.df)
+    )
+    if (any(!sdm.temp)) {
+      warning("The following columns have 'NA' prediction values for different ",
+              "prediction polygons than the first column specified ",
+              "in 'sdm.idx', and thus their overlaid values will be invalid ",
+              "(see the function documentation for more details):\n",
+              paste(names(which(!sdm.temp)), collapse = "; "))
+    }
+    rm(sdm.df, sdm.na, sdm.temp)
   }
-  rm(sdm.df, sdm.na, sdm.temp)
 
 
   #----------------------------------------------------------------------------

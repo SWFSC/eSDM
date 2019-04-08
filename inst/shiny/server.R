@@ -13,6 +13,8 @@
 
 
 ###############################################################################
+library(raster) # First so that raster::select() wont't mask dplyr::select()
+
 library(colorRamps)
 library(colourpicker)
 library(dichromat)
@@ -23,7 +25,6 @@ library(leaflet)
 library(lwgeom)
 library(methods)
 library(purrr)
-library(raster)
 library(RColorBrewer)
 library(rlang)
 library(ROCR)

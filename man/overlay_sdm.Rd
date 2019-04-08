@@ -31,8 +31,10 @@ See the eSDM GUI manual for specifics about the overlay process.
 
 Note that \code{overlay_sdm} removes rows in \code{sdm} that have NA values
 in the first column specified in \code{sdm.idx} (i.e. \code{sdm.idx[1]}),
-before the overlay. Thus, for valid overlay results, all columns of
-\code{sdm} specified in \code{sdm.idx} must have NA values in the same rows.
+before the overlay.
+Thus, for valid overlay results, all columns of \code{sdm} specified in
+\code{sdm.idx} must either have NA values in the same rows
+or contain only NAs.
 }
 \examples{
 overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
