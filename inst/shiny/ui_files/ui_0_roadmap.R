@@ -49,7 +49,7 @@ ui.roadmap <- function() {
                   tags$p("This application is developed and maintained by scientists at the",
                          "NOAA Fisheries Southwest Fisheries Science Center and should not be",
                          "construed as official communication of NMFS, NOAA, or the U.S. Dept. of Commerce.",
-                         "While the best efforts have been made to insure the highest quality,",
+                         "While the best efforts have been made to ensure the highest quality,",
                          "tools such as this are under constant development and are subject to change.")
                 )
               )
