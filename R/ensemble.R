@@ -78,32 +78,6 @@ ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
     data.rescaled <- as.data.frame(
       apply(data.extracted, 2, function(i) {i / sum(i, na.rm = TRUE)})
     )
-
-    # if (y == "normalization") {
-    #   data.rescaled <- as.data.frame(apply(data.extracted, 2, function(i) {
-    #     if (diff(range(i, na.rm = TRUE)) == 0) {
-    #       stop("At least one of the specified data columns has a range of 0; ",
-    #            "you cannot normalize a vector of numbers with a range of 0")
-    #     } else {
-    #       esdm_normalize(i)
-    #     }
-    #   }))
-    #
-    # } else if (y == "standardization") {
-    #   data.rescaled <- as.data.frame( apply(data.extracted, 2, function(i) {
-    #     if (diff(range(i, na.rm = TRUE)) == 0) {
-    #       stop("At least one of the specified data columns has a range of 0; ",
-    #            "you cannot standardize a vector of numbers with a range of 0")
-    #     } else {
-    #       base::scale(i)
-    #     }
-    #   }))
-    #
-    # } else { #y == "sumto1"
-    #   data.rescaled <- as.data.frame(
-    #     apply(data.extracted, 2, function(i) {i / sum(i, na.rm = TRUE)})
-    #   )
-    # }
   }
 
   #----------------------------------------------------------------------------
