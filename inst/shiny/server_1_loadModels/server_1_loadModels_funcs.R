@@ -1,8 +1,8 @@
 # Functions specific to 'Import predictions' section
 
 ###############################################################################
-# Generate info message for renderUIs
-model_csv_inf_func <- function(pred.type, pred.na.idx,
+# Generate info message about NA values for renderUIs
+model_NA_info_func <- function(pred.type, pred.na.idx,
                                var.idx, var.na.idx,
                                weight.idx, weight.na.idx) {
   temp <- ifelse(
@@ -15,16 +15,16 @@ model_csv_inf_func <- function(pred.type, pred.na.idx,
   if (as.numeric(weight.idx) > 1 & as.numeric(var.idx) > 1) {
     if (is.na(temp)) {
       HTML(
-        na_pred_message(pred.na.idx), "<br/>", "<br/>",
-        na_var_message(var.na.idx, pred.na.idx), "<br/>", "<br/>",
-        na_weight_message(weight.na.idx, pred.na.idx)
+        na_message_pred(pred.na.idx), "<br/>", "<br/>",
+        na_message(var.na.idx, pred.na.idx, "uncertainty"), "<br/>", "<br/>",
+        na_message(weight.na.idx, pred.na.idx, "weight")
       )
     } else {
       HTML(
         temp, "<br/>", "<br/>",
-        na_pred_message(pred.na.idx), "<br/>", "<br/>",
-        na_var_message(var.na.idx, pred.na.idx), "<br/>", "<br/>",
-        na_weight_message(weight.na.idx, pred.na.idx)
+        na_message_pred(pred.na.idx), "<br/>", "<br/>",
+        na_message(var.na.idx, pred.na.idx, "uncertainty"), "<br/>", "<br/>",
+        na_message(weight.na.idx, pred.na.idx, "weight")
       )
     }
 
@@ -32,14 +32,14 @@ model_csv_inf_func <- function(pred.type, pred.na.idx,
   } else if (as.numeric(weight.idx) > 1) {
     if (is.na(temp)) {
       HTML(
-        na_pred_message(pred.na.idx), "<br/>", "<br/>",
-        na_weight_message(weight.na.idx, pred.na.idx)
+        na_message_pred(pred.na.idx), "<br/>", "<br/>",
+        na_message(weight.na.idx, pred.na.idx, "weight")
       )
     } else {
       HTML(
         temp, "<br/>", "<br/>",
-        na_pred_message(pred.na.idx), "<br/>", "<br/>",
-        na_weight_message(weight.na.idx, pred.na.idx)
+        na_message_pred(pred.na.idx), "<br/>", "<br/>",
+        na_message(weight.na.idx, pred.na.idx, "weight")
       )
     }
 
@@ -47,23 +47,23 @@ model_csv_inf_func <- function(pred.type, pred.na.idx,
   } else if (as.numeric(var.idx) > 1) {
     if (is.na(temp)) {
       HTML(
-        na_pred_message(pred.na.idx), "<br/>", "<br/>",
-        na_var_message(var.na.idx, pred.na.idx)
+        na_message_pred(pred.na.idx), "<br/>", "<br/>",
+        na_message(var.na.idx, pred.na.idx, "uncertainty")
       )
     } else {
       HTML(
         temp, "<br/>", "<br/>",
-        na_pred_message(pred.na.idx), "<br/>", "<br/>",
-        na_var_message(var.na.idx, pred.na.idx)
+        na_message_pred(pred.na.idx), "<br/>", "<br/>",
+        na_message(var.na.idx, pred.na.idx, "uncertainty")
       )
     }
 
     #------------------------------------------------------
   } else {
     if (is.na(temp)) {
-      HTML(na_pred_message(pred.na.idx))
+      HTML(na_message_pred(pred.na.idx))
     } else {
-      HTML(temp, "<br/>", "<br/>", na_pred_message(pred.na.idx))
+      HTML(temp, "<br/>", "<br/>", na_message_pred(pred.na.idx))
     }
   }
 }

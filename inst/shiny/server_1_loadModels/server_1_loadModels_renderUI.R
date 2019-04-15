@@ -49,6 +49,15 @@ output$model_csv_names_var_uiOut_select <- renderUI({
               choices = choice.input, selected = NULL)
 })
 
+### Uncertainty (variability) value type
+output$model_csv_var_type_uiOut_select <- renderUI({
+  req(read_model_csv())
+  selectInput("model_csv_var_type", tags$h5("Uncertainty value type"),
+              choices = list("Coefficient of variation (CV)" = 1,
+                             "Standard error (SE)" = 2),
+              selected = 2)
+})
+
 ### Weight
 output$model_csv_names_weight_uiOut_select <- renderUI({
   req(read_model_csv())
@@ -63,7 +72,7 @@ output$model_csv_names_weight_uiOut_select <- renderUI({
 output$model_csv_NA_idx_uiOut_message <- renderUI({
   req(read_model_csv())
 
-  model_csv_inf_func(
+  model_NA_info_func(
     req(input$model_csv_pred_type), model_csv_NA_idx_pred(),
     req(input$model_csv_names_var), model_csv_NA_idx_var(),
     req(input$model_csv_names_weight), model_csv_NA_idx_weight()
@@ -96,10 +105,9 @@ output$model_gis_raster_NA_idx_uiOut_message <- renderUI({
   )
 
   if (is.na(temp)) {
-    na_pred_message(model_gis_raster_NA_idx_pred())
+    na_message_pred(model_gis_raster_NA_idx_pred())
   } else {
-    HTML(temp, "<br/>", "<br/>",
-         na_pred_message(model_gis_raster_NA_idx_pred()))
+    HTML(temp, "<br/>", "<br/>", na_message_pred(model_gis_raster_NA_idx_pred()))
   }
 })
 
@@ -124,6 +132,25 @@ output$model_gis_shp_pred_type_uiOut_select <- renderUI({
               selected = 2)
 })
 
+### Uncertainty (variability)
+output$model_gis_shp_names_var_uiOut_select <- renderUI({
+  req(read_model_gis_shp())
+  choice.input <- shp_names_choice_input()
+  choice.input <- c("N/A - No uncertainty values" = 1, choice.input + 1)
+  selectInput("model_gis_shp_names_var",
+              tags$h5("Column with uncertainty (optional)"),
+              choices = choice.input, selected = 1)
+})
+
+### Uncertainty (variability) value type
+output$model_gis_shp_var_type_uiOut_select <- renderUI({
+  req(read_model_gis_shp())
+  selectInput("model_gis_shp_var_type", tags$h5("Uncertainty value type"),
+              choices = list("Coefficient of variation (CV)" = 1,
+                             "Standard error (SE)" = 2),
+              selected = 2)
+})
+
 ### Weight
 output$model_gis_shp_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_shp())
@@ -138,8 +165,9 @@ output$model_gis_shp_names_weight_uiOut_select <- renderUI({
 output$model_gis_shp_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_shp())
 
-  model_csv_inf_func(
+  model_NA_info_func(
     req(input$model_gis_shp_pred_type), model_gis_shp_NA_idx_pred(),
+    req(input$model_gis_shp_names_var), model_gis_shp_NA_idx_var(),
     req(input$model_gis_shp_names_weight), model_gis_shp_NA_idx_weight()
   )
 })
@@ -165,6 +193,25 @@ output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
               selected = 2)
 })
 
+### Uncertainty (variability)
+output$model_gis_gdb_names_var_uiOut_select <- renderUI({
+  req(read_model_gis_gdb())
+  choice.input <- gdb_names_choice_input()
+  choice.input <- c("N/A - No uncertainty values" = 1, choice.input + 1)
+  selectInput("model_gis_gdb_names_var",
+              tags$h5("Column with uncertainty (optional)"),
+              choices = choice.input, selected = 1)
+})
+
+### Uncertainty (variability) value type
+output$model_gis_gdb_var_type_uiOut_select <- renderUI({
+  req(read_model_gis_gdb())
+  selectInput("model_gis_gdb_var_type", tags$h5("Uncertainty value type"),
+              choices = list("Coefficient of variation (CV)" = 1,
+                             "Standard error (SE)" = 2),
+              selected = 2)
+})
+
 ### Weight
 output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
@@ -179,8 +226,9 @@ output$model_gis_gdb_names_weight_uiOut_select <- renderUI({
 output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
   req(read_model_gis_gdb())
 
-  model_csv_inf_func(
+  model_NA_info_func(
     req(input$model_gis_gdb_pred_type), model_gis_gdb_NA_idx_pred(),
+    req(input$model_gis_gdb_names_var), model_gis_gdb_NA_idx_var(),
     req(input$model_gis_gdb_names_weight), model_gis_gdb_NA_idx_weight()
   )
 })
@@ -188,7 +236,7 @@ output$model_gis_gdb_NA_idx_uiOut_message <- renderUI({
 
 ###############################################################################
 # Create buttons for importing predicitons into the GUI
-#   These are here so that 'Predictions imported...' message resets
+# These are here so that 'Predictions imported...' message resets
 #   if a new file is uploaded
 
 ### CSV

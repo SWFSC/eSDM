@@ -59,8 +59,8 @@ create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
 
   withProgress(message = "Importing predictions from raster", value = 0.2, {
     # Check that pred and weight data are valid
-    sf.load.raster <- check_pred_weight(
-      sf.load.raster, 1, NA, model_gis_raster_NA_idx_pred(), NA
+    sf.load.raster <- check_pred_var_weight(
+      sf.load.raster, 1, NA, NA, model_gis_raster_NA_idx_pred(), NA, NA
     )
 
     # Check long extent, polygon validity, and create crs.ll version if nec
@@ -99,19 +99,24 @@ create_sf_gis_raster <- eventReactive(input$model_create_gis_raster, {
     incProgress(0.1)
 
     # Prepare for 'local' code
-    sf.load.ll   <- sf.list[[1]]
-    sf.load.orig <- sf.list[[2]]
+    sf.load.llo   <- sf.list[[1]]
+    sf.load.origo <- sf.list[[2]]
 
-    sf.load.ll <- st_set_geometry(sf.load.ll, NULL) %>%
-      dplyr::mutate(as.numeric(NA), 1:nrow(sf.load.ll)) %>%
-      st_sf(geometry = st_geometry(sf.load.ll), agr = "constant")
-    sf.load.orig <- st_set_geometry(sf.load.orig, NULL) %>%
-      dplyr::mutate(as.numeric(NA), 1:nrow(sf.load.orig)) %>%
-      st_sf(geometry = st_geometry(sf.load.orig), agr = "constant")
+    sf.load.ll <- sf.list[[1]] %>%
+      st_set_geometry(NULL) %>%
+      dplyr::mutate(SE = as.numeric(NA), Weight = as.numeric(NA),
+                    idx = 1:nrow(sf.list[[1]])) %>%
+      st_sf(geometry = st_geometry(sf.list[[1]]), agr = "constant")
+    sf.load.orig <- sf.list[[2]] %>%
+      st_set_geometry(NULL) %>%
+      dplyr::mutate(SE = as.numeric(NA), Weight = as.numeric(NA),
+                    idx = 1:nrow(sf.list[[1]])) %>%
+      st_sf(geometry = st_geometry(sf.list[[2]]), agr = "constant")
 
+    data.names <- list(c(names(sf.load.ll)[1], NA, NA))
     pred.type  <- input$model_gis_raster_pred_type
+    var.type   <- 2
     model.name <- input$model_gis_raster_file$name
-    data.names <- list(c(names(sf.load.ll)[1], NA))
     incProgress(0.1)
 
 

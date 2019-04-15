@@ -100,7 +100,7 @@ create_sf_csv_data <- reactive({
   if (!is.na(weight.idx)) csv.data[, 5] <- csv.all[, weight.idx]
 
   # Check that pred and weight data are valid
-  csv.data <- check_pred_weight(
+  csv.data <- check_pred_var_weight(
     csv.data, 3, ifelse(var.idx == 0, NA, 4), ifelse(weight.idx == 0, NA, 5),
     model_csv_NA_idx_pred(), model_csv_NA_idx_var(),
     model_csv_NA_idx_weight()

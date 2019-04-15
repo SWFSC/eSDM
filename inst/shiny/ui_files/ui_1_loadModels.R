@@ -44,9 +44,7 @@ ui.loadModels <- function() {
                       width = 6,
                       uiOutput("model_csv_names_lat_uiOut_select"),
                       uiOutput("model_csv_pred_type_uiOut_select"),
-                      selectInput("model_csv_var_type", tags$h5("Uncertainty value type"),
-                                  choices = list("Coefficient of variation (CV)" = 1, "Standard error (SE)" = 2),
-                                  selected = 2)
+                      uiOutput("model_csv_var_type_uiOut_select")
                     )
                   ),
                   fluidRow(
@@ -114,8 +112,16 @@ ui.loadModels <- function() {
                 box(
                   width = 12,
                   fluidRow(
-                    column(6, uiOutput("model_gis_shp_names_pred_uiOut_select")),
-                    column(6, uiOutput("model_gis_shp_pred_type_uiOut_select"))
+                    column(
+                      width = 6,
+                      uiOutput("model_gis_shp_names_pred_uiOut_select"),
+                      uiOutput("model_gis_shp_names_var_uiOut_select")
+                    ),
+                    column(
+                      width = 6,
+                      uiOutput("model_gis_shp_pred_type_uiOut_select"),
+                      uiOutput("model_gis_shp_var_type_uiOut_select")
+                    )
                   ),
                   fluidRow(
                     column(
@@ -154,8 +160,16 @@ ui.loadModels <- function() {
                 box(
                   width = 12,
                   fluidRow(
-                    column(6, uiOutput("model_gis_gdb_names_pred_uiOut_select")),
-                    column(6, uiOutput("model_gis_gdb_pred_type_uiOut_select"))
+                    column(
+                      width = 6,
+                      uiOutput("model_gis_gdb_names_pred_uiOut_select"),
+                      uiOutput("model_gis_gdb_names_var_uiOut_select")
+                    ),
+                    column(
+                      width = 6,
+                      uiOutput("model_gis_gdb_pred_type_uiOut_select"),
+                      uiOutput("model_gis_gdb_var_type_uiOut_select")
+                    )
                   ),
                   fluidRow(
                     column(

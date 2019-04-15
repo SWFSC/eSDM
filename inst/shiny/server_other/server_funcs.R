@@ -155,9 +155,9 @@ check_valid <- function(x, progress.detail = FALSE) {
 
 
 #------------------------------------------------------------------------------
-### Check that prediction and weight data is in proper format
-check_pred_weight <- function(x, pred.idx, var.idx, weight.idx,
-                              pred.na.idx, var.na.idx, weight.na.idx) {
+### Check that prediction, uncertainty, and weight data is in proper format
+check_pred_var_weight <- function(x, pred.idx, var.idx, weight.idx,
+                                  pred.na.idx, var.na.idx, weight.na.idx) {
   stopifnot(is.numeric(pred.idx))
 
   x.orig <- x
@@ -377,7 +377,7 @@ na_which <- function(x) {
 
 
 ### Generate message reporting number of NA (prediction) values in x
-na_pred_message <- function(x) {
+na_message_pred <- function(x) {
   if (anyNA(x)) {
     "No prediction values were classified as NA"
   } else {
@@ -389,56 +389,83 @@ na_pred_message <- function(x) {
 }
 
 
-### Generate message reporting number of NA (uncertainty) values in x and
-###   number of non-NA y (pred) values with NA x (uncertainty) values
-na_var_message <- function(x, y) {
+### Generate message reporting number of NA values in x and
+###   number of non-NA y (pred) values with NA x values.
+###   z is either "uncertainty" or "weight"
+na_message <- function(x, y, z) {
   len.x <- length(x)
   if (anyNA(x)) {
-    "No uncertainty values were classified as NA"
+    paste("No", z, "values were classified as NA")
 
   } else if (!all(x %in% y)) {
     paste0(
       ifelse(len.x == 1,
-             paste(len.x, "uncertainty value was classified as NA"),
-             paste(len.x, "uncertainty values were classified as NA")),
-      "<br/>Some non-NA prediction values have NA uncertainty values"
+             paste(len.x, z, "value was classified as NA"),
+             paste(len.x, z, "values were classified as NA")),
+      "<br/>Some non-NA prediction values have NA ", z, " values"
     )
 
   } else {
     paste0(
       ifelse(len.x == 1,
-             paste(len.x, "uncertainty value was classified as NA"),
-             paste(len.x, "uncertainty values were classified as NA")),
-      "<br/>No non-NA prediction values have NA uncertainty values"
+             paste(len.x, z, "value was classified as NA"),
+             paste(len.x, z, "values were classified as NA")),
+      "<br/>No non-NA prediction values have NA ", z, " values"
     )
   }
 }
 
 
-### Generate message reporting number of NA (weight) values in x and
-###   number of non-NA y (pred) values with NA x (weight) values
-na_weight_message <- function(x, y) {
-  len.x <- length(x)
-  if (anyNA(x)) {
-    "No weight values were classified as NA"
-
-  } else if (!all(x %in% y)) {
-    paste0(
-      ifelse(len.x == 1,
-             paste(len.x, "weight value was classified as NA"),
-             paste(len.x, "weight values were classified as NA")),
-      "<br/>Some non-NA prediction values have NA weight values"
-    )
-
-  } else {
-    paste0(
-      ifelse(len.x == 1,
-             paste(len.x, "weight value was classified as NA"),
-             paste(len.x, "weight values were classified as NA")),
-      "<br/>No non-NA prediction values have NA weight values"
-    )
-  }
-}
+# ### Generate message reporting number of NA (uncertainty) values in x and
+# ###   number of non-NA y (pred) values with NA x (uncertainty) values
+# na_var_message <- function(x, y, z) {
+#   len.x <- length(x)
+#   if (anyNA(x)) {
+#     "No uncertainty values were classified as NA"
+#
+#   } else if (!all(x %in% y)) {
+#     paste0(
+#       ifelse(len.x == 1,
+#              paste(len.x, "uncertainty value was classified as NA"),
+#              paste(len.x, "uncertainty values were classified as NA")),
+#       "<br/>Some non-NA prediction values have NA uncertainty values"
+#     )
+#
+#   } else {
+#     paste0(
+#       ifelse(len.x == 1,
+#              paste(len.x, "uncertainty value was classified as NA"),
+#              paste(len.x, "uncertainty values were classified as NA")),
+#       "<br/>No non-NA prediction values have NA uncertainty values"
+#     )
+#   }
+# }
+#
+#
+# ### Generate message reporting number of NA (weight) values in x and
+# ###   number of non-NA y (pred) values with NA x (weight) values
+# na_weight_message <- function(x, y) {
+#   len.x <- length(x)
+#   if (anyNA(x)) {
+#     "No weight values were classified as NA"
+#
+#   } else if (!all(x %in% y)) {
+#     paste0(
+#       ifelse(len.x == 1,
+#              paste(len.x, "weight value was classified as NA"),
+#              paste(len.x, "weight values were classified as NA")),
+#       "<br/>Some non-NA prediction values have NA weight values"
+#     )
+#
+#   } else {
+#     paste0(
+#       ifelse(len.x == 1,
+#              paste(len.x, "weight value was classified as NA"),
+#              paste(len.x, "weight values were classified as NA")),
+#       "<br/>No non-NA prediction values have NA weight values"
+#     )
+#   }
+# }
 
 
 ### Round 'x' to nearest 'base' value

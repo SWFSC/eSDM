@@ -15,7 +15,6 @@
 #------------------------------------------------------------------------------
 if (!exists("sf.load.orig")) sf.load.orig <- sf.load.ll
 
-
 validate(
   need(inherits(sf.load.ll, "sf") & inherits(sf.load.orig, "sf"),
        "Error 1 in create_local prep")
@@ -33,12 +32,12 @@ tmp.geom.orig <- st_geometry(sf.load.orig)
 
 sf.load.ll <- st_set_geometry(sf.load.ll, NULL) %>%
   purrr::set_names(c("Pred", "SE", "Weight", "idx")) %>%
-  mutate(SE = ifelse(input$model_csv_var_type == 1, SE / Pred, SE)) %>%
+  mutate(SE = if(var.type == 1) SE / Pred else SE) %>%
   st_sf(geometry = tmp.geom.ll, agr = "constant")
 
 sf.load.orig <- st_set_geometry(sf.load.orig, NULL) %>%
   purrr::set_names(c("Pred", "SE", "Weight", "idx")) %>%
-  mutate(SE = ifelse(input$model_csv_var_type == 1, SE / Pred, SE)) %>%
+  mutate(SE = if(var.type == 1) SE / Pred else SE) %>%
   st_sf(geometry = tmp.geom.orig, agr = "constant")
 rm(tmp.geom.ll, tmp.geom.orig)
 

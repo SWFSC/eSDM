@@ -7,7 +7,7 @@
 ###############################################################################
 # Reactive functions for renderUIs
 
-###########################################################
+#----------------------------------------------------------
 ### Get names of data columns
 shp_names_choice_input <- reactive({
   req(read_model_gis_shp())
@@ -27,6 +27,7 @@ gdb_names_choice_input <- reactive({
 })
 
 
+#----------------------------------------------------------
 ### Identify NA prediction values
 model_gis_shp_NA_idx_pred <- reactive({
   data.shp <- st_set_geometry(req(read_model_gis_shp())[[1]], NULL)
@@ -47,6 +48,34 @@ model_gis_gdb_NA_idx_pred <- reactive({
 })
 
 
+#----------------------------------------------------------
+### Identify NA uncertainty values
+model_gis_shp_NA_idx_var <- reactive({
+  data.shp <- st_set_geometry(req(read_model_gis_shp())[[1]], NULL)
+  var.col <- as.numeric(req(input$model_gis_shp_names_var))
+  req((var.col - 1) <= ncol(data.shp))
+
+  if (var.col > 1) {
+    na_which(data.shp[, var.col - 1])
+  } else {
+    NA
+  }
+})
+
+model_gis_gdb_NA_idx_var <- reactive({
+  data.gdb <- st_set_geometry(req(read_model_gis_gdb())[[1]], NULL)
+  var.col <- as.numeric(req(input$model_gis_gdb_names_var))
+  req((var.col - 1) <= ncol(data.gdb))
+
+  if (var.col > 1) {
+    na_which(data.gdb[, var.col - 1])
+  } else {
+    NA
+  }
+})
+
+
+#----------------------------------------------------------
 ### Identify NA weight values
 model_gis_shp_NA_idx_weight <- reactive({
   data.shp <- st_set_geometry(req(read_model_gis_shp())[[1]], NULL)
@@ -76,6 +105,7 @@ model_gis_gdb_NA_idx_weight <- reactive({
 ###############################################################################
 # Upload and process data from shapefile
 
+#------------------------------------------------------------------------------
 ### Read in data and return sf object
 read_model_gis_shp <- reactive({
   req(input$model_gis_shp_files)
@@ -101,25 +131,29 @@ output$read_model_gis_shp_flag <- reactive({
 outputOptions(output, "read_model_gis_shp_flag", suspendWhenHidden = FALSE)
 
 
-#######################################
+#------------------------------------------------------------------------------
 ### Process shapefile data
 create_sf_gis_shp <- eventReactive(input$model_create_gis_shp, {
   # Prep for create_local code
   gis.file <- read_model_gis_shp()[[1]]
 
-  pred.idx <- as.numeric(input$model_gis_shp_names_pred)
+  pred.idx   <- as.numeric(input$model_gis_shp_names_pred)
+  var.idx    <- as.numeric(input$model_gis_shp_names_var)
   weight.idx <- as.numeric(input$model_gis_shp_names_weight)
 
   # Check that pred and weight data are valid
-  gis.file <- check_pred_weight(
-    gis.file, pred.idx, ifelse(weight.idx == 1, NA, weight.idx - 1),
-    model_gis_shp_NA_idx_pred(), model_gis_shp_NA_idx_weight()
+  gis.file <- check_pred_var_weight(
+    gis.file, pred.idx, ifelse(var.idx == 1, NA, var.idx - 1),
+    ifelse(weight.idx == 1, NA, weight.idx - 1),
+    model_gis_shp_NA_idx_pred(), model_gis_shp_NA_idx_var(),
+    model_gis_shp_NA_idx_weight()
   )
 
   # Continue create_local code prep
   model.name <-read_model_gis_shp()[[2]]
   pred.type <- input$model_gis_shp_pred_type
-  prog.message <- "Importing shapefile predictions"
+  var.type <- input$model_gis_shp_var_type
+  prog.message <- "Importing predictions from shapefile"
 
   #### The code from this file is the same as in create_sf_gis_gdb() ####
   source(file.path(
@@ -156,25 +190,30 @@ output$read_model_gis_gdb_flag <- reactive({
 })
 outputOptions(output, "read_model_gis_gdb_flag", suspendWhenHidden = FALSE)
 
-#######################################
+
+#------------------------------------------------------------------------------
 ### Process feature class data
 create_sf_gis_gdb <- eventReactive(input$model_create_gis_gdb, {
   # Prep for create_local code
   gis.file <- read_model_gis_gdb()[[1]]
 
-  pred.idx <- as.numeric(input$model_gis_gdb_names_pred)
+  pred.idx   <- as.numeric(input$model_gis_gdb_names_pred)
+  var.idx    <- as.numeric(input$model_gis_gdb_names_var)
   weight.idx <- as.numeric(input$model_gis_gdb_names_weight)
 
   # Check that pred and weight data are valid
-  gis.file <- check_pred_weight(
-    gis.file, pred.idx, ifelse(weight.idx == 1, NA, weight.idx - 1),
-    model_gis_gdb_NA_idx_pred(), model_gis_gdb_NA_idx_weight()
+  gis.file <- check_pred_var_weight(
+    gis.file, pred.idx, ifelse(var.idx == 1, NA, var.idx - 1),
+    ifelse(weight.idx == 1, NA, weight.idx - 1),
+    model_gis_gdb_NA_idx_pred(), model_gis_gdb_NA_idx_var(),
+    model_gis_gdb_NA_idx_weight()
   )
 
   # Continue create_local code prep
   model.name <- read_model_gis_gdb()[[2]]
   pred.type <- input$model_gis_gdb_pred_type
-  prog.message <- "Importing feature class predictions"
+  var.type <- input$model_gis_gdb_var_type
+  prog.message <- "Importing predictions from feature class"
 
   #### The code from this file is the same as in create_sf_gis_shp() ####
   source(file.path(
