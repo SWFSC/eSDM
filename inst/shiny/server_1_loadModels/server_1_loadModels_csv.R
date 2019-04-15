@@ -34,13 +34,15 @@ csv_names_choice_input <- reactive({
   choice.input
 })
 
-### Name of prediction and if(applicable) weight column selected by user
+### Name of selected prediction and (if appl) uncertainty and weight column(s)
 model_csv_names_selected <- reactive({
   data.names <- names(read_model_csv()[[2]])
+  var.idx <- as.numeric(input$model_csv_names_var) - 1
   weight.idx <- as.numeric(input$model_csv_names_weight) - 1
 
   list(
     c(data.names[as.numeric(input$model_csv_names_pred)],
+      ifelse(var.idx == 0, NA, data.names[var.idx]),
       ifelse(weight.idx == 0, NA, data.names[weight.idx]))
   )
 })
@@ -48,58 +50,67 @@ model_csv_names_selected <- reactive({
 ### Identify row indices of NA values in given prediction column
 model_csv_NA_idx_pred <- reactive({
   data.csv <- req(read_model_csv())[[2]]
-
   data.col <- as.numeric(req(input$model_csv_names_pred))
   req(data.col <= ncol(data.csv))
 
   na_which(data.csv[, data.col])
 })
 
+### Identify row indices of NA values in given uncertainty column
+model_csv_NA_idx_var <- reactive({
+  data.csv <- read_model_csv()[[2]]
+  var.col <- as.numeric(req(input$model_csv_names_var))
+  req((var.col - 1) <= ncol(data.csv))
+
+  if (var.col > 1) na_which(data.csv[, (var.col - 1)]) else NA
+})
+
 ### Identify row indices of NA values in given weight column
 model_csv_NA_idx_weight <- reactive({
   data.csv <- read_model_csv()[[2]]
-
   weight.col <- as.numeric(req(input$model_csv_names_weight))
   req((weight.col - 1) <= ncol(data.csv))
-  if (weight.col > 1) {
-    na_which(data.csv[, (weight.col - 1)])
-  } else {
-    NA
-  }
+
+  if (weight.col > 1) na_which(data.csv[, (weight.col - 1)]) else NA
 })
 
 
 ###############################################################################
 ###############################################################################
-
 # Load and process data from csv file, and then add relevant data to vals
+
+###############################################################################
+# Create data frame for original predictions
 create_sf_csv_data <- reactive({
-  #######################################################
   ### Upload and process data and input variables
   lon.idx <- as.numeric(input$model_csv_names_lon)
   lat.idx <- as.numeric(input$model_csv_names_lat)
   pred.idx <- as.numeric(input$model_csv_names_pred)
+
+  var.idx <- as.numeric(input$model_csv_names_var) - 1
+  var.idx <- ifelse(var.idx == 0, NA, var.idx)
   weight.idx <- as.numeric(input$model_csv_names_weight) - 1
   weight.idx <- ifelse(weight.idx == 0, NA, weight.idx)
 
-  csv.idx <- c(lon.idx, lat.idx, pred.idx, weight.idx)
+  csv.idx <- c(lon.idx, lat.idx, pred.idx, var.idx, weight.idx)
 
   csv.all <- read_model_csv()[[2]]
-  csv.data <- cbind(csv.all[, csv.idx[1:3]], as.numeric(NA))
-  if (!is.na(weight.idx)) csv.data[, 4] <- csv.all[, weight.idx]
+  csv.data <- cbind(csv.all[, csv.idx[1:3]], as.numeric(NA), as.numeric(NA))
+  if (!is.na(var.idx)) csv.data[, 4] <- csv.all[, var.idx]
+  if (!is.na(weight.idx)) csv.data[, 5] <- csv.all[, weight.idx]
 
   # Check that pred and weight data are valid
   csv.data <- check_pred_weight(
-    csv.data, 3, ifelse(weight.idx == 0, NA, 4), model_csv_NA_idx_pred(),
+    csv.data, 3, ifelse(var.idx == 0, NA, 4), ifelse(weight.idx == 0, NA, 5),
+    model_csv_NA_idx_pred(), model_csv_NA_idx_var(),
     model_csv_NA_idx_weight()
   )
 
-  # Sort data by lat (primary) then long for bottom up sort
-  csv.data <- data_sort(csv.data, 2, 1)
-
-  # Remove lat/long; add 'Pixel' column to keep track of indices
-  cbind(csv.data, 1:nrow(csv.data)) %>%
-    purrr::set_names(c("Lon", "Lat", "Pred", "Weight", "Pixels"))
+  # Sort data by lat (primary) then lon; add idx column
+  csv.data %>%
+    purrr::set_names(c("Lon", "Lat", "Pred", "SE", "Weight")) %>%
+    dplyr::arrange(Lat, Lon) %>%
+    dplyr::mutate(idx = seq_along(Lon))
 })
 
 
@@ -110,11 +121,11 @@ create_sf_csv_sfc <- reactive({
     #--------------------------------------------------------------------------
     lon.idx <- as.numeric(input$model_csv_names_lon)
     lat.idx <- as.numeric(input$model_csv_names_lat)
-    csv.data <- read_model_csv()[[2]][, c(lon.idx, lat.idx)]
 
-    csv.data <- data_sort(csv.data, 2, 1)
-    csv.data <- cbind(csv.data, 1:nrow(csv.data)) %>%
-      purrr::set_names(c("Lon", "Lat", "Pixels"))
+    csv.data <- read_model_csv()[[2]] %>%
+      dplyr::select(Lon = !!lon.idx, Lat = !!lat.idx) %>%
+      dplyr::arrange(Lat, Lon) %>%
+      dplyr::mutate(idx = seq_along(Lon))
 
 
     #--------------------------------------------------------------------------
@@ -207,7 +218,7 @@ create_sf_csv_sfc <- reactive({
     validate(
       need(inherits(sfc.poly, "sfc_POLYGON"),
            paste("Error: The longitude and latitude data from the",
-                 "provided .csv file could not be processed"))
+                 "provided CSV file could not be processed"))
     )
     incProgress(0.3)
 
@@ -236,11 +247,11 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
   withProgress(message = "Importing predictions from .csv file", value = 0.6, {
     if (nrow(csv.data) == length(csv.sfc)) {
       sf.load.ll <- st_sf(
-        csv.data[, 3:5], geometry = csv.sfc, agr = "constant"
+        csv.data[, 3:6], geometry = csv.sfc, agr = "constant"
       )
 
     } else {
-      validate("Error in creating sf object from .csv file")
+      validate("Error in creating sf object from CSV file")
     }
 
     ### Prep for and run function that adds relevant data to vals
@@ -248,6 +259,7 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
     model.res <- paste(create_sf_csv_sfc()[[2]], "degrees")
 
     pred.type <- input$model_csv_pred_type
+    var.type  <- input$model_csv_var_type
     model.name <- read_model_csv()[[1]]
     data.names <- model_csv_names_selected()
 
@@ -258,6 +270,6 @@ create_sf_csv <- eventReactive(input$model_create_csv, {
     )
     ####################################################
 
-    "Predictions imported from .csv file"
+    "Predictions imported from CSV file"
   })
 })

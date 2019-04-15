@@ -156,20 +156,26 @@ check_valid <- function(x, progress.detail = FALSE) {
 
 #------------------------------------------------------------------------------
 ### Check that prediction and weight data is in proper format
-check_pred_weight <- function(x, pred.idx, weight.idx,
-                              pred.na.idx, weight.na.idx) {
+check_pred_weight <- function(x, pred.idx, var.idx, weight.idx,
+                              pred.na.idx, var.na.idx, weight.na.idx) {
   stopifnot(is.numeric(pred.idx))
 
   x.orig <- x
   if (inherits(x, "sf")) x <- st_set_geometry(x, NULL)
 
   if (!inherits(pred.na.idx, "logical")) x[pred.na.idx, pred.idx] <- NA
+  if (!inherits(var.na.idx, "logical")) x[var.na.idx, var.idx] <- NA
   if (!inherits(weight.na.idx, "logical")) x[weight.na.idx, weight.idx] <- NA
 
   validate(
     need(is.numeric(x[, pred.idx]),
          paste("Error: Unable to process the prediction data, please",
                "ensure all values in the prediction column are numbers")),
+    if (!is.na(var.idx)) {
+      need(is.numeric(x[, var.idx]),
+           paste("Error: Unable to process the uncertainty values, please",
+                 "ensure all values in the uncertainty column are numbers"))
+    },
     if (!is.na(weight.idx)) {
       need(is.numeric(x[, weight.idx]),
            paste("Error: Unable to process the weight data, please",
@@ -332,11 +338,15 @@ make_geom_valid <- function(geom.invalid, dens.col = NA, geom.info = NA,
 ###############################################################################
 # GUI-specific helper functions
 
-### Sort x by col1 and then (if applicable) col2
-data_sort <- function(x, col1 = 1, col2 = NA) {
-  if (!is.na(col2)) x <- x[order(x[, col2]), ]
-  x[order(x[, col1]), ]
-}
+# ### Sort x by col1 and then (if applicable) col2
+# data_sort <- function(x, col1 = 1, col2 = NA) {
+#   if (!is.na(col2)) x <- x[order(x[, col2]), ]
+#   x[order(x[, col1]), ]
+# }
+
+
+### Get the area of a sf or sfc object in km^2; return a numeric vector
+esdm_area_km2 <- function(x) as.numeric(units::set_units(st_area(x), "km^2"))
 
 
 ### Determine whether all values in x are equal;
@@ -375,6 +385,32 @@ na_pred_message <- function(x) {
     ifelse(len.x == 1,
            paste(len.x, "prediction value was classified as NA"),
            paste(len.x, "prediction values were classified as NA"))
+  }
+}
+
+
+### Generate message reporting number of NA (uncertainty) values in x and
+###   number of non-NA y (pred) values with NA x (uncertainty) values
+na_var_message <- function(x, y) {
+  len.x <- length(x)
+  if (anyNA(x)) {
+    "No uncertainty values were classified as NA"
+
+  } else if (!all(x %in% y)) {
+    paste0(
+      ifelse(len.x == 1,
+             paste(len.x, "uncertainty value was classified as NA"),
+             paste(len.x, "uncertainty values were classified as NA")),
+      "<br/>Some non-NA prediction values have NA uncertainty values"
+    )
+
+  } else {
+    paste0(
+      ifelse(len.x == 1,
+             paste(len.x, "uncertainty value was classified as NA"),
+             paste(len.x, "uncertainty values were classified as NA")),
+      "<br/>No non-NA prediction values have NA uncertainty values"
+    )
   }
 }
 

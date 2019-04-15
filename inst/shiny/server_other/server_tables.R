@@ -15,7 +15,7 @@ table_orig <- reactive({
              stringsAsFactors = FALSE,
              row.names = paste("Original", 1:length(vals$models.names))) %>%
     purrr::set_names(
-      c("SDM filename", "Predictions", "Weights", "Prediction unit")
+      c("SDM filename", "Predictions", "SEs", "Weights", "Prediction unit")
     )
 })
 
@@ -44,7 +44,7 @@ table_overlaid <- reactive({
              stringsAsFactors = FALSE,
              row.names = paste("Overlaid", seq_along(vals$overlaid.models))) %>%
     purrr::set_names(
-      c("SDM filename", "Predictions", "Weights", "Prediction unit",
+      c("SDM filename", "Predictions", "SEs", "Weights", "Prediction unit",
         "Resolution", "Polygon count", "Non-NA prediction count", "Abundance",
         "Long, lat range")
     )

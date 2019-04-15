@@ -2,27 +2,63 @@
 
 ###############################################################################
 # Generate info message for renderUIs
-model_csv_inf_func <- function(pred.type, pred.na.idx, weight.idx, weight.na.idx) {
+model_csv_inf_func <- function(pred.type, pred.na.idx,
+                               var.idx, var.na.idx,
+                               weight.idx, weight.na.idx) {
   temp <- ifelse(
     pred.type != 3, NA,
     paste("Abundance value type: All prediction values will be divided",
           "by their prediction polygon area")
   )
 
-  if (as.numeric(weight.idx) > 1) {
+  #--------------------------------------------------------
+  if (as.numeric(weight.idx) > 1 & as.numeric(var.idx) > 1) {
     if (is.na(temp)) {
       HTML(
-        na_pred_message(pred.na.idx), "<br/>",
+        na_pred_message(pred.na.idx), "<br/>", "<br/>",
+        na_var_message(var.na.idx, pred.na.idx), "<br/>", "<br/>",
         na_weight_message(weight.na.idx, pred.na.idx)
       )
     } else {
       HTML(
         temp, "<br/>", "<br/>",
-        na_pred_message(pred.na.idx), "<br/>",
+        na_pred_message(pred.na.idx), "<br/>", "<br/>",
+        na_var_message(var.na.idx, pred.na.idx), "<br/>", "<br/>",
         na_weight_message(weight.na.idx, pred.na.idx)
       )
     }
 
+    #------------------------------------------------------
+  } else if (as.numeric(weight.idx) > 1) {
+    if (is.na(temp)) {
+      HTML(
+        na_pred_message(pred.na.idx), "<br/>", "<br/>",
+        na_weight_message(weight.na.idx, pred.na.idx)
+      )
+    } else {
+      HTML(
+        temp, "<br/>", "<br/>",
+        na_pred_message(pred.na.idx), "<br/>", "<br/>",
+        na_weight_message(weight.na.idx, pred.na.idx)
+      )
+    }
+
+    #------------------------------------------------------
+  } else if (as.numeric(var.idx) > 1) {
+    if (is.na(temp)) {
+      HTML(
+        na_pred_message(pred.na.idx), "<br/>", "<br/>",
+        na_var_message(var.na.idx, pred.na.idx)
+      )
+    } else {
+      HTML(
+        temp, "<br/>", "<br/>",
+        na_pred_message(pred.na.idx), "<br/>", "<br/>",
+        na_var_message(var.na.idx, pred.na.idx)
+      )
+    }
+
+    #------------------------------------------------------
   } else {
     if (is.na(temp)) {
       HTML(na_pred_message(pred.na.idx))

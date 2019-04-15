@@ -37,12 +37,16 @@ ui.loadModels <- function() {
                     column(
                       width = 6,
                       uiOutput("model_csv_names_lon_uiOut_select"),
-                      uiOutput("model_csv_names_pred_uiOut_select")
+                      uiOutput("model_csv_names_pred_uiOut_select"),
+                      uiOutput("model_csv_names_var_uiOut_select")
                     ),
                     column(
                       width = 6,
                       uiOutput("model_csv_names_lat_uiOut_select"),
-                      uiOutput("model_csv_pred_type_uiOut_select")
+                      uiOutput("model_csv_pred_type_uiOut_select"),
+                      selectInput("model_csv_var_type", tags$h5("Uncertainty value type"),
+                                  choices = list("Coefficient of variation (CV)" = 1, "Standard error (SE)" = 2),
+                                  selected = 2)
                     )
                   ),
                   fluidRow(

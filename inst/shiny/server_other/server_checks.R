@@ -2,7 +2,24 @@
 
 
 ###############################################################################
-### Ensure all original model reactive values are correctly formatted
+### Prep
+sf.attr  <- c("names", "row.names", "class", "sf_column", "agr")
+sfc.attr <- c(
+  "n_empty", "crs", "class", "precision", "bbox", "classes", "names", "srid"
+)
+
+modal.attr <- function(x) {
+  modalDialog(
+    title = x,
+    paste("Please either contact Sam (sam.woodman@noaa.gov) or report this",
+          "as an issue on GitHub (https://github.com/smwoodman/eSDM/issues)"),
+    footer = tagList(modalButton("Close"))
+  )
+}
+
+
+###############################################################################
+### Ensure all original model (prediction) reactive values are correctly formatted
 observe({
   req(length(vals$models.ll) > 0)
   vals$models.orig
@@ -17,21 +34,22 @@ observe({
                 vals$models.specs),
            length)
   )
-  if (!check.all) shinyjs::alert(
-    paste("eSDM error 1: Improper formatting of original predictions;",
-          "please either contact Sam at sam.woodman@noaa.gov or report this as an issue on GitHub")
-  )
+  if (!check.all) {
+    showModal(modal.attr("Error: Improper formatting of original predictions (e1)"))
+  }
 
+  names.txt <- c("Pred", "SE", "Weight", "idx", "geometry")
+  names.attr.txt <- c("Pred", "SE", "Weight", "idx")
   if (length(vals$models.ll) > 0) {
     check.all <- c(
       all(sapply(vals$models.ll, inherits, "sf")),
       all(sapply(vals$models.orig, inherits, "sf")),
 
-      all(sapply(lapply(vals$models.ll, names), function(i) identical(i, c("Pred", "Weight", "Pixels", "geometry")))),
-      all(sapply(lapply(vals$models.orig, names), function(i) identical(i, c("Pred", "Weight", "Pixels", "geometry")))),
+      all(sapply(lapply(vals$models.ll, names), function(i) identical(i, names.txt))),
+      all(sapply(lapply(vals$models.orig, names), function(i) identical(i, names.txt))),
 
-      all(sapply(lapply(vals$models.ll, function(i) names(st_agr(i))), function(j) identical(j, c("Pred", "Weight", "Pixels")))),
-      all(sapply(lapply(vals$models.orig, function(i) names(st_agr(i))), function(j) identical(j, c("Pred", "Weight", "Pixels")))),
+      all(sapply(lapply(vals$models.ll,   function(i) names(st_agr(i))), function(j) identical(j, names.attr.txt))),
+      all(sapply(lapply(vals$models.orig, function(i) names(st_agr(i))), function(j) identical(j, names.attr.txt))),
 
       all(sapply(vals$models.ll, function(i) identical(st_crs(i), st_crs(4326)))),
 
@@ -42,18 +60,16 @@ observe({
       all(sapply(vals$models.orig, attr, "sf_column") == "geometry"),
 
       sapply(lapply(vals$models.ll, function(i) i$Pred), is.numeric),
+      sapply(lapply(vals$models.ll, function(i) i$SE), is.numeric),
       sapply(lapply(vals$models.ll, function(i) i$Weight), is.numeric),
-      sapply(lapply(vals$models.ll, function(i) i$Pixels), is.numeric),
+      sapply(lapply(vals$models.ll, function(i) i$idx), is.numeric),
 
       all(sapply(vals$models.names, inherits, "character")),
       all(sapply(vals$models.data.names, function(i) all(sapply(i, inherits, "character"))))
     )
 
     if (!all(check.all) | anyNA(check.all)) {
-      shinyjs::alert(
-        paste("eSDM error 2: Improper formatting of orignal predictions;",
-              "please either contact Sam at sam.woodman@noaa.gov or report this as an issue on GitHub")
-      )
+      showModal(modal.attr("Error: Improper formatting of original predictions (e2)"))
     }
   }
 })
@@ -63,22 +79,6 @@ observe({
 # Perform checks of various sf objects to make sure attributes are correct
 # Checks are not performed on plot objects, i.e. pretty plot params list b/c
 #   some preview360 code adds attributes b/c of st_intersection()
-
-#------------------------------------------------------------------------------
-### Prep
-sf.attr  <- c("names", "row.names", "class", "sf_column", "agr")
-sfc.attr <- c(
-  "n_empty", "crs", "class", "precision", "bbox", "classes", "names", "srid"
-)
-# TODO: research 'classes' attribute
-
-modal.attr <- function(x) {
-  modalDialog(
-    title = x,
-    "Please report this as an issue",
-    footer = tagList(modalButton("Close"))
-  )
-}
 
 #------------------------------------------------------------------------------
 ### Original predictions
@@ -103,6 +103,8 @@ observe({
 ### Overlaid predictions and associated spatial objects
 observe({
   req(length(vals$overlaid.models) > 0)
+  browser()
+
   check.all <- c(
     all(sapply(vals$overlaid.models, function(i) all(names(attributes(i)) %in% sf.attr))),
     all(sapply(vals$overlaid.models, function(i) all(names(attributes(st_geometry(i))) %in% sfc.attr)))
@@ -146,6 +148,8 @@ observe({
 ### Ensemble predictions
 observe({
   req(length(vals$ensemble.models) > 0)
+  browser()
+
   check.all <- c(
     all(sapply(vals$ensemble.models, function(i) all(names(attributes(i)) %in% sf.attr))),
     all(sapply(vals$ensemble.models, function(i) all(names(attributes(st_geometry(i))) %in% sfc.attr)))

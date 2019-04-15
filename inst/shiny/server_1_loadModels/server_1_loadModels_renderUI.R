@@ -39,6 +39,16 @@ output$model_csv_pred_type_uiOut_select <- renderUI({
               selected = 2)
 })
 
+## Uncertainty (variability)
+output$model_csv_names_var_uiOut_select <- renderUI({
+  req(read_model_csv())
+  choice.input <- csv_names_choice_input()
+  choice.input <- c("N/A - No uncertainty values" = 1, choice.input + 1)
+  selectInput("model_csv_names_var",
+              tags$h5("Column with uncertainty values (optional)"),
+              choices = choice.input, selected = NULL)
+})
+
 ### Weight
 output$model_csv_names_weight_uiOut_select <- renderUI({
   req(read_model_csv())
@@ -55,6 +65,7 @@ output$model_csv_NA_idx_uiOut_message <- renderUI({
 
   model_csv_inf_func(
     req(input$model_csv_pred_type), model_csv_NA_idx_pred(),
+    req(input$model_csv_names_var), model_csv_NA_idx_var(),
     req(input$model_csv_names_weight), model_csv_NA_idx_weight()
   )
 })
