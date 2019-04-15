@@ -19,7 +19,7 @@ observeEvent(input$overlay_create_overlaid_models_modal, {
 
 
 ###############################################################################
-### Where the overlay magic aka science happens
+### Where the overlay magic aka science aka areal interpolation happens
 overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
   removeModal()
   validate(
@@ -27,13 +27,13 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
          "You must import original predictions to perform an overlay")
   )
 
-  #########################################################
+  #----------------------------------------------------------------------------
   ### Reset/hide reactive values, preview plots, and eval metrics
   validate(
     need(overlay_reset(), "An error occurred; please report an issue")
   )
 
-  #########################################################
+  #----------------------------------------------------------------------------
   ### Overlay prep
   # Get index of predictions to be base geometry
   base.idx <- overlay_base_idx()
@@ -59,10 +59,10 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     }
   )
 
-  overlap.perc <- input$overlay_grid_coverage #/ 100
+  overlap.perc <- input$overlay_grid_coverage
 
 
-  #########################################################
+  #----------------------------------------------------------------------------
   ### Overlay process
   withProgress(message = 'Overlay step:', value = 0.1, {
     prog.total <- length(vals$models.ll) + 1
@@ -77,9 +77,9 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       models.preoverlay <- vals$models.ll[-base.idx]
 
     } else {
-      models.preoverlay <- lapply(vals$models.orig[-base.idx], function(sdm) {
-        st_transform(sdm, overlay_crs())
-      })
+      models.preoverlay <- lapply(
+        vals$models.orig[-base.idx], st_transform, overlay_crs()
+      )
     }
 
 
@@ -89,20 +89,21 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       "Making the base geometry and thus also overlaying Original", base.idx
     ))
 
-    base.sf <- overlay_create_base_sf() %>%
-      purrr::set_names(c("Pred.overlaid", "Weight.overlaid", "Pixels", "geometry"))
-
+    base.sf <- overlay_create_base_sf()
     base.sfc <- st_geometry(base.sf)
+
+    base.sf <- base.sf %>%
+      st_set_geometry(NULL) %>%
+      purrr::set_names(c("Pred", "SE", "Weight", "idx")) %>%
+      st_sf(geometry = base.sfc, agr = "constant")
+
 
     # Get specs of base.sfc
     base.specs <- vals$models.specs[[base.idx]]
     base.specs[2] <- length(base.sfc) #length() for sfc object
     base.specs[3:4] <- NA
-    if (identical(st_crs(base.sfc), crs.ll)) {
-      base.sfc.ll <- base.sfc
-    } else {
-      base.sfc.ll <- st_transform(base.sfc, crs.ll)
-    }
+
+    base.sfc.ll <- st_transform(base.sfc, crs.ll)
     base.specs[5] <- paste(
       as.character(round(st_bbox(base.sfc.ll)[c(1, 3, 2, 4)], 0)),
       collapse = ", "
@@ -113,12 +114,12 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     #--------------------------------------------
     ### Check that all original predictions overlap with base.sfc
     base.sfc.union <- st_union(base.sfc)
-    x <- sapply(models.preoverlay, function(i) {
+    x <- vapply(models.preoverlay, function(i) {
       i <- suppressMessages(
         st_intersects(dplyr::filter(i, !is.na(Pred)), base.sfc)
       )
       any(sapply(i, length) > 0)
-    })
+    }, as.logical(1))
     y <- which(!x)
 
     validate(
@@ -135,10 +136,10 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
     #--------------------------------------------
     ### Create overlaid predictions
-    base.pix <- dplyr::select(base.sf, Pixels)
+    base.sf.idx <- dplyr::select(base.sf, idx)
     models.orig.sfc <- lapply(vals$models.orig, st_geometry)
-    samegeo.flag <- sapply(
-      models.orig.sfc[-base.idx], identical, models.orig.sfc[[base.idx]]
+    samegeo.flag <- vapply(
+      models.orig.sfc[-base.idx], identical, as.logical(1), models.orig.sfc[[base.idx]]
     )
     rm(models.orig.sfc)
 
@@ -149,14 +150,11 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
       )
 
       if (samegeo.flag.ind) {
-        # SDM being overlaid has the SAME geometry as not-clipped or erased
-        #   geometry of base.sfc
-        #   If base.sfc is clipped geom of orig geom, then can index by Pixels
-        sf.temp <- base.pix %>%
-          dplyr::left_join(st_set_geometry(sdm, NULL), by = "Pixels") %>%
-          dplyr::mutate(Pixels2 = 1:nrow(base.pix)) %>%
-          dplyr::select(Pred.overlaid = Pred, Weight.overlaid = Weight,
-                        Pixels = Pixels2) %>%
+        # SDM being overlaid has the SAME geometry as (pre-clip/erase) the base
+        #   If base.sfc is clipped geom of orig geom, then can index by 'idx
+        sf.temp <- base.sf.idx %>%
+          dplyr::left_join(st_set_geometry(sdm, NULL), by = "idx") %>%
+          dplyr::select(Pred = Pred, SE = SE, Weight = Weight, idx) %>%
           st_set_agr("constant")
 
         validate(
@@ -165,15 +163,18 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
                      sdm.num))
         )
 
-        sf.temp
+        st_set_geometry(sf.temp, NULL)
 
       } else {
         # SDM being overlaid has a DIFFERENT geometry than the base
+        # Convert SE to variance
+        sdm <- sdm %>% mutate(var = SE^2)
+
+        # Overlay
         temp <- try( #overlay.sdm() crops 'sdm' to bbox of 'base.sfc'
-          eSDM::overlay_sdm(base.sfc, sdm, c("Pred", "Weight"), overlap.perc),
+          eSDM::overlay_sdm(base.sfc, sdm, c("Pred", "var", "Weight"), overlap.perc),
           silent = TRUE
         )
-
         validate(
           need(temp,
                paste("Error: The GUI was unable to overlay Original",
@@ -182,8 +183,8 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
         temp %>%
           st_set_geometry(NULL) %>%
-          dplyr::bind_cols(Pixels = 1:nrow(temp)) %>%
-          st_sf(geometry = st_geometry(temp), agr = "constant")
+          mutate(SE = sqrt(var), idx = seq_along(Pred)) %>%
+          select(Pred, SE, Weight, idx)
       }
     },
     samegeo.flag, models.preoverlay,
@@ -194,7 +195,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 
     #--------------------------------------------
     ### Procces overlaid models and their info
-    models.overlaid.all <- c(models.overlaid, list(base.sf))
+    models.overlaid.all <- c(models.overlaid, list(st_set_geometry(base.sf, NULL)))
 
     # Reorder model list
     temp <- length(models.overlaid.all)
@@ -213,12 +214,12 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     # Get model specs
     specs.list <- mapply(function(n, p, idx) {
       if (p == 1) {
-        n.abund <- unname(round(eSDM::model_abundance(n, "Pred.overlaid")))
+        n.abund <- unname(round(eSDM::model_abundance(st_sf(n, base.sfc), "Pred")))
       } else {
         n.abund <- "N/A"
       }
       list(c(as.character(table_orig()[idx, ]), base.specs[1], nrow(n),
-             sum(!is.na(n$Pred.overlaid)), n.abund, base.specs[5]))
+             sum(!is.na(n$Pred)), n.abund, base.specs[5]))
     }, models.overlaid.all, vals$models.pred.type, 1:models.num)
 
 
@@ -244,7 +245,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     vals$ens.over.wpoly.coverage <- list.null
   })
 
-  #########################################################
+  #----------------------------------------------------------------------------
 
   # Do not need to test validity of any polygons because base polygon was
   # already checked and overlaid were made directly from base poly

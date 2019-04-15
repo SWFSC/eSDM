@@ -8,6 +8,10 @@ sfc.attr <- c(
   "n_empty", "crs", "class", "precision", "bbox", "classes", "names", "srid"
 )
 
+names.txt <- c("Pred", "SE", "Weight", "idx", "geometry")
+names.df.txt <- c("Pred", "SE", "Weight", "idx")
+
+
 modal.attr <- function(x) {
   modalDialog(
     title = x,
@@ -38,9 +42,7 @@ observe({
     showModal(modal.attr("Error: Improper formatting of original predictions (e1)"))
   }
 
-  names.txt <- c("Pred", "SE", "Weight", "idx", "geometry")
-  names.attr.txt <- c("Pred", "SE", "Weight", "idx")
-  if (length(vals$models.ll) > 0) {
+   if (length(vals$models.ll) > 0) {
     check.all <- c(
       all(sapply(vals$models.ll, inherits, "sf")),
       all(sapply(vals$models.orig, inherits, "sf")),
@@ -48,8 +50,8 @@ observe({
       all(sapply(lapply(vals$models.ll, names), function(i) identical(i, names.txt))),
       all(sapply(lapply(vals$models.orig, names), function(i) identical(i, names.txt))),
 
-      all(sapply(lapply(vals$models.ll,   function(i) names(st_agr(i))), function(j) identical(j, names.attr.txt))),
-      all(sapply(lapply(vals$models.orig, function(i) names(st_agr(i))), function(j) identical(j, names.attr.txt))),
+      all(sapply(lapply(vals$models.ll,   function(i) names(st_agr(i))), function(j) identical(j, names.df.txt))),
+      all(sapply(lapply(vals$models.orig, function(i) names(st_agr(i))), function(j) identical(j, names.df.txt))),
 
       all(sapply(vals$models.ll, function(i) identical(st_crs(i), st_crs(4326)))),
 
@@ -103,11 +105,13 @@ observe({
 ### Overlaid predictions and associated spatial objects
 observe({
   req(length(vals$overlaid.models) > 0)
-  browser()
 
   check.all <- c(
-    all(sapply(vals$overlaid.models, function(i) all(names(attributes(i)) %in% sf.attr))),
-    all(sapply(vals$overlaid.models, function(i) all(names(attributes(st_geometry(i))) %in% sfc.attr)))
+    all(sapply(vals$overlaid.models, inherits, "data.frame")),
+    all(sapply(vals$overlaid.models, nrow) == nrow(vals$overlaid.models[[1]])),
+    all(sapply(lapply(vals$overlaid.models, names), function(i) identical(i, names.df.txt)))
+    # all(sapply(vals$overlaid.models, function(i) all(names(attributes(i)) %in% sf.attr))),
+    # all(sapply(vals$overlaid.models, function(i) all(names(attributes(st_geometry(i))) %in% sfc.attr)))
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing overlaid predictions"))

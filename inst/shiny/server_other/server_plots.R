@@ -154,14 +154,17 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
 observeEvent(input$overlay_preview_overlaid_execute, {
   perc.num <- as.numeric(input$overlay_preview_overlaid_models_perc)
   overlaid.idx <- as.numeric(input$overlay_preview_overlaid_models)
-  models.toplot <- vals$overlaid.models[overlaid.idx]
+  models.toplot <- lapply(
+    vals$overlaid.models[overlaid.idx], st_sf,
+    geometry = vals$overlay.base.sfc, agr = "constant"
+  )
   models.num <- length(models.toplot)
 
   plot.titles <- paste("Overlaid", overlaid.idx)
 
   vals$overlaid.plot <- list(
     models.toplot = models.toplot,
-    data.names = rep("Pred.overlaid", models.num),
+    data.names = rep("Pred", models.num),
     plot.titles = plot.titles, perc.num = perc.num,
     pal = switch(perc.num, pal.esdm, NA),
     plot.dims = multiplot_inapp(models.num)

@@ -367,9 +367,11 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
   # Convert to 0-360 longitude range if necessary
   sdm.ll <- check_preview360_split(sdm.ll)
+  sdm.df <- st_set_geometry(sdm.ll, NULL)
 
-  data.vec <- st_set_geometry(sdm.ll[data.name], NULL)[, 1]
-  data.vec.w <- if (ncol(sdm.ll) > 2) st_set_geometry(sdm.ll, NULL)[, 2] else NA
+  data.vec <- sdm.df[, data.name]
+  data.vec.v <- if (ncol(sdm.ll) > 2) sdm.df[, 2] else NA
+  data.vec.w <- if (ncol(sdm.ll) > 3) sdm.df[, 3] else NA
   stopifnot(is.numeric(data.vec))
   sdm.cent <- suppressWarnings(st_centroid(st_combine(sdm.ll))[[1]])
 
@@ -390,7 +392,9 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
   #----------------------------------------------------------------------------
   if (perc == 1) {
-    # Color prediction based on relative percentages
+    # Color values  based on relative percentages
+
+    ### Predictions
     b.model <- breaks_calc(data.vec)
     validate(
       need(length(unique(b.model)) >= 11,
@@ -407,8 +411,52 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
         labels = c(rev(leg.labels), "NA"), opacity = 1, group = "Predictions")
 
+
+    #------------------------------------------------------
+    ### Uncertainties
+    if (!all(is.na(data.vec.v))) {
+      b.model.v <- breaks_calc(data.vec.v)
+      validate(
+        need(length(unique(b.model.v)) >= 11,
+             paste("Error: The selected predictions do not",
+                   "have enough unique uncertainty values to plot",
+                   "an interactive preview with a 'percentage' unit type"))
+      )
+      binpal.v <- colorBin(col.pal, data.vec.v, bins = b.model.v, na.color = "gray")
+
+      leaf.map <- leaf.map %>%
+        addPolygons(
+          stroke = FALSE, color = ~binpal.v(data.vec.v), fillOpacity = 0.8, group = "Uncertainties") %>%
+        addLegend(
+          "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
+          labels = c(rev(leg.labels), "NA"), opacity = 1, group = "Uncertainties")
+    }
+
+    #------------------------------------------------------
+    ### Weights
+    if (!all(is.na(data.vec.w))) {
+      b.model.w <- breaks_calc(data.vec.w)
+      validate(
+        need(length(unique(b.model.w)) >= 11,
+             paste("Error: The selected predictions do not",
+                   "have enough unique weight values to plot",
+                   "an interactive preview with a 'percentage' unit type"))
+      )
+      binpal.w <- colorBin(col.pal, data.vec.w, bins = b.model.w, na.color = "gray")
+
+      leaf.map <- leaf.map %>%
+        addPolygons(
+          stroke = FALSE, color = ~binpal.w(data.vec.w), fillOpacity = 0.8, group = "Weights") %>%
+        addLegend(
+          "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
+          labels = c(rev(leg.labels), "NA"), opacity = 1, group = "Weights")
+    }
+
+    #--------------------------------------------------------------------------
   } else {
-    # Color predictions based on actual values
+    # Color values based on actual values
+
+    ### Predictions
     col.pal <- preview_vals_break_col(data.vec)[[2]]
     col.num <- length(col.pal)
 
@@ -423,49 +471,127 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
       addLegend(
         "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
         labels = c(data.breaks.labs, "NA"), opacity = 1, group = "Predictions")
+
+
+    ### Uncertainties - same color scale as predictions
+    if (!all(is.na(data.vec.v))) {
+      #####
+      # browser()
+
+      validate(
+        need(col.num >= 10, "Error: Error plotting uncertainties for selected predictions")
+      )
+
+      b.new <- seq(min(data.vec, na.rm = TRUE), max(data.vec, na.rm = TRUE), length.out = 11)
+      b.new[1] <- min(data.vec.v, na.rm = TRUE)
+      b.new[11] <- max(max(data.vec.v, na.rm = TRUE), max(data.vec, na.rm = TRUE))
+
+
+      binpal.v <- colorBin(
+        col.pal, data.vec.v, bins = b.new, pretty = FALSE, na.color = "gray"
+      )
+      data.breaks.vals <- b.new
+      d <- max(3, nchar(format(signif(tail(data.breaks.vals, 2)[2], 1), scientific = FALSE)) - 2)
+      data.breaks.vals <- format(round(data.breaks.vals, d), justify = "right")
+      data.breaks.labs <- paste(
+        tail(data.breaks.vals, -1), "-", head(data.breaks.vals, -1)
+      )
+
+      #####
+
+
+
+      # data.vec.v.uniq <- length(unique(na.omit(data.vec.v)))
+      # v.num <- ifelse(data.vec.v.uniq > 10, 10, data.vec.v.uniq)
+      # v.pal <- viridis::viridis(v.num)
+      #
+      # v.temp <- preview_interactive_vals_colscheme(v.num, v.pal, data.vec.v)
+      # v.binpal <- v.temp[[1]]
+      # data.breaks.labs.v <- v.temp[[2]]
+      # rm(v.temp)
+
+      # browser()
+      # binpal.v <- binpal
+      # attr(binpal.v, "colorArgs")$bins[1] <- min(data.vec.v, na.rm = TRUE)
+      #
+      # data.breaks.labs.v <- data.breaks.labs
+      # data.breaks.labs.v[length(data.breaks.labs.v)] <- paste(
+      #   format(round(min(data.vec.v, na.rm = TRUE), 3), nsmall = 3, justify = "right"),
+      #   substr(data.breaks.labs.v[length(data.breaks.labs.v)], 7, 13)
+      # )
+
+      leaf.map %>%
+        addPolygons(
+          stroke = FALSE, color = ~binpal.v(data.vec.v), fillOpacity = 0.6, group = "Uncertainties") %>%
+        addLegend(
+          "topright", title = "Uncertainties", colors = c(rev(col.pal), "gray"),
+          labels = c(data.breaks.labs, "NA"), opacity = 1, group = "Uncertainties")
+    }
+
+    ### Weights
+    if (!all(is.na(data.vec.w))) {
+      data.vec.w.uniq <- length(unique(na.omit(data.vec.w)))
+      w.num <- ifelse(data.vec.w.uniq > 10, 10, data.vec.w.uniq)
+      w.pal <- viridis::viridis(w.num)
+
+      w.temp <- preview_interactive_vals_colscheme(w.num, w.pal, data.vec.w)
+      w.binpal <- w.temp[[1]]
+      data.breaks.labs.w <- w.temp[[2]]
+      rm(w.temp)
+
+      leaf.map %>%
+        addPolygons(
+          stroke = FALSE, color = ~w.binpal(data.vec.w), fillOpacity = 0.6, group = "Weights") %>%
+        addLegend(
+          "topright", title = "Weights", colors = c(rev(w.pal), "gray"),
+          labels = c(data.breaks.labs.w, "NA"), opacity = 1, group = "Weights")
+    }
   }
 
   #----------------------------------------------------------------------------
-  if (all(is.na(data.vec.w))) {
-    # No weight data; include message
+  ### Add messages and layer control
+  if (all(is.na(data.vec.v)) & all(is.na(data.vec.w))) {
+    # No uncertainty data; include message
     leaf.map %>%
       addControl(
-        tags$h5("No weight data"), layerId = "Weight info", position = "bottomright") %>%
+        tags$h5("No uncertainty or weight data"), layerId = "Other info", position = "bottomright") %>%
       addLayersControl(
         baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
         position = "bottomright", options = layersControlOptions(collapsed = FALSE))
 
-
-  } else {
-    # Incldue weight data
-    data.vec.w.uniq <- length(unique(na.omit(data.vec.w)))
-    w.num <- ifelse(data.vec.w.uniq > 10, 10, data.vec.w.uniq)
-    w.pal <- viridis::viridis(w.num)
-
-    w.temp <- preview_interactive_vals_colscheme(w.num, w.pal, data.vec.w)
-    w.binpal <- w.temp[[1]]
-    data.breaks.labs.w <- w.temp[[2]]
-    rm(w.temp)
-
+  } else if (all(is.na(data.vec.v))) {
     leaf.map %>%
-      addPolygons(
-        stroke = FALSE, color = ~w.binpal(data.vec.w), fillOpacity = 0.6, group = "Weights") %>%
-      addLegend(
-        "topright", title = "Weights", colors = c(rev(w.pal), "gray"),
-        labels = c(data.breaks.labs.w, "NA"), opacity = 1, group = "Weights") %>%
+      addControl(
+        tags$h5("No uncertainty data"), layerId = "Other info", position = "bottomright") %>%
       addLayersControl(
         baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
         overlayGroups = c("Predictions", "Weights"),
         position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
       hideGroup("Weights")
+
+  } else if (all(is.na(data.vec.w))) {
+    leaf.map %>%
+      addControl(
+        tags$h5("No weight data"), layerId = "Other info", position = "bottomright") %>%
+      addLayersControl(
+        baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
+        overlayGroups = c("Predictions", "Uncertainties"),
+        position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
+      hideGroup("Uncertainties")
+
+  } else {
+    leaf.map %>%
+      addLayersControl(
+        baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
+        overlayGroups = c("Predictions", "Uncertainties", "Weights"),
+        position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
+      hideGroup(c("Uncertainties", "Weights"))
   }
 }
 
 
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
+###############################################################################
 ### Get binpal and legend labels for values plot (not percentages plot)
-### Used by preds values and weights (always values)
 preview_interactive_vals_colscheme <- function(col.num, col.pal, data.vec) {
   if (col.num < 10) {
     binpal <- colorNumeric(col.pal, data.vec, na.color = "gray")
