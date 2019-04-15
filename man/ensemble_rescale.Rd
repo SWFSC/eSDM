@@ -4,14 +4,13 @@
 \alias{ensemble_rescale}
 \title{Rescale SDM predictions}
 \usage{
-ensemble_rescale(x, x.pred.idx, y, y.abund = NULL)
+ensemble_rescale(x, x.idx, y, y.abund = NULL)
 }
 \arguments{
-\item{x}{list of objects of class \code{sf}, all of which must have the same geometry}
+\item{x}{object of class \code{sf}}
 
-\item{x.pred.idx}{character or numeric vector of names or column indices of predicted density column
-to be rescaled for each element of \code{x}; must be of length one (if the name/index of the predicted
-density column is the same for all elements of x) or the same length as \code{x}}
+\item{x.idx}{vector of column names or column indices;
+indicates which columns in \code{x} will be rescaled}
 
 \item{y}{rescaling method; must be either "abundance" or "sumto1".
 See 'Details' section for descriptions of the rescaling methods}
@@ -19,26 +18,22 @@ See 'Details' section for descriptions of the rescaling methods}
 \item{y.abund}{numeric value; ignored if \code{y} is not \code{"abundance"}}
 }
 \value{
-The list \code{x}, but with the columns specified by \code{x.pred.idx} rescaled
+The \code{sf} object \code{x} with the columns specified by \code{x.idx} rescaled
 }
 \description{
 Rescale specified columns for each element in a list of SDM predictions
 }
 \details{
-\code{ensemble_rescale} is intended to be used between overlaying predictions with \code{\link{overlay_sdm}} and
-  creating ensembles with \code{\link{ensemble_create}},
-  which is why all elments of \code{x} must have the same number of rows.
-  The rescaling methods are as follows:
+\code{ensemble_rescale} is intended to be used after overlaying predictions with \code{\link{overlay_sdm}} and
+  before creating ensembles with \code{\link{ensemble_create}}.
+  The provided rescaling methods are as follows:
   \describe{
   \item{'abundance' - Rescale the density values so that the predicted abundance is \code{y.abund}}{}
   \item{'sumto1' - Rescale the density values so their sum is 1}{}
   }
 }
 \examples{
-x <- list(
-  preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
-)
-ensemble_rescale(x, c("Density", "Density.overlaid"), "abundance", 50)
-ensemble_rescale(x, 1, "sumto1")
+ensemble_rescale(preds.1, c("Density", "Density2"), "abundance", 50)
+ensemble_rescale(preds.1, c(1, 2), "sumto1")
 
 }

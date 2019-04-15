@@ -2,200 +2,196 @@
 #'
 #' Rescale specified columns for each element in a list of SDM predictions
 #'
-#' @param x list of objects of class \code{sf}, all of which must have the same geometry
-#' @param x.pred.idx character or numeric vector of names or column indices of predicted density column
-#'   to be rescaled for each element of \code{x}; must be of length one (if the name/index of the predicted
-#'   density column is the same for all elements of x) or the same length as \code{x}
+#' @param x object of class \code{sf}
+#' @param x.idx vector of column names or column indices;
+#'   indicates which columns in \code{x} will be rescaled
 #' @param y rescaling method; must be either "abundance" or "sumto1".
 #'   See 'Details' section for descriptions of the rescaling methods
 #' @param y.abund numeric value; ignored if \code{y} is not \code{"abundance"}
 #'
-#' @importFrom purrr set_names
 #' @importFrom sf st_sf
 #' @importFrom sf st_geometry
 #' @importFrom sf st_set_geometry
 #'
-#' @details \code{ensemble_rescale} is intended to be used between overlaying predictions with \code{\link{overlay_sdm}} and
-#'   creating ensembles with \code{\link{ensemble_create}},
-#'   which is why all elments of \code{x} must have the same number of rows.
-#'   The rescaling methods are as follows:
+#' @details \code{ensemble_rescale} is intended to be used after overlaying predictions with \code{\link{overlay_sdm}} and
+#'   before creating ensembles with \code{\link{ensemble_create}}.
+#'   The provided rescaling methods are as follows:
 #'   \describe{
 #'   \item{'abundance' - Rescale the density values so that the predicted abundance is \code{y.abund}}{}
 #'   \item{'sumto1' - Rescale the density values so their sum is 1}{}
 #'   }
 #'
-#' @return The list \code{x}, but with the columns specified by \code{x.pred.idx} rescaled
+#' @return The \code{sf} object \code{x} with the columns specified by \code{x.idx} rescaled
 #'
 #' @examples
-#' x <- list(
-#'   preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
-#' )
-#' ensemble_rescale(x, c("Density", "Density.overlaid"), "abundance", 50)
-#' ensemble_rescale(x, 1, "sumto1")
+#' ensemble_rescale(preds.1, c("Density", "Density2"), "abundance", 50)
+#' ensemble_rescale(preds.1, c(1, 2), "sumto1")
 #'
 #' @export
-ensemble_rescale <- function(x, x.pred.idx, y, y.abund = NULL) {
+ensemble_rescale <- function(x, x.idx, y, y.abund = NULL) {
   #----------------------------------------------------------------------------
-  stopifnot(all(sapply(x, inherits, "sf")))
-  if (!all(nrow(x[[1]]) == sapply(x, nrow))) {
-    stop("All elements of x must have the same number of rows, ",
-         "as should be the case if they are overlaid")
-  }
+  stopifnot(
+    inherits(x, "sf"),
+    length(x.idx) < ncol(x)
+  )
 
-  if (length(x.pred.idx) == 1) {
-    x.pred.idx <- rep(x.pred.idx, length(x))
-  } else if (length(x.pred.idx) != length(x)) {
-    stop("x.pred.idx must either have one element or ",
-         "the same number of elements as x")
-  }
-
-  # if (!(y %in% c("abundance", "normalization", "standardization", "sumto1"))) {
-  if (!(y %in% c("abundance", "sumto1"))) {
-    stop("y must be one of: 'abundance' or 'sumto1'")
-  }
-
-  #----------------------------------------------------------------------------
   #--------------------------------------------------------
-  if (y == "abundance") {
-    if (!(y.abund > 0)) {
-      stop ("y.abund must be a number greater than 0 if y is 'abundance'")
+  x.df <- st_set_geometry(x, NULL)
+  x.geom <- st_geometry(x)
+  if (inherits(x.idx, "character")) {
+    if (!all(x.idx %in% names(x.df))) {
+      stop("If x.idx is a character vector, then all elements of x.idx must ",
+           "be the name of a column of x (and not the geometry list-column)")
     }
 
-    data.rescaled <- data.frame(
-      mapply(function(i, j) {
-        st_set_geometry(i, NULL)[, j] / (eSDM::model_abundance(i, j) / y.abund)
-      }, x, x.pred.idx, SIMPLIFY = FALSE)
-    ) %>% set_names(paste0("x.", 1:length(x)))
+  } else if (inherits(x.idx, c("integer", "numeric"))) {
+    if (!(max(x.idx) < ncol(x))) {
+      stop("If x.idx is a numeric vector, then all values of x must be ",
+           "less than ncol(x)")
+    }
+    x.idx <- names(x)[x.idx]
+
+  } else {
+    stop("x.idx must be a vector of class character, integer, or numeric")
+  }
+
+  #--------------------------------------------------------
+  if (!(y %in% c("abundance", "sumto1"))) {
+    stop("y must be either 'abundance' or 'sumto1'")
+  }
+
+  #----------------------------------------------------------------------------
+  x.df.idx <- x.df[, x.idx]
+
+  #--------------------------------------------------------
+  if (y == "abundance") {
+    if (!(y.abund > 0 & inherits(y.abund, "numeric"))) {
+      stop ("If y is 'abundance', y.abund must be a number greater than 0")
+    }
+
+    x.df.idx.rescaled <- data.frame(lapply(x.df.idx, function(i, j, k) {
+      tmp.sf <- st_sf(pred = i, geometry = j, agr = "constant")
+      i / (eSDM::model_abundance(tmp.sf, "pred") / k)
+    }, j = x.geom, k = y.abund))
+
+    x.df[, x.idx] <- x.df.idx.rescaled
 
   } else {
     #------------------------------------------------------
-    data.extracted <- data.frame(
-      mapply(function(i, j) {
-        st_set_geometry(i, NULL)[, j]
-      }, x, x.pred.idx, SIMPLIFY = FALSE)
-    ) %>% set_names(paste0("x.", 1:length(x)))
+    x.df.idx.rescaled <- data.frame(lapply(x.df.idx, function(i) {
+      i / sum(i, na.rm = TRUE)
+    }))
 
-    data.rescaled <- as.data.frame(
-      apply(data.extracted, 2, function(i) {i / sum(i, na.rm = TRUE)})
-    )
+    x.df[, x.idx] <- x.df.idx.rescaled
   }
 
   #----------------------------------------------------------------------------
-  lapply(1:length(x), function(i) {
-    new.df <- st_set_geometry(x[[i]], NULL)
-    new.df[, x.pred.idx[i]] <- data.rescaled[, i]
-    st_sf(new.df, geometry = st_geometry(x[[1]]), agr = "constant")
-  })
+
+  st_sf(x.df, geometry = x.geom, agr = "constant")
 }
 
 
 #' Create ensemble of SDM predictions
 #'
-#' Create weighted or unweighted ensemble of SDM predictions
+#' Create a weighted or unweighted ensemble of SDM predictions
 #'
-#' @param x list of objects of class \code{sf}, all of which must have the same geometry
-#' @param x.pred.idx vector of names or column indices giving the predictions column for each element of \code{x};
-#'   must be of length one (if the name/index of the prediction column is the same for all elements of x) or
-#'   the same length as \code{x}
-#' @param y ensembling method; one of: "unweighted", "weighted"
-#' @param y.weights either a numeric vector the same length as \code{x} or
-#'   a data frame with \code{ncol(y.weights) == length(x)} and the same number of rows as each element of \code{x};
-#'   ignored if \code{y == "unweighted"}
+#' @param x object of class \code{sf}
+#' @param x.idx vector of column names or numerical indices;
+#'   indicates which columns in \code{x} will be used to create the ensemble
+#' @param y weights for the ensemble; either a numeric vector the same length as \code{x} or
+#'   a data frame (or tibble) with the same number of rows as \code{x} and \code{ncol(y) == length(x.idx)}.
+#'   If y is a numeric vector, its values (i.e. the weights) must sum to 1.
+#'   The default value is \code{1 / length(x.idx)}, i.e. an unweighted ensemble
 #'
+#' @importFrom dplyr select
 #' @importFrom sf st_geometry
 #' @importFrom sf st_set_geometry
 #' @importFrom sf st_sf
 #' @importFrom stats weighted.mean
 #'
 #' @details \code{ensemble_create} is intended to be used after overlaying predictions with \code{\link{overlay_sdm}} and
-#'   (if desired) rescaling the overlaid predictions with \code{\link{ensemble_rescale}},
-#'   which is why all elments of \code{x} must have the same geometry.
+#'   (if desired) rescaling the overlaid predictions with \code{\link{ensemble_rescale}}.
 #'
 #'   \code{ensemble_create} includes functionality for ensembling methods provided in \link{eSDM_GUI},
 #'   although not for regional weighting', which currently must be done manually if not using the GUI.
 #'   For instance, if \code{y.weights} is a data frame, then the 'Pixel-level spatial weights' ensembling method is performed.
 #'
 #' @return object of class \code{sf} with two columns: 'Pred.ens' and 'geometry';
-#'   'Pred.ens' constists of the ensemble predictions and 'geometry' is the simple feature geometry list-column.
+#'   'Pred_ens' constists of the ensemble predictions and 'geometry' is the simple feature geometry list-column.
 #'   The \code{sf} object attribute \code{agr} is set as 'constant' for 'Pred.ens'
 #'
 #' @examples
-#' x <- list(
-#'   preds.1, preds.1, overlay_sdm(sf::st_geometry(preds.1), preds.2, "Density", 50)
-#' )
-#' ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "unweighted")
-#' ensemble_create(x, 1, "weighted", c(0.5, 1, 0.8))
+#' ensemble_create(preds.1, c("Density", "Density2"))
+#' ensemble_create(preds.1, c(1, 2), c(0.2, 0.8))
 #'
-#' weights.df <- data.frame(runif(325), runif(325), c(rep(NA, 100), runif(225)))
-#' ensemble_create(x, c("Density", "Density2", "Density.overlaid"), "weighted", weights.df)
+#' weights.df <- data.frame(runif(325), c(rep(NA, 100), runif(225)))
+#' ensemble_create(preds.1, c("Density", "Density2"), weights.df)
 #'
 #' @export
-ensemble_create <- function(x, x.pred.idx, y, y.weights = NULL) {
+ensemble_create <- function(x, x.idx, y = NULL) {
+  #----------------------------------------------------------------------------
+  stopifnot(
+    inherits(x, "sf"),
+    length(x.idx) < ncol(x)
+  )
+
   #--------------------------------------------------------
-  stopifnot(all(sapply(x, inherits, "sf")))
-  if (length(x.pred.idx) == 1) {
-    x.pred.idx <- rep(x.pred.idx, length(x))
-  } else if (length(x.pred.idx) != length(x)) {
-    stop("x.pred.idx must either have one element or ",
-         "the same number of elements as x")
-  }
-
-  if (!(y %in% c("unweighted", "weighted"))) {
-    stop("y must be one of: 'unweighted' or 'weighted'")
-  }
-
-  x1.geom <- st_geometry(x[[1]])
-  if (!all(sapply(x[-1], function(i) identical(x1.geom, st_geometry(i))))) {
-    stop("All elements of x must have the same geometry")
-  }
-
-  if (y == "weighted") {
-    if (inherits(y.weights, "numeric")) {
-      if (length(y.weights) != length(x)) {
-        stop("If y.weights is a numeric vector, then x and y.weights ",
-             "must have the same number of elements")
-      }
-
-    } else if (inherits(y.weights, "data.frame")) {
-      if (ncol(y.weights) != length(x) | nrow(y.weights) != length(x1.geom)) {
-        stop("If y.weights is a data frame, then it must have the ",
-             "same number of columns as x has elements ",
-             "and the same number of rows as each element of x")
-      }
-
-    } else {
-      stop("y.weights must be either a numeric vector or a data frame")
+  x.df <- st_set_geometry(x, NULL)
+  if (inherits(x.idx, "character")) {
+    if (!all(x.idx %in% names(x.df))) {
+      stop("If x.idx is a character vector, then all elements of x.idx must ",
+           "be the name of a column of x (and not the geometry list-column)")
     }
+
+  } else if (inherits(x.idx, c("integer", "numeric"))) {
+    if (!(max(x.idx) < ncol(x))) {
+      stop("If x.idx is a numeric vector, then all values of x must be ",
+           "less than ncol(x)")
+    }
+    x.idx <- names(x)[x.idx]
+
+  } else {
+    stop("x.idx must be a vector of class character, integer, or numeric")
+  }
+
+  #--------------------------------------------------------
+  if (is.null(y)) {
+    y <- rep(1 / length(x.idx), length(x.idx))
+
+  } else if (inherits(y, c("data.frame", "tibble"))) {
+    stopifnot(
+      ncol(y) == length(x.idx),
+      nrow(x) == nrow(y)
+    )
+
+  } else if (inherits(y, "numeric")) {
+    if (length(x.idx) != length(y)) stop("x.idx and y must have the same length")
+    if (!(sum(y) == 1)) stop("If y is a numeric vector, it must sum to 1")
+
+  } else {
+    stop("y must be one of NULL, a data frame (or tibble), or a numeric vector")
   }
 
 
-  #--------------------------------------------------------
-  data.toens <- mapply(function(i, j) {
-    st_set_geometry(i, NULL)[, j]
-  }, x, x.pred.idx, SIMPLIFY = FALSE)
-  data.toens <- data.frame(do.call(cbind, data.toens))
+  #----------------------------------------------------------------------------
+  x.df.idx   <- x.df %>% select(!!x.idx)
+  x.df.noidx <- x.df %>% select(!!-x.idx)
 
-  stopifnot(all(apply(data.toens, 2, inherits, "numeric")))
+  if (inherits(y, "numeric")) {
+    data.ens <- apply(
+      x.df.idx, 1, function(i, j) weighted.mean(i, j, na.rm = TRUE), j = y
+    )
 
-
-  #--------------------------------------------------------
-  if (y == "unweighted") {
-    data.ens <- apply(data.toens, 1, mean, na.rm = TRUE)
-
-  } else { #y == "weighted"
-    if (inherits(y.weights, "numeric")) {
-      data.ens <- apply(
-        data.toens, 1, function(p) weighted.mean(p, y.weights, na.rm = TRUE)
-      )
-
-    } else { #inherits(y.weights, "data.frame")
-      data.toens <- data.toens * y.weights
-      data.ens <- apply(data.toens, 1, mean, na.rm = TRUE)
-    }
+  } else { #y is data frame
+    warning("SMW todo")
+    data.ens <- apply(x.df.idx * y, 1, mean, na.rm = TRUE)
   }
 
   stopifnot(is.numeric(data.ens))
   data.ens[is.nan(data.ens)] <- NA
 
-  st_sf(Pred.ens = data.ens, geometry = x1.geom, agr = "constant")
+  st_sf(
+    data.frame(Pred_ens = data.ens, x.df.noidx),
+    geometry = st_geometry(x), agr = "constant"
+  )
 }

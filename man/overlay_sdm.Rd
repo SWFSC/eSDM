@@ -28,6 +28,7 @@ Overlay specified SDM predictions that meet the percent overlap threshold requir
 }
 \details{
 See the eSDM GUI manual for specifics about the overlay process.
+TODO: areal interpolation
 
 Note that \code{overlay_sdm} removes rows in \code{sdm} that have NA values
 in the first column specified in \code{sdm.idx} (i.e. \code{sdm.idx[1]}),

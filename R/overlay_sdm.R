@@ -36,6 +36,7 @@
 #' @importFrom utils head
 
 #' @details See the eSDM GUI manual for specifics about the overlay process.
+#' TODO: areal interpolation
 #'
 #' Note that \code{overlay_sdm} removes rows in \code{sdm} that have NA values
 #' in the first column specified in \code{sdm.idx} (i.e. \code{sdm.idx[1]}),
@@ -193,7 +194,7 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
     }
 
     new.dens.df <- new.dens.df %>%
-      set_names(c(head(names(new.dens.df), -1), paste0(i, ".overlaid")))
+      set_names(c(head(names(new.dens.df), -1), i))
 
   }; rm(i)
 
