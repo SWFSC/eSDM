@@ -9,20 +9,20 @@ jscode <- "shinyjs.closeWindow = function() { window.close(); }"
 ###############################################################################
 ### File type lists for use in radioButton()'s and selectInupt()'s
 file.type.list1 <- list(
-  "Excel .csv" = 1, "GIS shapefile" = 2,
+  "CSV (comma-separated value) file" = 1, "GIS shapefile" = 2,
   "GIS file geodatabase feature class" = 3
 )
 file.type.list2 <- list(
-  "Excel .csv" = 1, "GIS raster" = 2, "GIS shapefile" = 3,
-  "GIS file geodatabase feature class" = 4
+  "CSV (comma-separated value) file" = 1, "GIS raster" = 2,
+  "GIS shapefile" = 3, "GIS file geodatabase feature class" = 4
 )
 
 
 ###############################################################################
 # Widget labels used in importing
 
-### Excel csv
-label.csv.upload <- tags$h5("Upload Excel .csv file (.csv extension)")
+### CSV
+label.csv.upload <- tags$h5("Upload CSV file (.csv extension)")
 
 ### GIS raster
 label.raster.upload <- tags$h5("Upload raster file (.img or .tif extension)")
