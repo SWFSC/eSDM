@@ -45,7 +45,7 @@ vals <- reactiveValues(
   overlay.info          = NULL,    # List of 1) index of predictions used as base geometry and 2) percent overlap threshold
   overlay.base.sfc      = NULL,    # Base geometry (sfc object)
 
-  overlaid.models       = list(),  # List of overlaid predictions
+  overlaid.models       = list(),  # List of overlaid predictions. List elements are data frames; create sf object using overlay.base.sfc
   overlaid.models.specs = NULL,    # Info about overlaid models; same info types as models.specs
   overlaid.plot         = NULL,    # Plot info of currently previewed overlaid predictions
 
@@ -56,7 +56,7 @@ vals <- reactiveValues(
   ens.over.wpoly.plot     = NULL,  # Plot info of currently previewed weight polygons
 
   # Objects that store created ensembles and their information
-  ensemble.models        = list(), # Ensemble predictions
+  ensemble.models        = list(), # Ensemble predictions. List elements are data frames; create sf object using overlay.base.sfc
   ensemble.rescaling     = NULL,   # Vector of rescaling methods used
   ensemble.method        = NULL,   # Vector of ensembling methods used
   ensemble.weights       = NULL,   # Vector of strings of weights used (if any)

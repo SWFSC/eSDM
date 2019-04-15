@@ -12,6 +12,9 @@ output$save_app_envir <- downloadHandler(
       # Convert reactiveValues
       vals.save <- reactiveValuesToList(vals)
 
+      # Remove models.ll to save space
+      vals.save$models.ll <- list()
+
       # Reset plotting info in vals.save (not vals)
       vals.save$models.plot.leaf <- NULL
       vals.save$models.plot.leaf.idx <- NULL
@@ -144,7 +147,7 @@ load_envir <- eventReactive(val.load(), {
     incProgress(0.3)
 
     #------------------------------------------------------
-    vals$models.ll             <- vals.save[["models.ll"]]
+    vals$models.ll             <- lapply(vals.save[["models.orig"]], st_transform, 4326)
     vals$models.orig           <- vals.save[["models.orig"]]
     vals$models.names          <- vals.save[["models.names"]]
     vals$models.data.names     <- vals.save[["models.data.names"]]
