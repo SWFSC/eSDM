@@ -181,9 +181,11 @@ observeEvent(input$create_ens_reg_preview_execute, {
   req(vals$ens.over.wpoly.filename)
 
   overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
-  overlaid.toplot <- check_preview360_split(
-    st_geometry(vals$overlaid.models[[overlaid.which]])
-  )
+  overlaid.toplot <- check_preview360_split(vals$overlay.base.sfc)
+    # st_geometry(
+    #   vals$overlaid.models[[overlaid.which]]
+    #   )
+  # )
 
   vals$ens.over.wpoly.plot <- list(overlaid.toplot, overlaid.which)
 })

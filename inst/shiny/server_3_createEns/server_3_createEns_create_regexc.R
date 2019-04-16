@@ -13,17 +13,22 @@ outputOptions(output, "create_ens_weighted_poly_flag", suspendWhenHidden = FALSE
 ### create_ens_data_reg() is in '...createEns_create.R'
 
 ### Get weights based on assigned exclusion polygons
-create_ens_reg_weights <- reactive({
+create_ens_reg_exc <- reactive({
   idx <- create_ens_overlaid_idx()
+
+  overlaid.sf <- lapply(
+    vals$overlaid.models[idx], st_sf, geometry = vals$overlay.base.sfc,
+    agr = "constant"
+  )
 
   x <- as.data.frame(
     mapply(function(pred.sf, wpoly.sf.list, wpoly.coverage.vec) {
       if (is.null(wpoly.sf.list)) {
-        # If overlaid preds has no exclusion polys, predictions have weight of 1
+        # If overlaid preds has no exclusion polys, reg exc 'weights' are 1
         rep(1, nrow(pred.sf))
 
       } else {
-        # Else, return vector with weights
+        # Else, return vector with 1's and NA's
         w.list <- mapply(function(wpoly.sf, wpoly.coverage) {
           poly_weight(pred.sf, wpoly.sf, wpoly.coverage)
         }, wpoly.sf.list, wpoly.coverage.vec, SIMPLIFY = FALSE)
@@ -37,8 +42,7 @@ create_ens_reg_weights <- reactive({
         w
       }
     },
-    vals$overlaid.models[idx], vals$ens.over.wpoly.sf[idx],
-    vals$ens.over.wpoly.coverage[idx],
+    overlaid.sf, vals$ens.over.wpoly.sf[idx], vals$ens.over.wpoly.coverage[idx],
     SIMPLIFY = FALSE)
   )
 
@@ -234,9 +238,11 @@ create_ens_reg_add <- eventReactive(
     #------------------------------------------------------
     ### Ensure that polygon overlaps with overlaid pred(s)
     sapply(overlaid.selected, function(o.idx) {
-      z <- suppressMessages(
-        st_intersects(st_union(poly.sf), vals$overlaid.models[[o.idx]])
-      )
+      z <- suppressMessages(st_intersects(
+        st_union(poly.sf),
+        st_sf(vals$overlaid.models[[o.idx]], geometry = vals$overlay.base.sfc,
+              agr = "constant")
+      ))
       stopifnot(length(z) == 1)
       validate(
         need(length(z[[1]]) > 0,
@@ -246,7 +252,7 @@ create_ens_reg_add <- eventReactive(
     })
 
     ### Ensure that new polygon doesn't overlap with loaded polygons
-    ###  already assigned to same overlaid model
+    ###  already assigned to same overlaid preds
     sapply(overlaid.selected, function(o.idx) {
       if (!is.null(vals$ens.over.wpoly.sf[[o.idx]])) {
         mapply(function(poly.loaded, poly.idx) {

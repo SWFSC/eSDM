@@ -11,6 +11,7 @@ create_ens_weights_num <- reactive({
     esdm_parse_num(req(input$create_ens_weight_manual))
     # as.numeric(unlist(strsplit(req(input$create_ens_weight_manual), ",")))
   )
+  browser()
 
   validate(
     need(!anyNA(preds.weights),
@@ -52,6 +53,7 @@ create_ens_weighted_manual <- reactive({
                "overlaid predictions; please report this as an issue"))
   )
 
+  browser()
   data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p) {
     stats::weighted.mean(p, data.weights, na.rm = TRUE)
   }))
@@ -192,6 +194,7 @@ create_ens_weights_pix_weights <- reactive({
 
 ### Create weighted ensemble using pixel-level spatial weights
 create_ens_weighted_pix <- reactive({
+  validate("Pixel-level spatial weighting: SMW todo")
   data.rescaled <- create_ens_data_reg()
   base.sfc <- vals$overlay.base.sfc
   data.weights <- create_ens_weights_pix_weights()

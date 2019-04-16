@@ -55,10 +55,15 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
 # Create unweighted ensemble
 create_ens_unweighted <- reactive({
-  data.ens = data.frame(
+  data.ens <- data.frame(
     Pred.ens = apply(create_ens_data_reg(), 1, mean, na.rm = TRUE)
   )
   data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
+
+  data.ens1 <- data.frame(
+    Pred.ens = apply(create_ens_data_reg(), 1, mean, na.rm = TRUE)
+  ) %>%
+    mutate()
 
   st_sf(data.ens, geometry = vals$overlay.base.sfc, agr = "constant")
 })
@@ -71,7 +76,7 @@ create_ens_unweighted <- reactive({
 ###############################################################################
 # 'Level 2' functions
 
-### Return data to be ensembled, icl. applying regional exclusion if necessary
+### Return data to be ensembled, after applying regional exclusion if necessary
 create_ens_data_reg <- reactive({
   if (input$create_ens_reg) {
     validate(
@@ -81,7 +86,7 @@ create_ens_data_reg <- reactive({
                  "'Exclude specific regions...' checkbox"))
     )
 
-    create_ens_data_rescale() * create_ens_reg_weights()
+    create_ens_data_rescale() * create_ens_reg_exc()
 
   } else {
     create_ens_data_rescale()
@@ -91,38 +96,40 @@ create_ens_data_reg <- reactive({
 ### Rescale overlaid predictions
 create_ens_data_rescale <- reactive({
   models.overlaid <- vals$overlaid.models[create_ens_overlaid_idx()]
-  x.pred.idx <- switch(
+  overlaid.sf <- data.frame(lapply(models.overlaid, select, Pred)) %>%
+    st_sf(geometry = vals$overlay.base.sfc, agr = "constant")
+
+  rescale.type <- switch(
     as.numeric(input$create_ens_rescale_type),
     "none", "abundance", "sumto1"
-    # "none", "abundance", "normalization", "standardization", "sumto1"
   )
 
-  if (x.pred.idx == "abundance") {
+  if (rescale.type == "abundance") {
     validate(
       need(input$create_ens_rescale_abund > 0,
            "Error: Abundance must be greater than 0 to rescale predictions")
     )
   }
 
-  if (x.pred.idx == "none") {
-    temp <- models.overlaid
+  if (rescale.type == "none") {
+    temp <- overlaid.sf
+
   } else {
+    o.idx <- names(st_set_geometry(overlaid.sf, NULL))
+
     temp <- try(eSDM::ensemble_rescale(
-      models.overlaid, rep("Pred.overlaid", length(models.overlaid)),
-      x.pred.idx, input$create_ens_rescale_abund
+      overlaid.sf, o.idx, rescale.type, input$create_ens_rescale_abund
     ), silent = TRUE)
 
     validate(
       need(temp, "Error: error in rescaling, please report this as an issue")
-      # paste("Error: At least one of the selected sets of overlaid",
-      #       "predictions has a range of 0; you cannot normalize or",
-      #       "standardize a vector of numbers with a range of 0"))
     )
   }
 
   # For GUI, next function expects data frame of prediction values
-  data.frame(lapply(temp, function(i) st_set_geometry(i, NULL)$Pred.overlaid)) %>%
-    purrr::set_names(letters[1:length(temp)])
+  temp %>%
+    st_set_geometry(NULL) %>%
+    purrr::set_names(letters[seq_along(.)])
 })
 
 
