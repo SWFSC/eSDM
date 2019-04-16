@@ -60,9 +60,9 @@ eval_proc_df <- function(x, y, p.codes, a.codes) {
   if (min(x$lon, na.rm = TRUE) > 180) x$lon <- x$lon - 360
 
   # Sort by lat (primary) then long for bottom up sort and then create sf obj
-  pts <- st_as_sf(
-    data_sort(x, 2, 1), coords = c(1, 2), agr = "constant", crs = crs.ll
-  )
+  pts <- x %>%
+    dplyr::arrange(lat, lon) %>%
+    st_as_sf(coords = c("lon", "lat"), crs = crs.ll, agr = "constant")
 
   # Perform checks
   validate(

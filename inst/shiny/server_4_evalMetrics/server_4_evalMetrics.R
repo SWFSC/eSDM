@@ -47,8 +47,14 @@ eval_models <- reactive({
   eval.models.idx <- eval_models_idx()
 
   models.list.orig <- vals$models.orig[eval.models.idx[[1]]]
-  models.list.over <- vals$overlaid.models[eval.models.idx[[2]]]
-  models.list.ens  <- vals$ensemble.models[eval.models.idx[[3]]]
+  models.list.over <- lapply(
+    vals$overlaid.models[eval.models.idx[[2]]],
+    st_sf, geometry = vals$overlay.base.sfc, agr = "constant"
+  )
+  models.list.ens  <- lapply(
+    vals$ensemble.models[eval.models.idx[[3]]],
+    st_sf, geometry = vals$overlay.base.sfc, agr = "constant"
+  )
 
   c(models.list.orig, models.list.over, models.list.ens)
 })
