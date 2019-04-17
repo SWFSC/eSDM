@@ -100,29 +100,31 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
         list.tick = list.tick,
         list.colorscheme = list.colorscheme, list.legend = list.legend,
         list.addobj = list.addobj,
-        id = pretty.id, sd.flag = TRUE
+        id = pretty.id, se.flag = TRUE
       ))
     )
     vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
 
 
     #--------------------------------------------------------------------------
-    # If applicable, save a second plot of the among-model variance
-    if (isTruthy(input$pretty_toplot_amvariance)) {
-      #input$pretty_toplot_amvariance is NULL is ensemble isn't selected
-      incProgress(0, detail = "Creating map of among-model variance")
+    # If applicable, save a second plot of the associated SE
+    if (isTruthy(input$pretty_toplot_se) & any(!is.na(model.toplot$SE))) {
+      #input$pretty_toplot_se is NULL is ensemble isn't selected
+      incProgress(0, detail = "Creating map of the associated SE")
 
       #--------------------------------------------------
       # Update values as necessary
       # ens_var_helper_esdm() is in 'server_3_createEns_variance.R'
-      sd.sf <- ens_var_helper_esdm(pretty_models_idx_list()[[3]]) %>%
-        dplyr::select(sd_val) %>%
-        st_transform(st_crs(model.toplot))
+      se.sf <- model.toplot
+      # table.idx <- pretty_table_row_idx()[1]
+      # se.sf <- ens_var_helper_esdm(pretty_models_idx_list()[[table.idx]]) %>%
+      #   dplyr::select(se_val) %>%
+      #   st_transform(st_crs(model.toplot))
 
-      if (check_360(sd.sf)) sd.sf <- preview360_split(sd.sf)
+      if (check_360(se.sf)) se.sf <- preview360_split(se.sf)
       validate(
-        need(identical(st_geometry(model.toplot), st_geometry(sd.sf)),
-             paste("Error in creating map of among-model variance;",
+        need(identical(st_geometry(model.toplot), st_geometry(se.sf)),
+             paste("Error in creating map of assocaited SE;",
                    "please report this as an issue")
         )
       )
@@ -131,30 +133,30 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       #--------------------------------------------------
       # Update other values as necessary
       list.colorscheme.var <- list.colorscheme
-      list.colorscheme.var$data.name <- "sd_val"
+      list.colorscheme.var$data.name <- "SE"
       if (identical(list.colorscheme.var$leg.labs[1], "Lowest 60%")) {
-        list.colorscheme.var$data.breaks <- breaks_calc(sd.sf$sd_val)
+        list.colorscheme.var$data.breaks <- breaks_calc(se.sf$SE)
       }
 
       list.titlelab.var <- list.titlelab
       if (list.titlelab.var$title != "") {
-        list.titlelab.var$title <- paste(list.titlelab.var$title, "SD")
+        list.titlelab.var$title <- paste(list.titlelab.var$title, "SE")
       }
 
-      pretty.id.sd <- paste0(pretty.id, "_SD")
+      pretty.id.se <- paste0(pretty.id, "_SE")
 
       #--------------------------------------------------
-      # Save SD map
+      # Save SE map
       vals$pretty.params.toplot <- c(
         vals$pretty.params.toplot,
         list(list(
-          model.toplot = sd.sf, map.range = map.range,
+          model.toplot = se.sf, map.range = map.range,
           background.color = background.color,
           list.titlelab = list.titlelab.var, list.margin = list.margin,
           list.tick = list.tick,
           list.colorscheme = list.colorscheme.var, list.legend = list.legend,
           list.addobj = list.addobj,
-          id = pretty.id.sd, sd.flag = TRUE
+          id = pretty.id.se, se.flag = TRUE
         ))
       )
       vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
@@ -164,8 +166,8 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
     }
   })
 
-  if (exists("pretty.id.sd")) {
-    paste0("Saved maps '", pretty.id, "'", "and ", "'", pretty.id.sd, "'")
+  if (exists("pretty.id.se")) {
+    paste0("Saved maps '", pretty.id, "'", "and ", "'", pretty.id.se, "'")
   } else {
     paste0("Saved map '", pretty.id, "'")
   }

@@ -530,7 +530,7 @@ observeEvent(input$pretty_toplot_update_done, {
 
   # Update color scheme data breaks and legend labels if necessary
   y <- val.pretty.toplot.update()
-  if (identical(y$list.colorscheme$leg.labs[1], "Lowest 60%") | (!y$sd.flag)) {
+  if (identical(y$list.colorscheme$leg.labs[1], "Lowest 60%") | (!y$se.flag)) {
     if (!identical(vals$pretty.params.toplot[[x]]$map.range, y$map.range)) {
       l.cs <- y$list.colorscheme
       temp <- pretty_colorscheme_func(

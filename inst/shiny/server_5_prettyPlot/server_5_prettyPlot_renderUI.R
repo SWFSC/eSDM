@@ -25,16 +25,26 @@ output$pretty_toplot_add_id_uiOut_text <- renderUI({
 })
 
 #------------------------------------------------------------------------------
-### Checkbox to save map of the among-model variance (SD)
-output$pretty_toplot_amvariance_uiOut_check <- renderUI({
+### Checkbox to save map of assocaited SE values
+output$pretty_toplot_se_uiOut_check <- renderUI({
   if (pretty_models_idx_count() == 1) {
-    if (pretty_table_row_idx()[1] == 3) {
+    if (pretty_table_row_idx()[1] == 1) {
+      if (any(!is.na(vals$models.orig[[pretty_table_row_idx()[2]]]$SE))) {
+        input.lab <- "Also save a map of the standard error of the selected predictions"
+
+        checkboxInput("pretty_toplot_se", input.lab, value = FALSE)
+
+      } else {
+        "The selected predictions do not have standard error values to plot"
+      }
+
+    } else if (pretty_table_row_idx()[1] == 3) {
       input.lab <- paste(
         "Also save a map of the among-model variance of the rescaled,",
         "overlaid predictions that were used to create this ensemble"
       )
 
-      checkboxInput("pretty_toplot_amvariance", input.lab, value = FALSE)
+      checkboxInput("pretty_toplot_se", input.lab, value = FALSE)
 
     } else {
       NULL
@@ -45,8 +55,8 @@ output$pretty_toplot_amvariance_uiOut_check <- renderUI({
   }
 })
 
-### Helptext about among-model variance (SD)
-output$pretty_toplot_amvariance_uiOut_text <- renderUI({
+### Helptext about SE map
+output$pretty_toplot_se_uiOut_text <- renderUI({
   if (pretty_models_idx_count() == 1) {
     if (pretty_table_row_idx()[1] == 3) {
       model.idx <- pretty_table_row_idx()[2]

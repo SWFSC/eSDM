@@ -123,4 +123,43 @@ pretty_colorscheme_func <- function(x, data.name, map.range, perc, color.num,
   list(data.breaks, labels.lab.pretty)
 }
 
+
+###############################################################################
+# # Helper function
+# ens_var_helper_esdm <- function(e.which) {
+#   #--------------------------------------------------------
+#   # Create data frame with rescaled overlaid preds and ensemble preds
+#   o.preds.res <- vals$ensemble.overlaid.res[[e.which]]
+#
+#   e.preds <- vals$ensemble.models[[e.which]]$Pred.ens
+#
+#   pred.all <- data.frame(o.preds.res, e.preds) %>%
+#     purrr::set_names(c(paste0("o.rescale", 1:ncol(o.preds.res)), "ens_preds"))
+#
+#   # Get ens weights (if any)
+#   e.weights <- vals$ensemble.weights[[e.which]]
+#
+#   #--------------------------------------------------------
+#   o.count <- ncol(pred.all) - 1
+#
+#   if (is.na(e.weights)) { #i.e. unweighted
+#     pred.weights <- rep(1 / o.count, o.count)
+#
+#   } else {
+#     pred.weights <- as.numeric(strsplit(e.weights, ", ")[[1]])
+#     pred.weights <- pred.weights / sum(pred.weights)
+#   }
+#
+#   if (round(sum(pred.weights), 3) != 1) {
+#     stop("Error in the processing of the ensemble weights; ",
+#          "please report this as an issue")
+#   }
+#
+#   #--------------------------------------------------------
+#   st_sf(var_val = apply(pred.all, 1, variance_func_esdm, j = pred.weights),
+#         geometry = vals$overlay.base.sfc) %>%
+#     mutate(se_val = sqrt(var_val)) %>%
+#     st_set_agr("constant")
+# }
+
 ###############################################################################
