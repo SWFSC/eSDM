@@ -33,7 +33,7 @@ in this case the uncertainty values for the ensemble will be calcualted using th
 See the 'Details' section for more information}
 
 \item{...}{Arguments to be passed to methods; specifically designed for passing
-\code{na.rm} argument to \code{sum}, \code{mean}, and \code{weighted.mean}}
+\code{na.rm} argument to \code{sum}}
 }
 \value{
 An object of the same class as \code{x} with two columns appended to the data frame:

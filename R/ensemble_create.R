@@ -17,13 +17,12 @@
 #'   in this case the uncertainty values for the ensemble will be calcualted using the among-model uncertainty.
 #'   See the 'Details' section for more information
 #' @param ... Arguments to be passed to methods; specifically designed for passing
-#'   \code{na.rm} argument to \code{sum}, \code{mean}, and \code{weighted.mean}
+#'   \code{na.rm} argument to \code{sum}
 #'
 #' @importFrom dplyr select
 #' @importFrom sf st_geometry
 #' @importFrom sf st_set_geometry
 #' @importFrom sf st_sf
-#' @importFrom stats weighted.mean
 #' @importFrom utils head
 #' @importFrom utils tail
 #'
