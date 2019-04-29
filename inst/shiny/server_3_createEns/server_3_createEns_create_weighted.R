@@ -5,13 +5,12 @@
 ###############################################################################
 # Weighted ensembling method 1: 'Manual entry'
 
-### Process text inputs for weights
-create_ens_weights_num <- reactive({
+### Process text inputs for weights and return vector of weights
+create_ens_weights_manual <- reactive({
   preds.weights <- suppressWarnings(
     esdm_parse_num(req(input$create_ens_weight_manual))
     # as.numeric(unlist(strsplit(req(input$create_ens_weight_manual), ",")))
   )
-  browser()
 
   validate(
     need(!anyNA(preds.weights),
@@ -20,9 +19,10 @@ create_ens_weights_num <- reactive({
                "separated by a comma and a space"))
   )
 
-  models.num <- length(vals$overlaid.models)
   if (input$create_ens_table_subset) {
     models.num <- length(input$create_ens_datatable_rows_selected)
+  } else {
+    models.num <- length(vals$overlaid.models)
   }
 
   # Validate weights input
@@ -37,29 +37,6 @@ create_ens_weights_num <- reactive({
   )
 
   preds.weights
-})
-
-
-### Create weighted ensemble from manually entered weights
-create_ens_weighted_manual <- reactive({
-  data.rescaled <- create_ens_data_reg()
-  base.sfc <- vals$overlay.base.sfc
-  data.weights <- create_ens_weights_num()
-
-  # Check that length of weights == length of overlaid models to ensemble
-  validate(
-    need(length(data.weights) == ncol(data.rescaled),
-         paste("Error: Weighted ens 1: number of weights != number of",
-               "overlaid predictions; please report this as an issue"))
-  )
-
-  browser()
-  data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p) {
-    stats::weighted.mean(p, data.weights, na.rm = TRUE)
-  }))
-  data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
-
-  st_sf(data.ens, geometry = base.sfc, agr = "constant")
 })
 
 
@@ -91,32 +68,15 @@ create_ens_weights_metric_table <- reactive({
   weights.table
 })
 
-### Create weighted ensemble using some evaluation metric as weights
-create_ens_weighted_metric <- reactive({
-  data.rescaled <- create_ens_data_reg()
-  base.sfc <- vals$overlay.base.sfc
-
-  # Check that any predictions have been calculated
+### Return vector of weights based on evaluation metrics
+create_ens_weights_metric <- reactive({
+  # Check that selected predictions have calculated metrics
   validate(
-    need(isTruthy(vals$eval.metrics),
+    need(all(create_ens_overlaid_idx() %in% vals$eval.models.idx[[2]]),
          paste("Error: You must calculate at least one metric for all",
                "selected overlaid predictions"))
   )
-  data.weights <- create_ens_weights_metric_table()[, 3]
-
-  # Check that length of weights == length of overlaid models to ensemble
-  validate(
-    need(length(data.weights) == ncol(data.rescaled),
-         paste("Error: Weighted ens by metrics: number of weights != number",
-               "of overlaid predictions; please report this as an issue"))
-  )
-
-  data.ens <- data.frame(Pred.ens = apply(data.rescaled, 1, function(p) {
-    stats::weighted.mean(p, data.weights, na.rm = TRUE)
-  }))
-  data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
-
-  st_sf(data.ens, geometry = base.sfc, agr = "constant")
+  create_ens_weights_metric_table()[, 3]
 })
 
 
@@ -171,14 +131,19 @@ create_ens_weights_pix_table <- reactive({
 })
 
 ### Generate data frame of pixel weights
-create_ens_weights_pix_weights <- reactive({
+create_ens_weights_pix <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.spatial <- create_ens_weights_pix_which()
-  validate( #need validate() here too for ensembling function
+
+  # Need validate() call here too for ensembling function
+  validate(
     need(any(ens.which.spatial %in% ens.which),
          paste("Error: At least one of the selected overlaid predictions",
                "must have pixel-level spatial weights"))
   )
+
+  # SMW todo
+  browser()
 
   w.list <- lapply(ens.which, function(idx) {
     overlaid.curr <- vals$overlaid.models[[idx]]
@@ -192,30 +157,17 @@ create_ens_weights_pix_weights <- reactive({
   purrr::set_names(data.frame(w.list), letters[1:length(ens.which)])
 })
 
-### Create weighted ensemble using pixel-level spatial weights
-create_ens_weighted_pix <- reactive({
-  validate("Pixel-level spatial weighting: SMW todo")
-  data.rescaled <- create_ens_data_reg()
-  base.sfc <- vals$overlay.base.sfc
-  data.weights <- create_ens_weights_pix_weights()
 
-  validate(
-    need(ncol(data.weights) == ncol(data.rescaled),
-         paste("Error: Weighted ens 3: number of weights != number",
-               "of overlaid predictions; please report this as an issue")),
-    need(nrow(data.weights) == nrow(data.rescaled),
-         paste("Error: Weighted ens 3: len of weights != number",
-               "of overlaid predictions; please report this as an issue"))
-  )
+###############################################################################
+###############################################################################
+# Weighted ensembling method 4: Weighting by the inverse of the variance
 
-  data.reweighted <- data.rescaled * data.weights
-  data.ens <- data.frame(
-    Pred.ens = apply(data.reweighted, 1, mean, na.rm = TRUE)
-  )
-  data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
-
-  st_sf(data.ens, geometry = base.sfc, agr = "constant")
+### Create data frame of weights
+create_ens_weights_var <- reactive({
+  #SMW todo
+  browser()
 })
+
 
 ###############################################################################
 ###############################################################################

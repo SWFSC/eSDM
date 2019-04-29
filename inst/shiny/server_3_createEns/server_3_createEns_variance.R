@@ -17,7 +17,7 @@ variance_func_esdm <- function(i, j) {
   }
 }
 
-# Used by both ens_var_sf() and pretty plot
+# Used by both ens_var_sf() and [pretty plot]
 # Calculate variance and return sf object with var and sd
 # Can only be used within the eSDM; calls vals within function
 ens_var_helper_esdm <- function(e.which) {
@@ -52,7 +52,7 @@ ens_var_helper_esdm <- function(e.which) {
   #--------------------------------------------------------
   st_sf(var_val = apply(pred.all, 1, variance_func_esdm, j = pred.weights),
         geometry = vals$overlay.base.sfc) %>%
-    mutate(sd_val = sqrt(var_val)) %>%
+    mutate(se_val = sqrt(var_val)) %>%
     st_set_agr("constant")
 }
 

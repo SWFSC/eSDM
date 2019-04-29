@@ -6,29 +6,63 @@
 create_ensemble <- eventReactive(input$create_ens_create_action, {
   # For the validation message
   table_overlaid()
+  valid.txt <- "Error in creating ensemble - please report as an issue"
 
   withProgress(message = "Creating ensemble predictions", value = 0.6, {
-    ### Create ensemble
-    if (input$create_ens_type == "1") { # Unweighted
-      ens.sf <- create_ens_unweighted()
+    #------------------------------------------------------
+    ### Predictions to be included in the ensemble
+    ens.preds <- create_ens_data_reg()
 
-    } else { #input$create_ens_type == "2"; # Weighted
-      ens.sf <- switch(
+    ### Ensemble weights
+    if (input$create_ens_type == "1") { #Unweighted
+      ens.w <- create_ens_weights_unweighted()
+
+    } else if (input$create_ens_type == "2") { #Weighted
+      ens.w <- switch(
         input$create_ens_weight_type,
-        "1" = create_ens_weighted_manual(),
-        "2" = create_ens_weighted_metric(),
-        "3" = create_ens_weighted_pix()
+        "1" = create_ens_weights_manual(),
+        "2" = create_ens_weights_metric(),
+        "3" = create_ens_weights_pix(),
+        "4" = create_ens_weights_var()
       )
+    } else {
+      validate(valid.txt)
     }
+
+    #------------------------------------------------------
+    ### Data format checks
+    if (inherits(ens.w, "numeric")){
+      validate(
+        need(ncol(ens.preds) == length(ens.w), valid.txt)
+      )
+    } else if (inherits(ens.w, "data.frame")){
+      validate(
+        need(ncol(ens.preds) == ncol(ens.w) & nrow(ens.preds) == nrow(ens.w),
+             valid.txt)
+      )
+    } else {
+      validate(valid.txt)
+    }
+
+    #------------------------------------------------------
+    ### Create ensemble
+    browser()
+    ens.df <- eSDM::ensemble_create(
+      ens.preds, names(ens.preds), ens.w
+    )
+    #   data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
+
+
     incProgress(0.3)
 
+    #------------------------------------------------------
     ### Add data to reactive variables
-    vals$ensemble.models <- c(vals$ensemble.models, list(ens.sf))
+    vals$ensemble.models <- c(vals$ensemble.models, list(ens.df))
     vals$ensemble.overlaid.idx <- c(
       vals$ensemble.overlaid.idx, create_ens_info_overlaid_idx()
     )
     vals$ensemble.overlaid.res <- c(
-      vals$ensemble.overlaid.res, list(create_ens_data_reg())
+      vals$ensemble.overlaid.res, list(ens.preds)
     )
     vals$ensemble.method <- c(
       vals$ensemble.method, create_ens_info_weighting()
@@ -51,25 +85,16 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
 
 ###############################################################################
-### 'Level 1' functions - create ensemble
+### 'Level 1' functions - create vector or data frame of ensemble weights
 
-# Create unweighted ensemble
-create_ens_unweighted <- reactive({
-  data.ens <- data.frame(
-    Pred.ens = apply(create_ens_data_reg(), 1, mean, na.rm = TRUE)
-  )
-  data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
-
-  data.ens1 <- data.frame(
-    Pred.ens = apply(create_ens_data_reg(), 1, mean, na.rm = TRUE)
-  ) %>%
-    mutate()
-
-  st_sf(data.ens, geometry = vals$overlay.base.sfc, agr = "constant")
+# 'Weights' for unweighted ensemble
+create_ens_weights_unweighted <- reactive({
+  overlaid.count <- ncol(create_ens_data_reg())
+  rep(1 / overlaid.count, overlaid.count)
 })
 
 ####################################################################
-# Create weighted ensemble: done in 'ensCreateEns_create_weighted.R'
+# Create other ensemble weights: 'ensCreateEns_create_weighted.R'
 ####################################################################
 
 
