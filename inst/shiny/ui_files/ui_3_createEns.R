@@ -74,31 +74,6 @@ ui.createEns <- function() {
                         helpText(tags$u("Description:"),
                                  "For each set of overlaid predictions, rescale them so they sum to one")
                       )
-                      # conditionalPanel(
-                      #   condition = "input.create_ens_rescale_type == 3",
-                      #   helpText(tags$u("Description:"),
-                      #            "For each set of overlaid predictions, rescale them (X) into a range of [0, 1]",
-                      #            "using the following formula:"),
-                      #   column(
-                      #     width = 12,
-                      #     helpText(HTML(paste0("X", tags$sub("new")), "= (X -",
-                      #                   paste0("X", tags$sub("min"), ")"), "/",
-                      #                   paste0("(X", tags$sub("max"), " - X", tags$sub("min"), ")")))
-                      #   )
-                      # ),
-                      # conditionalPanel(
-                      #   condition = "input.create_ens_rescale_type == 4",
-                      #   helpText(tags$u("Description:"),
-                      #            "For each set of overlaid predictions, rescale them (X) to have a mean", HTML("(&mu;)"),
-                      #            "of 0 and", "standard deviation", HTML("(&sigma;)"),
-                      #            "of 1 (unit variance) using the following formula:"),
-                      #   column(12, helpText(HTML(paste0("X", tags$sub("new")), "= (X - &mu;) / &sigma;")))
-                      # ),
-                      # conditionalPanel(
-                      #   condition = "input.create_ens_rescale_type == 5",
-                      #   helpText(tags$u("Description:"),
-                      #            "For each set of overlaid predictions, rescale them so they sum to one")
-                      # )
                     )
                   ),
                   ################################################### Exclusion polygon preview
@@ -132,18 +107,17 @@ ui.createEns <- function() {
                   box(
                     width = 12,
                     tags$strong("2) Ensemble options: regional exclusion"),
-                    checkboxInput("create_ens_reg", "Exclude specific regions of overlaid predictions when creating ensemble", value = FALSE),
+                    checkboxInput("create_ens_reg", "Exclude specific regions of overlaid predictions when creating ensemble",
+                                  value = FALSE),
                     conditionalPanel(
                       condition = "input.create_ens_reg",
                       box(
                         width = 4,
-                        # helpText(tags$strong("Regional exclusion:"),
-                        #          "Exclude specific regions of overlaid predictions when creating ensemble"),
                         helpText(tags$strong("Exclusion polygon(s)"),
                                  "Import and assign exclusion polygon(s) to overlaid predictions.",
                                  "Area(s) of the specified predictions that intersect with the imported exclusion polygon will",
-                                 "not be included in the ensemble",
-                                 "You may import and assign multiple polygons to exclude multiple regions for a single set of predictions.",
+                                 "not be included in the ensemble. You may import and assign",
+                                 "multiple polygons to exclude multiple regions for a single set of predictions.",
                                  "However, exclusion polygons must not overlap.", tags$br(),
                                  "All predictions not assigned an exclusion polygon will be included in the ensemble."),
                         uiOutput("create_ens_reg_model_uiOut_selectize"),
@@ -230,7 +204,8 @@ ui.createEns <- function() {
                             condition = "input.create_ens_type == 2",
                             radioButtons("create_ens_weight_type", tags$h5("Weighted ensembling method"),
                                          choices = list("Manual entry" = 1, "Evaluation metric" = 2,
-                                                        "Pixel-level spatial weights" = 3),
+                                                        "Pixel-level spatial weights" = 3,
+                                                        "Uncertainty" = 4),
                                          selected = 1)
                           )
                         )
@@ -297,8 +272,29 @@ ui.createEns <- function() {
                                          "when each set of original predictions was initially imported into the GUI.",
                                          "If a set of overlaid predictions does not have pixel-level spatial weights, ",
                                          "then the row corresponding to that set will say \"No\" in the table below and",
-                                         "those predictions will have a weight of one when the ensemble is created"),
+                                         "those predictions will have a weight of TODO when the ensemble is created"),
                                 tableOutput("create_ens_weights_pix_table_out")
+                              )
+                            ),
+                            ######################### Weighting by uncertainty
+                            conditionalPanel(
+                              condition = "input.create_ens_weight_type == 4",
+                              box(
+                                width = 12,
+                                helpText(tags$strong("Weighted ensembling method:"),
+                                         "Calculate the weighted mean of all corresponding predictions"),
+                                helpText(tags$strong("Uncertainty method:"),
+                                         "Overlaid predictions are multiplied by the inverse of their corresponding variance estimate.",
+                                         "The uncertainty values were specified by the 'Column with uncertainty values' input",
+                                         "when each set of original predictions was initially imported into the GUI.",
+                                         "These values are converted to variance for the purpose of this ensembling method.",
+                                         "To use this ensemble method, all selected overlaid predictions must have",
+                                         "assocaited uncertainty values.",
+                                         tags$br(), tags$br(),
+                                         "Note that this feature should only be used with comparable uncertainty values;",
+                                         "if one model underestimates uncertainty, then its predictions will",
+                                         "contribute disproportionality to the ensemble."),
+                                tableOutput("create_ens_weights_var_table_out")
                               )
                             )
                           )
@@ -308,15 +304,44 @@ ui.createEns <- function() {
                   )
                 )
               ),
-              ####################################################### Create ensemble button
-              box(
+              #######################################################
+              column(
                 width = 2,
-                tags$strong("4) Create ensemble"),
-                tags$br(), tags$br(),
-                uiOutput("create_ens_create_action_uiOut_button"),
-                tags$br(),
-                tags$span(uiOutput("ens_create_ensemble_text"), style = "color: blue")
+                fluidRow(
+                  ################################################### Create ensemble button
+                  box(
+                    width = 12,
+                    tags$strong("4) Ensemble options: ensemble uncertainty"),
+                    # tags$br(), tags$br(),
+                    uiOutput("create_ens_create_uncertainty_uiOut_radio"),
+                    column(
+                      width = 12,
+                      conditionalPanel(
+                        condition = "input.create_ens_create_uncertainty == 1",
+                        helpText(tags$u("Description:"),
+                                 "Determine the ensemble uncertainty by calculating the weighted variance using the",
+                                 "weights and overlaid predictions used to create the ensemble (REF)")
+                      ),
+                      conditionalPanel(
+                        condition = "input.create_ens_create_uncertainty == 2",
+                        helpText(tags$u("Description:"),
+                                 "Determine the ensemble uncertainty by calculating the variance using the",
+                                 "weights and varaince values of the overlaid predictions used to create the ensemble (REF)")
+                      )
+                    )
+                  ),
+                  ################################################### Create ensemble button
+                  box(
+                    width = 12,
+                    tags$strong("5) Create ensemble"),
+                    tags$br(), tags$br(),
+                    uiOutput("create_ens_create_action_uiOut_button"),
+                    tags$br(),
+                    tags$span(uiOutput("ens_create_ensemble_text"), style = "color: blue")
+                  )
+                )
               )
+
             )
           )
         )

@@ -89,7 +89,7 @@ create_ens_weights_pix_which <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.overlaid <- vals$overlaid.models[ens.which]
   ens.which.spatial <- sapply(ens.overlaid, function(i) {
-    any(!is.na(i$Weight.overlaid))
+    any(!is.na(i$Weight))
   })
 
   ens.which[ens.which.spatial]
@@ -113,10 +113,10 @@ create_ens_weights_pix_table <- reactive({
 
   ens.which.spatial.text2 <- sapply(ens.which, function(i) {
     if (i %in% ens.which.spatial) {
-      j <- na_which(vals$overlaid.models[[i]]$Weight.overlaid)
+      j <- na_which(vals$overlaid.models[[i]]$Weight)
       ifelse(
         anyNA(j), 0,
-        sum(!(j %in% na_which(vals$overlaid.models[[i]]$Pred.overlaid)))
+        sum(!(j %in% na_which(vals$overlaid.models[[i]]$Pred)))
       )
 
     } else {
@@ -151,7 +151,7 @@ create_ens_weights_pix <- reactive({
     overlaid.curr <- vals$overlaid.models[[idx]]
 
     if (idx %in% ens.which.spatial) {
-      overlaid.curr$Weight.overlaid
+      overlaid.curr$Weight
     } else {
       rep(1, nrow(overlaid.curr))
     }
@@ -164,12 +164,43 @@ create_ens_weights_pix <- reactive({
 ###############################################################################
 # Weighted ensembling method 4: Weighting by the inverse of the variance
 
+### Vector of idx of selected overlaid preds that have associated uncertainty
+create_ens_weights_var_which <- reactive({
+  ens.which <- create_ens_overlaid_idx()
+  ens.overlaid <- vals$overlaid.models[ens.which]
+  ens.which.spatial <- sapply(ens.overlaid, function(i) {
+    any(!is.na(i$SE))
+  })
+
+  ens.which[ens.which.spatial]
+})
+
+create_ens_weights_var_table <- reactive({
+  ens.which <- create_ens_overlaid_idx()
+  ens.which.var <- create_ens_weights_var_which()
+
+  validate(
+    need(all(ens.which.var %in% ens.which),
+         paste("All of the selected overlaid predictions must have",
+               "associated uncertainty values to use this weighting method")),
+    errorClass = "validation2"
+  )
+
+  # TODO (probably): Make this a table with summary() outputs.
+  #   Do the same for pixel level spatial weights table?
+  data.frame("todo", "todo2", "todo3") %>%
+    purrr::set_names(c("Predictions", "Minimum of variance values",
+                       "Maximum of variance values"))
+  # purrr::set_names(c("Predictions", names(summary(c(runif(100), NA)))))
+})
+
 ### Create data frame of weights
 create_ens_weights_var <- reactive({
   #SMW todo
   validate("Error: this functionality has not yet been implemented")
   browser()
 })
+
 
 
 ###############################################################################

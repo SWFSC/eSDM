@@ -195,8 +195,26 @@ output$create_ens_weights_metric_uiOut_radio <- renderUI({
   choice.input <- vals$eval.metrics.names
 
   radioButtons("create_ens_weights_metric",
-               tags$h5("Metric to use for weights"),
+               tags$h5("Weights based on selected metric"),
                choices = choice.input, selected = NULL)
+})
+
+
+###############################################################################
+# Radio buttons for uncertainty type: within-model or among-model
+output$create_ens_create_uncertainty_uiOut_radio <- renderUI({
+  ens.which <- create_ens_overlaid_idx()
+  ens.which.var <- create_ens_weights_var_which()
+
+  if (all(ens.which.var %in% ens.which)) {
+    choices.list <- list("Among-model uncertainty" = 1, "Within-model uncertainty" = 2)
+  } else {
+    choices.list <- list("Among-model uncertainty" = 1)
+  }
+
+  radioButtons("create_ens_create_uncertainty",
+               tags$h5("Calculate ensemble uncertainty using"),
+               choices = choices.list, selected = NULL)
 })
 
 

@@ -205,20 +205,10 @@ output$create_ens_table <- renderTable(table_overlaid(), rownames = TRUE)
 ### Datatable of overlaid predictions and info
 output$create_ens_datatable <- renderDT(table_overlaid(), options = dt.list)
 
+
 #----------------------------------------------------------
-# Weights outputs
-
-### Table of metric values to be used as weights
-output$create_ens_weights_metric_table_out <- renderTable({
-  create_ens_weights_metric_table()
-}, rownames = FALSE, digits = 3)
-
-### Table of if overlaid preds have spatial pixel weights
-output$create_ens_weights_pix_table_out <- renderTable({
-  create_ens_weights_pix_table()
-}, rownames = FALSE, align = "lcc")
-
-### Table summarizing overlaid preds and their polygon weights
+# Exclusion polygon outputs
+### Table summarizing overlaid preds and their exclusion polygons
 output$create_ens_reg_table_out <- renderTable({
   create_ens_reg_table()
 }, rownames = FALSE)
@@ -235,11 +225,31 @@ output$create_ens_reg_preview_plot <- renderPlot({
 })
 
 
-### Text output for removing imported weight polygons
+### Text output for removing imported exclusion polygon(s)
 output$create_ens_reg_remove_text <- renderText(create_ens_reg_remove())
 
-### Output for adding polygon weight(s) to reactiveValues
+### Output for adding exclusion polygon(s) to reactiveValues
 output$create_ens_reg_add_text <- renderText(create_ens_reg_add())
+
+
+#----------------------------------------------------------
+# Weights outputs (tables funcs in server_3_createEns_create_weighted.R)
+
+### Table of metric values to be used as weights
+output$create_ens_weights_metric_table_out <- renderTable({
+  create_ens_weights_metric_table()
+}, rownames = FALSE, digits = 3)
+
+### Table of if overlaid preds have spatial pixel weights
+output$create_ens_weights_pix_table_out <- renderTable({
+  create_ens_weights_pix_table()
+}, rownames = FALSE, align = "lcc")
+
+### Table of if overlaid preds have associated uncertainty values
+output$create_ens_weights_var_table_out <- renderTable({
+  create_ens_weights_var_table()
+}, rownames = FALSE, align = "lcc")
+
 
 #----------------------------------------------------------
 ### Create ensemble error/completion output

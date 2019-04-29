@@ -11,7 +11,8 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
   withProgress(message = "Creating ensemble predictions", value = 0.6, {
     #------------------------------------------------------
     ### Predictions to be included in the ensemble
-    ens.preds <- create_ens_data_reg()
+    ens.preds <- create_ens_data_reg()[[1]]
+    ens.var   <- create_ens_data_reg()[[2]]
 
     ### Ensemble weights
     if (input$create_ens_type == "1") { #Unweighted
@@ -47,10 +48,23 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     #------------------------------------------------------
     ### Create ensemble
     browser()
-    ens.df <- eSDM::ensemble_create(
-      x = ens.preds, x.idx = names(ens.preds), w = ens.w, x.var.idx = NULL, na.rm = TRUE # TODO
-    ) %>%
-      select(Pred_ens, Var_ens)
+    if (input$create_ens_create_uncertainty == 2) { #WMV
+      ens.df <- eSDM::ensemble_create(
+        x = cbind(ens.preds, ens.var),
+        x.idx = names(ens.preds), x.var.idx = names(ens.var),
+        w = ens.w, na.rm = TRUE
+      ) %>%
+        select(Pred_ens, Var_ens)
+
+    } else { #AMV
+      ens.df <- eSDM::ensemble_create(
+        x = ens.preds, x.idx = names(ens.preds), x.var.idx = NULL,
+        w = ens.w, na.rm = TRUE
+      ) %>%
+        select(Pred_ens, Var_ens)
+    }
+
+
 
     incProgress(0.3)
 
@@ -88,19 +102,20 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
 # 'Weights' for unweighted ensemble
 create_ens_weights_unweighted <- reactive({
-  overlaid.count <- ncol(create_ens_data_reg())
+  overlaid.count <- ncol(create_ens_data_reg()[[1]])
   rep(1 / overlaid.count, overlaid.count)
 })
 
 ####################################################################
-# Create other ensemble weights: 'ensCreateEns_create_weighted.R'
+# Weights for weighted ensembles: 'ensCreateEns_create_weighted.R'
 ####################################################################
 
 
 ###############################################################################
 # 'Level 2' functions
 
-### Return data to be ensembled, after applying regional exclusion if necessary
+### Return 2-element list of overlaid predictions df and SE values df
+### After rescaling and applying regional exclusion as necessary
 create_ens_data_reg <- reactive({
   if (input$create_ens_reg) {
     validate(
@@ -110,17 +125,24 @@ create_ens_data_reg <- reactive({
                  "'Exclude specific regions...' checkbox"))
     )
 
-    create_ens_data_rescale() * create_ens_reg_exc()
+    list(
+      create_ens_data_rescale()[[1]] * create_ens_reg_exc(),
+      create_ens_data_rescale()[[2]] * create_ens_reg_exc()
+    )
 
   } else {
     create_ens_data_rescale()
   }
 })
 
-### Rescale overlaid predictions
+### Return list(rescaled overlaid predictions df, rescaled SE values df)
 create_ens_data_rescale <- reactive({
   models.overlaid <- vals$overlaid.models[create_ens_overlaid_idx()]
+  j <- seq_along(models.overlaid)
+
   overlaid.sf <- data.frame(lapply(models.overlaid, select, Pred)) %>%
+    bind_cols(data.frame(lapply(models.overlaid, select, SE)) ^ 2) %>%
+    purrr::set_names(paste0("Pred", j), paste0("Var", j)) %>%
     st_sf(geometry = vals$overlay.base.sfc, agr = "constant")
 
   rescale.type <- switch(
@@ -131,7 +153,8 @@ create_ens_data_rescale <- reactive({
   if (rescale.type == "abundance") {
     validate(
       need(input$create_ens_rescale_abund > 0,
-           "Error: Abundance must be greater than 0 to rescale predictions")
+           paste("Error: Abundance must be greater than 0 to rescale",
+                 "predictions using the abundance method"))
     )
   }
 
@@ -139,10 +162,12 @@ create_ens_data_rescale <- reactive({
     temp <- overlaid.sf
 
   } else {
-    o.idx <- names(st_set_geometry(overlaid.sf, NULL))
+    p.idx <- names(st_set_geometry(overlaid.sf, NULL))[j]
+    v.idx <- names(st_set_geometry(overlaid.sf, NULL))[j + max(j)]
 
     temp <- try(eSDM::ensemble_rescale(
-      overlaid.sf, o.idx, rescale.type, input$create_ens_rescale_abund
+      x = overlaid.sf, x.idx = p.idx, x.var.idx = v.idx,
+      y = rescale.type, y.abund = input$create_ens_rescale_abund
     ), silent = TRUE)
 
     validate(
@@ -151,9 +176,12 @@ create_ens_data_rescale <- reactive({
   }
 
   # For GUI, next function expects data frame of prediction values
-  temp %>%
-    st_set_geometry(NULL) %>%
-    purrr::set_names(letters[seq_along(.)])
+  temp <- st_set_geometry(temp, NULL)
+
+  list(
+    temp %>% select(starts_with("Pred")),
+    temp %>% select(starts_with("Var"))
+  )
 })
 
 
