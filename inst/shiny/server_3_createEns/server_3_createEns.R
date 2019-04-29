@@ -133,7 +133,9 @@ ens_abund_values <- reactive({
 
   ens.tocalc <- vals$ensemble.models[ensemble.which]
   ens.abund <- vapply(ens.tocalc, function(i) {
-    round(eSDM::model_abundance(st_sf(i, vals$overlay.base.sfc), "Pred.ens"), 1)
+    round(eSDM::model_abundance(
+      st_sf(i, vals$overlay.base.sfc, agr = "constant"), "Pred_ens"
+    ), 1)
   }, 1)
   names(ens.abund) <- paste("Ensemble", ensemble.which)
 

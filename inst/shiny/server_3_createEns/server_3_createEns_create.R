@@ -48,10 +48,9 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     ### Create ensemble
     browser()
     ens.df <- eSDM::ensemble_create(
-      ens.preds, names(ens.preds), ens.w
-    )
-    #   data.ens$Pred.ens[is.nan(data.ens$Pred.ens)] <- NA
-
+      x = ens.preds, x.idx = names(ens.preds), w = ens.w, x.var.idx = NULL, na.rm = TRUE # TODO
+    ) %>%
+      select(Pred_ens, Var_ens)
 
     incProgress(0.3)
 

@@ -143,6 +143,8 @@ create_ens_weights_pix <- reactive({
   )
 
   # SMW todo
+  validate("Error: this functionality has not yet been implemented")
+
   browser()
 
   w.list <- lapply(ens.which, function(idx) {
@@ -165,6 +167,7 @@ create_ens_weights_pix <- reactive({
 ### Create data frame of weights
 create_ens_weights_var <- reactive({
   #SMW todo
+  validate("Error: this functionality has not yet been implemented")
   browser()
 })
 

@@ -110,8 +110,6 @@ observe({
     all(sapply(vals$overlaid.models, inherits, "data.frame")),
     all(sapply(vals$overlaid.models, nrow) == nrow(vals$overlaid.models[[1]])),
     all(sapply(lapply(vals$overlaid.models, names), function(i) identical(i, names.df.txt)))
-    # all(sapply(vals$overlaid.models, function(i) all(names(attributes(i)) %in% sf.attr))),
-    # all(sapply(vals$overlaid.models, function(i) all(names(attributes(st_geometry(i))) %in% sfc.attr)))
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing overlaid predictions"))
@@ -152,11 +150,11 @@ observe({
 ### Ensemble predictions
 observe({
   req(length(vals$ensemble.models) > 0)
-  browser()
 
   check.all <- c(
-    all(sapply(vals$ensemble.models, function(i) all(names(attributes(i)) %in% sf.attr))),
-    all(sapply(vals$ensemble.models, function(i) all(names(attributes(st_geometry(i))) %in% sfc.attr)))
+    all(sapply(vals$ensemble.models, inherits, "data.frame")),
+    all(sapply(vals$ensemble.models, nrow) == nrow(vals$ensemble.models[[1]])),
+    all(sapply(lapply(vals$ensemble.models, names), function(i) identical(i, c("Pred_ens", "Var_ens"))))
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing ensemble predictions"))
