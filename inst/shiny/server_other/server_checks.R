@@ -174,7 +174,7 @@ observe({
     }))
   )
   if (!all(check.all) | anyNA(check.all)) {
-    showModal(modal.attr("Error in processing weight polygons"))
+    showModal(modal.attr("Error in processing exclusion polygons"))
   }
 })
 
