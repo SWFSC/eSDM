@@ -6,11 +6,11 @@
 \alias{ensemble_create.data.frame}
 \title{Create ensemble of SDM predictions}
 \usage{
-ensemble_create(x, x.idx, y = NULL, x.var.idx = NULL, ...)
+ensemble_create(x, x.idx, w = NULL, x.var.idx = NULL, ...)
 
-\method{ensemble_create}{sf}(x, x.idx, y = NULL, x.var.idx = NULL, ...)
+\method{ensemble_create}{sf}(x, x.idx, w = NULL, x.var.idx = NULL, ...)
 
-\method{ensemble_create}{data.frame}(x, x.idx, y = NULL,
+\method{ensemble_create}{data.frame}(x, x.idx, w = NULL,
   x.var.idx = NULL, ...)
 }
 \arguments{
@@ -19,9 +19,9 @@ ensemble_create(x, x.idx, y = NULL, x.var.idx = NULL, ...)
 \item{x.idx}{vector of column names or numerical indices;
 indicates which columns in \code{x} will be used to create the ensemble}
 
-\item{y}{weights for the ensemble; either a numeric vector the same length as \code{x} or
-a data frame (or tibble) with the same number of rows as \code{x} and \code{ncol(y) == length(x.idx)}.
-If y is a numeric vector, its values (i.e. the weights) must sum to 1.
+\item{w}{weights for the ensemble; either a numeric vector the same length as \code{x} or
+a data frame (or tibble) with the same number of rows as \code{x} and \code{ncol(w) == length(x.idx)}.
+If w is a numeric vector, its values (i.e. the weights) must sum to 1.
 The default value is \code{1 / length(x.idx)}, i.e. an unweighted ensemble}
 
 \item{x.var.idx}{vector of column names or column indices;

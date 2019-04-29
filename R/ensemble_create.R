@@ -5,9 +5,9 @@
 #' @param x object of class \code{sf} or class \code{data.frame}
 #' @param x.idx vector of column names or numerical indices;
 #'   indicates which columns in \code{x} will be used to create the ensemble
-#' @param y weights for the ensemble; either a numeric vector the same length as \code{x} or
-#'   a data frame (or tibble) with the same number of rows as \code{x} and \code{ncol(y) == length(x.idx)}.
-#'   If y is a numeric vector, its values (i.e. the weights) must sum to 1.
+#' @param w weights for the ensemble; either a numeric vector the same length as \code{x} or
+#'   a data frame (or tibble) with the same number of rows as \code{x} and \code{ncol(w) == length(x.idx)}.
+#'   If w is a numeric vector, its values (i.e. the weights) must sum to 1.
 #'   The default value is \code{1 / length(x.idx)}, i.e. an unweighted ensemble
 #' @param x.var.idx vector of column names or column indices;
 #'   indicates columns in \code{x} with variance values with which to
@@ -55,21 +55,21 @@
 #' ensemble_create(preds.1, c("Density", "Density2"), weights.df, na.rm = TRUE)
 #'
 #' @export
-ensemble_create <- function(x, x.idx, y = NULL, x.var.idx = NULL, ...) UseMethod("ensemble_create")
+ensemble_create <- function(x, x.idx, w = NULL, x.var.idx = NULL, ...) UseMethod("ensemble_create")
 
 
 #' @export
 #' @name ensemble_create
-ensemble_create.sf <- function(x, x.idx, y = NULL, x.var.idx = NULL, ...) {
+ensemble_create.sf <- function(x, x.idx, w = NULL, x.var.idx = NULL, ...) {
   st_sf(
-    ensemble_create(st_set_geometry(x, NULL), x.idx, y, x.var.idx, ...),
+    ensemble_create(st_set_geometry(x, NULL), x.idx, w, x.var.idx, ...),
     geometry = st_geometry(x), agr = c(st_agr(x), Pred_ens = "1", Var_ens = "1")
   )
 }
 
 #' @export
 #' @name ensemble_create
-ensemble_create.data.frame <- function(x, x.idx, y = NULL, x.var.idx = NULL, ...) {
+ensemble_create.data.frame <- function(x, x.idx, w = NULL, x.var.idx = NULL, ...) {
   #----------------------------------------------------------------------------
   stopifnot(inherits(x, "data.frame"), length(x.idx) <= ncol(x))
   lst <- list(...)
@@ -123,21 +123,21 @@ ensemble_create.data.frame <- function(x, x.idx, y = NULL, x.var.idx = NULL, ...
     stop("x.idx and x.var.idx cannot point to any of the same columns of x")
 
   #--------------------------------------------------------
-  # Check and process y (weights)
-  if (is.null(y)) {
-    y <- rep(1 / length(x.idx), length(x.idx))
+  # Check and process w (weights)
+  if (is.null(w)) {
+    w <- rep(1 / length(x.idx), length(x.idx))
 
-  } else if (inherits(y, "numeric")) {
-    if (length(x.idx) != length(y)) stop("x.idx and y must have the same length")
-    if (!(sum(y) == 1)) stop("If y is a numeric vector, it must sum to 1")
+  } else if (inherits(w, "numeric")) {
+    if (length(x.idx) != length(w)) stop("x.idx and w must have the same length")
+    if (!(sum(w) == 1)) stop("If w is a numeric vector, it must sum to 1")
 
-  } else if (inherits(y, "data.frame")) {
-    stopifnot(ncol(y) == length(x.idx), nrow(x) == nrow(y))
-    # Normalize (make sum to 1) each row of y
-    y <- data.frame(t(apply(y, 1, function(i, z) i / sum(i, na.rm = z), z = z.lgl)))
+  } else if (inherits(w, "data.frame")) {
+    stopifnot(ncol(w) == length(x.idx), nrow(x) == nrow(w))
+    # Normalize (make sum to 1) each row of w
+    w <- data.frame(t(apply(w, 1, function(i, z) i / sum(i, na.rm = z), z = z.lgl)))
 
   } else {
-    stop("y must be one of NULL, a data frame (or tibble), or a numeric vector")
+    stop("w must be one of NULL, a data frame (or tibble), or a numeric vector")
   }
 
 
@@ -147,9 +147,9 @@ ensemble_create.data.frame <- function(x, x.idx, y = NULL, x.var.idx = NULL, ...
   if (!is.null(x.var.idx)) x.var.df.idx <- x.df %>% select(!!x.var.idx)
 
   #----------------------------------------------
-  if (inherits(y, "numeric")) {
+  if (inherits(w, "numeric")) {
     ### Ensemble prediction values
-    data.ens <- unname(apply(x.df.idx, 1, esdm_weighted_mean, w = y, ... = z.lgl))
+    data.ens <- unname(apply(x.df.idx, 1, esdm_weighted_mean, w = w, ... = z.lgl))
 
     ### Ensemble uncertainty values (variance)
     if (is.null(x.var.idx)) {
@@ -157,7 +157,7 @@ ensemble_create.data.frame <- function(x, x.idx, y = NULL, x.var.idx = NULL, ...
       data.ens.var <- unname(apply(
         cbind(x.df.idx, data.ens), 1, function(i, j, z) {
           esdm_weighted_var_amv(head(i, -1), tail(i, 1), j, na.rm = z)
-        }, j = y, z = z.lgl
+        }, j = w, z = z.lgl
       ))
 
     } else {
@@ -165,32 +165,32 @@ ensemble_create.data.frame <- function(x, x.idx, y = NULL, x.var.idx = NULL, ...
       data.ens.var <- unname(apply(
         x.var.df.idx, 1, function(i, j, z) {
           esdm_weighted_var_wmv(i, j, na.rm = z)
-        }, j = y, z = z.lgl
+        }, j = w, z = z.lgl
       ))
     }
 
     #--------------------------------------------
-  } else if (inherits(y, "data.frame")) {
+  } else if (inherits(w, "data.frame")) {
     ### Ensemble prediction values
-    data.ens <- unname(apply(cbind(x.df.idx, y), 1, function(i, k, z) {
+    data.ens <- unname(apply(cbind(x.df.idx, w), 1, function(i, k, z) {
       esdm_weighted_mean(head(i, k), tail(i, k), na.rm = z)
-    }, k = ncol(y), z = z.lgl))
+    }, k = ncol(w), z = z.lgl))
 
     ### Ensemble uncertainty values (variance)
     if (is.null(x.var.idx)) {
       # Among-model variance
-      data.ens.var <- unname(apply(cbind(x.df.idx, y, data.ens), 1, function(i, k, z) {
+      data.ens.var <- unname(apply(cbind(x.df.idx, w, data.ens), 1, function(i, k, z) {
         i.mean <- tail(i, 1)
         i <- head(i, -1)
         esdm_weighted_var_amv(head(i, k), i.mean, tail(i, k), na.rm = z)
-      }, k = ncol(y), z = z.lgl))
+      }, k = ncol(w), z = z.lgl))
 
     } else {
       # Within-model variance
       data.ens.var <- unname(apply(
-        cbind(x.var.df.idx, y), 1, function(i, k, z) {
+        cbind(x.var.df.idx, w), 1, function(i, k, z) {
           esdm_weighted_var_wmv(head(i, k), tail(i, k), na.rm = z)
-        }, k = ncol(y), z = z.lgl
+        }, k = ncol(w), z = z.lgl
       ))
     }
 
