@@ -4,6 +4,8 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/smwoodman/eSDM?branch=master&svg=true)](https://ci.appveyor.com/project/smwoodman/eSDM)
 
 
+**NOTE: eSDM is currently under development. Please check with Sam (sam.woodman@noaa.gov) about the status of eSDM before using it.**
+
 ## Description
 
 `eSDM` is an R package designed to allow users to create ensembles from predictions from species distribution models (SDMs) made at different spatial scales or with different prediction units. Included in the package is the eSDM GUI, an R Shiny tool that provides the user with a graphical user interface that they can use to import, overlay, and create ensembles from SDM predictions.
