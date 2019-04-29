@@ -24,7 +24,8 @@ preds.3
 \details{
 \code{preds.1} sample SDM density predictions created by importing
   Sample_predictions_2.csv into the eSDM GUI, exporting predictions, and then
-  clipping them to the SoCal_bite.csv region
+  clipping them to the SoCal_bite.csv region.
+  Also manually added two variance columns (numbers are randomly generated with a max of 0.01)
 
 \code{preds.2} sample SDM density predictions created by importing
   Sample_predictions_1.csv into the eSDM GUI, exporting predictions, and then
