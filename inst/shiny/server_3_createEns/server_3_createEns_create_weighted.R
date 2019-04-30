@@ -86,20 +86,34 @@ create_ens_weights_metric <- reactive({
 
 ### Vector of idx of selected overlaid models that have spatial weights
 create_ens_weights_pix_which <- reactive({
-  ens.which <- create_ens_overlaid_idx()
-  ens.overlaid <- vals$overlaid.models[ens.which]
-  ens.which.spatial <- sapply(ens.overlaid, function(i) {
-    any(!is.na(i$Weight))
-  })
-
-  ens.which[ens.which.spatial]
+  which(!is.na(vapply(vals$overlaid.specs, function(i) i["col_weight"], "1")))
 })
 
-### Table of selected overlaid models and if they have any spatial weights
+### Generate data frame of pixel weights - fed into table and ensemble_create
+create_ens_weights_pix <- reactive({
+  ens.which <- create_ens_overlaid_idx()
+  ens.which.spatial <- create_ens_weights_pix_which()
+
+  # Need validate() call here for ensembling function
+  validate(
+    need(any(ens.which.spatial %in% ens.which),
+         paste("Error: At least one of the selected overlaid predictions",
+               "must have pixel-level spatial weights"))
+  )
+
+  w.list <- lapply(ens.which, function(i, j, k) {
+    if (i %in% j) vals$overlaid.models[[i]]$Weight else rep(1, k)
+  }, j = ens.which.spatial, k = nrow(vals$overlaid.models[[1]]))
+
+  purrr::set_names(data.frame(w.list), paste0("w", seq_along(ens.which)))
+})
+
+### Table summarizing pixel-level spatial weights of selected overlaid preds
 create_ens_weights_pix_table <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.spatial <- create_ens_weights_pix_which()
 
+  # Before create_ens_weights_pix() call to avoid 'Error' validation
   validate(
     need(any(ens.which.spatial %in% ens.which),
          paste("At least one of the selected overlaid predictions must have",
@@ -107,56 +121,16 @@ create_ens_weights_pix_table <- reactive({
     errorClass = "validation2"
   )
 
-  ens.which.spatial.text <- ifelse(
-    ens.which %in% ens.which.spatial, "Yes", "No"
+  ens.pix.w <- create_ens_weights_pix()
+
+  data.frame(
+    Predictions = paste("Overlaid", ens.which),
+    Min = vapply(ens.pix.w, min, 1, na.rm = TRUE),
+    Median = vapply(ens.pix.w, median, 1, na.rm = TRUE),
+    Mean = vapply(ens.pix.w, mean, 1, na.rm = TRUE),
+    Max = vapply(ens.pix.w, max, 1, na.rm = TRUE),
+    NAs = vapply(ens.pix.w, function(i) sum(is.na(i)), 1)
   )
-
-  ens.which.spatial.text2 <- sapply(ens.which, function(i) {
-    if (i %in% ens.which.spatial) {
-      j <- na_which(vals$overlaid.models[[i]]$Weight)
-      ifelse(
-        anyNA(j), 0,
-        sum(!(j %in% na_which(vals$overlaid.models[[i]]$Pred)))
-      )
-
-    } else {
-      "N/A"
-    }
-  })
-
-  data.frame(paste("Overlaid", ens.which), ens.which.spatial.text,
-             ens.which.spatial.text2, stringsAsFactors = FALSE) %>%
-    purrr::set_names(c("Predictions", "Has spatial weights",
-                       "Count of non-NA predictions with NA weight values"))
-})
-
-### Generate data frame of pixel weights
-create_ens_weights_pix <- reactive({
-  ens.which <- create_ens_overlaid_idx()
-  ens.which.spatial <- create_ens_weights_pix_which()
-
-  # Need validate() call here too for ensembling function
-  validate(
-    need(any(ens.which.spatial %in% ens.which),
-         paste("Error: At least one of the selected overlaid predictions",
-               "must have pixel-level spatial weights"))
-  )
-
-  # SMW todo
-  validate("Error: this functionality has not yet been implemented")
-
-  browser()
-
-  w.list <- lapply(ens.which, function(idx) {
-    overlaid.curr <- vals$overlaid.models[[idx]]
-
-    if (idx %in% ens.which.spatial) {
-      overlaid.curr$Weight
-    } else {
-      rep(1, nrow(overlaid.curr))
-    }
-  })
-  purrr::set_names(data.frame(w.list), letters[1:length(ens.which)])
 })
 
 
@@ -166,15 +140,29 @@ create_ens_weights_pix <- reactive({
 
 ### Vector of idx of selected overlaid preds that have associated uncertainty
 create_ens_weights_var_which <- reactive({
-  ens.which <- create_ens_overlaid_idx()
-  ens.overlaid <- vals$overlaid.models[ens.which]
-  ens.which.spatial <- sapply(ens.overlaid, function(i) {
-    any(!is.na(i$SE))
-  })
-
-  ens.which[ens.which.spatial]
+  which(!is.na(vapply(vals$overlaid.specs, function(i) i["col_se"], "1")))
 })
 
+### Create data frame of variance values (NOT weights)
+create_ens_weights_varvalue <- reactive({
+  ens.which <- create_ens_overlaid_idx()
+  ens.which.spatial <- create_ens_weights_pix_which()
+
+  # Need validate() call here for ensembling function
+  validate(
+    need(any(ens.which.spatial %in% ens.which),
+         paste("Error: All of the selected overlaid predictions must have",
+               "associated uncertainty values to use this weighting method"))
+  )
+
+  var.list <- lapply(ens.which, function(i) {
+    (vals$overlaid.models[[i]]$SE) ^ 2
+  })
+
+  purrr::set_names(data.frame(var.list), paste0("var", seq_along(ens.which)))
+})
+
+### Table summarizing variance values of selected overlaid preds
 create_ens_weights_var_table <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.var <- create_ens_weights_var_which()
@@ -186,22 +174,26 @@ create_ens_weights_var_table <- reactive({
     errorClass = "validation2"
   )
 
-  # TODO (probably): Make this a table with summary() outputs.
-  #   Do the same for pixel level spatial weights table?
-  data.frame("todo", "todo2", "todo3") %>%
-    purrr::set_names(c("Predictions", "Minimum of variance values",
-                       "Maximum of variance values"))
-  # purrr::set_names(c("Predictions", names(summary(c(runif(100), NA)))))
+  ens.varvalue <- create_ens_weights_varvalue()
+
+  data.frame(
+    Predictions = paste("Overlaid", ens.which),
+    Min = vapply(ens.varvalue, min, 1, na.rm = TRUE),
+    Median = vapply(ens.varvalue, median, 1, na.rm = TRUE),
+    Mean = vapply(ens.varvalue, mean, 1, na.rm = TRUE),
+    Max = vapply(ens.varvalue, max, 1, na.rm = TRUE),
+    NAs = vapply(ens.varvalue, function(i) sum(is.na(i)), 1)
+  )
 })
 
-### Create data frame of weights
+### Create data frame of weights (1 / var)
+# ensemble_create() will normalize each row so it sums to 1
 create_ens_weights_var <- reactive({
-  #SMW todo
-  validate("Error: this functionality has not yet been implemented")
-  browser()
+  purrr::set_names(
+    1 / create_ens_weights_varvalue(),
+    paste0("w", seq_len(ncol(create_ens_weights_varvalue())))
+  )
 })
-
-
 
 ###############################################################################
 ###############################################################################

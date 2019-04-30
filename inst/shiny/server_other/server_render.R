@@ -243,12 +243,12 @@ output$create_ens_weights_metric_table_out <- renderTable({
 ### Table of if overlaid preds have spatial pixel weights
 output$create_ens_weights_pix_table_out <- renderTable({
   create_ens_weights_pix_table()
-}, rownames = FALSE, align = "lcc")
+}, rownames = FALSE, align = "lccccc", digits = -2)
 
 ### Table of if overlaid preds have associated uncertainty values
 output$create_ens_weights_var_table_out <- renderTable({
   create_ens_weights_var_table()
-}, rownames = FALSE, align = "lcc")
+}, rownames = FALSE, align = "lccccc", digits = -2)
 
 
 #----------------------------------------------------------
