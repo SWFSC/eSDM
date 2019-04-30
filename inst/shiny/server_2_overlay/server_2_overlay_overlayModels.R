@@ -211,15 +211,25 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     rm(temp)
     models.overlaid.all <- models.overlaid.all[models.order]
 
-    # Get model specs
+    # Get specs of overlaid prediction
+    specs.list.names <- c(
+      "file", "col_pred", "col_se", "col_weight", "pred_type",
+      "res", "poly_count", "poly_count_noNA", "abund", "range"
+    )
     specs.list <- mapply(function(n, p, idx) {
       if (p == 1) {
         n.abund <- unname(round(eSDM::model_abundance(st_sf(n, base.sfc), "Pred")))
       } else {
         n.abund <- "N/A"
       }
-      list(c(as.character(table_orig()[idx, ]), base.specs[1], nrow(n),
-             sum(!is.na(n$Pred)), n.abund, base.specs[5]))
+
+      list(
+        purrr::set_names(
+          c(as.character(table_orig()[idx, ]), base.specs[1], nrow(n),
+            sum(!is.na(n$Pred)), n.abund, base.specs[5]),
+          specs.list.names
+        )
+      )
     }, models.overlaid.all, vals$models.pred.type, 1:models.num)
 
 
