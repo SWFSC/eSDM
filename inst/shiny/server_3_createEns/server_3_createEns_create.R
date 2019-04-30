@@ -85,18 +85,21 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     incProgress(0.1)
   })
 
-  paste0(
-    create_ens_info_rescaling_message(), ";",
-    tags$br(),
-    # tags$br(), tags$br(),
-    ifelse(input$create_ens_reg,
-           paste("Regional exclusion for", create_ens_info_regexc()),
-           "No regional exclusion"), ";",
-    tags$br(),
-    paste("Created", paste0("'", create_ens_info_weighting(), "'"),
-          "ensemble with",
-          tolower(create_ens_info_uncertainty()), "uncertainty")
-  )
+  "Created ensemble; see table below for ensemble details"
+
+  # paste0(
+  #   "Created ensemble with:",
+  #   tags$br(),
+  #   create_ens_info_rescaling_message(), ";",
+  #   tags$br(),
+  #   ifelse(input$create_ens_reg,
+  #          paste("Regional exclusion for", create_ens_info_regexc()),
+  #          "No regional exclusion"), ";",
+  #   tags$br(),
+  #   paste(paste0("'", create_ens_info_weighting(), "'"), "ensembling method;"),
+  #   tags$br(),
+  #   paste(create_ens_info_uncertainty(), "uncertainty")
+  # )
 })
 
 
