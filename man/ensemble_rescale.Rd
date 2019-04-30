@@ -55,8 +55,7 @@ ensemble_rescale(preds.1, c("Density", "Density2"), "abundance", 50)
 ensemble_rescale(preds.1, c(1, 2), "sumto1")
 
 ensemble_rescale(
-  dplyr::mutate(preds.1, r = 2, var1 = runif(325), var2 = runif(325)),
-  c("Density", "Density2"), "abundance", 100, c(3,5)
+  preds.1, c("Density", "Density2"), "abundance", 100, c(3,4)
 )
 
 

@@ -63,6 +63,7 @@ Create a weighted or unweighted ensemble of SDM predictions, including assocaite
 }
 \examples{
 ensemble_create(preds.1, c("Density", "Density2"), c(0.2, 0.8))
+ensemble_create(preds.1, 1:2, c(0.2, 0.8), c("Var1", "Var2"))
 ensemble_create(data.frame(a = 1:5, b = 3:7), c(1, 2))
 
 weights.df <- data.frame(runif(325), c(rep(NA, 100), runif(225)))
