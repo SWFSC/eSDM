@@ -182,10 +182,6 @@ observeEvent(input$create_ens_reg_preview_execute, {
 
   overlaid.which <- as.numeric(input$create_ens_reg_preview_model)
   overlaid.toplot <- check_preview360_split(vals$overlay.base.sfc)
-    # st_geometry(
-    #   vals$overlaid.models[[overlaid.which]]
-    #   )
-  # )
 
   vals$ens.over.wpoly.plot <- list(overlaid.toplot, overlaid.which)
 })
@@ -198,8 +194,12 @@ observeEvent(input$ens_preview_interactive_execute, {
 
   perc.num <- as.numeric(input$ens_preview_interactive_perc)
   model.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
+  req(length(model.idx) == 1)
 
-  model.toplot = vals$ensemble.models[[model.idx]]
+  model.toplot <- st_sf(
+    vals$ensemble.models[model.idx], geometry = vals$overlay.base.sfc,
+    agr = "constant"
+  )
   if (!identical(st_crs(model.toplot), crs.ll)) {
     model.toplot <- st_transform(model.toplot, crs.ll)
   }
@@ -224,14 +224,17 @@ observeEvent(input$ens_preview_execute, {
   models.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
   models.num <- length(models.idx)
 
-  models.toplot <- vals$ensemble.models[models.idx]
+  models.toplot <- lapply(
+    vals$ensemble.models[models.idx], st_sf,
+    geometry = vals$overlay.base.sfc, agr = "constant"
+  )
   stopifnot(models.num == length(models.toplot))
 
   plot.titles <- paste("Ensemble", models.idx)
 
   vals$ensemble.plot.idx <- models.idx
   vals$ensemble.plot <- list(
-    models.toplot = models.toplot, data.name = rep("Pred.ens", models.num),
+    models.toplot = models.toplot, data.name = rep("Pred_ens", models.num),
     plot.titles = plot.titles, perc.num = perc.num,
     pal = switch(perc.num, pal.esdm, NA),
     plot.dims = multiplot_inapp(models.num)
@@ -258,9 +261,9 @@ observeEvent(input$ens_var_execute, {
   vals$ensemble.plot.var.idx <- model.idx
   vals$ensemble.plot.var <- list(
     models.toplot = list(ens.toplot, var.toplot),
-    data.name = c("Pred.ens", "sd_val"), plot.titles = plot.titles,
+    data.name = c("Pred_ens", "sd_val"), plot.titles = plot.titles,
     pal = NA, plot.dims = multiplot_inapp(2)
   )
 })
 
-  ###############################################################################
+###############################################################################

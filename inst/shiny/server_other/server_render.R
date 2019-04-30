@@ -279,7 +279,7 @@ output$ens_preview_interactive_plot <- renderLeaflet({
   x <- req(vals$ensemble.plot.leaf)
 
   preview_interactive(
-    x$model.toplot, "Pred.ens", x$plot.title, x$perc.num, x$pal, leg.perc.esdm,
+    x$model.toplot, "Pred_ens", x$plot.title, x$perc.num, x$pal, leg.perc.esdm,
     x$leg.title
   )
 })
@@ -306,7 +306,7 @@ output$ens_abund_table_out <- renderTable({
 output$ens_var_plot <- renderPlot({
   x <- req(vals$ensemble.plot.var)
 
-  preds.all <- c(x$models.toplot[[1]]$Pred.ens, x$models.toplot[[2]]$sd_val)
+  preds.all <- c(x$models.toplot[[1]]$Pred_ens, x$models.toplot[[2]]$sd_val)
   var.breaks <- seq(
     from = min(preds.all, na.rm = TRUE), to = max(preds.all, na.rm = TRUE),
     length.out = 11

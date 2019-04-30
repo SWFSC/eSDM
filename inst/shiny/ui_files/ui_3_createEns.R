@@ -371,7 +371,7 @@ ui.createEns <- function() {
               radioButtons("ens_select_action", tags$h5("Action to perform with selected ensemble predictions"),
                            choices = list("Plot interactive preview" = 1, "Plot static preview" = 2,
                                           "Download static preview" = 3, "Remove from GUI" = 4,
-                                          "Calculate predicted abundance" = 5, "Among-model variance" = 6),
+                                          "Calculate predicted abundance" = 5),
                            selected = 1)
             ),
             column(
@@ -443,13 +443,13 @@ ui.createEns <- function() {
                         # tags$style(type = "text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
                         # #tr:first-child for first row
                       )
-                    ),
-                    conditionalPanel(
-                      condition = "input.ens_select_action == 6",
-                      helpText("Plot the ensemble predictions and standard deviation of the rescaled overlaid predictions side-by-side.",
-                               "Both plots will have the same color scheme."),
-                      uiOutput("ens_var_execute_uiOut_button")
-                    )
+                    ) #,
+                    # conditionalPanel(
+                    #   condition = "input.ens_select_action == 6",
+                    #   helpText("Plot the ensemble predictions and standard deviation of the rescaled overlaid predictions side-by-side.",
+                    #            "Both plots will have the same color scheme."),
+                    #   uiOutput("ens_var_execute_uiOut_button")
+                    # )
                   )
                 )
               )
@@ -465,11 +465,11 @@ ui.createEns <- function() {
             conditionalPanel(
               condition = "input.ens_select_action == 2",
               shinycssloaders::withSpinner(plotOutput("ens_preview_plot", height = 500), type = 1)
-            ),
-            conditionalPanel(
-              condition = "input.ens_select_action == 6",
-              shinycssloaders::withSpinner(plotOutput("ens_var_plot", height = 500), type = 1)
-            )
+            ) #,
+            # conditionalPanel(
+            #   condition = "input.ens_select_action == 6",
+            #   shinycssloaders::withSpinner(plotOutput("ens_var_plot", height = 500), type = 1)
+            # )
           )
         )
       )

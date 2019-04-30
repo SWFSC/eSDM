@@ -413,7 +413,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
 
     #------------------------------------------------------
-    ### Uncertainties
+    ### Uncertainty
     if (!all(is.na(data.vec.v))) {
       b.model.v <- breaks_calc(data.vec.v)
       validate(
@@ -426,10 +426,10 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
       leaf.map <- leaf.map %>%
         addPolygons(
-          stroke = FALSE, color = ~binpal.v(data.vec.v), fillOpacity = 0.8, group = "Uncertainties") %>%
+          stroke = FALSE, color = ~binpal.v(data.vec.v), fillOpacity = 0.8, group = "Uncertainty") %>%
         addLegend(
           "topright", title = leg.title, colors = c(rev(col.pal), "gray"),
-          labels = c(rev(leg.labels), "NA"), opacity = 1, group = "Uncertainties")
+          labels = c(rev(leg.labels), "NA"), opacity = 1, group = "Uncertainty")
     }
 
     #------------------------------------------------------
@@ -473,18 +473,18 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         labels = c(data.breaks.labs, "NA"), opacity = 1, group = "Predictions")
 
 
-    ### Uncertainties - same color scale as predictions
+    ### Uncertainty - same color scale as predictions
     if (!all(is.na(data.vec.v))) {
       #####
       # browser()
 
       validate(
-        need(col.num >= 10, "Error: Error plotting uncertainties for selected predictions")
+        need(col.num >= 10, "Error: Error plotting uncertainty for selected predictions")
       )
 
       b.new <- seq(min(data.vec, na.rm = TRUE), max(data.vec, na.rm = TRUE), length.out = 11)
-      b.new[1] <- min(data.vec.v, na.rm = TRUE)
-      b.new[11] <- max(max(data.vec.v, na.rm = TRUE), max(data.vec, na.rm = TRUE))
+      b.new[1] <- min(c(data.vec.v, data.vec), na.rm = TRUE)
+      b.new[11] <- max(c(data.vec.v, data.vec), na.rm = TRUE)
 
 
       binpal.v <- colorBin(
@@ -522,10 +522,10 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
       leaf.map %>%
         addPolygons(
-          stroke = FALSE, color = ~binpal.v(data.vec.v), fillOpacity = 0.6, group = "Uncertainties") %>%
+          stroke = FALSE, color = ~binpal.v(data.vec.v), fillOpacity = 0.6, group = "Uncertainty") %>%
         addLegend(
-          "topright", title = "Uncertainties", colors = c(rev(col.pal), "gray"),
-          labels = c(data.breaks.labs, "NA"), opacity = 1, group = "Uncertainties")
+          "topright", title = "Uncertainty", colors = c(rev(col.pal), "gray"),
+          labels = c(data.breaks.labs, "NA"), opacity = 1, group = "Uncertainty")
     }
 
     ### Weights
@@ -575,17 +575,17 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         tags$h5("No weight data"), layerId = "Other info", position = "bottomright") %>%
       addLayersControl(
         baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
-        overlayGroups = c("Predictions", "Uncertainties"),
+        overlayGroups = c("Predictions", "Uncertainty"),
         position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
-      hideGroup("Uncertainties")
+      hideGroup("Uncertainty")
 
   } else {
     leaf.map %>%
       addLayersControl(
         baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
-        overlayGroups = c("Predictions", "Uncertainties", "Weights"),
+        overlayGroups = c("Predictions", "Uncertainty", "Weights"),
         position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
-      hideGroup(c("Uncertainties", "Weights"))
+      hideGroup(c("Uncertainty", "Weights"))
   }
 }
 
