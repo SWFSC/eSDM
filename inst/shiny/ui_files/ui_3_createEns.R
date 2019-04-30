@@ -268,7 +268,13 @@ ui.createEns <- function() {
                                          "when each set of original predictions was initially imported into the GUI.",
                                          "If a set of overlaid predictions does not have pixel-level spatial weights, ",
                                          "then the row corresponding to that set will say \"No\" in the table below and",
-                                         "those predictions will have a weight of TODO when the ensemble is created"),
+                                         "those predictions will have a weight of 1 when the ensemble is created.",
+                                         tags$br(),
+                                         "Note that this feature should only be used with comparable weight values,",
+                                         "or else some predictions will contribute disproportionality to the ensemble.",
+                                         tags$br(),
+                                         "The pixel-level spatial weight values are summarized in the table below.",
+                                         "The numbers are displayed in scientific notation, where 'E' represents '10^'"),
                                 tableOutput("create_ens_weights_pix_table_out")
                               )
                             ),
@@ -286,10 +292,13 @@ ui.createEns <- function() {
                                          "These values are converted to variance for the purpose of this ensembling method.",
                                          "To use this ensemble method, all selected overlaid predictions must have",
                                          "assocaited uncertainty values.",
-                                         tags$br(), tags$br(),
+                                         tags$br(),
                                          "Note that this feature should only be used with comparable uncertainty values;",
                                          "if one model underestimates uncertainty, then its predictions will",
-                                         "contribute disproportionality to the ensemble."),
+                                         "contribute disproportionality to the ensemble.",
+                                         tags$br(),
+                                         "The rescaled variance values are summarized in the table below.",
+                                         "The numbers are displayed in scientific notation, where 'E' represents '10^'"),
                                 tableOutput("create_ens_weights_var_table_out")
                               )
                             )

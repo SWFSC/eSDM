@@ -144,23 +144,16 @@ create_ens_weights_var_which <- reactive({
 })
 
 ### Create data frame of variance values (NOT weights)
-create_ens_weights_varvalue <- reactive({
-  ens.which <- create_ens_overlaid_idx()
-  ens.which.spatial <- create_ens_weights_pix_which()
-
-  # Need validate() call here for ensembling function
-  validate(
-    need(any(ens.which.spatial %in% ens.which),
-         paste("Error: All of the selected overlaid predictions must have",
-               "associated uncertainty values to use this weighting method"))
-  )
-
-  var.list <- lapply(ens.which, function(i) {
-    (vals$overlaid.models[[i]]$SE) ^ 2
-  })
-
-  purrr::set_names(data.frame(var.list), paste0("var", seq_along(ens.which)))
-})
+# create_ens_weights_varvalue <- reactive({
+#
+#
+#   # var.list <- lapply(ens.which, function(i) {
+#   #   (vals$overlaid.models[[i]]$SE) ^ 2
+#   # })
+#   # purrr::set_names(var.list, paste0("var", seq_along(ens.which)))
+#
+#
+# })
 
 ### Table summarizing variance values of selected overlaid preds
 create_ens_weights_var_table <- reactive({
@@ -174,7 +167,7 @@ create_ens_weights_var_table <- reactive({
     errorClass = "validation2"
   )
 
-  ens.varvalue <- create_ens_weights_varvalue()
+  ens.varvalue <- create_ens_data_rescale()[[2]]
 
   data.frame(
     Predictions = paste("Overlaid", ens.which),
@@ -189,8 +182,18 @@ create_ens_weights_var_table <- reactive({
 ### Create data frame of weights (1 / var)
 # ensemble_create() will normalize each row so it sums to 1
 create_ens_weights_var <- reactive({
+  ens.which <- create_ens_overlaid_idx()
+  ens.which.var <- create_ens_weights_pix_which()
+
+  # Need validate() call here for ensembling function
+  validate(
+    need(any(ens.which.var %in% ens.which),
+         paste("Error: All of the selected overlaid predictions must have",
+               "associated uncertainty values to use this weighting method"))
+  )
+
   purrr::set_names(
-    1 / create_ens_weights_varvalue(),
+    1 / create_ens_data_rescale()[[2]],
     paste0("w", seq_len(ncol(create_ens_weights_varvalue())))
   )
 })

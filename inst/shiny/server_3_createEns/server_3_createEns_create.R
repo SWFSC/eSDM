@@ -76,9 +76,12 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     vals$ensemble.specs <- c(
       vals$ensemble.specs,
       list(c(
-        create_ens_info_overlaid_idx(), create_ens_info_rescaling(),
-        create_ens_info_regexc(), create_ens_info_weighting(),
-        create_ens_info_weights(), create_ens_info_uncertainty()
+        idx = create_ens_info_overlaid_idx(),
+        res = create_ens_info_rescaling(),
+        regexc = create_ens_info_regexc(),
+        ensmethod = create_ens_info_weighting(),
+        weights = create_ens_info_weights(),
+        var = create_ens_info_uncertainty()
       ))
     )
 

@@ -255,30 +255,31 @@ output$ens_download_preview_name_uiOut_text <- renderUI({
   } else {
     # Single
     idx.selected <- as.numeric(input$ens_datatable_ensembles_rows_selected)
-    req(idx.selected <= length(vals$ensemble.method))
+    req(idx.selected <= length(vals$ensemble.specs))
+    curr.specs <- vals$ensemble.specs[[idx.selected]]
+
     ens.method.txt <- switch(
-      vals$ensemble.method[idx.selected],
+      strsplit(curr.specs["ensmethod"], " - ")[[1]][1],
       "Unweighted" = "UnW_", "Weighted" = "W_"
     )
-    ens.weights.txt <- vals$ensemble.weights[idx.selected]
+    ens.weights.txt <- curr.specs["weights"]
     ens.weights.txt <- ifelse(
       is.na(ens.weights.txt), "", paste0(gsub(", ", "+", ens.weights.txt), "_")
     )
-    ens.rescale.txt <- vals$ensemble.rescaling[idx.selected]
+    ens.rescale.txt <- curr.specs["res"]
     ens.rescale.txt <- ifelse(
       grepl("Abund", ens.rescale.txt),
       paste0("Abund", strsplit(ens.rescale.txt, ": ")[[1]][2], "_"),
       switch(ens.rescale.txt, "None" = "None_", "Sum to 1" = "Sumto1_")
-      # switch(
-      #   ens.rescale.txt, "None" = "None_", "Normalization" = "Norm_",
-      #   "Standardization" = "Stand_", "Sum to 1" = "Sumto1_"
-      # )
     )
-    ens.idx.txt <- vals$ensemble.overlaid.idx[idx.selected]
-    ens.idx.txt <- paste0(gsub(", ", "+", ens.idx.txt), "_")
+    ens.idx.txt <- ifelse(
+      curr.specs["idx"] == "All overlaid",
+      "all", substring(curr.specs["idx"], 10)
+    )
+    ens.idx.txt <- paste0("Preds", gsub(", ", "+", ens.idx.txt), "_")
 
     f.val <- paste0(
-      "eSDM_", ens.method.txt, ens.weights.txt, ens.rescale.txt, ens.idx.txt,
+      "eSDM_", ens.idx.txt, ens.method.txt, ens.weights.txt, ens.rescale.txt,
       perc.txt, res.txt
     )
   }
@@ -303,8 +304,7 @@ output$ens_download_preview_execute_uiOut_download <- renderUI({
   idx.selected <- as.numeric(req(input$ens_datatable_ensembles_rows_selected))
   for (i in idx.selected) {
     download_check(
-      st_set_geometry(vals$ensemble.models[[i]], NULL)$Pred.ens,
-      input$ens_download_preview_perc
+      vals$ensemble.models[[i]]$Pred_ens, input$ens_download_preview_perc
     )
   }
 
@@ -318,11 +318,11 @@ abund_reac_flag <- reactive({
   ens.rows <- input$ens_datatable_ensembles_rows_selected
   req(input$ens_select_action == 5, ens.rows)
 
-  ens.rescalings <- vals$ensemble.rescaling[ens.rows]
-  rescaling.abund.bad <- c("Sum to 1")
-  # rescaling.abund.bad <- c("Normalization", "Standardization", "Sum to 1")
+  ens.rescalings <- vapply(
+    vals$ensemble.specs[ens.rows], function(i) i["res"], "1"
+  )
 
-  all(!(ens.rescalings %in% rescaling.abund.bad))
+  !any(ens.rescalings == "Sum to 1")
 })
 
 ### Text saying abundance can't be calculated
@@ -331,9 +331,6 @@ output$ens_calc_abund_execute_uiOut_text <- renderUI({
     need(abund_reac_flag(),
          paste("Abundance cannot be reasonably calculated for ensembles",
                "made with predictions rescaled using the 'Sum to 1' method")),
-    # paste("Abundance cannot be reasonably calculated for ensembles",
-    #       "made with predictions rescaled using the 'Normalization',",
-    #       "'Standardization', or 'Sum to 1' methods")),
     errorClass = "validation2"
   )
 

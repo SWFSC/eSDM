@@ -2,6 +2,7 @@
 
 ##############################################################################
 # Function for checking if download can be performed
+# x must be a numeric vector
 download_check <- function(x, perc) {
   validate(
     need(x,
