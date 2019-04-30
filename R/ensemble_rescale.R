@@ -140,7 +140,7 @@ ensemble_rescale <- function(x, x.idx, y, y.abund = NULL, x.var.idx = NULL) {
   if (y == "abundance") {
     if (!length(y.abund) == 1)
       stop ("If y is 'abundance', y.abund must be a single number greater than 0")
-    if (!(y.abund > 0 & inherits(y.abund, "numeric")))
+    if (!(y.abund > 0 & inherits(y.abund, c("integer", "numeric"))))
       stop ("If y is 'abundance', y.abund must be a single number greater than 0")
 
 
