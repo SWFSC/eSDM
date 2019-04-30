@@ -65,7 +65,6 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     }
 
 
-
     incProgress(0.3)
 
     #------------------------------------------------------
@@ -73,6 +72,9 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     vals$ensemble.models <- c(vals$ensemble.models, list(ens.df))
     vals$ensemble.overlaid.idx <- c(
       vals$ensemble.overlaid.idx, create_ens_info_overlaid_idx()
+    )
+    vals$ensemble.rescaling <- c(
+      vals$ensemble.rescaling, create_ens_info_rescaling()
     )
     vals$ensemble.overlaid.res <- c(
       vals$ensemble.overlaid.res, list(ens.preds)
@@ -83,10 +85,18 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     vals$ensemble.weights <- c(
       vals$ensemble.weights, create_ens_info_weights()
     )
-    vals$ensemble.rescaling <- c(
-      vals$ensemble.rescaling, create_ens_info_rescaling()
-    )
     incProgress(0.1)
+
+
+#
+#     d <- c(
+#       "All", #create_ens_info_overlaid_idx()
+#       create_ens_info_rescaling(),
+#       ifelse(input$create_ens_reg, "Yes", "No"),
+#       "Weighted - AUC", #create_ens_info_weighting()
+#       "1/3, 1/3, 1/3", #create_ens_info_weights()
+#       "Among-model uncertainty" #"Within-model uncertainty"
+#     )
   })
 
   paste0(
@@ -222,7 +232,7 @@ create_ens_overlaid_idx <- reactive({
 
 
 ###############################################################################
-# Functions that return strings with ensemble model info for reactive vars
+# Functions that return strings with ensemble info for vals
 
 ### Indices of overlaid models used in ensemble
 create_ens_info_overlaid_idx <- reactive({

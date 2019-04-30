@@ -4,6 +4,9 @@
 
 
 ###############################################################################
+# Original predictions
+
+#------------------------------------------------------------------------------
 ### Table of original predictions
 table_orig <- reactive({
   if (length(vals$models.ll) == 0) return()
@@ -20,7 +23,7 @@ table_orig <- reactive({
 })
 
 
-###############################################################################
+#------------------------------------------------------------------------------
 ### Table of original predictions with stats
 table_orig_stats <- reactive({
   req(table_orig())
@@ -52,6 +55,9 @@ table_overlaid <- reactive({
 
 
 ###############################################################################
+# Ensemble predictions
+
+#------------------------------------------------------------------------------
 ### Table of created ensemble predictions
 table_ensembles <- reactive({
   if (length(vals$ensemble.models) == 0) return()
@@ -66,6 +72,13 @@ table_ensembles <- reactive({
     )
 })
 
+#------------------------------------------------------------------------------
+### Table of created ensemble predictions with stats
+table_ensembles_stats <- reactive({
+  return()
+  if (length(vals$ensemble.models) == 0) return()
+
+})
 
 ###############################################################################
 # Other are rendered in their pertinent files

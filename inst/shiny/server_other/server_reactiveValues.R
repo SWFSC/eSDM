@@ -49,19 +49,19 @@ vals <- reactiveValues(
   overlaid.models.specs = NULL,    # Info about overlaid models; same info types as models.specs
   overlaid.plot         = NULL,    # Plot info of currently previewed overlaid predictions
 
-  # Objects that store elements used by ensemble and overlaid models
-  ens.over.wpoly.filename = NULL,  # List of lists of filenames of polygons with weights; index corresponds to overlaid pred index
-  ens.over.wpoly.sf       = NULL,  # List of lists of weight polygons; index corresponds to overlaid pred index
-  ens.over.wpoly.coverage = NULL,  # List of lists of overlap perc for weight to be applied; index corresponds to overlaid pred index
-  ens.over.wpoly.plot     = NULL,  # Plot info of currently previewed weight polygons
+  # Objects that store regional exclusion polygon info (used to be 'weight polygon', hence wpoly)
+  ens.over.wpoly.filename = NULL,  # List of lists of filenames of exclusion polygons; index corresponds to overlaid pred index
+  ens.over.wpoly.sf       = NULL,  # List of lists of exclusion polygons; index corresponds to overlaid pred index
+  ens.over.wpoly.coverage = NULL,  # List of lists of overlap perc for poly to be applied; index corresponds to overlaid pred index
+  ens.over.wpoly.plot     = NULL,  # Plot info of currently previewed exclusion polygons
 
   # Objects that store created ensembles and their information
   ensemble.models        = list(), # Ensemble predictions. List elements are data frames; create sf object using overlay.base.sfc
+  ensemble.overlaid.idx  = NULL,   # Strings of indices of overlaid predictions used in ensemble
   ensemble.rescaling     = NULL,   # Vector of rescaling methods used
+  ensemble.overlaid.res  = NULL,   # List of data frame(s) of overlaid preds post-rescaling and regional exclusion for each ensemble
   ensemble.method        = NULL,   # Vector of ensembling methods used
   ensemble.weights       = NULL,   # Vector of strings of weights used (if any)
-  ensemble.overlaid.idx  = NULL,   # Strings of indices of overlaid predictions used in ensemble
-  ensemble.overlaid.res  = NULL,   # List of data frame(s) of overlaid preds post-rescaling and regional exclusion for each ensemble
   ensemble.plot.leaf     = NULL,   # Plot info of currently interactively previewed ensemble predictions
   ensemble.plot.leaf.idx = NULL,   # Plot index of currently interactively previewed ensemble predictions
   ensemble.plot          = NULL,   # Plot info of currently static-previewed ensemble predictions

@@ -47,10 +47,6 @@ ui.createEns <- function() {
                   box(
                     width = 12,
                     tags$strong("1) Ensemble options: rescaling method"),
-                    # radioButtons("create_ens_rescale_type", NULL,
-                    #              choices = list("None" = 1, "Abundance" = 2, "Normalization" = 3,
-                    #                             "Standardization" = 4, "Sum to 1" = 5),
-                    #              selected = 1),
                     radioButtons("create_ens_rescale_type", NULL,
                                  choices = list("None" = 1, "Abundance" = 2, "Sum to 1" = 3),
                                  selected = 1),
@@ -354,7 +350,12 @@ ui.createEns <- function() {
           box(
             title = "Created Ensemble Predictions", status = "warning", solidHeader = FALSE, width = 6, collapsible = TRUE,
             ui.instructions.table.select(text.pre = "ensemble", text.in = "with which to perform an action:"),
-            DTOutput("ens_datatable_ensembles"),
+            conditionalPanel("input.ens_table_stats != true", DTOutput("ens_datatable_ensembles")),
+            conditionalPanel("input.ens_table_stats", DTOutput("ens_datatable_ensembles_stats")),
+            column(12, checkboxInput("ens_table_stats",
+                                     paste("Display additional information - NOTE that you can only",
+                                           "select or deselect a row when this box is unchecked"),
+                                     value = FALSE)),
             tags$br(),
             column(
               width = 4,

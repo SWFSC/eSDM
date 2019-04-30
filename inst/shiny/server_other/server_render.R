@@ -259,10 +259,17 @@ output$ens_create_ensemble_text <- renderUI(HTML(create_ensemble()))
 # Created ensemble things
 
 ### Table of created ensemble predictions
-output$ens_datatable_ensembles <- renderDT({
-  table_ensembles()
-},
-options = dt.list)
+output$ens_datatable_ensembles <- renderDT(
+  table_ensembles(), options = dt.list
+)
+
+### Stats table of created ensemble predictions
+output$ens_datatable_ensembles_stats <- renderDT(
+  table_ensembles_stats(), options = dt.list
+)
+
+#----------------------------------------------------------
+# Created ensemble things options
 
 ### Remove ensemble predictions output
 output$ens_remove_text <- renderText(ens_remove())
