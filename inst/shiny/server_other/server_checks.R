@@ -109,7 +109,8 @@ observe({
   check.all <- c(
     all(sapply(vals$overlaid.models, inherits, "data.frame")),
     all(sapply(vals$overlaid.models, nrow) == nrow(vals$overlaid.models[[1]])),
-    all(sapply(lapply(vals$overlaid.models, names), function(i) identical(i, names.df.txt)))
+    all(sapply(lapply(vals$overlaid.models, names), function(i) identical(i, names.df.txt))),
+    all(vapply(vals$overlaid.specs, length, 1) == 10)
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing overlaid predictions"))
@@ -154,7 +155,8 @@ observe({
   check.all <- c(
     all(sapply(vals$ensemble.models, inherits, "data.frame")),
     all(sapply(vals$ensemble.models, nrow) == nrow(vals$ensemble.models[[1]])),
-    all(sapply(lapply(vals$ensemble.models, names), function(i) identical(i, c("Pred_ens", "Var_ens"))))
+    all(sapply(lapply(vals$ensemble.models, names), function(i) identical(i, c("Pred_ens", "Var_ens")))),
+    all(vapply(vals$ensemble.specs, length, 1) == 6)
   )
   if (!all(check.all) | anyNA(check.all)) {
     showModal(modal.attr("Error in processing ensemble predictions"))

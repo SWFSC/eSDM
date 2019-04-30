@@ -47,7 +47,6 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
 
     #------------------------------------------------------
     ### Create ensemble
-    browser()
     if (input$create_ens_create_uncertainty == 2) { #WMV
       ens.df <- eSDM::ensemble_create(
         x = cbind(ens.preds, ens.var),
@@ -70,39 +69,33 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     #------------------------------------------------------
     ### Add data to reactive variables
     vals$ensemble.models <- c(vals$ensemble.models, list(ens.df))
-    vals$ensemble.overlaid.idx <- c(
-      vals$ensemble.overlaid.idx, create_ens_info_overlaid_idx()
-    )
-    vals$ensemble.rescaling <- c(
-      vals$ensemble.rescaling, create_ens_info_rescaling()
-    )
     vals$ensemble.overlaid.res <- c(
       vals$ensemble.overlaid.res, list(ens.preds)
     )
-    vals$ensemble.method <- c(
-      vals$ensemble.method, create_ens_info_weighting()
+
+    vals$ensemble.specs <- c(
+      vals$ensemble.specs,
+      list(c(
+        create_ens_info_overlaid_idx(), create_ens_info_rescaling(),
+        create_ens_info_regexc(), create_ens_info_weighting(),
+        create_ens_info_weights(), create_ens_info_uncertainty()
+      ))
     )
-    vals$ensemble.weights <- c(
-      vals$ensemble.weights, create_ens_info_weights()
-    )
+
     incProgress(0.1)
-
-
-#
-#     d <- c(
-#       "All", #create_ens_info_overlaid_idx()
-#       create_ens_info_rescaling(),
-#       ifelse(input$create_ens_reg, "Yes", "No"),
-#       "Weighted - AUC", #create_ens_info_weighting()
-#       "1/3, 1/3, 1/3", #create_ens_info_weights()
-#       "Among-model uncertainty" #"Within-model uncertainty"
-#     )
   })
 
   paste0(
-    create_ens_info_rescaling_message(),
-    tags$br(), tags$br(),
-    paste("Created", tolower(create_ens_info_weighting()), "ensemble")
+    create_ens_info_rescaling_message(), ";",
+    tags$br(),
+    # tags$br(), tags$br(),
+    ifelse(input$create_ens_reg,
+           paste("Regional exclusion for", create_ens_info_regexc()),
+           "No regional exclusion"), ";",
+    tags$br(),
+    paste("Created", paste0("'", create_ens_info_weighting(), "'"),
+          "ensemble with",
+          tolower(create_ens_info_uncertainty()), "uncertainty")
   )
 })
 
@@ -124,8 +117,10 @@ create_ens_weights_unweighted <- reactive({
 ###############################################################################
 # 'Level 2' functions
 
+#------------------------------------------------------------------------------
 ### Return 2-element list of overlaid predictions df and SE values df
 ### After rescaling and applying regional exclusion as necessary
+### create_ens_reg_exc() in 'ensCreateEns_create_regexc.R'
 create_ens_data_reg <- reactive({
   if (input$create_ens_reg) {
     validate(
@@ -145,6 +140,7 @@ create_ens_data_reg <- reactive({
   }
 })
 
+#------------------------------------------------------------------------------
 ### Return list(rescaled overlaid predictions df, rescaled SE values df)
 create_ens_data_rescale <- reactive({
   models.overlaid <- vals$overlaid.models[create_ens_overlaid_idx()]
@@ -198,7 +194,7 @@ create_ens_data_rescale <- reactive({
 ###############################################################################
 # 'Level 3' functions
 
-#################################################
+#------------------------------------------------------------------------------
 ### Get indices of overlaid prediction to be included in ensemble
 # This is its own func since it is used in a flag in server_3_createEns.R
 create_ens_overlaid_idx_num <- reactive({
@@ -215,6 +211,7 @@ create_ens_overlaid_idx_num <- reactive({
   }
 })
 
+#------------------------------------------------------------------------------
 ### Get indices of overlaid models to be used in ensemble, and validate >= 2
 create_ens_overlaid_idx <- reactive({
   req(length(vals$overlaid.models) > 0)
@@ -234,35 +231,69 @@ create_ens_overlaid_idx <- reactive({
 ###############################################################################
 # Functions that return strings with ensemble info for vals
 
-### Indices of overlaid models used in ensemble
+#------------------------------------------------------------------------------
+### 1) Indices of overlaid predictions used in ensemble
 create_ens_info_overlaid_idx <- reactive({
   overlaid.idx <- create_ens_overlaid_idx()
 
   if (length(overlaid.idx) == length(vals$overlaid.models)) {
-    "All"
+    "All overlaid"
   } else {
-    paste(overlaid.idx, collapse = ", ")
+    paste("Overlaid", paste(overlaid.idx, collapse = ", "))
   }
 })
 
-### Weighting method used
-create_ens_info_weighting <- reactive({
+#------------------------------------------------------------------------------
+### 2) Rescaling method used
+create_ens_info_rescaling <- reactive ({
+  switch(
+    as.numeric(input$create_ens_rescale_type),
+    "None", paste("Abundance:", input$create_ens_rescale_abund), "Sum to 1"
+  )
+})
+
+#------------------------------------------------------------------------------
+### 3) Regional exclusion - on which overlaid predictions
+create_ens_info_regexc <- reactive({
   if (input$create_ens_reg) {
-    paste(
-      "Regional exclusion +",
-      ifelse(input$create_ens_type == 1, "unweighted", "weighted"
-      )
+    overlaid.idx <- create_ens_overlaid_idx()
+    regexc.idx <- which(
+      !vapply(vals$ens.over.wpoly.sf, is.null, as.logical(1))
     )
+
+    paste(
+      "Overlaid",
+      paste(regexc.idx[regexc.idx %in% overlaid.idx], collapse = ", ")
+    )
+
   } else {
-    ifelse(input$create_ens_type == 1, "Unweighted", "Weighted")
+    "N/A"
   }
 })
 
-### Weights used, if applicable
+#------------------------------------------------------------------------------
+### 4) Ensembling method used
+create_ens_info_weighting <- reactive({
+  if (input$create_ens_type == 1) {
+    "Unweighted"
+
+  } else {
+    tmp <- as.numeric(input$create_ens_weight_type)
+    if (tmp == 2) {
+      paste("Weighted -", paste0(input$create_ens_weights_metric, "-based"))
+    } else {
+      txt.vec <- c("Manual", NA, "Pixel-level spatial weights", "Uncertainty")
+      paste("Weighted -", txt.vec[tmp])
+    }
+  }
+})
+
+#------------------------------------------------------------------------------
+### 5) Weights used, as applicable
 # Get weights from functions that returns numerical weights for computation
 create_ens_info_weights <- reactive({
   if (input$create_ens_type == 1) {
-    NA
+    "N/A"
 
   } else {
     switch(
@@ -273,20 +304,21 @@ create_ens_info_weights <- reactive({
                nsmall = 3, justify = "right"),
         collapse = ", "
       ),
-      "Spatial by pixel"
+      "Spatial by pixel", "Inverse of variance"
     )
   }
 })
 
-### Rescaling method used
-create_ens_info_rescaling <- reactive ({
-  switch(
-    as.numeric(input$create_ens_rescale_type),
-    "None", paste("Abundance:", input$create_ens_rescale_abund), "Sum to 1"
-    # "Normalization", "Standardization", "Sum to 1"
+#------------------------------------------------------------------------------
+### 6) Uncertainty method - AMV or WMV
+create_ens_info_uncertainty <- reactive({
+  ifelse(
+    input$create_ens_create_uncertainty == 1, "Among-model", "Within-model"
   )
 })
 
+
+###############################################################################
 ### Generate string for text about created ensemble
 create_ens_info_rescaling_message <- reactive({
   input.rescale <- input$create_ens_rescale_type

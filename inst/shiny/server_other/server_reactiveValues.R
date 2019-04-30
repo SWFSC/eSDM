@@ -46,7 +46,7 @@ vals <- reactiveValues(
   overlay.base.sfc      = NULL,    # Base geometry (sfc object)
 
   overlaid.models       = list(),  # List of overlaid predictions. List elements are data frames; create sf object using overlay.base.sfc
-  overlaid.models.specs = NULL,    # Info about overlaid models; same info types as models.specs
+  overlaid.specs        = NULL,    # Info about overlaid models; same info types as models.specs
   overlaid.plot         = NULL,    # Plot info of currently previewed overlaid predictions
 
   # Objects that store regional exclusion polygon info (used to be 'weight polygon', hence wpoly)
@@ -57,11 +57,12 @@ vals <- reactiveValues(
 
   # Objects that store created ensembles and their information
   ensemble.models        = list(), # Ensemble predictions. List elements are data frames; create sf object using overlay.base.sfc
-  ensemble.overlaid.idx  = NULL,   # Strings of indices of overlaid predictions used in ensemble
-  ensemble.rescaling     = NULL,   # Vector of rescaling methods used
-  ensemble.overlaid.res  = NULL,   # List of data frame(s) of overlaid preds post-rescaling and regional exclusion for each ensemble
-  ensemble.method        = NULL,   # Vector of ensembling methods used
-  ensemble.weights       = NULL,   # Vector of strings of weights used (if any)
+  ensemble.overlaid.res  = NULL,   # List of data frames of overlaid preds post-rescaling and regional exclusion for each ensemble
+  ensemble.specs         = NULL,   # List of vectors with ensemble info: idx, rescaling, RegExc, ens method, weights, uncertainty method
+  # ensemble.overlaid.idx  = NULL,   # Strings of indices of overlaid predictions used in ensemble
+  # ensemble.rescaling     = NULL,   # Vector of rescaling methods used
+  # ensemble.method        = NULL,   # Vector of ensembling methods used
+  # ensemble.weights       = NULL,   # Vector of strings of weights used (if any)
   ensemble.plot.leaf     = NULL,   # Plot info of currently interactively previewed ensemble predictions
   ensemble.plot.leaf.idx = NULL,   # Plot index of currently interactively previewed ensemble predictions
   ensemble.plot          = NULL,   # Plot info of currently static-previewed ensemble predictions
@@ -106,19 +107,23 @@ observe({
   vals$overlay.info
   vals$overlay.base.sfc
   vals$overlaid.models
-  vals$overlaid.models.specs
+  vals$overlaid.specs
+  # vals$overlaid.models.specs
   vals$overlaid.plot
 
   vals$ens.over.wpoly.filename
   vals$ens.over.wpoly.sf
   vals$ens.over.wpoly.coverage
   vals$ens.over.wpoly.plot
+
   vals$ensemble.models
-  vals$ensemble.rescaling
-  vals$ensemble.method
-  vals$ensemble.weights
-  vals$ensemble.overlaid.idx
   vals$ensemble.overlaid.res
+  vals$ensemble.specs
+  # vals$ensemble.rescaling
+  # vals$ensemble.method
+  # vals$ensemble.weights
+  # vals$ensemble.overlaid.idx
+  # vals$ensemble.overlaid.res
   vals$ensemble.plot.leaf
   vals$ensemble.plot.leaf.idx
   vals$ensemble.plot
@@ -139,7 +144,7 @@ observe({
   vals$pretty.plot
 
 
-  if (length(reactiveValuesToList(vals)) != 45) {
+  if (length(reactiveValuesToList(vals)) != 42) {
     showModal(modalDialog(
       title = "Error in eSDM GUI data storage and processing",
 

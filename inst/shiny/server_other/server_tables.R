@@ -15,11 +15,10 @@ table_orig <- reactive({
              vapply(as.numeric(vals$models.pred.type), function(i) {
                switch(i, "Absolute density", "Relative density", "Abundance")
              }, character(1)),
-             stringsAsFactors = FALSE,
-             row.names = paste("Original", 1:length(vals$models.names))) %>%
+             stringsAsFactors = FALSE) %>%
+    `rownames<-`(paste("Original", seq_along(vals$models.names))) %>%
     purrr::set_names(
-      c("SDM filename", "Predictions", "SEs", "Weights", "Prediction unit")
-    )
+      c("SDM filename", "Predictions", "SEs", "Weights", "Prediction unit"))
 })
 
 
@@ -29,12 +28,11 @@ table_orig_stats <- reactive({
   req(table_orig())
 
   data.frame(vals$models.names, t(as.data.frame(vals$models.specs)),
-             stringsAsFactors = FALSE,
-             row.names = paste("Original", 1:length(vals$models.names))) %>%
+             stringsAsFactors = FALSE) %>%
+    `rownames<-`(paste("Original", seq_along(vals$models.names))) %>%
     purrr::set_names(
       c("SDM filename", "Resolution", "Polygon count",
-        "Non-NA prediction count", "Abundance", "Long, lat range")
-    )
+        "Non-NA prediction count", "Abundance", "Long, lat range"))
 })
 
 
@@ -43,14 +41,12 @@ table_orig_stats <- reactive({
 table_overlaid <- reactive({
   if (length(vals$overlaid.models) == 0) return()
 
-  data.frame(t(as.data.frame(vals$overlaid.models.specs)),
-             stringsAsFactors = FALSE,
-             row.names = paste("Overlaid", seq_along(vals$overlaid.models))) %>%
+  data.frame(t(data.frame(vals$overlaid.specs)), stringsAsFactors = FALSE) %>%
+    `rownames<-`(paste("Overlaid", seq_along(vals$overlaid.specs))) %>%
     purrr::set_names(
       c("SDM filename", "Predictions", "SEs", "Weights", "Prediction unit",
         "Resolution", "Polygon count", "Non-NA prediction count", "Abundance",
-        "Long, lat range")
-    )
+        "Long, lat range"))
 })
 
 
@@ -62,22 +58,25 @@ table_overlaid <- reactive({
 table_ensembles <- reactive({
   if (length(vals$ensemble.models) == 0) return()
 
-  data.frame(vals$ensemble.overlaid.idx, vals$ensemble.rescaling,
-             vals$ensemble.method, vals$ensemble.weights,
-             stringsAsFactors = FALSE,
-             row.names = paste("Ensemble", 1:length(vals$ensemble.method))) %>%
+  data.frame(t(data.frame(vals$ensemble.specs)), stringsAsFactors = FALSE) %>%
+    `rownames<-`(paste("Ensemble", seq_along(vals$ensemble.specs))) %>%
+    select(1, 2, 4, 6) %>%
     purrr::set_names(
-      c("Overlaid predictions used", "Rescaling method", "Ensembling method",
-        "Weights")
-    )
+      c("Predictions used", "Rescaling method", "Ensembling method",
+        "Uncertainty method"))
 })
 
 #------------------------------------------------------------------------------
 ### Table of created ensemble predictions with stats
 table_ensembles_stats <- reactive({
-  return()
   if (length(vals$ensemble.models) == 0) return()
 
+  data.frame(t(data.frame(vals$ensemble.specs)), stringsAsFactors = FALSE) %>%
+    `rownames<-`(paste("Ensemble", seq_along(vals$ensemble.specs))) %>%
+    select(1, 3, 4, 5) %>%
+    purrr::set_names(
+      c("Predictions used", "Regional exclusion for", "Ensembling method",
+        "Weights"))
 })
 
 ###############################################################################

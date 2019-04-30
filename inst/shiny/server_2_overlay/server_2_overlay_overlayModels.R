@@ -234,7 +234,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     )
 
     vals$overlaid.models <- models.overlaid.all
-    vals$overlaid.models.specs <- specs.list
+    vals$overlaid.specs <- specs.list
 
 
     #--------------------------------------------
@@ -263,12 +263,14 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
 ###############################################################################
 ### Reset applicable vals elements before creating new overlaid objects
 overlay_reset <- function() {
-  vals$overlay.crs           <- NULL
-  vals$overlay.info          <- NULL
-  vals$overlay.base.sfc      <- NULL
-  vals$overlaid.models       <- list()
-  vals$overlaid.models.specs <- NULL
-  vals$overlaid.plot         <- NULL
+  vals$overlay.plot     <- NULL
+  vals$overlay.crs      <- NULL
+  vals$overlay.info     <- NULL
+  vals$overlay.base.sfc <- NULL
+
+  vals$overlaid.models  <- list()
+  vals$overlaid.specs   <- NULL
+  vals$overlaid.plot    <- NULL
 
   vals$ens.over.wpoly.filename <- NULL
   vals$ens.over.wpoly.sf       <- NULL
@@ -276,14 +278,16 @@ overlay_reset <- function() {
   vals$ens.over.wpoly.plot     <- NULL
 
   vals$ensemble.models        <- list()
-  vals$ensemble.method        <- NULL
-  vals$ensemble.weights       <- NULL
-  vals$ensemble.rescaling     <- NULL
-  vals$ensemble.overlaid.idx  <- NULL
+  vals$ensemble.overlaid.res  <- NULL
+  vals$ensemble.specs         <- NULL
+
   vals$ensemble.plot.leaf     <- NULL
   vals$ensemble.plot.leaf.idx <- NULL
   vals$ensemble.plot          <- NULL
   vals$ensemble.plot.idx      <- NULL
+  vals$ensemble.plot.var      <- NULL
+  vals$ensemble.plot.var.idx  <- NULL
+
 
   # TODO: Could make this so it only removes overlaid metrics
   if (isTruthy(vals$eval.models.idx)) {
