@@ -155,7 +155,7 @@ observe({
   check.all <- c(
     all(sapply(vals$ensemble.models, inherits, "data.frame")),
     all(sapply(vals$ensemble.models, nrow) == nrow(vals$ensemble.models[[1]])),
-    all(sapply(lapply(vals$ensemble.models, names), function(i) identical(i, c("Pred_ens", "Var_ens")))),
+    all(sapply(lapply(vals$ensemble.models, names), function(i) identical(i, c("Pred_ens", "SE_ens")))),
     all(vapply(vals$ensemble.specs, length, 1) == 6)
   )
   if (!all(check.all) | anyNA(check.all)) {

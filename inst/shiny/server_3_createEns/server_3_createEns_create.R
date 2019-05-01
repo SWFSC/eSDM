@@ -49,20 +49,22 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     ### Create ensemble
     if (input$create_ens_create_uncertainty == 2) { #WMV
       ens.df <- eSDM::ensemble_create(
-        x = cbind(ens.preds, ens.var),
-        x.idx = names(ens.preds), x.var.idx = names(ens.var),
+        x = cbind(ens.preds, ens.var), x.idx = names(ens.preds),
+        x.var.idx = names(ens.var),
         w = ens.w, na.rm = TRUE
-      ) %>%
-        select(Pred_ens, Var_ens)
+      )
 
     } else { #AMV
       ens.df <- eSDM::ensemble_create(
-        x = ens.preds, x.idx = names(ens.preds), x.var.idx = NULL,
+        x = ens.preds, x.idx = names(ens.preds),
+        x.var.idx = NULL,
         w = ens.w, na.rm = TRUE
-      ) %>%
-        select(Pred_ens, Var_ens)
+      )
     }
 
+    ens.df <- ens.df %>%
+      mutate(SE_ens = sqrt(Var_ens)) %>%
+      select(Pred_ens, SE_ens)
 
     incProgress(0.3)
 
