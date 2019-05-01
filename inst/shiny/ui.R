@@ -24,6 +24,7 @@ library(shinyjs)
 ###########################################################
 ### ui code (lists, instructions, etc) used in multiple tabs
 source(file.path("ui_files", "ui_common.R"), local = TRUE, echo = FALSE, chdir = TRUE)
+source(file.path("ui_files", "ui_funcs.R"), local = TRUE, echo = FALSE, chdir = TRUE)
 
 ### ui code parsed by tabName
 source(file.path("ui_files", "ui_0_roadmap.R"), local = TRUE, echo = FALSE, chdir = TRUE)

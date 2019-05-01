@@ -18,11 +18,12 @@ file.type.list2 <- list(
   "GIS shapefile" = 3, "GIS file geodatabase feature class" = 4
 )
 
-preview.static.units <- list("Percentages" = 1, "Values (numeric)" = 2)
+preview.static.perc <- list("Percentages" = 1, "Values (numeric)" = 2)
 preview.static.var <- list("Plot predictions only" = 1, "Plot uncertainty" = 2)
 preview.download.dim <- list(
   "8 inches by 8 inches" = 1, "Dimensions of 'Static Preview' window" = 2
 )
+
 
 ###############################################################################
 # Widget labels used in importing

@@ -391,42 +391,52 @@ ui.createEns <- function() {
                       condition = "input.ens_select_action == 1",
                       fluidRow(
                         column(4, radioButtons("ens_preview_interactive_perc", tags$h5("Units"),
-                                               choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
+                                               choices = preview.static.perc, selected = 1)),
                         column(8, tags$br(), tags$br(), uiOutput("ens_preview_interactive_execute_uiOut_button"))
                       ),
                       helpText("Note that if you are not connected to the internet then the background map will not display")
                     ),
                     ####################################### Plot static ensemble preview
-                    conditionalPanel(
-                      condition = "input.ens_select_action == 2",
-                      fluidRow(
-                        column(4, radioButtons("ens_preview_perc", tags$h5("Units"),
-                                               choices = list("Percentages" = 1, "Values" = 2),
-                                               selected = 1)),
-                        column(8, tags$br(), tags$br(), actionButton("ens_preview_execute", "Plot static preview"))
-                      )
-                    ),
+                    ui_static_preview("ens"),
+                    # conditionalPanel(
+                    #   condition = "input.ens_select_action == 2",
+                    #   fluidRow(
+                    #     column(4, radioButtons("ens_preview_perc", tags$h5("Units"),
+                    #                            choices = preview.static.perc,
+                    #                            selected = 1)),
+                    #     column(8, radioButtons("ens_preview_var", tags$h5("Uncertainty"),
+                    #                            choices = preview.static.var, selected = 1))
+                    #   ),
+                    #   conditionalPanel(
+                    #     condition = "input.ens_preview_var == 2",
+                    #     helpText("Uncertainty plots will have \"- SE\" in their title.",
+                    #              "Uncertainty plots of units type 'values' will have the same",
+                    #              "color scale as their assocaited predictions.")
+                    #   ),
+                    #   actionButton("ens_preview_execute", "Plot static preview")
+                    # ),
                     ####################################### Download static ensemble preview
-                    conditionalPanel(
-                      condition = "input.ens_select_action == 3",
-                      fluidRow(
-                        column(4, radioButtons("ens_download_preview_perc", tags$h5("Units"),
-                                               choices = list("Percentages" = 1, "Values" = 2),
-                                               selected = 1)),
-                        column(4, radioButtons("ens_download_preview_res", tags$h5("Resolution"),
-                                               choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-                                               selected = 1)),
-                        column(4, radioButtons("ens_download_preview_format", tags$h5("File format"),
-                                               choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
-                                               selected = 3))
-                      ),
-                      radioButtons("ens_download_preview_dim", tags$h5("File dimensions"),
-                                   choices = list("8 in by 8 in" = 1, "Dimensions of 'Static Preview' window" = 2),
-                                   selected = 1),
-                      uiOutput("ens_download_preview_name_uiOut_text"),
-                      uiOutput("ens_download_preview_execute_uiOut_download")
-
-                    ),
+                    ui_download_preview("ens"),
+                    # conditionalPanel(
+                    #   condition = "input.ens_select_action == 3",
+                    #   fluidRow(
+                    #     column(4, radioButtons("ens_download_preview_perc", tags$h5("Units"),
+                    #                            choices = preview.static.perc,
+                    #                            selected = 1)),
+                    #     column(4, radioButtons("ens_download_preview_res", tags$h5("Resolution"),
+                    #                            choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
+                    #                            selected = 1)),
+                    #     column(4, radioButtons("ens_download_preview_format", tags$h5("File format"),
+                    #                            choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
+                    #                            selected = 3))
+                    #   ),
+                    #   radioButtons("ens_download_preview_dim", tags$h5("File dimensions"),
+                    #                choices = list("8 in by 8 in" = 1, "Dimensions of 'Static Preview' window" = 2),
+                    #                selected = 1),
+                    #   uiOutput("ens_download_preview_name_uiOut_text"),
+                    #   uiOutput("ens_download_preview_execute_uiOut_download")
+                    #
+                    # ),
                     ####################################### Remove ensemble(s)
                     conditionalPanel(
                       condition = "input.ens_select_action == 4",
@@ -443,13 +453,7 @@ ui.createEns <- function() {
                         # tags$style(type = "text/css", "#ens_abund_table_out td:first-child {font-weight:bold;}")
                         # #tr:first-child for first row
                       )
-                    ) #,
-                    # conditionalPanel(
-                    #   condition = "input.ens_select_action == 6",
-                    #   helpText("Plot the ensemble predictions and standard deviation of the rescaled overlaid predictions side-by-side.",
-                    #            "Both plots will have the same color scheme."),
-                    #   uiOutput("ens_var_execute_uiOut_button")
-                    # )
+                    )
                   )
                 )
               )
@@ -465,11 +469,7 @@ ui.createEns <- function() {
             conditionalPanel(
               condition = "input.ens_select_action == 2",
               shinycssloaders::withSpinner(plotOutput("ens_preview_plot", height = 500), type = 1)
-            ) #,
-            # conditionalPanel(
-            #   condition = "input.ens_select_action == 6",
-            #   shinycssloaders::withSpinner(plotOutput("ens_var_plot", height = 500), type = 1)
-            # )
+            )
           )
         )
       )
