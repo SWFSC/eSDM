@@ -22,9 +22,16 @@ ui_interactive_preview <- function(x) {
 
 #------------------------------------------------------------------------------
 ### Static preview
-ui_static_preview <- function(x) {
+# Note that the overlay one is different
+ui_static_preview <- function(x, over.flag = FALSE) {
+  # condition.txt <- ifelse(
+  #   over.flag,
+  #   paste0("input.", x, "_preview_which == 2"),
+  #   paste0("input.", x, "_select_action == 2")
+  # )
+
   conditionalPanel(
-    condition = paste0("input.", x, "_select_action == 2"),
+    condition = paste0("input.", x, "_select_action == 2"), #condition.txt,
     fluidRow(
       column(4, radioButtons(paste0(x, "_preview_perc"), tags$h5("Units"),
                              choices = preview.static.perc, selected = 1)),

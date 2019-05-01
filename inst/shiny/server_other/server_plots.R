@@ -36,15 +36,13 @@ observeEvent(input$model_preview_execute, {
   models.num <- length(models.idx)
 
   models.toplot <- vals$models.ll[models.idx]
-  data.name <- rep("Pred", models.num)
+  data.names <- rep("Pred", models.num)
   plot.titles <- paste("Original", models.idx)
   var.key <- NULL
 
   if (input$model_preview_var == 2) {
-    models.toplot <- c(
-      models.toplot, vals$models.ll[models.idx]
-    )
-    data.name <- c(data.name, rep("SE", models.num))
+    models.toplot <- c(models.toplot, models.toplot)
+    data.names <- c(data.names, rep("SE", models.num))
     plot.titles <- c(plot.titles, paste("Original", models.idx, "- SE"))
 
     if (perc.num == 2) var.key <- c(rep(NA, models.num), seq_len(models.num))
@@ -55,7 +53,7 @@ observeEvent(input$model_preview_execute, {
 
   vals$models.plot.idx <- models.idx
   vals$models.plot <- list(
-    models.toplot = models.toplot, data.name = data.name,
+    models.toplot = models.toplot, data.names = data.names,
     plot.titles = plot.titles, perc.num = perc.num,
     pal = switch(perc.num, pal.esdm, NA),
     plot.dims = multiplot_inapp(models.num), var.key = var.key
@@ -166,21 +164,32 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
 ### Generate preview of overlaid predictions to plot in-app
 observeEvent(input$overlay_preview_overlaid_execute, {
   perc.num <- as.numeric(input$overlay_preview_overlaid_models_perc)
-  overlaid.idx <- as.numeric(input$overlay_preview_overlaid_models)
+  models.idx <- as.numeric(input$overlay_preview_overlaid_models)
+  models.num <- length(models.idx)
+
   models.toplot <- lapply(
-    vals$overlaid.models[overlaid.idx], st_sf,
+    vals$overlaid.models[models.idx], st_sf,
     geometry = vals$overlay.base.sfc, agr = "constant"
   )
-  models.num <- length(models.toplot)
+  data.names <- rep("Pred", models.num)
+  plot.titles <- paste("Overlaid", models.idx)
+  var.key <- NULL
 
-  plot.titles <- paste("Overlaid", overlaid.idx)
+  if (input$overlay_preview_overlaid_models_var == 2) {
+    models.toplot <- c(models.toplot, models.toplot)
+    data.names <- c(data.names, rep("SE", models.num))
+    plot.titles <- c(plot.titles, paste("Overlaid", models.idx, "- SE"))
+
+    if (perc.num == 2) var.key <- c(rep(NA, models.num), seq_len(models.num))
+    models.num <- models.num * 2
+  }
 
   vals$overlaid.plot <- list(
     models.toplot = models.toplot,
-    data.names = rep("Pred", models.num),
+    data.names = data.names,
     plot.titles = plot.titles, perc.num = perc.num,
     pal = switch(perc.num, pal.esdm, NA),
-    plot.dims = multiplot_inapp(models.num)
+    plot.dims = multiplot_inapp(models.num), var.key = var.key
   )
 })
 
@@ -241,41 +250,28 @@ observeEvent(input$ens_preview_execute, {
     vals$ensemble.models[models.idx], st_sf,
     geometry = vals$overlay.base.sfc, agr = "constant"
   )
+  data.names <- rep("Pred_ens", models.num)
+  plot.titles <- paste("Ensemble", models.idx)
+  var.key <- NULL
+
+  if (input$ens_preview_var == 2) {
+    models.toplot <- c(models.toplot, models.toplot)
+    data.names <- c(data.names, rep("SE_ens", models.num))
+    plot.titles <- c(plot.titles, paste("Ensemble", models.idx, "- SE"))
+
+    if (perc.num == 2) var.key <- c(rep(NA, models.num), seq_len(models.num))
+    models.num <- models.num * 2
+  }
+
   stopifnot(models.num == length(models.toplot))
 
-  plot.titles <- paste("Ensemble", models.idx)
 
   vals$ensemble.plot.idx <- models.idx
   vals$ensemble.plot <- list(
-    models.toplot = models.toplot, data.name = rep("Pred_ens", models.num),
+    models.toplot = models.toplot, data.names = data.names,
     plot.titles = plot.titles, perc.num = perc.num,
     pal = switch(perc.num, pal.esdm, NA),
-    plot.dims = multiplot_inapp(models.num)
-  )
-})
-
-
-#------------------------------------------------------------------------------
-### Generate preview of ensemble predictions + their SD
-observeEvent(input$ens_var_execute, {
-  req(length(vals$ensemble.models) > 0)
-
-  withProgress(message = "Calculating among-model variance", value = 0.7, {
-    model.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
-
-    ens.toplot <- vals$ensemble.models[[model.idx]]
-    var.toplot <- ens_var_sf()
-    incProgress(0.3)
-    Sys.sleep(0.1)
-  })
-
-  plot.titles <- paste("Ensemble", model.idx, c("- Predictions", "- SD"))
-
-  vals$ensemble.plot.var.idx <- model.idx
-  vals$ensemble.plot.var <- list(
-    models.toplot = list(ens.toplot, var.toplot),
-    data.name = c("Pred_ens", "sd_val"), plot.titles = plot.titles,
-    pal = NA, plot.dims = multiplot_inapp(2)
+    plot.dims = multiplot_inapp(models.num), var.key = var.key
   )
 })
 

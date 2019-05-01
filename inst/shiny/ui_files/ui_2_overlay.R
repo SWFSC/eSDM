@@ -136,7 +136,8 @@ ui.overlay <- function() {
                     box(
                       width = 12,
                       tags$strong("1) Overlay options: study area and erasing polygons"),
-                      tags$h5("Import these polygons in their respecitve sections: 'Import Study Area Polygon' and 'Import Erasing Polygon'."),
+                      tags$h5("Import these polygons in their respecitve sections: 'Import Study Area Polygon' and",
+                              "'Import Erasing Polygon'."),
                       helpText("Note that the study area polygon performs the same function as the 'clip feature' in the",
                                tags$a(href = "http://pro.arcgis.com/en/pro-app/tool-reference/analysis/clip.htm", "clip tool"),
                                "in ArcGIS, while the erasing polygon performs the same function as the 'erase feature' in the",
@@ -151,7 +152,8 @@ ui.overlay <- function() {
                       tags$strong("3) Overlay options: coordinate system"),
                       helpText("The overlay process involves calculating the intersection and area of polygons,",
                                "and thus the coordinate system in which the overlay is performed will have an effect on the results."),
-                      checkboxInput("overlay_proj_native", "Perform the overlay in the native coordinate system of the specified base geometry",
+                      checkboxInput("overlay_proj_native",
+                                    "Perform the overlay in the native coordinate system of the specified base geometry",
                                     value = TRUE),
                       conditionalPanel(
                         condition = "input.overlay_proj_native == false",
@@ -213,7 +215,8 @@ ui.overlay <- function() {
           ),
           fluidRow(
             box(
-              title = "Base Geometry and Overlaid Predictions Previews", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+              title = "Base Geometry and Overlaid Predictions Previews", status = "primary", solidHeader = TRUE, width = 12,
+              collapsible = TRUE,
               fluidRow(
                 column(3, radioButtons("overlay_preview_which", NULL,
                                        choices = list("Base geometry preview" = 1, "Overlaid predictions preview" = 2))),
@@ -226,13 +229,13 @@ ui.overlay <- function() {
                         condition = "input.overlay_preview_which == 1",
                         helpText("The base geometry preview will be displayed in the Leaflet default coordinate system:",
                                  "EPSG:3857 Web Mercator.",
-                                 "The base geometry will be outlined in black while, if applicable, the erasing and study area polygons ",
-                                 "will be filled in tan with no outline and outlined in red with no fill, respectively.",
+                                 "The base geometry will be outlined in black while, if applicable, the erasing and study area",
+                                 "polygons will be filled in tan with no outline and outlined in red with no fill, respectively.",
                                  "The erasing polygon will be clipped to the extent of the base geometry,",
                                  "plus two degrees in each direction.",
                                  tags$br(), tags$br(),
-                                 "Any base geometry polygon that spans the antimeridian (i.e. 180 decimal degrees",
-                                 "or the equivalent in the base geometry coordinate system) will appear to be split at the antimeridian.",
+                                 "Any base geometry polygon that spans the antimeridian (i.e. 180 decimal degrees or the",
+                                 "equivalent in the base geometry coordinate system) will appear to be split at the antimeridian.",
                                  "However, it will still be treated as a single polygon for the overlay."),
                         uiOutput("overlay_preview_base_execute_uiOut_button"),
                         textOutput("overlay_preview_base_create_text")
@@ -240,8 +243,15 @@ ui.overlay <- function() {
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 2",
                         fluidRow(
-                          column(6, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")),
-                          column(4, offset = 1, uiOutput("overlay_preview_overlaid_models_perc_uiOut_radio"))
+                          column(5, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")),
+                          column(3, offset = 1, uiOutput("overlay_preview_overlaid_models_perc_uiOut_radio")),
+                          column(3, uiOutput("overlay_preview_overlaid_models_var_uiOut_radio"))
+                        ),
+                        conditionalPanel(
+                          condition = "input.overlay_preview_overlaid_models_var_preview_var == 2",
+                          helpText("Uncertainty plots will have \"- SE\" in their title.",
+                                   "Uncertainty plots of units type 'values' will have the same",
+                                   "color scale as their assocaited predictions.")
                         ),
                         uiOutput("overlay_preview_overlaid_execute_uiOut_button")
                       )

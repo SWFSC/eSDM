@@ -73,7 +73,7 @@ output$model_preview_plot <- renderPlot({
   x <- req(vals$models.plot)
 
   multiplot_layout(
-    x$models.toplot, x$data.name, x$plot.titles, x$perc.num,
+    x$models.toplot, x$data.names, x$plot.titles, x$perc.num,
     x$pal, leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
     x$plot.dims[5], x$plot.dims[6], x$plot.dims[7:10],
@@ -290,10 +290,11 @@ output$ens_preview_plot <- renderPlot({
   x <- req(vals$ensemble.plot)
 
   multiplot_layout(
-    x$models.toplot, x$data.name, x$plot.titles, x$perc.num, x$pal,
+    x$models.toplot, x$data.names, x$plot.titles, x$perc.num, x$pal,
     leg.perc.esdm,
     x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
-    x$plot.dims[5], x$plot.dims[6], x$plot.dims[7:10]
+    x$plot.dims[5], x$plot.dims[6], x$plot.dims[7:10],
+    x$var.key
   )
 })
 
@@ -302,26 +303,6 @@ output$ens_abund_table_out <- renderTable({
   req(abund_reac_flag())
   table_ens_abund()
 }, rownames = FALSE, align = "r")
-
-### Plot among-model variance
-output$ens_var_plot <- renderPlot({
-  x <- req(vals$ensemble.plot.var)
-
-  preds.all <- c(x$models.toplot[[1]]$Pred_ens, x$models.toplot[[2]]$sd_val)
-  var.breaks <- seq(
-    from = min(preds.all, na.rm = TRUE), to = max(preds.all, na.rm = TRUE),
-    length.out = 11
-  )
-
-  multiplot_layout(
-    x$models.toplot, x$data.name, x$plot.titles, 1, x$pal,
-    leg.perc.esdm,
-    x$plot.dims[1], x$plot.dims[2], x$plot.dims[3], x$plot.dims[4],
-    x$plot.dims[5], x$plot.dims[6], x$plot.dims[7:10],
-    var.breaks = var.breaks,
-    var.pal = rev(RColorBrewer::brewer.pal(10, "Spectral"))
-  )
-})
 
 
 ###############################################################################

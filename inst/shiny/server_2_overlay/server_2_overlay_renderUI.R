@@ -65,7 +65,14 @@ output$overlay_preview_overlaid_models_uiOut_selectize <- renderUI({
 output$overlay_preview_overlaid_models_perc_uiOut_radio <- renderUI({
   req(length(vals$overlaid.models) > 0)
   radioButtons("overlay_preview_overlaid_models_perc", tags$h5("Units"),
-               choices = list("Percentages" = 1, "Values" = 2), selected = 1)
+               choices = list("Percentages" = 1, "Values (numeric)" = 2), selected = 1)
+})
+
+output$overlay_preview_overlaid_models_var_uiOut_radio <- renderUI({
+  req(length(vals$overlaid.models) > 0)
+  radioButtons("overlay_preview_overlaid_models_var", tags$h5("Uncertainty"),
+               choices = list("Plot predictions only" = 1, "Plot uncertainty" = 2),
+               selected = 1)
 })
 
 

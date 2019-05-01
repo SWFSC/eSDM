@@ -38,10 +38,7 @@ outputOptions(output, "ens_models_selected_flag", suspendWhenHidden = FALSE)
 
 
 ###############################################################################
-# Process created ensembles
-
-###########################################################
-### Remove selected ensemble(s)
+# Remove selected ensemble(s)
 ens_remove <- eventReactive(input$ens_remove_execute, {
   idx <- input$ens_datatable_ensembles_rows_selected
 
@@ -53,18 +50,12 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
 
   #------------------------------------
   ### Remove the reactiveValue info for selected set(s) of ensemble predicitons
-  vals$ensemble.models <- vals$ensemble.models[-idx]
-  vals$ensemble.method <- vals$ensemble.method[-idx]
-  vals$ensemble.weights <- vals$ensemble.weights[-idx]
-  vals$ensemble.rescaling <- vals$ensemble.rescaling[-idx]
-  vals$ensemble.overlaid.idx <- vals$ensemble.overlaid.idx[-idx]
+  vals$ensemble.models       <- vals$ensemble.models[-idx]
   vals$ensemble.overlaid.res <- vals$ensemble.overlaid.res[-idx]
+  vals$ensemble.specs        <- vals$ensemble.specs[-idx]
 
-  if(length(vals$ensemble.method) == 0) vals$ensemble.method <- NULL
-  if(length(vals$ensemble.weights) == 0) vals$ensemble.weights <- NULL
-  if(length(vals$ensemble.rescaling) == 0) vals$ensemble.rescaling <- NULL
-  if(length(vals$ensemble.overlaid.idx) == 0) vals$ensemble.overlaid.idx <- NULL
   if(length(vals$ensemble.overlaid.res) == 0) vals$ensemble.overlaid.res <- NULL
+  if(length(vals$ensemble.specs) == 0) vals$ensemble.specs <- NULL
 
 
   # Handle other places this data was used
@@ -120,7 +111,10 @@ ens_remove <- eventReactive(input$ens_remove_execute, {
 })
 
 
-###########################################################
+###############################################################################
+# Predicted abundance
+
+#----------------------------------------------------------
 ### Calculate predicted abundance(s)
 ens_abund_values <- reactive({
   validate(
@@ -142,6 +136,7 @@ ens_abund_values <- reactive({
   ens.abund
 })
 
+#----------------------------------------------------------
 ### Generate table of calculated abundances
 table_ens_abund <- eventReactive(input$ens_calc_abund_execute, {
   req(input$ens_select_action == 5)

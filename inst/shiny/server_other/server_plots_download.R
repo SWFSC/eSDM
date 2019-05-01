@@ -58,9 +58,7 @@ output$model_download_preview_execute <- downloadHandler(
 
       # Add uncertainty plots if necessary
       if (input$model_download_preview_var == 2) {
-        models.toplot <- c(
-          models.toplot, vals$models.ll[models.idx]
-        )
+        models.toplot <- c(models.toplot, models.toplot)
         data.name <- c(data.name, rep("SE", models.num))
         plot.titles <- c(plot.titles, paste("Original", models.idx, "- SE"))
 
@@ -151,7 +149,10 @@ output$ens_download_preview_execute <- downloadHandler(
       req(length(vals$ensemble.models) > 0, models.num > 0)
 
       perc.num <- as.numeric(input$ens_download_preview_perc)
-      models.toplot <- vals$ensemble.models[models.idx]
+      models.toplot <- lapply(
+        vals$ensemble.models[models.idx], st_sf,
+        geometry = vals$overlay.base.sfc, agr = "constant"
+      )
       data.name <- rep("Pred_ens", models.num)
       plot.titles <- paste("Ensemble", models.idx)
       var.key <- NULL
@@ -159,10 +160,8 @@ output$ens_download_preview_execute <- downloadHandler(
       stopifnot(models.num == length(models.toplot))
 
       # Add uncertainty plots if necessary
-      if (input$model_download_preview_var == 2) {
-        models.toplot <- c(
-          models.toplot, vals$models.ll[models.idx]
-        )
+      if (input$ens_download_preview_var == 2) {
+        models.toplot <- c(models.toplot, models.toplot)
         data.name <- c(data.name, rep("SE_ens", models.num))
         plot.titles <- c(plot.titles, paste("Original", models.idx, "- SE"))
 
