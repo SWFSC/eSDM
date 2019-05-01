@@ -242,18 +242,24 @@ ui.overlay <- function() {
                       ),
                       conditionalPanel(
                         condition = "input.overlay_preview_which == 2",
-                        fluidRow(
-                          column(5, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")),
-                          column(3, offset = 1, uiOutput("overlay_preview_overlaid_models_perc_uiOut_radio")),
-                          column(3, uiOutput("overlay_preview_overlaid_models_var_uiOut_radio"))
-                        ),
+                        conditionalPanel("output.overlay_preview_display_flag == false", uiOutput("overlay_preview_message")),
                         conditionalPanel(
-                          condition = "input.overlay_preview_overlaid_models_var_preview_var == 2",
-                          helpText("Uncertainty plots will have \"- SE\" in their title.",
-                                   "Uncertainty plots of units type 'values' will have the same",
-                                   "color scale as their assocaited predictions.")
-                        ),
-                        uiOutput("overlay_preview_overlaid_execute_uiOut_button")
+                          condition = "output.overlay_preview_display_flag",
+                          fluidRow(
+                            column(5, uiOutput("overlay_preview_overlaid_models_uiOut_selectize")),
+                            column(3, offset = 1, radioButtons("overlay_preview_overlaid_models_perc", tags$h5("Units"),
+                                                               choices = preview.static.perc, selected = 1)),
+                            column(3, radioButtons("overlay_preview_overlaid_models_var", tags$h5("Uncertainty"),
+                                                   choices = preview.static.var, selected = 1))
+                          ),
+                          conditionalPanel(
+                            condition = "input.overlay_preview_overlaid_models_var_preview_var == 2",
+                            helpText("Uncertainty plots will have \"- SE\" in their title.",
+                                     "Uncertainty plots of units type 'values' will have the same",
+                                     "color scale as their assocaited predictions.")
+                          ),
+                          actionButton("overlay_preview_overlaid_execute", "Preview selected overlaid predictions")
+                        )
                       )
                     )
                   )
