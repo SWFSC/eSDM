@@ -143,25 +143,14 @@ create_ens_weights_var_which <- reactive({
   which(!is.na(vapply(vals$overlaid.specs, function(i) i["col_se"], "1")))
 })
 
-### Create data frame of variance values (NOT weights)
-# create_ens_weights_varvalue <- reactive({
-#
-#
-#   # var.list <- lapply(ens.which, function(i) {
-#   #   (vals$overlaid.models[[i]]$SE) ^ 2
-#   # })
-#   # purrr::set_names(var.list, paste0("var", seq_along(ens.which)))
-#
-#
-# })
-
 ### Table summarizing variance values of selected overlaid preds
 create_ens_weights_var_table <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.var <- create_ens_weights_var_which()
 
+  # Need validate() call here for display in-app
   validate(
-    need(all(ens.which.var %in% ens.which),
+    need(all(ens.which %in% ens.which.var),
          paste("All of the selected overlaid predictions must have",
                "associated uncertainty values to use this weighting method")),
     errorClass = "validation2"
@@ -183,18 +172,18 @@ create_ens_weights_var_table <- reactive({
 # ensemble_create() will normalize each row so it sums to 1
 create_ens_weights_var <- reactive({
   ens.which <- create_ens_overlaid_idx()
-  ens.which.var <- create_ens_weights_pix_which()
+  ens.which.var <- create_ens_weights_var_which()
 
   # Need validate() call here for ensembling function
   validate(
-    need(any(ens.which.var %in% ens.which),
+    need(all(ens.which %in% ens.which.var),
          paste("Error: All of the selected overlaid predictions must have",
                "associated uncertainty values to use this weighting method"))
   )
 
   purrr::set_names(
     1 / create_ens_data_rescale()[[2]],
-    paste0("w", seq_len(ncol(create_ens_weights_varvalue())))
+    paste0("w", seq_along(ens.which))
   )
 })
 

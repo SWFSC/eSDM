@@ -19,7 +19,9 @@ file.type.list2 <- list(
 )
 
 preview.static.perc <- list("Percentages" = 1, "Values (numeric)" = 2)
-preview.static.var <- list("Plot predictions only" = 1, "Plot uncertainty" = 2)
+preview.static.var <- list(
+  "Plot predictions only" = 1, "Plot predictions and uncertainty" = 2
+  )
 preview.download.dim <- list(
   "8 inches by 8 inches" = 1, "Dimensions of 'Static Preview' window" = 2
 )
