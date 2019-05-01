@@ -4,6 +4,7 @@
 ###############################################################################
 ### Save workspace
 # Nothing to validate or return, so we don't need eventReactive
+# Potential future todo: save input values
 output$save_app_envir <- downloadHandler(
   filename = function() paste0(input$save_app_envir_name, ".RDATA"),
 
@@ -31,24 +32,6 @@ output$save_app_envir <- downloadHandler(
       vals.save$ensemble.plot.var.idx <- NULL
       vals.save$pretty.plot <- NULL
       incProgress(0.5)
-
-      # Create list of current input values
-      # inputs.save <- list(
-      #   # "model_load_type" = input$model_load_type,
-      #   # "model_csv_pt_loc" = input$model_csv_pt_loc
-      #   "pretty_table_orig_out_rows_selected" = input$pretty_table_orig_out_rows_selected,
-      #   "pretty_table_over_out_rows_selected" = input$pretty_table_over_out_rows_selected,
-      #   "pretty_table_ens_out_rows_selected" = input$pretty_table_ens_out_rows_selected,
-      #   "pretty_proj_ll" = input$pretty_proj_ll,
-      #   "pretty_proj_method" = input$pretty_proj_method,
-      #   "pretty_proj_idx" = input$pretty_proj_idx,
-      #   "pretty_proj_epsg" = input$pretty_proj_epsg,
-      #   "pretty_range_xmin" = input$pretty_range_xmin,
-      #   "pretty_range_xmax" = input$pretty_range_xmax,
-      #   "pretty_range_ymin" = input$pretty_range_ymin,
-      #   "pretty_range_ymax" = input$pretty_range_ymax
-      # )
-      # save(vals.save, inputs.save, file = file)
 
       # Save data
       save(vals.save, file = file)
@@ -147,16 +130,16 @@ load_envir <- eventReactive(val.load(), {
     incProgress(0.3)
 
     #------------------------------------------------------
-    vals$models.ll             <- lapply(vals.save[["models.orig"]], st_transform, 4326)
-    vals$models.orig           <- vals.save[["models.orig"]]
-    vals$models.names          <- vals.save[["models.names"]]
-    vals$models.data.names     <- vals.save[["models.data.names"]]
-    vals$models.pred.type      <- vals.save[["models.pred.type"]]
-    vals$models.specs          <- vals.save[["models.specs"]]
-    vals$models.plot.leaf      <- vals.save[["models.plot.leaf"]]
-    vals$models.plot.leaf.idx  <- vals.save[["models.plot.leaf.idx"]]
-    vals$models.plot           <- vals.save[["models.plot"]]
-    vals$models.plot.idx       <- vals.save[["models.plot.idx"]]
+    vals$models.ll            <- lapply(vals.save[["models.orig"]], st_transform, 4326)
+    vals$models.orig          <- vals.save[["models.orig"]]
+    vals$models.names         <- vals.save[["models.names"]]
+    vals$models.data.names    <- vals.save[["models.data.names"]]
+    vals$models.pred.type     <- vals.save[["models.pred.type"]]
+    vals$models.specs         <- vals.save[["models.specs"]]
+    vals$models.plot.leaf     <- vals.save[["models.plot.leaf"]]
+    vals$models.plot.leaf.idx <- vals.save[["models.plot.leaf.idx"]]
+    vals$models.plot          <- vals.save[["models.plot"]]
+    vals$models.plot.idx      <- vals.save[["models.plot.idx"]]
 
     vals$overlay.bound    <- vals.save[["overlay.bound"]]
     vals$overlay.land     <- vals.save[["overlay.land"]]
@@ -166,7 +149,6 @@ load_envir <- eventReactive(val.load(), {
     vals$overlay.base.sfc <- vals.save[["overlay.base.sfc"]]
     vals$overlaid.models  <- vals.save[["overlaid.models"]]
     vals$overlaid.specs   <- vals.save[["overlaid.specs"]]
-    # vals$overlaid.models.specs <- vals.save[["overlaid.models.specs"]]
     vals$overlaid.plot    <- vals.save[["overlaid.plot"]]
 
     vals$ens.over.wpoly.filename <- vals.save[["ens.over.wpoly.filename"]]
@@ -177,17 +159,10 @@ load_envir <- eventReactive(val.load(), {
     vals$ensemble.models        <- vals.save[["ensemble.models"]]
     vals$ensemble.overlaid.res  <- vals.save[["ensemble.overlaid.res"]]
     vals$ensemble.specs         <- vals.save[["ensemble.specs"]]
-    # vals$ensemble.method        <- vals.save[["ensemble.method"]]
-    # vals$ensemble.weights       <- vals.save[["ensemble.weights"]]
-    # vals$ensemble.rescaling     <- vals.save[["ensemble.rescaling"]]
-    # vals$ensemble.overlaid.idx  <- vals.save[["ensemble.overlaid.idx"]]
-    # vals$ensemble.overlaid.res  <- vals.save[["ensemble.overlaid.res"]]
     vals$ensemble.plot.leaf     <- vals.save[["ensemble.plot.leaf"]]
     vals$ensemble.plot.leaf.idx <- vals.save[["ensemble.plot.leaf.idx"]]
     vals$ensemble.plot          <- vals.save[["ensemble.plot"]]
     vals$ensemble.plot.idx      <- vals.save[["ensemble.plot.idx"]]
-    vals$ensemble.plot.var      <- vals.save[["ensemble.plot"]]
-    vals$ensemble.plot.var.idx  <- vals.save[["ensemble.plot.idx"]]
 
     vals$eval.data          <- vals.save[["eval.data"]]
     vals$eval.data.specs    <- vals.save[["eval.data.specs"]]
@@ -211,13 +186,7 @@ load_envir <- eventReactive(val.load(), {
     updateCheckboxInput(session, "create_ens_reg", value = any(sapply(vals$ens.over.wpoly.filename, isTruthy)))
     updateCheckboxInput(session, "pretty_addobj",  value = isTruthy(vals$pretty.addobj))
 
-    incProgress(0.1)
-
-
-    #------------------------------------------------------
-    # TODO Non-reactive widgets
-    # updateCheckboxInput(session, "pretty_proj_ll", value = )
-    incProgress(0.1)
+    incProgress(0.2)
   })
 
   paste("Workspace loaded from", file.load$name)

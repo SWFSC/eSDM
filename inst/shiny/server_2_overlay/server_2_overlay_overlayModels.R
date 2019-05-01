@@ -295,8 +295,6 @@ overlay_reset <- function() {
   vals$ensemble.plot.leaf.idx <- NULL
   vals$ensemble.plot          <- NULL
   vals$ensemble.plot.idx      <- NULL
-  vals$ensemble.plot.var      <- NULL
-  vals$ensemble.plot.var.idx  <- NULL
 
 
   # TODO: Could make this so it only removes overlaid metrics

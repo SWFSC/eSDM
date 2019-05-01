@@ -67,8 +67,6 @@ vals <- reactiveValues(
   ensemble.plot.leaf.idx = NULL,   # Plot index of currently interactively previewed ensemble predictions
   ensemble.plot          = NULL,   # Plot info of currently static-previewed ensemble predictions
   ensemble.plot.idx      = NULL,   # Plot index of currently static-previewed ensemble predictions
-  ensemble.plot.var      = NULL,   # Plot info of current plot of among-model variance (SD)
-  ensemble.plot.var.idx  = NULL,   # Plot index of ensemble for current plot of among-model variance
 
   # Objects that store data for evaluation metrics section
   eval.data          = NULL,       # Validation data (sf obj) with 'count' and 'sight' columns
@@ -108,7 +106,6 @@ observe({
   vals$overlay.base.sfc
   vals$overlaid.models
   vals$overlaid.specs
-  # vals$overlaid.models.specs
   vals$overlaid.plot
 
   vals$ens.over.wpoly.filename
@@ -119,17 +116,10 @@ observe({
   vals$ensemble.models
   vals$ensemble.overlaid.res
   vals$ensemble.specs
-  # vals$ensemble.rescaling
-  # vals$ensemble.method
-  # vals$ensemble.weights
-  # vals$ensemble.overlaid.idx
-  # vals$ensemble.overlaid.res
   vals$ensemble.plot.leaf
   vals$ensemble.plot.leaf.idx
   vals$ensemble.plot
   vals$ensemble.plot.idx
-  vals$ensemble.plot.var
-  vals$ensemble.plot.var.idx
 
   vals$eval.models.idx
   vals$eval.data
@@ -144,7 +134,7 @@ observe({
   vals$pretty.plot
 
 
-  if (length(reactiveValuesToList(vals)) != 42) {
+  if (length(reactiveValuesToList(vals)) != 40) {
     showModal(modalDialog(
       title = "Error in eSDM GUI data storage and processing",
 
