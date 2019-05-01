@@ -191,8 +191,7 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 
   validate(
     need(models.num > 0,
-         paste("Error: Please select at least one set of",
-               "predictions to preview"))
+         "Error: Please select at least one set of predictions to preview")
   )
 
   stopifnot(
@@ -231,6 +230,9 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
   # Plot SDM previews
   for (i in seq_len(models.num)) {
     temp <- NULL
+
+    # If plotting uncertainty (SE) numerically,
+    #   use break points determined from associated predicitons
     if (isTruthy(var.key)) {
       if (!is.na(var.key[i])) {
         stopifnot(perc.num == 2)
@@ -240,6 +242,7 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
           st_set_geometry(models.toplot[[i.key]], NULL)[, data.names[[i.key]]]
         )
 
+        # Adjust min and max values as necessary
         d.vec <- st_set_geometry(models.toplot[[i]], NULL)[, data.names[[i]]]
         temp[[1]][1] <- min(c(temp[[1]], d.vec), na.rm = TRUE)
         temp[[1]][length(temp[[1]])] <- max(c(temp[[1]], d.vec), na.rm = TRUE)
@@ -254,6 +257,7 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 
     # Add a legend for each value plot
     if (perc.num == 2) {
+      # If not plotting uncertainty numerically, generate 'temp'
       if (is.null(temp)) {
         temp <- preview_vals_break_col(
           st_set_geometry(models.toplot[[i]], NULL)[, data.names[[i]]]
@@ -312,7 +316,7 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
     )
 
   } else {
-    # Special behavior if plotting SE values
+    # If plotting SE values numerically, use break values from assocaited preds
     if (isTruthy(var.temp)) {
       temp <- var.temp
     } else {

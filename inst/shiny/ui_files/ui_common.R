@@ -8,6 +8,7 @@ jscode <- "shinyjs.closeWindow = function() { window.close(); }"
 
 ###############################################################################
 ### File type lists for use in radioButton()'s and selectInupt()'s
+#------------------------------------------------------------------------------
 file.type.list1 <- list(
   "CSV (comma-separated value) file" = 1, "GIS shapefile" = 2,
   "GIS file geodatabase feature class" = 3
@@ -17,6 +18,11 @@ file.type.list2 <- list(
   "GIS shapefile" = 3, "GIS file geodatabase feature class" = 4
 )
 
+preview.static.units <- list("Percentages" = 1, "Values (numeric)" = 2)
+preview.static.var <- list("Plot predictions only" = 1, "Plot uncertainty" = 2)
+preview.download.dim <- list(
+  "8 inches by 8 inches" = 1, "Dimensions of 'Static Preview' window" = 2
+)
 
 ###############################################################################
 # Widget labels used in importing

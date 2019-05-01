@@ -40,7 +40,7 @@ observeEvent(input$model_preview_execute, {
   plot.titles <- paste("Original", models.idx)
   var.key <- NULL
 
-  if (input$model_preview_var) {
+  if (input$model_preview_var == 2) {
     models.toplot <- c(
       models.toplot, vals$models.ll[models.idx]
     )

@@ -267,6 +267,7 @@ output$model_create_gis_gdb_uiOut_button <- renderUI ({
 ###############################################################################
 # Imported Predictions section
 
+#------------------------------------------------------------------------------
 ### actionButton for interactive preview
 output$model_preview_interactive_execute_uiOut_button <- renderUI({
   req(input$model_select_action == 1)
@@ -281,6 +282,24 @@ output$model_preview_interactive_execute_uiOut_button <- renderUI({
   actionButton("model_preview_interactive_execute", "Plot interactive preview")
 })
 
+#------------------------------------------------------------------------------
+### Uncertainty widget for static plot
+output$model_preview_var_uiOut_radio <- renderUI({
+  req(input$model_select_action == 2)
+
+  browser()
+  # validate(
+  #   need(length(input$models_loaded_table_rows_selected) == 1,
+  #        paste("You can only interactively preview one set of",
+  #              "original predictions at a time")),
+  #   errorClass = "validation2"
+  # )
+
+  radioButtons("model_preview_var", tags$h5("Uncertainty"),
+  )
+})
+
+#------------------------------------------------------------------------------
 ### Generate default filename for download of static preview
 output$model_download_preview_name_uiOut_text <- renderUI({
   req(input$models_loaded_table_rows_selected)
@@ -313,6 +332,7 @@ output$model_download_preview_name_uiOut_text <- renderUI({
   textInput("model_download_preview_name", tags$h5(input.lab), value = f.val)
 })
 
+### Download button
 output$model_download_preview_execute_uiOut_download <- renderUI({
   if (input$model_download_preview_dim == 2) {
     validate(
@@ -334,6 +354,5 @@ output$model_download_preview_execute_uiOut_download <- renderUI({
 
   downloadButton("model_download_preview_execute", "Download")
 })
-
 
 ###############################################################################

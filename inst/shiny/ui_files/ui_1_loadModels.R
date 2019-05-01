@@ -228,7 +228,7 @@ ui.loadModels <- function() {
                             condition = "input.model_select_action == 1",
                             fluidRow(
                               column(4, radioButtons("model_preview_interactive_perc", tags$h5("Units"),
-                                                     choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
+                                                     choices = preview.static.units, selected = 1)),
                               column(8, tags$br(), tags$br(), uiOutput("model_preview_interactive_execute_uiOut_button"))
                             ),
                             helpText("Note that if you are not connected to the internet,",
@@ -239,29 +239,38 @@ ui.loadModels <- function() {
                             condition = "input.model_select_action == 2",
                             fluidRow(
                               column(4, radioButtons("model_preview_perc", tags$h5("Units"),
-                                                     choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
-                              column(4, tags$br(), tags$br(), checkboxInput("model_preview_var", "Plot uncertainty (SE)")),
-                              column(4, tags$br(), tags$br(), actionButton("model_preview_execute", "Plot static preview")
-                              )
-                            )
+                                                     choices = preview.static.units, selected = 1)),
+                              column(8, radioButtons("model_preview_var", tags$h5("Uncertainty"),
+                                                     choices = preview.static.var, selected = 1))
+                            ),
+                            conditionalPanel(
+                              condition = "input.model_preview_var == 2",
+                              helpText("Uncertainty plots will have \"- SE\" in their title.",
+                                       "Uncertainty plots of units type 'values' will have the same",
+                                       "color scale as their assocaited predictions.")
+                            ),
+                            actionButton("model_preview_execute", "Plot static preview")
                           ),
                           ###################################### Download static preview
                           conditionalPanel(
                             condition = "input.model_select_action == 3",
                             fluidRow(
                               column(4, radioButtons("model_download_preview_perc", tags$h5("Units"),
-                                                     choices = list("Percentages" = 1, "Values" = 2),
-                                                     selected = 1)),
+                                                     choices = preview.static.units, selected = 1)),
+                              column(4, radioButtons("model_download_preview_var", tags$h5("Uncertainty"),
+                                                     choices = preview.static.var, selected = 1)),
                               column(4, radioButtons("model_download_preview_res", tags$h5("Resolution"),
                                                      choices = list("High (300 ppi)" = 1, "Low (72 ppi)" = 2),
-                                                     selected = 1)),
+                                                     selected = 1))
+                            ),
+                            fluidRow(
                               column(4, radioButtons("model_download_preview_format", tags$h5("File format"),
                                                      choices = list("JPEG" = 1, "PDF" = 2, "PNG" = 3),
-                                                     selected = 3))
+                                                     selected = 3)),
+                              column(8, radioButtons("model_download_preview_dim", tags$h5("File dimensions"),
+                                                     choices = preview.download.dim, selected = 1))
+
                             ),
-                            radioButtons("model_download_preview_dim", tags$h5("File dimensions"),
-                                         choices = list("8 inches by 8 inches" = 1, "Dimensions of 'Static Preview' window" = 2),
-                                         selected = 1),
                             uiOutput("model_download_preview_name_uiOut_text"),
                             uiOutput("model_download_preview_execute_uiOut_download")
                           ),
