@@ -224,27 +224,16 @@ ui.loadModels <- function() {
                         box(
                           width = 12,
                           ###################################### Plot interactive preview
-                          conditionalPanel(
-                            condition = "input.model_select_action == 1",
-                            fluidRow(
-                              column(4, radioButtons("model_preview_interactive_perc", tags$h5("Units"),
-                                                     choices = preview.static.perc, selected = 1)),
-                              column(8, tags$br(), tags$br(), uiOutput("model_preview_interactive_execute_uiOut_button"))
-                            ),
-                            helpText("Note that if you are not connected to the internet,",
-                                     "then the background map will not display")
-                          ),
+                          ui_interactive_preview("model"),
+
                           ###################################### Plot static preview
                           ui_static_preview("model"),
+
                           ###################################### Download static preview
                           ui_download_preview("model"),
 
                           ###################################### Remove predictions
-                          conditionalPanel(
-                            condition = "input.model_select_action == 4",
-                            actionButton("model_remove_execute", "Remove selected original predictions"),
-                            textOutput("model_remove_text")
-                          )
+                          ui_remove("model")
                         )
                       )
                     )

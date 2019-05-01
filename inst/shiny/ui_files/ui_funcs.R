@@ -4,6 +4,23 @@
 # 'Actions to perform with selected ... predictions'
 
 #------------------------------------------------------------------------------
+### Interactive preview
+ui_interactive_preview <- function(x) {
+  conditionalPanel(
+    condition = paste0("input.", x, "_select_action == 1"),
+    fluidRow(
+      column(4, radioButtons(paste0(x, "_preview_interactive_perc"),
+                             tags$h5("Units"),
+                             choices = preview.static.perc, selected = 1)),
+      column(8, tags$br(), tags$br(),
+             uiOutput(paste0(x, "_preview_interactive_execute_uiOut_button")))
+    ),
+    helpText("Note that if you are not connected to the internet",
+             "then the background map will not display")
+  )
+}
+
+#------------------------------------------------------------------------------
 ### Static preview
 ui_static_preview <- function(x) {
   conditionalPanel(
@@ -47,5 +64,16 @@ ui_download_preview <- function(x) {
     ),
     uiOutput(paste0(x, "_download_preview_name_uiOut_text")),
     uiOutput(paste0(x, "_download_preview_execute_uiOut_download"))
+  )
+}
+
+#------------------------------------------------------------------------------
+### Revove predictions
+ui_remove <- function(x) {
+  conditionalPanel(
+    condition = paste0("input.", x, "_select_action == 4"),
+    actionButton(paste0(x, "_remove_execute"),
+                 "Remove selected ensemble predictions"),
+    textOutput(paste0(x, "_remove_text"))
   )
 }
