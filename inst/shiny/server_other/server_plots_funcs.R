@@ -99,7 +99,7 @@ preview_vals_break_col <- function(data.vec) {
     length.out = d + 1
   )
   if (d < 3) {
-    col.pal <- c("#74add1", "#f46d43")[1:d]
+    col.pal <- c("#74add1", "#f46d43")[seq_len(d)]
   } else {
     col.pal <- rev(RColorBrewer::brewer.pal(d, "Spectral"))
   }
@@ -158,18 +158,13 @@ preview_legend <- function(l.col.pal, l.leg.mai, l.leg.labels, l.leg.txt.cex,
   l.col.num.leg <- l.col.num + 1
   l.col.pal.leg <- c("gray", l.col.pal)
 
-  l.at <- if (l.perc == 2) c(1, (1:l.col.num.leg) + 0.5) else 1:l.col.num.leg
-  # if (l.perc == 2) {
-  #   l.at <- c(1, (1:l.col.num.leg) + 0.5)
-  # } else {
-  #   l.at <- 1:l.col.num.leg
-  # }
+  l.at <- if (l.perc == 2) c(1, seq_len(l.col.num.leg) + 0.5) else seq_len(l.col.num.leg)
 
   opar <- par(mai = l.leg.mai)
   on.exit(par(opar), add = TRUE)
 
   graphics::image(
-    1, 1:l.col.num.leg, t(as.matrix(1:l.col.num.leg)), col = l.col.pal.leg,
+    1, seq_len(l.col.num.leg), t(as.matrix(seq_len(l.col.num.leg))), col = l.col.pal.leg,
     axes = FALSE, xlab = "", ylab = ""
   )
   graphics::box(col = "black")
@@ -186,8 +181,10 @@ preview_legend <- function(l.col.pal, l.leg.mai, l.leg.labels, l.leg.txt.cex,
 multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
                              col.pal, leg.labels, plot.ncol, plot.nrow,
                              axis.cex.curr, main.cex.curr, leg.width,
-                             leg.txt.cex, leg.mai,
-                             var.breaks = NULL, var.pal = NULL) {
+                             leg.txt.cex, leg.mai, var.key = NULL) {
+  ### Inputs:
+  # var.key: vector with numbers at the indicies of uncertainty plot(s)
+  #   that provide the prediction plot associated with that uncertainty
 
   # -------------------------------------------------------
   models.num <- length(models.toplot)
@@ -215,7 +212,7 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
   # Create layout based on inputs
   if (perc.num == 1) {
     mat.num <- do.call(c, lapply(0:(plot.nrow - 1), function(i) {
-      c((plot.ncol * i) + 1:plot.ncol, layout.num + 1)
+      c((plot.ncol * i) + seq_len(plot.ncol), layout.num + 1)
     }))
     layout(
       matrix(mat.num, nrow = plot.nrow, ncol = plot.ncol + 1, byrow = TRUE),
@@ -224,36 +221,52 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 
   } else {
     layout(
-      matrix(1:(layout.num * 2), nrow = plot.nrow, ncol = plot.ncol * 2,
+      matrix(seq_len(layout.num * 2), nrow = plot.nrow, ncol = plot.ncol * 2,
              byrow = TRUE),
       widths = rep(c(1, lcm(leg.width)), layout.num)
     )
   }
 
   # -------------------------------------------------------
-  # Special behavior if plotting among-model variance preview
-  if (isTruthy(var.pal)) col.pal <- var.pal
-
   # Plot SDM previews
-  for (i in 1:models.num) {
+  for (i in seq_len(models.num)) {
+    temp <- NULL
+    if (isTruthy(var.key)) {
+      if (!is.na(var.key[i])) {
+        stopifnot(perc.num == 2)
+
+        i.key <- var.key[i]
+        temp <- preview_vals_break_col(
+          st_set_geometry(models.toplot[[i.key]], NULL)[, data.names[[i.key]]]
+        )
+
+        d.vec <- st_set_geometry(models.toplot[[i]], NULL)[, data.names[[i]]]
+        temp[[1]][1] <- min(c(temp[[1]], d.vec), na.rm = TRUE)
+        temp[[1]][length(temp[[1]])] <- max(c(temp[[1]], d.vec), na.rm = TRUE)
+        rm(d.vec, i.key)
+      }
+    }
+
     preview_ll(
       models.toplot[[i]], data.names[[i]], plot.titles[[i]], perc.num, col.pal,
-      axis.cex.curr, main.cex.curr, var.breaks = var.breaks
+      axis.cex.curr, main.cex.curr, var.temp = temp
     )
 
     # Add a legend for each value plot
     if (perc.num == 2) {
-      temp <- preview_vals_break_col(
-        st_set_geometry(models.toplot[[i]], NULL)[, data.names[[i]]]
-      )
+      if (is.null(temp)) {
+        temp <- preview_vals_break_col(
+          st_set_geometry(models.toplot[[i]], NULL)[, data.names[[i]]]
+        )
+      }
       b.model <- temp[[1]]
       col.pal <- temp[[2]]
-      rm(temp)
 
       d <- max(3, nchar(format(signif(b.model[2], 1), scientific = FALSE)) - 2)
-      b.model.lab <- format(round(b.model, d), justify = "right"); rm(d)
+      b.model.lab <- format(round(b.model, d), justify = "right")
 
       preview_legend(col.pal, leg.mai, b.model.lab, leg.txt.cex, 2)
+      rm(temp, b.model, col.pal, d, b.model.lab)
     }
   }
 
@@ -261,17 +274,9 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
   if (perc.num == 1) {
     # Fill in empty plots if necessary
     if (models.layout.diff != 0) {
-      for (j in 1:models.layout.diff) graphics::plot.new()
+      for (j in seq_len(models.layout.diff)) graphics::plot.new()
     }
-
-    if (isTruthy(var.pal)) {
-      d <- max(3, nchar(format(signif(var.breaks[2], 1), scientific = FALSE)) - 2)
-      var.lab <- format(round(var.breaks, d), justify = "right"); rm(d)
-      preview_legend(col.pal, leg.mai, var.lab, leg.txt.cex, 2)
-
-    } else {
-      preview_legend(col.pal, leg.mai, leg.labels, leg.txt.cex, 1)
-    }
+    preview_legend(col.pal, leg.mai, leg.labels, leg.txt.cex, 1)
   }
 }
 
@@ -280,25 +285,25 @@ multiplot_layout <- function(models.toplot, data.names, plot.titles, perc.num,
 ###############################################################################
 ### Generate static plot of sf object
 preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
-                       axis.cex, main.cex, var.breaks = NULL) {
+                       axis.cex, main.cex, var.temp = NULL) {
+  ### Inputs:
+  # var.temp: output of preview_vals_break_col() call; used to keep break
+  #   poitns consistent for numeric pred and SE plots
+
   # Convert to 0-360 longitude range if necessary
   sdm.ll <- check_preview360_split(sdm.ll)
   data.vec <- st_set_geometry(sdm.ll, NULL)[, data.name]
 
   # Plot predictions
   if (perc == 1) {
-    # Special behavior if plotting among-model variance preview
-    if (isTruthy(var.breaks)) {
-      b.model <- var.breaks
-    } else {
-      b.model <- breaks_calc(data.vec)
-      validate(
-        need(length(unique(b.model)) >= 11,
-             paste("Error: At least one of the selected predictions does not",
-                   "have enough unique prediction values to plot",
-                   "a preview with a 'percentage' unit type"))
-      )
-    }
+    b.model <- breaks_calc(data.vec)
+    validate(
+      need(length(unique(b.model)) >= 11,
+           paste("Error: At least one of the selected predictions",
+                 "(or assocaited uncertainty) does not",
+                 "have enough unique prediction values to plot",
+                 "a preview with a 'percentage' unit type"))
+    )
 
     plot(
       sdm.ll[data.name], axes = TRUE, border = NA,
@@ -307,7 +312,13 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
     )
 
   } else {
-    temp <- preview_vals_break_col(data.vec)
+    # Special behavior if plotting SE values
+    if (isTruthy(var.temp)) {
+      temp <- var.temp
+    } else {
+      temp <- preview_vals_break_col(data.vec)
+    }
+
     b.model <- temp[[1]]
     col.pal <- temp[[2]]
     rm(temp)

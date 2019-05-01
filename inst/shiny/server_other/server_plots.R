@@ -38,6 +38,7 @@ observeEvent(input$model_preview_execute, {
   models.toplot <- vals$models.ll[models.idx]
   data.name <- rep("Pred", models.num)
   plot.titles <- paste("Original", models.idx)
+  var.key <- NULL
 
   if (input$model_preview_var) {
     models.toplot <- c(
@@ -46,6 +47,7 @@ observeEvent(input$model_preview_execute, {
     data.name <- c(data.name, rep("SE", models.num))
     plot.titles <- c(plot.titles, paste("Original", models.idx, "- SE"))
 
+    if (perc.num == 2) var.key <- c(rep(NA, models.num), seq_len(models.num))
     models.num <- models.num * 2
   }
 
@@ -56,7 +58,7 @@ observeEvent(input$model_preview_execute, {
     models.toplot = models.toplot, data.name = data.name,
     plot.titles = plot.titles, perc.num = perc.num,
     pal = switch(perc.num, pal.esdm, NA),
-    plot.dims = multiplot_inapp(models.num)
+    plot.dims = multiplot_inapp(models.num), var.key = var.key
   )
 })
 
