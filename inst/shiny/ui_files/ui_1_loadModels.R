@@ -240,7 +240,8 @@ ui.loadModels <- function() {
                             fluidRow(
                               column(4, radioButtons("model_preview_perc", tags$h5("Units"),
                                                      choices = list("Percentages" = 1, "Values" = 2), selected = 1)),
-                              column(8, tags$br(), tags$br(), actionButton("model_preview_execute", "Plot static preview")
+                              column(4, tags$br(), tags$br(), checkboxInput("model_preview_var", "Plot uncertainty (SE)")),
+                              column(4, tags$br(), tags$br(), actionButton("model_preview_execute", "Plot static preview")
                               )
                             )
                           ),

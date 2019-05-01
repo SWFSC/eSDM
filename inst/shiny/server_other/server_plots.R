@@ -36,13 +36,24 @@ observeEvent(input$model_preview_execute, {
   models.num <- length(models.idx)
 
   models.toplot <- vals$models.ll[models.idx]
-  stopifnot(models.num == length(models.toplot))
+  data.name <- rep("Pred", models.num)
+  plot.titles <- paste("Original", models.idx)
 
-  plot.titles = paste("Original", models.idx)
+  if (input$model_preview_var) {
+    models.toplot <- c(
+      models.toplot, vals$models.ll[models.idx]
+    )
+    data.name <- c(data.name, rep("SE", models.num))
+    plot.titles <- c(plot.titles, paste("Original", models.idx, "- SE"))
+
+    models.num <- models.num * 2
+  }
+
+  stopifnot(models.num == length(models.toplot))
 
   vals$models.plot.idx <- models.idx
   vals$models.plot <- list(
-    models.toplot = models.toplot, data.name = rep("Pred", models.num),
+    models.toplot = models.toplot, data.name = data.name,
     plot.titles = plot.titles, perc.num = perc.num,
     pal = switch(perc.num, pal.esdm, NA),
     plot.dims = multiplot_inapp(models.num)
