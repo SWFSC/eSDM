@@ -45,10 +45,9 @@ output$export_filename_uiOut_text <- renderUI({
     # Ensemble predictions
     table.info <- table_ensembles()[z, ]
 
-    table.info$`Ensembling method` <- switch(
-      table.info$`Ensembling method`, "Unweighted" = "UnW", "Weighted" = "W",
-      "Regionally weighted + weighted" = "Reg+W",
-      "Regionally weighted + unweighted" = "Reg+UnW"
+    table.info$`Predictions used` <- switch(
+      table.info$`Predictions used`,
+      "All overlaid" = "All", substring( table.info$`Predictions used`, 10)
     )
 
     rescale.txt <- table.info$`Rescaling method`
@@ -62,8 +61,13 @@ output$export_filename_uiOut_text <- renderUI({
     )
     table.info$`Rescaling method` <- rescale.txt
 
-    filename.value <- paste(table.info[, c(1, 3:4)], collapse = "_")
-    filename.value <- gsub(", ", "+", filename.value) # Handles columns 2 & 4
+    table.info$`Uncertainty method` <- ifelse(
+      table.info$`Uncertainty method` == "Among-model", "AMV", "WMV"
+    )
+
+    filename.value <- paste(table.info, collapse = "_")
+    filename.value <- gsub(", ", "+", filename.value) #Change comma to '+'
+    filename.value <- gsub(" ", "", filename.value)   #Gets rid of spaces
   }
 
   #------------------------------------
@@ -90,21 +94,11 @@ output$export_weight_inc_uiOut_text <- renderUI({
   z <- input$export_table_ens_out_rows_selected
   req(sum(!sapply(list(x, y, z), is.null)) == 1)
 
-  ""
   if (isTruthy(z)) {
     tags$h5("Ensemble predictions do not have any weight data to export,",
             "and thus the downloaded file will not contain any weight data")
-
   } else {
-    data.w <- st_set_geometry(export_model_selected(), NULL)
-
-    if ("Weight" %in% names(data.w)) {
-      tags$h5("The selected predictions have weight data",
-              "that will be incldued in the downloaded file")
-    } else {
-      tags$h5("The selected predictions do not have any weight data, and thus",
-              "the downloaded file will not contain any weight data")
-    }
+    NULL
   }
 })
 

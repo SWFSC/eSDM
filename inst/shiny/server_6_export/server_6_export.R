@@ -153,23 +153,24 @@ export_model_selected <- reactive({
   req(sum(!sapply(list(x, y, z), is.null)) == 1)
 
   if (isTruthy(z)) {
-    model.selected <- vals$ensemble.models[[z]]
-    model.data <- st_set_geometry(model.selected, NULL) %>%
-      dplyr::select(Density = 1)
+    model.data <- vals$ensemble.models[[z]]
+    curr.geom <- vals$overlay.base.sfc
 
   } else {
-    if (isTruthy(x)) model.selected <- vals$models.orig[[x]]
-    if (isTruthy(y)) model.selected <- vals$overlaid.models[[y]]
-
-    model.data <- st_set_geometry(model.selected, NULL)
-    if (all(is.na(model.data[, 2]))) {
-      model.data <- dplyr::select(model.data, Density = 1)
-    } else {
-      model.data <- dplyr::select(model.data, Density = 1, Weight = 2)
+    if (isTruthy(x)) {
+      model.data <- st_set_geometry(vals$models.orig[[x]], NULL)
+      curr.geom <- st_geometry(vals$models.orig[[x]])
     }
+    if (isTruthy(y)) {
+      model.data <- vals$overlaid.models[[y]]
+      curr.geom <- vals$overlay.base.sfc
+    }
+
+    model.data <- model.data %>%
+      select(Pred, SE, Weight)
   }
 
-  st_sf(model.data, st_geometry(model.selected), agr = "constant")
+  st_sf(model.data, curr.geom, agr = "constant")
 })
 
 
