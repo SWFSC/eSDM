@@ -235,7 +235,9 @@ ui.prettyPlot <- function() {
                         uiOutput("pretty_range_xmax_uiOut_num"),
                         uiOutput("pretty_range_ymax_uiOut_num")
                       )
-                    )
+                    ),
+                    helpText("Click 'Update range values' to use the same map range values as the last saved map"),
+                    uiOutput("pretty_range_lastmap_uiOut_button")
                   )
                 )
               ),

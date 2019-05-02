@@ -160,6 +160,28 @@ output$pretty_range_ymax_uiOut_num <- renderUI({
                value = val.default)
 })
 
+#------------------------------------------------------------------------------
+### Button to update map range values
+output$pretty_range_lastmap_uiOut_button <- renderUI({
+  validate(
+    need(vals$pretty.params.toplot,
+         "You must have saved at least one map to update range values"),
+    errorClass = "validation2"
+  )
+
+  actionButton("pretty_range_lastmap", "Update range values")
+})
+
+### Update map range values to range of last saved map
+pretty_range_lastmap_execute <- observeEvent(input$pretty_range_lastmap, {
+  d <- tail(req(vals$pretty.params.toplot))[[1]]$map.range
+
+  updateNumericInput(session, "pretty_range_xmin", value = d[1])
+  updateNumericInput(session, "pretty_range_xmax", value = d[2])
+  updateNumericInput(session, "pretty_range_ymin", value = d[3])
+  updateNumericInput(session, "pretty_range_ymax", value = d[4])
+})
+
 
 ###############################################################################
 # Color scheme inputs

@@ -430,6 +430,9 @@ output$pretty_addobj_table_out <- renderDT({
 #----------------------------------------------------------
 # Other outputs
 
+### Text for update range values button
+output$pretty_range_lastmap_text <- renderText(pretty_range_lastmap_execute())
+
 ### Color wheel for preview of color palette
 output$pretty_color_preview_plot <- renderPlot(pretty_color_preview())
 
