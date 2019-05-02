@@ -3,9 +3,6 @@
 
 
 ###############################################################################
-# Reactive plotting functions
-
-###########################################################
 ### Add data to pretty plot reactive variables
 pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
   validate(
@@ -112,37 +109,62 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       #input$pretty_toplot_se is NULL is ensemble isn't selected
       incProgress(0, detail = "Creating map of the associated SE")
 
-      #--------------------------------------------------
-      # Update values as necessary
-      # ens_var_helper_esdm() is in 'server_3_createEns_variance.R'
       se.sf <- model.toplot
-      # table.idx <- pretty_table_row_idx()[1]
-      # se.sf <- ens_var_helper_esdm(pretty_models_idx_list()[[table.idx]]) %>%
-      #   dplyr::select(se_val) %>%
-      #   st_transform(st_crs(model.toplot))
 
-      if (check_360(se.sf)) se.sf <- preview360_split(se.sf)
+      # preview360_split() is what is used in pretty_model_toplot360()
+      # if (check_360(se.sf)) se.sf <- preview360_split(se.sf)
+      # Seems like don't need ^ because model.toplot is already split
+
       validate(
         need(identical(st_geometry(model.toplot), st_geometry(se.sf)),
-             paste("Error in creating map of assocaited SE;",
+             paste("Error creating map of associated SE;",
                    "please report this as an issue")
         )
       )
       incProgress(0.1)
 
       #--------------------------------------------------
-      # Update other values as necessary
+      # Update parameters as necessary
+
+      ### Color scheme
       list.colorscheme.var <- list.colorscheme
-      list.colorscheme.var$data.name <- "SE"
-      if (identical(list.colorscheme.var$leg.labs[1], "Lowest 60%")) {
-        list.colorscheme.var$data.breaks <- breaks_calc(se.sf$SE)
+      list.colorscheme.var$data.name <- ifelse(
+        isTruthy(pretty_models_idx_list()[[3]]), "SE_ens", "SE"
+      )
+      se.vals <- st_set_geometry(se.sf, NULL)[, list.colorscheme.var$data.name]
+
+      if (list.colorscheme.var$perc) {
+        list.colorscheme.var$data.breaks <- breaks_calc(se.vals)
+
+      } else {
+        # Update min and max
+        tmp <- list.colorscheme.var$data.breaks
+        list.colorscheme.var$data.breaks[1] <- min(
+          c(se.vals, tmp), na.rm = TRUE
+        )
+        list.colorscheme.var$data.breaks[length(tmp)] <- max(
+          c(se.vals, tmp), na.rm = TRUE
+        )
+
+        tmp.check <- dplyr::between(
+          se.vals, min(list.colorscheme.var$data.breaks),
+          max(list.colorscheme.var$data.breaks)
+        )
+        validate(
+          need(all(tmp.check, na.rm = TRUE),
+               paste("Error creating map of associated SE;",
+                     "please report this as an issue"))
+        )
+        rm(tmp, tmp.check)
       }
 
+      ### Title
       list.titlelab.var <- list.titlelab
       if (list.titlelab.var$title != "") {
         list.titlelab.var$title <- paste(list.titlelab.var$title, "SE")
       }
 
+      ### Map ID
       pretty.id.se <- paste0(pretty.id, "_SE")
 
       #--------------------------------------------------
@@ -162,7 +184,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
       vals$pretty.toplot.idx <- c(vals$pretty.toplot.idx, list.idx)
 
     } else {
-      incProgress(0.1, detail = )
+      incProgress(0.1, detail = "")
     }
   })
 
@@ -174,7 +196,7 @@ pretty_toplot_add <- eventReactive(input$pretty_toplot_add_execute, {
 })
 
 
-###########################################################
+###############################################################################
 ### Table
 pretty_toplot_table <- reactive({
   validate(
@@ -197,7 +219,7 @@ pretty_toplot_table <- reactive({
 })
 
 
-###########################################################
+###############################################################################
 ### Remove stuff from list
 pretty_toplot_remove <- eventReactive(input$pretty_toplot_remove_execute, {
   req(vals$pretty.params.toplot)

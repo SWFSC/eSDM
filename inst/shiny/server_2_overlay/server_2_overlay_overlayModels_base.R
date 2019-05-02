@@ -235,8 +235,6 @@ overlay_proj_base <- reactive({
   # Return base with desired crs/projection
   if (identical(overlay_crs(), crs.ll)) {
     base.ll
-  } else if (identical(overlay_crs(), st_crs(base.orig))) {
-    base.orig
   } else {
     # Use base.orig so base obj has as few transformations as possible
     st_transform(base.orig, overlay_crs())

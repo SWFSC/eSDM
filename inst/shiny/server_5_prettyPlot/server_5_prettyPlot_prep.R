@@ -17,17 +17,22 @@ pretty_model_selected <- reactive({
   req(pretty_models_idx_count() == 1)
 
   model.idx.list <- pretty_models_idx_list()
-  if (!is.null(model.idx.list[[1]])) {
+  if (isTruthy(model.idx.list[[1]])) {
     vals$models.orig[[model.idx.list[[1]]]]
 
-  } else if (!is.null(model.idx.list[[2]])) {
-    vals$overlaid.models[[model.idx.list[[2]]]]
+  } else if (isTruthy(model.idx.list[[2]])) {
+    st_sf(
+      vals$overlaid.models[[model.idx.list[[2]]]],
+      geometry = vals$overlay.base.sfc, agr = "constant"
+    )
 
-  } else if (!is.null(model.idx.list[[3]])) {
-    vals$ensemble.models[[model.idx.list[[3]]]]
-
+  } else if (isTruthy(model.idx.list[[3]])) {
+    st_sf(
+      vals$ensemble.models[[model.idx.list[[3]]]],
+      geometry = vals$overlay.base.sfc, agr = "constant"
+    )
   } else {
-    validate(need(FALSE, "Pretty plot error"))
+    validate("High quality map error; please report this as an issue")
   }
 })
 
@@ -41,18 +46,16 @@ pretty_crs_selected <- reactive({
     if (input$pretty_proj_method == 1) {
       req(pretty_models_idx_count() == 1)
       model.idx.list <- pretty_models_idx_list()
+      validate(
+        need(length(model.idx.list) == 3,
+             "High quality map crs error; please report this as an issue")
+      )
 
-      if (!is.null(model.idx.list[[1]])) {
+      if (isTruthy(model.idx.list[[1]])) {
         st_crs(vals$models.orig[[model.idx.list[[1]]]])
 
-      } else if (!is.null(model.idx.list[[2]])) {
-        st_crs(vals$overlaid.models[[model.idx.list[[2]]]])
-
-      } else if (!is.null(model.idx.list[[3]])) {
-        st_crs(vals$ensemble.models[[model.idx.list[[3]]]])
-
       } else {
-        validate(need(FALSE, "Pretty plot crs error"))
+        vals$overlay.crs #st_crs(vals$overlay.base.sfc)
       }
 
     } else if (input$pretty_proj_method == 2) {
@@ -74,14 +77,7 @@ pretty_crs_selected <- reactive({
 
 ### Return model specified by user
 pretty_model_toplot <- reactive({
-  model.selected <- pretty_model_selected()
-  crs.selected <- pretty_crs_selected()
-
-  if (identical(st_crs(model.selected), crs.selected)) {
-    model.selected
-  } else {
-    st_transform(model.selected, crs.selected)
-  }
+  st_transform(pretty_model_selected(), pretty_crs_selected())
 })
 
 
@@ -196,9 +192,7 @@ pretty_colorscheme_list <- reactive({
     x <- pretty_model_toplot()
   }
 
-  data.name <- switch(
-    pretty_table_row_idx()[1], "Pred", "Pred.overlaid", "Pred.ens"
-  )
+  data.name <- switch(pretty_table_row_idx()[1], "Pred", "Pred", "Pred_ens")
 
   # Call function
   temp <- pretty_colorscheme_func(

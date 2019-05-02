@@ -462,13 +462,18 @@ output$pretty_display <- renderUI({
 ### Section with button to save map; spinning wheel displayed during param prep
 # All needs to be within box() so single 'object' is returned
 output$pretty_save_map <- renderUI({
-  # if () keeps req() within pretty_range() from being called
-  if (pretty_models_idx_count() == 1) pretty_range()
+  # Want 'Map ID default to display if no predictions are selected
+  req(pretty_models_idx_count() <= 1)
 
+  # 0-360 maps take a while to render map range widgets
+  # This makes the wheel spin during ^ when changing btw predictions,
+  #   but not when changing range with same predictions selected
+  if (pretty_models_idx_count() == 1) isolate(pretty_range())
+
+  # UI code
   box(
     width = 12,
     uiOutput("pretty_toplot_add_id_uiOut_text"),
-    tags$br(),
     helpText("Note that most plot parameters below (including loaded additional objects)",
              "will stay the same unless changed by user, even when a different set of predictions is selected.",
              "Thus, be sure to check the parameters before saving a new map"),

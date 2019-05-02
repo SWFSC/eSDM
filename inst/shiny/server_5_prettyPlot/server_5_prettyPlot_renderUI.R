@@ -25,23 +25,25 @@ output$pretty_toplot_add_id_uiOut_text <- renderUI({
 })
 
 #------------------------------------------------------------------------------
-### Checkbox to save map of assocaited SE values
+### Checkbox to save map of associated SE values
 output$pretty_toplot_se_uiOut_check <- renderUI({
   if (pretty_models_idx_count() == 1) {
-    if (pretty_table_row_idx()[1] == 1) {
-      if (any(!is.na(vals$models.orig[[pretty_table_row_idx()[2]]]$SE))) {
-        input.lab <- "Also save a map of the standard error of the selected predictions"
+    if (pretty_table_row_idx()[1] %in% 1:2) {
+      if (!is.na(vals$models.data.names[[pretty_table_row_idx()[2]]][2]))  {
+        input.lab <- paste(
+          "Also save a map of the uncertainty (SE) values",
+          "of the selected predictions"
+        )
 
         checkboxInput("pretty_toplot_se", input.lab, value = FALSE)
 
       } else {
-        "The selected predictions do not have standard error values to plot"
+        "The selected predictions do not have uncertainty (SE) values to plot"
       }
 
     } else if (pretty_table_row_idx()[1] == 3) {
       input.lab <- paste(
-        "Also save a map of the among-model variance of the rescaled,",
-        "overlaid predictions that were used to create this ensemble"
+        "Also save a map of the uncertainty (SE) values of the ensemble"
       )
 
       checkboxInput("pretty_toplot_se", input.lab, value = FALSE)
@@ -57,20 +59,15 @@ output$pretty_toplot_se_uiOut_check <- renderUI({
 
 ### Helptext about SE map
 output$pretty_toplot_se_uiOut_text <- renderUI({
-  if (pretty_models_idx_count() == 1) {
-    if (pretty_table_row_idx()[1] == 3) {
-      model.idx <- pretty_table_row_idx()[2]
-      helpText(
-        "This map will be exactly the same as the map sepcified below,",
-        "except that it will plot the standard deviation of the rescaled,",
-        "overlaid predictions rather than the ensemble predictions.",
-        "The map name will be the same as specified above with \"_SD\"",
-        "appended to the end."
-      )
-
-    } else {
-      NULL
-    }
+  if (pretty_models_idx_count() == 1 & isTruthy(input$pretty_toplot_se)) {
+    helpText(
+      "This uncertainty map will have the parameters specified below,",
+      "except that if the color scheme unit type is \"Values\",",
+      "then the map will have the same",
+      "color scale break points as the map of the predictions.", tags$br(),
+      "The uncertainty map name will be as specified above, ",
+      "with \"_SE\" appended to the end."
+    )
 
   } else  {
     NULL
