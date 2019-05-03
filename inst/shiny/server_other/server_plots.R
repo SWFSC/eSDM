@@ -167,10 +167,11 @@ observeEvent(input$overlay_preview_overlaid_execute, {
   models.idx <- as.numeric(input$overlay_preview_overlaid_models)
   models.num <- length(models.idx)
 
-  models.toplot <- lapply(
-    vals$overlaid.models[models.idx], st_sf,
-    geometry = vals$overlay.base.sfc, agr = "constant"
-  )
+  models.toplot <- lapply(vals$overlaid.models[models.idx], function(i) {
+    st_transform(
+      st_sf(i, geometry = vals$overlay.base.sfc, agr = "constant"), 4326
+    )
+  })
   data.names <- rep("Pred", models.num)
   plot.titles <- paste("Overlaid", models.idx)
   var.key <- NULL
@@ -246,10 +247,11 @@ observeEvent(input$ens_preview_execute, {
   models.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
   models.num <- length(models.idx)
 
-  models.toplot <- lapply(
-    vals$ensemble.models[models.idx], st_sf,
-    geometry = vals$overlay.base.sfc, agr = "constant"
-  )
+  models.toplot <- lapply(vals$ensemble.models[models.idx], function(i) {
+    st_transform(
+      st_sf(i, geometry = vals$overlay.base.sfc, agr = "constant"), 4326
+    )
+  })
   data.names <- rep("Pred_ens", models.num)
   plot.titles <- paste("Ensemble", models.idx)
   var.key <- NULL
