@@ -18,7 +18,8 @@ table_orig <- reactive({
              stringsAsFactors = FALSE) %>%
     `rownames<-`(paste("Original", seq_along(vals$models.names))) %>%
     purrr::set_names(
-      c("SDM filename", "Predictions", "SEs", "Weights", "Prediction unit"))
+      c("SDM filename", "Prediction", "Uncertainty", "Weight",
+        "Pred value type"))
 })
 
 
@@ -44,9 +45,9 @@ table_overlaid <- reactive({
   data.frame(t(data.frame(vals$overlaid.specs)), stringsAsFactors = FALSE) %>%
     `rownames<-`(paste("Overlaid", seq_along(vals$overlaid.specs))) %>%
     purrr::set_names(
-      c("SDM filename", "Predictions", "SEs", "Weights", "Prediction unit",
-        "Resolution", "Polygon count", "Non-NA prediction count", "Abundance",
-        "Long, lat range"))
+      c("SDM filename", "Prediction", "Uncertainty", "Weight",
+        "Pred value type", "Resolution", "Polygon count",
+        "Non-NA prediction count", "Abundance", "Long, lat range"))
 })
 
 

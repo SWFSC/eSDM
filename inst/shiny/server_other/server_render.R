@@ -312,14 +312,14 @@ output$ens_abund_table_out <- renderTable({
 #----------------------------------------------------------
 # Tables
 
-### Table of original predictions; [, 1:3] removes pred type
+### Table of original predictions; [, 1:4] removes pred type
 output$eval_models_table_orig_out <- renderDT({
-  table_orig()[, 1:3]
+  table_orig()[, 1:4]
 }, options = dt.list)
 
-### Table of overlaid predictions; [, 1:3] removes pred type
+### Table of overlaid predictions; [, 1:4] removes pred type
 output$eval_models_table_over_out <- renderDT({
-  table_overlaid()[, 1:3]
+  table_overlaid()[, 1:4]
 }, options = dt.list)
 
 ### Table of ensemble predictions
@@ -375,14 +375,14 @@ output$eval_metrics_overlap_text <- renderText({
 #----------------------------------------------------------
 # Tables
 
-### Table of original predictions; [, 1:3] removes pred type
+### Table of original predictions; [, 1:4] removes pred type
 output$pretty_table_orig_out <- renderDT({
-  table_orig()[, 1:3]
+  table_orig()[, 1:4]
 }, options = dt.list, selection = "single")
 
-### Table of overlaid predictions; [, 1:3] removes pred type
+### Table of overlaid predictions; [, 1:4] removes pred type
 output$pretty_table_over_out <- renderDT({
-  table_overlaid()[, 1:3]
+  table_overlaid()[, 1:4]
 }, options = dt.list, selection = "single")
 
 ### Table of ensemble predictions
@@ -514,14 +514,14 @@ observe({
 ###############################################################################
 ##### Export Predictions #####
 
-### Table of original predictions; [, 1:3] removes pred type
+### Table of original predictions; [, 1:4] removes pred type
 output$export_table_orig_out <- renderDT({
-  table_orig()[, 1:3]
+  table_orig()[, 1:4]
 }, options = dt.list, selection = "single")
 
-### Table of overlaid predictions; [, 1:3] removes pred type
+### Table of overlaid predictions; [, 1:4] removes pred type
 output$export_table_over_out <- renderDT({
-  table_overlaid()[, 1:3]
+  table_overlaid()[, 1:4]
 }, options = dt.list, selection = "single")
 
 ### Table of ensemble predictions
