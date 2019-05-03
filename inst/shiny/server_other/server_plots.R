@@ -14,9 +14,16 @@ observeEvent(input$model_preview_interactive_execute, {
   perc.num <- as.numeric(input$model_preview_interactive_perc)
   model.idx <- as.numeric(input$models_loaded_table_rows_selected)
 
+  d <- vals$models.data.names[[model.idx]]
+  data.names <- c(
+    ifelse(is.na(d[1]), NA, "Pred"), ifelse(is.na(d[2]), NA, "SE"),
+    ifelse(is.na(d[3]), NA, "Weight")
+  ); rm(d)
+
   vals$models.plot.leaf.idx <- model.idx
+
   vals$models.plot.leaf <- list(
-    model.toplot = vals$models.ll[[model.idx]],
+    model.toplot = vals$models.ll[[model.idx]], data.names = data.names,
     plot.title = paste("Original", model.idx), perc.num = perc.num,
     pal = switch(perc.num, pal.esdm, NA),
     leg.title = switch(
@@ -219,17 +226,15 @@ observeEvent(input$ens_preview_interactive_execute, {
   model.idx <- as.numeric(input$ens_datatable_ensembles_rows_selected)
   req(length(model.idx) == 1)
 
-  model.toplot <- st_sf(
-    vals$ensemble.models[model.idx], geometry = vals$overlay.base.sfc,
+  model.toplot <- st_transform(st_sf(
+    vals$ensemble.models[[model.idx]], geometry = vals$overlay.base.sfc,
     agr = "constant"
-  )
-  if (!identical(st_crs(model.toplot), crs.ll)) {
-    model.toplot <- st_transform(model.toplot, crs.ll)
-  }
+  ), 4326)
 
   vals$ensemble.plot.leaf.idx <- model.idx
   vals$ensemble.plot.leaf <- list(
-    model.toplot = model.toplot, plot.title = paste("Ensemble", model.idx),
+    model.toplot = model.toplot, data.names = c("Pred_ens", "SE_ens", NA),
+    plot.title = paste("Ensemble", model.idx),
     perc.num = perc.num, pal = switch(perc.num, pal.esdm, NA),
     leg.title = switch(
       perc.num, "Relative prediction value", "Absolute prediction value"

@@ -365,11 +365,12 @@ preview_ll <- function(sdm.ll, data.name, title.ll, perc, col.pal,
 ###############################################################################
 ###############################################################################
 ### Generate leaflet plot of provided sf object
-preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
+preview_interactive <- function(sdm.ll, data.names, title.ll = NULL, perc,
                                 col.pal, leg.labels = NULL, leg.title = NULL) {
   stopifnot(
     inherits(sdm.ll, "sf"),
-    isTruthy(sdm.ll[data.name]),
+    isTruthy(data.names),
+    length(data.names) == 3,
     perc %in% c(1, 2),
     identical(st_crs(sdm.ll), st_crs(4326))
   )
@@ -384,9 +385,9 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
   sdm.ll <- check_preview360_split(sdm.ll)
   sdm.df <- st_set_geometry(sdm.ll, NULL)
 
-  data.vec <- sdm.df[, data.name]
-  data.vec.v <- if (ncol(sdm.ll) > 2) sdm.df[, 2] else NA
-  data.vec.w <- if (ncol(sdm.ll) > 3) sdm.df[, 3] else NA
+  data.vec <- sdm.df[, data.names[1]]
+  data.vec.v <- if (!is.na(data.names[2])) sdm.df[, data.names[2]] else NULL
+  data.vec.w <- if (!is.na(data.names[3])) sdm.df[, data.names[3]] else NULL
   stopifnot(is.numeric(data.vec))
   sdm.cent <- suppressWarnings(st_centroid(st_combine(sdm.ll))[[1]])
 
@@ -489,7 +490,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
 
     ### Uncertainty - same color scale as predictions
-    if (!all(is.na(data.vec.v))) {
+    if (isTruthy(data.vec.v)) {
       #####
       # browser()
 
@@ -512,30 +513,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         tail(data.breaks.vals, -1), "-", head(data.breaks.vals, -1)
       )
 
-      #####
-
-
-
-      # data.vec.v.uniq <- length(unique(na.omit(data.vec.v)))
-      # v.num <- ifelse(data.vec.v.uniq > 10, 10, data.vec.v.uniq)
-      # v.pal <- viridis::viridis(v.num)
-      #
-      # v.temp <- preview_interactive_vals_colscheme(v.num, v.pal, data.vec.v)
-      # v.binpal <- v.temp[[1]]
-      # data.breaks.labs.v <- v.temp[[2]]
-      # rm(v.temp)
-
-      # browser()
-      # binpal.v <- binpal
-      # attr(binpal.v, "colorArgs")$bins[1] <- min(data.vec.v, na.rm = TRUE)
-      #
-      # data.breaks.labs.v <- data.breaks.labs
-      # data.breaks.labs.v[length(data.breaks.labs.v)] <- paste(
-      #   format(round(min(data.vec.v, na.rm = TRUE), 3), nsmall = 3, justify = "right"),
-      #   substr(data.breaks.labs.v[length(data.breaks.labs.v)], 7, 13)
-      # )
-
-      leaf.map %>%
+      leaf.map <- leaf.map %>%
         addPolygons(
           stroke = FALSE, color = ~binpal.v(data.vec.v), fillOpacity = 0.6, group = "Uncertainty") %>%
         addLegend(
@@ -544,7 +522,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
     }
 
     ### Weights
-    if (!all(is.na(data.vec.w))) {
+    if (isTruthy(data.vec.w)) {
       data.vec.w.uniq <- length(unique(na.omit(data.vec.w)))
       w.num <- ifelse(data.vec.w.uniq > 10, 10, data.vec.w.uniq)
       w.pal <- viridis::viridis(w.num)
@@ -554,7 +532,7 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
       data.breaks.labs.w <- w.temp[[2]]
       rm(w.temp)
 
-      leaf.map %>%
+      leaf.map <- leaf.map %>%
         addPolygons(
           stroke = FALSE, color = ~w.binpal(data.vec.w), fillOpacity = 0.6, group = "Weights") %>%
         addLegend(
@@ -565,26 +543,15 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
 
   #----------------------------------------------------------------------------
   ### Add messages and layer control
-  if (all(is.na(data.vec.v)) & all(is.na(data.vec.w))) {
-    # No uncertainty data; include message
+  if (isTruthy(data.vec.v) & isTruthy(data.vec.w)) {
     leaf.map %>%
-      addControl(
-        tags$h5("No uncertainty or weight data"), layerId = "Other info", position = "bottomright") %>%
       addLayersControl(
         baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
-        position = "bottomright", options = layersControlOptions(collapsed = FALSE))
-
-  } else if (all(is.na(data.vec.v))) {
-    leaf.map %>%
-      addControl(
-        tags$h5("No uncertainty data"), layerId = "Other info", position = "bottomright") %>%
-      addLayersControl(
-        baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
-        overlayGroups = c("Predictions", "Weights"),
+        overlayGroups = c("Predictions", "Uncertainty", "Weights"),
         position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
-      hideGroup("Weights")
+      hideGroup(c("Uncertainty", "Weights"))
 
-  } else if (all(is.na(data.vec.w))) {
+  } else if (isTruthy(data.vec.v)) {
     leaf.map %>%
       addControl(
         tags$h5("No weight data"), layerId = "Other info", position = "bottomright") %>%
@@ -594,13 +561,24 @@ preview_interactive <- function(sdm.ll, data.name, title.ll = NULL, perc,
         position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
       hideGroup("Uncertainty")
 
-  } else {
+  } else if (isTruthy(data.vec.w)) {
     leaf.map %>%
+      addControl(
+        tags$h5("No uncertainty data"), layerId = "Other info", position = "bottomright") %>%
       addLayersControl(
         baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
-        overlayGroups = c("Predictions", "Uncertainty", "Weights"),
+        overlayGroups = c("Predictions", "Weights"),
         position = "bottomright", options = layersControlOptions(collapsed = FALSE)) %>%
-      hideGroup(c("Uncertainty", "Weights"))
+      hideGroup("Weights")
+
+  } else {
+    # No uncertainty data; include message
+    leaf.map %>%
+      addControl(
+        tags$h5("No uncertainty or weight data"), layerId = "Other info", position = "bottomright") %>%
+      addLayersControl(
+        baseGroups = c("CartoDB", "OpenStreetMap", "ESRI Topo"),
+        position = "bottomright", options = layersControlOptions(collapsed = FALSE))
   }
 }
 
