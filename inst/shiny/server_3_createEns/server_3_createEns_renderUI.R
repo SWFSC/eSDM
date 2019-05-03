@@ -16,7 +16,7 @@ create_ens_rescale_type_helper <- reactive({
 })
 
 
-### Message for if not all predictions are absolute abundance
+### Message for if not all predictions are absolute dens/abundance
 output$create_ens_rescale_type_message <- renderUI({
   models.which <- create_ens_rescale_type_helper()
   pred.type <- vals$models.pred.type[models.which]
@@ -201,12 +201,29 @@ output$create_ens_weights_metric_uiOut_radio <- renderUI({
 
 
 ###############################################################################
-# Radio buttons for uncertainty type: within-model or among-model
+# Uncertainty type: within-model or among-model
+
+### Message about no within-model
+output$create_ens_uncertainty_text <- renderUI({
+  ens.which <- create_ens_overlaid_idx()
+  ens.which.var <- create_ens_weights_var_which()
+
+  validate(
+    need(all(ens.which %in% ens.which.var),
+         paste("To calculate within-model uncertainty, all selected",
+               "predictions must have assocaited uncertainty values")),
+    errorClass = "validation2"
+  )
+
+  NULL
+})
+
+### Radio buttons
 output$create_ens_create_uncertainty_uiOut_radio <- renderUI({
   ens.which <- create_ens_overlaid_idx()
   ens.which.var <- create_ens_weights_var_which()
 
-  if (all(ens.which.var %in% ens.which)) {
+  if (all(ens.which %in% ens.which.var)) {
     choices.list <- list("Among-model uncertainty" = 1, "Within-model uncertainty" = 2)
   } else {
     choices.list <- list("Among-model uncertainty" = 1)
@@ -342,21 +359,5 @@ output$ens_calc_abund_execute_uiOut_button <- renderUI({
   req(abund_reac_flag())
   actionButton("ens_calc_abund_execute", "Calculate abundance(s)")
 })
-
-
-#------------------------------------------------------------------------------
-### actionButton for among-model variance
-output$ens_var_execute_uiOut_button <- renderUI({
-  req(input$ens_select_action == 6)
-
-  validate(
-    need(length(input$ens_datatable_ensembles_rows_selected) == 1,
-         "Please select exactly one set of ensemble predictions"),
-    errorClass = "validation2"
-  )
-
-  actionButton("ens_var_execute", "Plot among-model variance")
-})
-
 
 ###############################################################################

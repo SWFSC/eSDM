@@ -313,11 +313,11 @@ ui.createEns <- function() {
               column(
                 width = 2,
                 fluidRow(
-                  ################################################### Create ensemble button
+                  ################################################### Uncertainty type
                   box(
                     width = 12,
                     tags$strong("4) Ensemble options: ensemble uncertainty"),
-                    # tags$br(), tags$br(),
+                    uiOutput("create_ens_uncertainty_text"),
                     uiOutput("create_ens_create_uncertainty_uiOut_radio"),
                     column(
                       width = 12,
