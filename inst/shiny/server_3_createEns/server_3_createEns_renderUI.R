@@ -151,27 +151,6 @@ output$create_ens_weight_manual_uiOut_text <- renderUI({
             value = text.val, width = "40%")
 })
 
-### Warning for if any weights are > 1
-output$create_ens_weight_manual_warning_uiOut_text <- renderUI({
-  models.weights <- suppressWarnings(
-    esdm_parse_num(req(input$create_ens_weight_manual))
-    # as.numeric(unlist(strsplit(req(input$create_ens_weight_manual), ",")))
-  )
-  models.num <- length(vals$overlaid.models)
-  if (input$create_ens_table_subset) {
-    models.num <- length(input$create_ens_datatable_rows_selected)
-  }
-
-  # Req() weights input
-  req(length(models.weights) == models.num, !anyNA(models.weights))
-
-  if (round(sum(models.weights), 3) != 1) {
-    paste("Warning: The entered model weights do not sum to 1")
-  } else {
-    NULL
-  }
-})
-
 
 #----------------------------------------------------------
 # Method 2

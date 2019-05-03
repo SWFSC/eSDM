@@ -235,8 +235,7 @@ ui.createEns <- function() {
                                          "Weights must sum to 1 but may be entered as either decimals or fractions.",
                                          "They must be entered in the following format:",
                                          "'weight, weight, ..., weight', e.g. '0.5, 1/4, 1/4'."),
-                                uiOutput("create_ens_weight_manual_uiOut_text") #,
-                                # tags$span(uiOutput("create_ens_weight_manual_warning_uiOut_text"), style = "color: red;")
+                                uiOutput("create_ens_weight_manual_uiOut_text")
                               )
                             ),
                             ######################### Weighting by evaluation metric
