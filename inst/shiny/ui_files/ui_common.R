@@ -17,11 +17,15 @@ file.type.list2 <- list(
   "CSV (comma-separated value) file" = 1, "GIS raster" = 2,
   "GIS shapefile" = 3, "GIS file geodatabase feature class" = 4
 )
+file.type.list3 <- list(
+  "CSV (comma-separated value) file" = 1, "GIS shapefile" = 2,
+  "KML or KMZ file" = 3
+)
 
 preview.static.perc <- list("Percentages" = 1, "Values (numeric)" = 2)
 preview.static.var <- list(
   "Plot predictions only" = 1, "Plot predictions and uncertainty" = 2
-  )
+)
 preview.download.dim <- list(
   "8 inches by 8 inches" = 1, "Dimensions of 'Static Preview' window" = 2
 )

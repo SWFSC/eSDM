@@ -55,8 +55,7 @@ output$export_filename_uiOut_text <- renderUI({
       grepl("Abund", rescale.txt),
       paste0("Abund", strsplit(rescale.txt, ": ")[[1]][2]),
       switch(
-        rescale.txt, "None" = "None", "Normalization" = "Norm",
-        "Standardization" = "Stand", "Sum to 1" = "Sumto1_"
+        rescale.txt, "None" = "None", "Sum to 1" = "Sumto1"
       )
     )
     table.info$`Rescaling method` <- rescale.txt

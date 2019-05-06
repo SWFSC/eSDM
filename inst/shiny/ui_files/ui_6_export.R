@@ -32,8 +32,7 @@ ui.export <- function() {
                 width = 6,
                 tags$strong("1) Export options: file format"),
                 selectInput("export_format", tags$h5("Format in which to export predictions"),
-                            choices = list("Excel .csv file" = 1, "GIS shapefile" = 2, "KML or KMZ file" = 3),
-                            selected = 1),
+                            choices = file.type.list3, selected = 1),
                 column(
                   width = 12,
                   conditionalPanel(
