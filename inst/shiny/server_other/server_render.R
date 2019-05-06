@@ -261,12 +261,12 @@ output$ens_create_ensemble_text <- renderUI(HTML(create_ensemble()))
 
 ### Table of created ensemble predictions
 output$ens_datatable_ensembles <- renderDT(
-  table_ensembles(), options = dt.list
+  table_ensembles(), selection = "multiple", options = dt.list
 )
 
 ### Stats table of created ensemble predictions
 output$ens_datatable_ensembles_stats <- renderDT(
-  table_ensembles_stats(), options = dt.list
+  table_ensembles_stats(), selection = "none", options = dt.list
 )
 
 #----------------------------------------------------------
