@@ -1,7 +1,10 @@
 ###############################################################################
 # Calculate root mean squared error
-esdm_rmse <- function(x, y) {
-  sqrt(mean((x - y) ^ 2, na.rm = TRUE))
+esdm_rmse <- function(x, y, ...) {
+  lst <- list(...)
+  z.lgl <- if ("na.rm" %in% names(lst)) lst$na.rm else TRUE
+
+  sqrt(mean((x - y) ^ 2, na.rm = z.lgl))
 }
 
 
@@ -39,13 +42,6 @@ esdm_weighted_mean <- function(x, w, ...) {
   }
 }
 
-# esdm_weighted_mean(c(NA, 2, 3), c(1, 2, 3), na.rm = TRUE)
-# esdm_weighted_mean(c(NA, 2, 3), c(1, 2, 3), na.rm = FALSE)
-# esdm_weighted_mean(c(4, 2, 3), c(1, 2, 3), na.rm = TRUE)
-# esdm_weighted_mean(c(4, 2, 3), c(1, 2, 3), na.rm = FALSE)
-# esdm_weighted_mean(c(4, 2, 3), c(1, 2, NA), na.rm = TRUE)
-# esdm_weighted_mean(c(4, 2, 3), c(1, 2, NA), na.rm = FALSE)
-
 
 ###############################################################################
 # Weighted variance function for eSDM
@@ -53,6 +49,8 @@ esdm_weighted_mean <- function(x, w, ...) {
 #------------------------------------------------------------------------------
 ### Calculate among-model variance from weights and values
 ###   used to calculate weighted mean
+### Applicable formula (Price 1972; extension):
+###   wvar(x) = sum(wi * (xi - xmean)); sum(wi = 1)
 esdm_weighted_var_amv <- function(x, x.mean, w, ...) {
   ### Inputs:
   # x: numeric vector of values that were used to calculate weighted mean
@@ -90,6 +88,9 @@ esdm_weighted_var_amv <- function(x, x.mean, w, ...) {
 #------------------------------------------------------------------------------
 ### Calculate within-model variance from weights and variances of
 ###   values used to calculate weighted mean
+### Applicable formulas (Wade and Angliss 1996):
+###   var(c * x) = c^2 * var(x)
+###   var(wtdmean(x1, x2, ...)) = w1^2 * var(x1) + w2^2 * var(x2) + ...; sum(wi = 1)
 esdm_weighted_var_wmv <- function(x.var, w, ...) {
   ### Inputs:
   # x: numeric vector of variances of values used to calculate weighted mean

@@ -30,7 +30,8 @@ Imports:
     units,
     viridis
 Suggests:
-    mapview
+    mapview,
+    testthat (>= 2.1.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
