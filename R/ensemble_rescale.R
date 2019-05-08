@@ -128,10 +128,11 @@ ensemble_rescale <- function(x, x.idx, y, y.abund = NULL, x.var.idx = NULL) {
 
   #--------------------------------------------------------
   ### Prep
-  x.df.idx <- x.df[, x.idx]
-  # x.df.var.idx <- x.df[, x.var.idx]
+  # Use select rather than [,] to ensure object is data frame
+  x.df.idx <- x.df %>% select(!!x.idx)
+  # x.df.var.idx <- x.df %>% select(!x.var.idx)
   x.df.var.idx <- data.frame(lapply(x.var.idx, function(i) {
-    if (is.na(i)) NA else x.df[, i]
+    if (is.na(i)) NA else x.df %>% select(!!i)
   }))
 
   #--------------------------------------------------------
