@@ -213,7 +213,7 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
 
   } else {
     base.area.km <- as.numeric(set_units(base.area.m2, "km^2"))
-    base.int.perc <- new.dens.df$area_km_sum / base.area.km[base.idx.nona]
+    base.int.perc <- round(new.dens.df$area_km_sum / base.area.km[base.idx.nona], 2)
     new.dens.df <- new.dens.df %>% select(-.data$area_km_sum)
     new.dens.df[base.int.perc < (overlap.perc / 100), 2:ncol(new.dens.df)] <- NA
   }
@@ -236,8 +236,10 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
       bind_rows(new.dens.df.na) %>%
       arrange(.data$base_idx) %>%
       select(-.data$base_idx)
+
+  } else {
+    new.dens.df <- new.dens.df %>% select(-.data$base_idx)
   }
-  # else nothing to do
 
 
   #----------------------------------------------------------------------------
