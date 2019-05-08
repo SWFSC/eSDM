@@ -21,24 +21,33 @@ not set as NA}
 \value{
 Object of class \code{sf} with the geometry of \code{base.geom} and
   the data in the \code{sdm.idx} columns of \code{sdm} overlaid onto that
-  geometry.
+  geometry. Note that this means all columns of \code{sdm} not in
+  \code{sdm.idx} will not be in the returned object.
+  Because the data are considered spatially intensive, the \code{agr}
+  attribute will be set as 'constant' for all columns in the returned object
 }
 \description{
 Overlay specified SDM predictions that meet the percent overlap threshold requirement onto base geometry
 }
 \details{
 See the eSDM GUI manual for specifics about the overlay process.
-TODO: areal interpolation
+  This process is equivalent to areal interpolation (Goodchild and Lam 1980),
+  where \code{base.geom} is the target, \code{sdm} is the source, and the data
+  specified by \code{sdm.idx} are spatially intensive.
 
-Note that \code{overlay_sdm} removes rows in \code{sdm} that have NA values
-in the first column specified in \code{sdm.idx} (i.e. \code{sdm.idx[1]}),
-before the overlay.
-Thus, for valid overlay results, all columns of \code{sdm} specified in
-\code{sdm.idx} must either have NA values in the same rows
-or contain only NAs.
+  Note that \code{overlay_sdm} removes rows in \code{sdm} that have NA values
+  in the first column specified in \code{sdm.idx} (i.e. \code{sdm.idx[1]}),
+  before the overlay.
+  Thus, for valid overlay results, all columns of \code{sdm} specified in
+  \code{sdm.idx} must either have NA values in the same rows
+  or contain only NAs.
 }
 \examples{
 overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
 overlay_sdm(sf::st_geometry(preds.2), preds.1, c("Density", "Density2"), 50)
 
+}
+\references{
+Goodchild, M.F. & Lam, N.S.-N. (1980) Areal interpolation:
+  a variant of the traditional spatial problem. Geo-Processing, 1, 297-312.
 }
