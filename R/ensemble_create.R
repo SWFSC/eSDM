@@ -20,6 +20,7 @@
 #'   \code{na.rm} argument to \code{sum}
 #'
 #' @importFrom dplyr select
+#' @importFrom sf st_agr
 #' @importFrom sf st_geometry
 #' @importFrom sf st_set_geometry
 #' @importFrom sf st_sf
@@ -64,7 +65,8 @@ ensemble_create <- function(x, x.idx, w = NULL, x.var.idx = NULL, ...) UseMethod
 ensemble_create.sf <- function(x, x.idx, w = NULL, x.var.idx = NULL, ...) {
   st_sf(
     ensemble_create(st_set_geometry(x, NULL), x.idx, w, x.var.idx, ...),
-    geometry = st_geometry(x), agr = c(st_agr(x), Pred_ens = "1", Var_ens = "1")
+    geometry = st_geometry(x),
+    agr = c(as.character(st_agr(x)), "constant", "constant")
   )
 }
 
