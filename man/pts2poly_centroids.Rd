@@ -14,8 +14,8 @@ See 'Details' section for how additional columns are handled}
 \item{y}{numeric; shortest distance from centroid to any of the sides
 (i.e. half the length of one side of a polygon)}
 
-\item{...}{passed on to \link[sf:sf]{st_sf} or on to \link[sf:sfc]{st_sfc},
-might included named arguments \code{crs} or \code{agr}}
+\item{...}{passed to \link[sf:sf]{st_sf} or to \link[sf:sfc]{st_sfc},
+e.g. for passing named arguments \code{crs} and \code{agr}}
 }
 \value{
 Object of class \code{sfc} (if \code{x} has exactly two columns) or class \code{sf}

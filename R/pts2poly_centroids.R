@@ -7,8 +7,8 @@
 #'   See 'Details' section for how additional columns are handled
 #' @param y numeric; shortest distance from centroid to any of the sides
 #'   (i.e. half the length of one side of a polygon)
-#' @param ... passed on to \link[sf:sf]{st_sf} or on to \link[sf:sfc]{st_sfc},
-#'   might included named arguments \code{crs} or \code{agr}
+#' @param ... passed to \link[sf:sf]{st_sf} or to \link[sf:sfc]{st_sfc},
+#'   e.g. for passing named arguments \code{crs} and \code{agr}
 #'
 #' @importFrom dplyr select
 #' @importFrom purrr set_names

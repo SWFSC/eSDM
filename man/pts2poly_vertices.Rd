@@ -11,7 +11,8 @@ pts2poly_vertices(x, ...)
 the first two columns must contain longitude and latitude coordinates, respectively.
 See 'Details' section for how additional columns are handled}
 
-\item{...}{passed on to \link[sf:sfc]{st_sfc}, might included named argument \code{crs}}
+\item{...}{passed to \link[sf:sfc]{st_sfc},
+e.g. for passing named argument \code{crs}}
 }
 \value{
 Object of class \code{sfc} with the geometry type \code{POLYGON}
