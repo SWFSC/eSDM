@@ -7,7 +7,8 @@
 model_abundance(x, dens.idx, sum.abund = TRUE)
 }
 \arguments{
-\item{x}{object of class \code{sf}; SDM with density predictions}
+\item{x}{object of class \code{sf}; SDM with density predictions.
+Must have a valid crs code}
 
 \item{dens.idx}{name or index of column(s) in \code{x} with density predictions.
 Can be a character vector (column names) or numeric vector (column indices)}
@@ -30,7 +31,8 @@ Calculates the predicted abundance by multiplying the density prediction values 
 \details{
 Multiplies the values in the specified column(s) (i.e. the density predictions)
   by the area in square kilometers of their corresponding prediciton polygon.
-  The area of each prediction polygon is calcualted using \code{st_area} from \code{\link[sf]{geos_measures}}
+  The area of each prediction polygon is calcualted using \code{st_area} from \code{\link[sf]{geos_measures}}.
+  x must have a valid crs code to calculate area for these abundance calculations.
 }
 \examples{
 model_abundance(preds.1, "Density")

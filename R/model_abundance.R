@@ -2,7 +2,8 @@
 #'
 #' Calculates the predicted abundance by multiplying the density prediction values by prediction polygon areas
 #'
-#' @param x object of class \code{sf}; SDM with density predictions
+#' @param x object of class \code{sf}; SDM with density predictions.
+#'   Must have a valid crs code
 #' @param dens.idx name or index of column(s) in \code{x} with density predictions.
 #'   Can be a character vector (column names) or numeric vector (column indices)
 #' @param sum.abund logical; whether or not to sum all of the predicted abundances
@@ -14,7 +15,8 @@
 #'
 #' @details Multiplies the values in the specified column(s) (i.e. the density predictions)
 #'   by the area in square kilometers of their corresponding prediciton polygon.
-#'   The area of each prediction polygon is calcualted using \code{st_area} from \code{\link[sf]{geos_measures}}
+#'   The area of each prediction polygon is calcualted using \code{st_area} from \code{\link[sf]{geos_measures}}.
+#'   x must have a valid crs code to calculate area for these abundance calculations.
 #'
 #' @return If \code{sum.abund == TRUE}, then a vector of the same length as \code{dens.idx}
 #'   representing the predicted abundance for the density values in each column.
@@ -37,6 +39,8 @@ model_abundance <- function(x, dens.idx, sum.abund = TRUE) {
     inherits(dens.idx, "character") | inherits(dens.idx, "numeric"),
     inherits(sum.abund, "logical")
   )
+
+  if (is.na(st_crs(x))) stop("x must have a valid crs code")
 
   x.area <- st_area(x)
   if (!all(units(x.area)[[1]] == c("m", "m"))) {
