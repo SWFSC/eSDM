@@ -47,7 +47,7 @@ test_that("create ens", {
   )
   sfc2 <- st_sfc(st_polygon(list(matrix(unlist(d), ncol = 2))), crs = 4326)
 
-  # Basic data frame
+  # Basic data frame and sf object
   df1 <- data.frame(pred1 = c(2, 3), pred2 = c(4, 6), pred3 = c(3, 5),
                     var1 = c(0.2, 0.3), var2 = c(0.4, 0.6), var3 = c(0.3, 0.5))
   sf1 <- st_sf(df1, geometry = sfc1, agr = "constant")
