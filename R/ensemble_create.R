@@ -132,7 +132,7 @@ ensemble_create.data.frame <- function(x, x.idx, w = NULL, x.var.idx = NULL, ...
 
   } else if (inherits(w, "numeric")) {
     if (length(x.idx) != length(w)) stop("x.idx and w must have the same length")
-    if (!(sum(w) == 1)) stop("If w is a numeric vector, it must sum to 1")
+    if (!all.equal(sum(w), 1)) stop("If w is a numeric vector, it must sum to 1")
 
   } else if (inherits(w, "data.frame")) {
     stopifnot(ncol(w) == length(x.idx), nrow(x) == nrow(w))
