@@ -11,7 +11,7 @@ pts2poly_centroids(x, y, ...)
 the first two columns must contain longitude and latitude coordinates, respectively.
 See 'Details' section for how additional columns are handled}
 
-\item{y}{numeric; shortest distance from centroid to any of the sides
+\item{y}{numeric; the perpendicular distance from the polygon centroid (center) to its edge
 (i.e. half the length of one side of a polygon)}
 
 \item{...}{passed to \link[sf:sf]{st_sf} or to \link[sf:sfc]{st_sfc},

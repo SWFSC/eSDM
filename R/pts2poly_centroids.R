@@ -5,7 +5,7 @@
 #' @param x data frame with at least two columns;
 #'   the first two columns must contain longitude and latitude coordinates, respectively.
 #'   See 'Details' section for how additional columns are handled
-#' @param y numeric; shortest distance from centroid to any of the sides
+#' @param y numeric; the perpendicular distance from the polygon centroid (center) to its edge
 #'   (i.e. half the length of one side of a polygon)
 #' @param ... passed to \link[sf:sf]{st_sf} or to \link[sf:sfc]{st_sfc},
 #'   e.g. for passing named arguments \code{crs} and \code{agr}
