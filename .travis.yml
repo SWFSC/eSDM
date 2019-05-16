@@ -7,21 +7,18 @@
 language: R
 cache: packages
 sudo: required
+dist: trusty
+
 
 r:
   - release
   - devel
 
-addons:
-  apt:
-    packages:
-      - libgdal-dev
-      - libgeos-dev
-      - libnetcdf-dev
-      - libudunits2-dev
-      - netcdf-bin
 
 before_install:
+  - sudo add-apt-repository ppa:ubuntugis/ppa --yes
+  - sudo apt-get --yes --force-yes update -qq
+  - sudo apt-get install --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev
   - R -e 'install.packages("rgdal", repos="http://R-Forge.R-project.org")'
 
 warnings_are_errors: true

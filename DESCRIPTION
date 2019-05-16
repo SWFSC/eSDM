@@ -30,11 +30,11 @@ Imports:
     units,
     viridis
 Suggests:
-    knitr,
-    maps,
+    knitr, 
+    maps, 
     maptools, 
-    mapview,
-    rmarkdown,
+    mapview, 
+    rmarkdown, 
     testthat (>= 2.1.0)
 License: GPL-3
 Encoding: UTF-8
