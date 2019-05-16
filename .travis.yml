@@ -15,6 +15,7 @@ r:
 addons:
   apt:
     packages:
+      - libnetcdf-dev
       - netcdf-bin # for stars netcdf dep
 
 
