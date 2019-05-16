@@ -12,6 +12,7 @@ addons:
   apt:
     packages:
       - libgdal-dev
+      - libproj-dev
       - libnetcdf-dev
       - libudunits2-dev
       - netcdf-bin
