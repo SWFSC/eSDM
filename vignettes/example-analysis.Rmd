@@ -30,19 +30,19 @@ source(system.file("vignette_helper.R", package = "eSDM"), local = TRUE, echo = 
 
 #### If using data from this example analysis, please first contact the author, and then see the README.txt file in 'inst/extdata' for proper citation information.
 
-`eSDM` allows users to create ensembles of predictions from species distribution models (SDMs). They can do this either using the `eSDM` GUI or manually using `eSDM` functions. This vignette demonstrates creating and evaluating ensembles using `eSDM` functions by manually performing the example analysis from Woodman _et al._ (in review). The example analysis explores differences between blue whale SDM predictions from Becker et al. (2016; i.e. Model_B), Hazen et al. (2017; i.e., Model_H), and Redfern et al. (2017; i.e., Model_R), and creates ensembles of the predictions, with associated uncertainty. See Table 1 of Woodman _et al._ (in review) for additional details about the differences between the models.
+`eSDM` allows users to create ensembles of predictions from species distribution models (SDMs). They can do this either using the `eSDM` GUI or manually using `eSDM` functions. This vignette demonstrates creating and evaluating ensembles using `eSDM` functions by manually performing the example analysis from Woodman _et al._ (in review). The example analysis explores differences between blue whale SDM predictions from Becker _et al._ (2016; i.e. Model_B), Hazen _et al._ (2017; i.e. Model_H), and Redfern _et al._ (2017; i.e. Model_R), and creates ensembles of the predictions, with associated uncertainty. See Table 1 of Woodman _et al._ (in review) for additional details about the differences between the models.
 
-This document contains code for plotting predictions, but by default the plotting code is not run because these plots take a while to generate.
+This document contains code for plotting predictions, but by default some of the plotting code is not run because these plots can take a while to generate.
 
 
 ## Import SDM predictions
 
 The first step of the example analysis is to import and process the Model_B, Model_H, and Model_R predictions, along with their standard error (SE) values. Use `pts2poly_centroids` to create `sf` objects from polygon centroids from .csv files and `sf::st_read` to import a shapefile. The dimensions of the Model_B and Model_H predictions are 0.09 x 0.09 degrees and 0.25 x 0.25 degrees, respectively; the second argument of `pts2poly_centroids` is half the length of one side of the polygon. GIS files already have a defined geometry that is read by `st_read`. We must ensure that the predictions have the same longitudinal range (i.e., [0, 360] or [-180, 180]), and that all geometries are valid.
 
-After importing and processing the predictions, we can visualize them using the custom `plot_sf_3panel` function (in 'inst/vignette_helper.R'), as well as a base map for reference. These plots are in Fig. 3 in Woodman _et al._ (in review).
+After importing and processing the predictions, we can visualize them using the custom `plot_sf_3panel` function (in 'inst/vignette_helper.R'), as well as a base map for reference. These plots make up Fig. 3 in Woodman _et al._ (in review).
 
 ```{r}
-# Import, process, and plot predictions from Model_B
+# Import, process, and plot Model_B predictions
 eab.sf <- read.csv(system.file("extdata/Predictions_Beckeretal2016.csv", package = "eSDM")) %>% 
   eSDM::pts2poly_centroids(0.09 / 2, crs = 4326) %>%
   st_wrap_dateline() %>%
@@ -54,12 +54,12 @@ eab.sf
 map.world <- st_geometry(st_as_sf(map('world', plot = FALSE, fill = TRUE)))
 ```
 
-```{r, fig.width=7, eval=FALSE}
+```{r, fig.width=7}
 plot_sf_3panel(eab.sf, "pred_bm", main.txt = "Model_B - ", map.base = map.world)
 ```
 
 ```{r}
-# Import, process, and plot predictions from Model_H
+# Import, process, and plot Model_H predictions
 ww.sf <- read.csv(system.file("extdata/Predictions_Hazenetal2017.csv", package = "eSDM")) %>%
   select(lon, lat, pred_bm, se) %>%
   eSDM::pts2poly_centroids(0.25 / 2, crs = 4326, agr = "constant")
@@ -67,12 +67,12 @@ ww.sf <- read.csv(system.file("extdata/Predictions_Hazenetal2017.csv", package =
 ww.sf
 ```
 
-```{r, fig.width=7, eval=FALSE}
+```{r, fig.width=7}
 plot_sf_3panel(ww.sf, "pred_bm", main.txt = "Model_H - ", map.base = map.world)
 ```
 
 ```{r, fig.width=7}
-# Import, process, and plot predictions from Model_R
+# Import, process, and plot Model_R predictions
 jvr.sf <- st_read(system.file("extdata/Shapefiles/Predictions_Redfernetal2017.shp", package = "eSDM")) %>%
   st_make_valid() %>% #
   st_set_agr("constant")
@@ -80,14 +80,14 @@ jvr.sf <- st_read(system.file("extdata/Shapefiles/Predictions_Redfernetal2017.sh
 jvr.sf
 ```
 
-```{r, fig.width=7, eval=FALSE}
+```{r, fig.width=7}
 plot_sf_3panel(jvr.sf, "pred_bm", main.txt = "Model_R - ", map.base = map.world)
 ```
 
 
 ## Overlay predictions
 
-Because the original predictions have both different spatial resolutions and coordinate systems, we must overlay them onto the same base geometry. See Woodman _et al._ (in review), the `eSDM` GUI manual, or the `overlay_sdm` documentation for details about the overlay process. For the example analysis, we use the geometry of Model_R as the base geometry. However, first we must import and process the study area and erasing polygons (with which we clip and erase land from the base geometry, respectively). Then we can visualize the base geometry, as well as a base map for reference.
+Because the original predictions have both different spatial resolutions and coordinate systems, we must overlay them onto the same base geometry. See Woodman _et al._ (in review), the `eSDM` GUI manual, or the `overlay_sdm` documentation for details about the overlay process. For the example analysis, we use the geometry of Model_R as the base geometry. However, first we must import and process the study area and erasing polygons, with which we clip and erase land from the base geometry, respectively. Then we can visualize the base geometry, as well as a base map for reference.
 
 ```{r}
 # Study area polygon
@@ -109,7 +109,7 @@ base.geom <- jvr.sf %>%
   st_cast("MULTIPOLYGON")
 ```
 
-```{r, fig.width=5, fig.height=7, eval=FALSE}
+```{r, fig.width=5, fig.height=7}
 # visualize the base geometry
 plot(st_transform(base.geom, 4326), col = NA, border = "black", axes = TRUE)
 plot(map.world, add = TRUE, col = "tan", border = NA)
@@ -152,9 +152,10 @@ rm(over3.sfb)
 
 ```
 
-We can plot the overlaid predictions if desired to show that the overlaid distribution patterns are very similar to those of the original predictions.
+We can plot the overlaid predictions to show that the overlaid distribution patterns are very similar to those of the original predictions.
 
 ```{r, fig.width=7, eval=FALSE}
+# Code not run
 plot_sf_3panel(over1.sf, "pred_bm", main.txt = "Overlaid Model_B - ", map.base = map.world)
 plot_sf_3panel(over2.sf, "pred_bm", main.txt = "Overlaid Model_H - ", map.base = map.world)
 plot_sf_3panel(over3.sf, "pred_bm", main.txt = "Overlaid Model_R - ", map.base = map.world)
@@ -163,7 +164,7 @@ plot_sf_3panel(over3.sf, "pred_bm", main.txt = "Overlaid Model_R - ", map.base =
 
 ## Calculate evaluation metrics
 
-To evaluate predictions and create ensembles with weights based on evaluation metrics, we must load and process the validation data sets.  We use three validation sets in the example analysis, line transect data (Becker _et al._ 2016), home range data (Irvine _et al._ 2014), and these two data sets combined. Because our validation data is binary (i.e., presence/absence), it must have a column indicating whether it is a presence point (value of 1) or absence point (value of 0).
+To evaluate predictions and create ensembles with weights based on evaluation metrics, we must load and process the validation data sets for use with `evaluation metrics`. The validation data must be points of class `sf` with a column with eaither binary presence/absence or count data. For the example analysis, we use three validation sets in the example analysis, line transect data (Becker _et al._ 2016), home range data (Irvine _et al._ 2014), and these two data sets combined. Because our validation data is binary (i.e., presence/absence), it has a column indicating whether it is a presence point (value of 1) or absence point (value of 0).
 
 ```{r}
 # Import and process validation data
@@ -187,9 +188,10 @@ valid.data %>%
   knitr::kable(caption = "Validation data summary")
 ```
 
-Now we can calculate the AUC and TSS metrics for the original and overlaid predictions. However, note the following code chunk is not run; the displayed table is Table 3 from Woodman _et al._ (in review).
+Now we can calculate the AUC and TSS metrics for the original and overlaid predictions. The displayed table is from Table 3 of Woodman _et al._ (in review).
 
 ```{r, eval=FALSE}
+# Code not run
 names.1 <- c(
   "Model_B_orig", "Model_H_orig", "Model_R_orig", 
   "Model_B_overlaid", "Model_H_overlaid", "Model_R_overlaid"
@@ -237,13 +239,15 @@ read.csv(system.file("extdata/Table3.csv", package = "eSDM")) %>%
   knitr::kable(caption = "Evaluation metrics", digits = 3, align = "lcccccc")
 ```
 
-
-We can see that for each set of predictions, the original and overlaid evaluation metrics are quite similar. This confirms that the overlay conserved the predicted distributions.
+We can see that for each set of predictions, the original and overlaid evaluation metrics are quite similar, showing that the overlay conserved the predicted distributions.
 
 
 ## Create ensemble predictions
 
 Before creating the ensembles, we must rescale the overlaid predictions. We will rescale the predictions using the abundance rescaling method so they all predict an abundance of 1648 (Becker _et al._ 2016). Using the sum to 1 rescaling method would result in ensembles with similar distribution patterns, but the actual density values could not be used to provide a meaningful abundance estimate.
+
+`ensemble_rescale` requires a single `sf` object that contains all of the data being rescaled. Thus, we must extract the prediction and variance values before using the rescaling function.
+
 
 ```{r}
 # Rescale predictions
@@ -267,7 +271,9 @@ eSDM::model_abundance(over.sf.rescaled, "pred_bm3")
 summary(over.sf.rescaled)
 ```
 
-We also must calculate the ensemble weights. For the example analysis, we create ensembles using several weighting methods: equal weights (i.e., unweighted), AUC-based weights, TSS-based weights, and weights calculated as the inverse of the prediction variance. Each set of weights should sum to 1, or in the case of the weights calculated as the inverse of the prediction variance, each row should sum to 1.
+We can see that the prediction values are now much more comparable, meaning it actually makes sense to average them together.
+
+We also must calculate the ensemble weights. These weights must be manually created. For the example analysis, we create ensembles using several weighting methods: equal weights (i.e., unweighted), AUC-based weights, TSS-based weights, and weights calculated as the inverse of the prediction variance. Each set of weights should sum to 1, or in the case of the weights calculated as the inverse of the prediction variance, each row should sum to 1.
 
 ```{r}
 # Calculate ensemble weights
@@ -336,10 +342,10 @@ ens.sf.wvar <- eSDM::ensemble_create(
   st_set_agr("constant")
 ```
 
-You can also estimate ensemble uncertainty using the within-model uncertainty by specifying arguments for `x.var.idx`, as demonstrated in the following code (not run).
+You can also estimate ensemble uncertainty using the within-model uncertainty by specifying arguments for `x.var.idx`, as demonstrated in the following code.
 
 ```{r, eval=FALSE}
-# Create an ensemble and calculate within-model uncertainty:
+# Create an ensemble and calculate within-model uncertainty; code not run
 ens.sf.unw.wmv <- eSDM::ensemble_create(
   over.sf.rescaled, c("pred_bm1", "pred_bm2", "pred_bm3"),  w = e.weights.unw,
   x.var.idx = c(var1, var2, var3)
@@ -348,7 +354,7 @@ ens.sf.unw.wmv <- eSDM::ensemble_create(
   select(Pred_ens , SE)
 ```
 
-Now we can calculate AUC and TSS scores for each and then compare evaluation metrics of original and ensemble predictions. Again, note that the following code chunk is not run; the displayed table is Table 3 from Woodman _et al._ (in review).
+Now we can calculate AUC and TSS scores for each and then compare evaluation metrics of original and ensemble predictions. Again, the displayed table is Table 3 from Woodman _et al._ (in review).
 
 ```{r, eval=FALSE}
 # Calculate evaluation metrics for ensembles
@@ -392,10 +398,17 @@ read.csv(system.file("extdata/Table3.csv", package = "eSDM")) %>%
   knitr::kable(caption = "Evaluation metrics", digits = 3, align = "lcccccc")
 ```
 
-We can see that the ensemble with weights based on TSS values had the highest scores of the ensemble predictions, and mostly higher scores that the original predictions. Below is code to visualize this ensemble (Fig. 5 in Woodman _et al._) and the unweighted ensemble (Fig. 4 in Woodman _et al._) using custom functions (in 'inst/vignette_helper.R') that leverage the `tmap` package to generate plots. However, by default this code is not run because these plots take several minutes to generate.
+We can see that the ensemble with weights based on TSS values had the highest scores of the ensemble predictions, and mostly higher scores that the original predictions. We can visualize this ensemble and see how it matches known blue whale habitat.
+
+```{r, fig.width=7}
+# Simple code to visualize ensemble created with weights based on TSS values
+plot_sf_3panel(ens.sf.wtss %>% rename(se = SE), "Pred_ens", main.txt = "Ensemble - TSS", map.base = map.world)
+```
+
+Below is code to visualize this ensemble (Fig. 5 in Woodman _et al._) and the unweighted ensemble (Fig. 4 in Woodman _et al._) using custom functions (in 'inst/vignette_helper.R') that leverage the `tmap` package to generate plots. However, by default this code is not run because these plots take several minutes to generate.
 
 ```{r, fig.width=7, fig.height=4, eval=FALSE}
-### Figure 4
+### Figure 4; code not run
 
 # Values passed to tmap.sdm - range of map
 range.poly <- st_sfc(
@@ -442,7 +455,7 @@ tmap_arrange(
 ```
 
 ```{r, fig.height=9, fig.width=5.7, eval=FALSE}
-### Figure 5
+### Figure 5; code not run
 
 # Values passed to tmap.sdm - size of text labels and legend width
 main.size <- 1.1
