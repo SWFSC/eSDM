@@ -1,8 +1,5 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
-# Packages addons:
-#   libgdal-dev: required for rgdal package
-#   libnetcdf-dev and netcdf-bin: required for ncdf4 package (based on stars travis.yml)
-#   libudunits2-dev: required for units package
+# https://github.com/edzer/sf_dep/blob/master/.travis.yml
 
 language: R
 cache: packages
@@ -13,6 +10,12 @@ dist: trusty
 r:
   - release
   - devel
+
+
+addons:
+  apt:
+    packages:
+      - netcdf-bin # for stars netcdf dep
 
 
 before_install:
