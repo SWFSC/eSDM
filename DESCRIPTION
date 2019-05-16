@@ -1,7 +1,7 @@
 Package: eSDM
 Title: Ensemble Tool for Predictions from Species Distribution Models
 Description: Allows users to overlay SDM predictions onto a single base geometry and create and evaluate ensemble predictions.
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: person("Sam", "Woodman", email = "sam.woodman@noaa.gov", role = c("aut", "cre"))
 URL: https://github.com/smwoodman/eSDM
 BugReports: https://github.com/smwoodman/eSDM/issues
@@ -30,9 +30,14 @@ Imports:
     units,
     viridis
 Suggests:
+    knitr,
+    maps,
+    maptools, 
     mapview,
+    rmarkdown,
     testthat (>= 2.1.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+VignetteBuilder: knitr
