@@ -2,7 +2,7 @@
 # https://github.com/edzer/sf_dep/blob/master/.travis.yml
 
 language: r
-cache: packages
+cache: false
 sudo: required
 dist: trusty
 
