@@ -128,7 +128,7 @@ plot_sf_3panel <- function(obj.sf, col.data.pred, main.txt = "",
 
 #------------------------------------------------------------------------------
 # Return a list with the break point values, legend text, and color palette
-tmap.sdm.help <- function(x, x.col, pal.len = 10) {
+tmap_sdm_help <- function(x, x.col, pal.len = 10) {
   x <- st_set_geometry(x, NULL)
   b.val <- seq(
     from = min(x[, x.col], na.rm = TRUE), to = max(x[, x.col], na.rm = TRUE),
@@ -147,7 +147,7 @@ tmap.sdm.help <- function(x, x.col, pal.len = 10) {
 #------------------------------------------------------------------------------
 # Return a list with the break point values, legend text, and color palette
 # For pecentile plot
-tmap.sdm.help.perc <- function(x, x.col, pal.len = 10) {
+tmap_sdm_help_perc <- function(x, x.col, pal.len = 10) {
   col.pal <- c(
     "#313695", "#4575b4", "#74add1", "#abd9e9", "#d1e5f0",
     "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026"
@@ -166,7 +166,7 @@ tmap.sdm.help.perc <- function(x, x.col, pal.len = 10) {
 
 #------------------------------------------------------------------------------
 # Create tmap maps
-tmap.sdm <- function(tmap.obj, t.col, t.blp, t.map, t.mat, t.title,
+tmap_sdm <- function(tmap.obj, t.col, t.blp, t.map, t.mat, t.title,
                      t.main.size, t.leg.size, t.leg.width, t.grid.size,
                      t.alpha = 1) {
   tm_shape(t.map, bbox = t.mat, projection = 4326) +

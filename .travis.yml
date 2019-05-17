@@ -1,5 +1,6 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 # https://github.com/edzer/sf_dep/blob/master/.travis.yml
+# 'cache' changed from 'cache: packages' b/c of https://github.com/mtennekes/tmap/issues/263
 
 language: r
 cache: false
