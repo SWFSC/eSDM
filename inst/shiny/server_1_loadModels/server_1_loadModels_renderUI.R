@@ -34,8 +34,8 @@ output$model_csv_names_pred_uiOut_select <- renderUI({
 output$model_csv_pred_type_uiOut_select <- renderUI({
   req(read_model_csv())
   selectInput("model_csv_pred_type", tags$h5("Prediction value type"),
-              choices = list("Absolute density" = 1, "Relative density" = 2,
-                             "Abundance" = 3),
+              choices = list("Abundance" = 3, "Absolute density" = 1,
+                             "Relative density" = 2),
               selected = 2)
 })
 
@@ -89,8 +89,8 @@ output$model_csv_NA_idx_uiOut_message <- renderUI({
 output$model_gis_raster_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_raster())
   selectInput("model_gis_raster_pred_type", tags$h5("Prediction value type"),
-              choices = list("Absolute density" = 1, "Relative density" = 2,
-                             "Abundance" = 3),
+              choices = list("Abundance" = 3, "Absolute density" = 1,
+                             "Relative density" = 2),
               selected = 2)
 })
 
@@ -127,8 +127,8 @@ output$model_gis_shp_names_pred_uiOut_select <- renderUI({
 output$model_gis_shp_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_shp())
   selectInput("model_gis_shp_pred_type", tags$h5("Prediction value type"),
-              choices = list("Absolute density" = 1, "Relative density" = 2,
-                             "Abundance" = 3),
+              choices = list("Abundance" = 3, "Absolute density" = 1,
+                             "Relative density" = 2),
               selected = 2)
 })
 
@@ -188,8 +188,8 @@ output$model_gis_gdb_names_pred_uiOut_select <- renderUI({
 output$model_gis_gdb_pred_type_uiOut_select <- renderUI({
   req(read_model_gis_gdb())
   selectInput("model_gis_gdb_pred_type", tags$h5("Prediction value type"),
-              choices = list("Absolute density" = 1, "Relative density" = 2,
-                             "Abundance" = 3),
+              choices = list("Abundance" = 3, "Absolute density" = 1,
+                             "Relative density" = 2),
               selected = 2)
 })
 
