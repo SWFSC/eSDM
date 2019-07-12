@@ -297,15 +297,15 @@ table_eval_pts <- reactive({
     )
 
     data.frame(
-      c("Data type", "Number of points with non-zero counts",
-        "Number of points with counts of 0", "Range of non-zero counts"),
+      c("Data type:", "Number of points with non-zero counts:",
+        "Number of points with counts of 0:", "Range of non-zero counts:"),
       c(data.type.txt, pres.num, abs.num, count.range),
       stringsAsFactors = FALSE
     )
 
   } else if (data.type == 2) {
     data.frame(
-      c("Data type", "Number of presence points", "Number of absence points"),
+      c("Data type:", "Number of presence points:", "Number of absence points:"),
       c(data.type.txt, pres.num, abs.num),
       stringsAsFactors = FALSE
     )

@@ -139,6 +139,28 @@ output$eval_gis_execute_uiOut_button <- renderUI({
 
 
 ###############################################################################
+# Calculate metrics box
+
+### Message about count data -> binary data
+output$table_eval_pts_countmessage_out <- renderText({
+  req(vals$eval.data.specs)
+
+  if (vals$eval.data.specs[[2]] == 1) {
+    paste(
+      "To calculate AUC and TSS, the count data will be converted to",
+      "presence/absence data by classifying",
+      "points with counts greater than zero as presence points, and",
+      "points with counts of zero as absence points"
+    )
+  } else if (vals$eval.data.specs[[2]] == 2) {
+    NULL
+  } else {
+    validate("Error: error in validation data processing")
+  }
+
+})
+
+
 ### Choice of metric(s) to calculate
 output$eval_metrics_which_uiOut_check <- renderUI({
   req(vals$eval.data.specs)
