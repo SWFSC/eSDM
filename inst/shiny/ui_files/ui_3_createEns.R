@@ -186,19 +186,19 @@ ui.createEns <- function() {
                     )
                   ),
 
-                  ####################################################### Ensembling method
+                  ####################################################### Ensemble method
                   box(
                     width = 12,
                     fluidRow(
                       column(
                         width = 4,
-                        tags$strong("3) Ensemble options: ensembling method"),
+                        tags$strong("3) Ensemble options: ensemble method"),
                         radioButtons("create_ens_type", NULL, choices = list("Unweighted" = 1, "Weighted" = 2), selected = 1),
                         column(
                           width = 12,
                           conditionalPanel(
                             condition = "input.create_ens_type == 2",
-                            radioButtons("create_ens_weight_type", tags$h5("Weighted ensembling method"),
+                            radioButtons("create_ens_weight_type", tags$h5("Weighted ensemble method"),
                                          choices = list("Manual entry" = 1, "Evaluation metric" = 2,
                                                         "Pixel-level spatial weights" = 3,
                                                         "Uncertainty" = 4),
@@ -209,17 +209,17 @@ ui.createEns <- function() {
                       column(
                         width = 8,
                         fluidRow(
-                          ##################################### Unweighted ensembling options
+                          ##################################### Unweighted ensemble options
                           conditionalPanel(
                             condition = "input.create_ens_type == 1",
                             box(
                               width = 12,
-                              helpText(tags$strong("Unweighted ensembling method:"),
+                              helpText(tags$strong("Unweighted ensemble method:"),
                                        "Calculate the mean of all corresponding predictions")
                             )
                           ),
 
-                          ##################################### Weighted ensembling options
+                          ##################################### Weighted ensemble options
                           conditionalPanel(
                             condition = "input.create_ens_type == 2",
 
@@ -228,7 +228,7 @@ ui.createEns <- function() {
                               condition = "input.create_ens_weight_type == 1",
                               box(
                                 width = 12,
-                                helpText(tags$strong("Weighted ensembling method:"),
+                                helpText(tags$strong("Weighted ensemble method:"),
                                          "Calculate the weighted mean of all corresponding predictions"),
                                 helpText(tags$strong("Manual entry method:"),
                                          "Entered weights correspond to the order of the models in the overlaid predictions table.",
@@ -243,7 +243,7 @@ ui.createEns <- function() {
                               condition = "input.create_ens_weight_type == 2",
                               box(
                                 width = 12,
-                                helpText(tags$strong("Weighted ensembling method:"),
+                                helpText(tags$strong("Weighted ensemble method:"),
                                          "Calculate the weighted mean of all corresponding predictions"),
                                 helpText(tags$strong("Evaluation metric method:"),
                                          "The relative weights are the metric values rescaled so that the maximum value is one."),
@@ -259,7 +259,7 @@ ui.createEns <- function() {
                               condition = "input.create_ens_weight_type == 3",
                               box(
                                 width = 12,
-                                helpText(tags$strong("Weighted ensembling method:"),
+                                helpText(tags$strong("Weighted ensemble method:"),
                                          "Calculate the weighted mean of all corresponding predictions"),
                                 helpText(tags$strong("Pixel-level spatial weights method:"),
                                          "Overlaid predictions are multiplied by their corresponding spatial weight. These pixel-level",
@@ -282,13 +282,13 @@ ui.createEns <- function() {
                               condition = "input.create_ens_weight_type == 4",
                               box(
                                 width = 12,
-                                helpText(tags$strong("Weighted ensembling method:"),
+                                helpText(tags$strong("Weighted ensemble method:"),
                                          "Calculate the weighted mean of all corresponding predictions"),
                                 helpText(tags$strong("Uncertainty method:"),
                                          "Overlaid predictions are multiplied by the inverse of their corresponding variance estimate.",
                                          "The uncertainty values were specified by the 'Column with uncertainty values' input",
                                          "when each set of original predictions was initially imported into the GUI.",
-                                         "These values are converted to variance for the purpose of this ensembling method.",
+                                         "These values are converted to variance for the purpose of this ensemble method.",
                                          "To use this ensemble method, all selected overlaid predictions must have",
                                          "assocaited uncertainty values.",
                                          tags$br(),

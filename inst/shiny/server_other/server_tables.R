@@ -63,7 +63,7 @@ table_ensembles <- reactive({
     `rownames<-`(paste("Ensemble", seq_along(vals$ensemble.specs))) %>%
     select(1, 2, 4, 6) %>%
     purrr::set_names(
-      c("Predictions used", "Rescaling method", "Ensembling method",
+      c("Predictions used", "Rescaling method", "Ensemble method",
         "Uncertainty method"))
 })
 
@@ -76,7 +76,7 @@ table_ensembles_stats <- reactive({
     `rownames<-`(paste("Ensemble", seq_along(vals$ensemble.specs))) %>%
     select(1, 3, 4, 5) %>%
     purrr::set_names(
-      c("Predictions used", "Regional exclusion for", "Ensembling method",
+      c("Predictions used", "Regional exclusion for", "Ensemble method",
         "Weights"))
 })
 

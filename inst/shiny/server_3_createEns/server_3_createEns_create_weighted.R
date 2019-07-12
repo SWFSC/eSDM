@@ -3,7 +3,7 @@
 
 ###############################################################################
 ###############################################################################
-# Weighted ensembling method 1: 'Manual entry'
+# Weighted ensemble method 1: 'Manual entry'
 
 ### Process text inputs for weights and return vector of weights
 create_ens_weights_manual <- reactive({
@@ -42,7 +42,7 @@ create_ens_weights_manual <- reactive({
 
 ###############################################################################
 ###############################################################################
-# Weighted ensembling method 2: 'Evaluation metric'
+# Weighted ensemble method 2: 'Evaluation metric'
 
 ### Table of selected metrics
 create_ens_weights_metric_table <- reactive({
@@ -82,7 +82,7 @@ create_ens_weights_metric <- reactive({
 
 ###############################################################################
 ###############################################################################
-# Weighted ensembling method 3: 'Pixel-level spatial weights'
+# Weighted ensemble method 3: 'Pixel-level spatial weights'
 
 ### Vector of idx of selected overlaid models that have spatial weights
 create_ens_weights_pix_which <- reactive({
@@ -94,7 +94,7 @@ create_ens_weights_pix <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.spatial <- create_ens_weights_pix_which()
 
-  # Need validate() call here for ensembling function
+  # Need validate() call here for ensemble function
   validate(
     need(any(ens.which.spatial %in% ens.which),
          paste("Error: At least one of the selected overlaid predictions",
@@ -136,7 +136,7 @@ create_ens_weights_pix_table <- reactive({
 
 ###############################################################################
 ###############################################################################
-# Weighted ensembling method 4: Weighting by the inverse of the variance
+# Weighted ensemble method 4: Weighting by the inverse of the variance
 
 ### Vector of idx of selected overlaid preds that have associated uncertainty
 create_ens_weights_var_which <- reactive({
@@ -174,7 +174,7 @@ create_ens_weights_var <- reactive({
   ens.which <- create_ens_overlaid_idx()
   ens.which.var <- create_ens_weights_var_which()
 
-  # Need validate() call here for ensembling function
+  # Need validate() call here for ensemble function
   validate(
     need(all(ens.which %in% ens.which.var),
          paste("Error: All of the selected overlaid predictions must have",

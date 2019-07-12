@@ -101,7 +101,7 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
   #          paste("Regional exclusion for", create_ens_info_regexc()),
   #          "No regional exclusion"), ";",
   #   tags$br(),
-  #   paste(paste0("'", create_ens_info_weighting(), "'"), "ensembling method;"),
+  #   paste(paste0("'", create_ens_info_weighting(), "'"), "ensemble method;"),
   #   tags$br(),
   #   paste(create_ens_info_uncertainty(), "uncertainty")
   # )
@@ -280,7 +280,7 @@ create_ens_info_regexc <- reactive({
 })
 
 #------------------------------------------------------------------------------
-### 4) Ensembling method used
+### 4) Ensemble method used
 create_ens_info_weighting <- reactive({
   if (input$create_ens_type == 1) {
     "Unweighted"

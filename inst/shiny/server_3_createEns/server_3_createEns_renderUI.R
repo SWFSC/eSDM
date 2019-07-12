@@ -135,7 +135,7 @@ output$create_ens_reg_preview_execute_uiOut_button <- renderUI({
 
 
 ###############################################################################
-# Weighted ensembling widgets
+# Weighted ensemble widgets
 
 #----------------------------------------------------------
 # Method 1
