@@ -324,13 +324,13 @@ ui.createEns <- function() {
                         condition = "input.create_ens_create_uncertainty == 1",
                         helpText(tags$u("Description:"),
                                  "Determine the ensemble uncertainty by calculating the weighted variance using the",
-                                 "weights and overlaid predictions used to create the ensemble (REF)")
+                                 "weights and overlaid predictions used to create the ensemble (Seber 1982)")
                       ),
                       conditionalPanel(
                         condition = "input.create_ens_create_uncertainty == 2",
                         helpText(tags$u("Description:"),
                                  "Determine the ensemble uncertainty by calculating the variance using the",
-                                 "weights and varaince values of the overlaid predictions used to create the ensemble (REF)")
+                                 "weights and varaince values of the overlaid predictions used to create the ensemble")
                       )
                     )
                   ),
