@@ -163,9 +163,9 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
 
   int <- int %>%
     rename(geometry = !!attr(int, "sf_column")) %>%
-    mutate(area_km = as.numeric(st_area(.data$geometry))) %>%
-    filter(.data$area_km > 1) %>%
-    select(-.data$area_km)
+    mutate(area_m = as.numeric(st_area(.data$geometry))) %>%
+    filter(.data$area_m > 1) %>%
+    select(-.data$area_m)
 
   if (nrow(int) == 0) {
     stop("No 'base.geom' polygons overlap with any 'sdm' polygons")
@@ -176,6 +176,7 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   # 2) Get predicted densities for base polys that had any overlap
   # Do this by summing the predicted abundance for each base poly (i.e. an
   #   area-weighted average of the abundance) and then converting to density
+  # TODO: make the for loop tidy with complete()/expand()..?
   int.df <- int %>%
     mutate(int_area_km = as.numeric(set_units(st_area(.data$geometry), "km^2"))) %>%
     st_set_geometry(NULL)
