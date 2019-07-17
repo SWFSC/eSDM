@@ -30,11 +30,6 @@ source(system.file("eSDM_vignette_helper.R", package = "eSDM"), local = TRUE, ec
 
 
 ## Overview
-```{r, eval=FALSE}
-# Run the following in your R console to get paper citation information; code not run
-citation("eSDM")
-```
-
 `eSDM` allows users to create ensembles of predictions from species distribution models (SDMs), either using the `eSDM` GUI or manually in R using `eSDM` functions. This vignette demonstrates creating and evaluating ensembles using `eSDM` functions by manually performing the example analysis from Woodman _et al._ (in review). The example analysis explores differences between blue whale SDM predictions for the California Current Ecosystem (CCE) from Becker _et al._ (2016; i.e., Model_B), Hazen _et al._ (2017; i.e., Model_H), and Redfern _et al._ (2017; i.e., Model_R). It also creates and evaluates ensembles of the predictions, with associated uncertainty. See Woodman _et al._ (in review) for additional details, and in particular Table 1 for details about differences between the models.
 
 In this vignette, the three sets of predictions and the validation data are read from .rds files because the original files were too large to be included in the package. The sections where these data are imported includes the code for reading the data from their original files, although this code has been commented out. The original files can be downloaded through the GUI or from https://github.com/smwoodman/eSDM-data. 
@@ -540,5 +535,5 @@ Irvine, L.M., Mate, B.R., Winsor, M.H., Palacios, D.M., Bograd, S.J., Costa, D.P
 
 Redfern, J.V., Moore, T.J., Fiedler, P.C., de Vos, A., Brownell, R.L., Forney, K.A., ... Heikkinen, R. (2017). Predicting cetacean distributions in data-poor marine ecosystems. Diversity and Distributions, 23, 394-408. 10.1111/ddi.12537
 
-Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (in review). eSDM: A tool for creating and exploring ensembles of predictions from species distribution models.
+Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (in review). eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models.
 
