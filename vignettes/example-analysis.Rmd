@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
+
 ```{r setup, message=FALSE}
 library(dplyr)
 library(eSDM)
@@ -28,7 +29,15 @@ source(system.file("eSDM_vignette_helper.R", package = "eSDM"), local = TRUE, ec
 ```
 
 
+## Overview
+```{r, eval=FALSE}
+# Run the following in your R console to get paper citation information; code not run
+citation("eSDM")
+```
+
 `eSDM` allows users to create ensembles of predictions from species distribution models (SDMs), either using the `eSDM` GUI or manually in R using `eSDM` functions. This vignette demonstrates creating and evaluating ensembles using `eSDM` functions by manually performing the example analysis from Woodman _et al._ (in review). The example analysis explores differences between blue whale SDM predictions for the California Current Ecosystem (CCE) from Becker _et al._ (2016; i.e., Model_B), Hazen _et al._ (2017; i.e., Model_H), and Redfern _et al._ (2017; i.e., Model_R). It also creates and evaluates ensembles of the predictions, with associated uncertainty. See Woodman _et al._ (in review) for additional details, and in particular Table 1 for details about differences between the models.
+
+In this vignette, the three sets of predictions and the validation data are read from .rds files because the original files were too large to be included in the package. The sections where these data are imported includes the code for reading the data from their original files, although this code has been commented out. The original files can be downloaded through the GUI or from https://github.com/smwoodman/eSDM-data. 
 
 This document contains code for plotting predictions. However, by default some of the plotting code is not run because it can take several minutes (these code chunks contain the comment "code not run"). If desired, you may run these code chunks manually in R. 
 
@@ -48,7 +57,8 @@ We can visualize the SDM predictions after importing and processing them. The pl
 
 ```{r}
 # Import, process, and plot Model_B predictions
-model.b.sf <- read.csv(system.file("extdata/Predictions_Beckeretal2016.csv", package = "eSDM")) %>% 
+# model.b <- read.csv("Predictions_Beckeretal2016.csv")
+model.b.sf <- readRDS(system.file("extdata/Predictions_Beckeretal2016.rds", package = "eSDM")) %>% 
   eSDM::pts2poly_centroids(0.09 / 2, crs = 4326) %>%
   st_wrap_dateline() %>%
   st_set_agr("constant")
@@ -65,7 +75,8 @@ plot_sf_3panel(model.b.sf, "pred_bm", main.txt = "Model_B - ", map.base = map.wo
 
 ```{r}
 # Import, process, and plot Model_H predictions
-model.h.sf <- read.csv(system.file("extdata/Predictions_Hazenetal2017.csv", package = "eSDM")) %>%
+# model.h <- read.csv("Predictions_Hazenetal2017.csv")
+model.h.sf <- readRDS(system.file("extdata/Predictions_Hazenetal2017.rds", package = "eSDM")) %>% 
   select(lon, lat, pred_bm, se) %>%
   eSDM::pts2poly_centroids(0.25 / 2, crs = 4326, agr = "constant")
 
@@ -78,7 +89,8 @@ plot_sf_3panel(model.h.sf, "pred_bm", main.txt = "Model_H - ", map.base = map.wo
 
 ```{r, fig.width=7}
 # Import, process, and plot Model_R predictions
-model.r.sf <- st_read(system.file("extdata/Shapefiles/Predictions_Redfernetal2017.shp", package = "eSDM")) %>%
+# model.r <- st_read("Shapefiles/Predictions_Redfernetal2017.shp")
+model.r.sf <- readRDS(system.file("extdata/Predictions_Redfernetal2017.rds", package = "eSDM")) %>% 
   st_make_valid() %>% #
   st_set_agr("constant")
 
@@ -91,9 +103,10 @@ plot_sf_3panel(model.r.sf, "pred_bm", main.txt = "Model_R - ", map.base = map.wo
 
 
 ```{r, eval=FALSE}
-# Convert raster to sf object; code not run
+# Example code for converting raster to sf object; code not run
 logo <- raster::raster(system.file("external/rlogo.grd", package="raster"))
-logo.sf <- sf::st_as_sf(as(logo, "SpatialPolygonsDataFrame"))
+logo.sf <- as(logo, "SpatialPolygonsDataFrame") %>% 
+  sf::st_as_sf()
 ```
 
 
@@ -178,12 +191,14 @@ plot_sf_3panel(over3.sf, "pred_bm", main.txt = "Overlaid Model_R - ", map.base =
 
 To evaluate predictions and create ensembles with weights based on evaluation metrics, we must load and process the validation data sets for use with `evaluation metrics`. The validation data must be points of class `sf` with a column with either binary presence/absence or count data. For the example analysis, we use three validation sets in the example analysis, line transect data (Becker _et al._ 2016), home range data (Irvine _et al._ 2014), and these two data sets combined. Because our validation data are binary (i.e., presence/absence), there is a column indicating whether each value is a presence point (1) or absence point (0).
 
+Note that in this vignette, the validation data are read from .rda files because the original file was too big to be included in the package. However, the original file can be downloaded through the GUI or from https://github.com/smwoodman/eSDM-data
+
 Use the function `sf::st_as_sf` to convert a data frame with lon/lat coordinates to an `sf` object.
 
 ```{r}
 # Import and process validation data
-valid.data <- read.csv(system.file("extdata/eSDM_Validation_data_all.csv", package = "eSDM"), 
-                       stringsAsFactors = FALSE) %>% 
+# valid.data <- read.csv("eSDM_Validation_data_all.csv", stringsAsFactors = FALSE)
+valid.data <- readRDS(system.file("extdata/eSDM_Validation_data_all.rds", package = "eSDM"))%>% 
   arrange(source, lat, lon) %>% 
   mutate(pres_abs = ifelse(pres_abs > 0, 1, 0)) %>% #For demonstration purposes; pres_abs column is already binary
   st_as_sf(coords = c("lon", "lat"), crs = 4326, agr = "constant") %>%
