@@ -1,9 +1,6 @@
 Package: eSDM
 Title: Ensemble Tool for Predictions from Species Distribution Models
-Description: A tool which allows users to create and evaluate ensembles of species distribution model (SDM) predictions.
-    Functionality is offered through R functions or a GUI (R Shiny app).
-    This tool can assist users in identifying spatial uncertainties and 
-    making informed conservation and management decisions.
+Description: A tool which allows users to create and evaluate ensembles of species distribution model (SDM) predictions. Functionality is offered through R functions or a GUI (R Shiny app). This tool can assist users in identifying spatial uncertainties and making informed conservation and management decisions.
 Version: 0.2.1
 Authors@R: person("Sam", "Woodman", email = "sam.woodman@noaa.gov", role = c("aut", "cre"))
 URL: https://github.com/smwoodman/eSDM
