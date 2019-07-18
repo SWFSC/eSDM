@@ -366,7 +366,7 @@ ens.sf.wvar <- eSDM::ensemble_create(
   st_set_agr("constant")
 ```
 
-We could also have estimated the wintin-model ensemble uncertainty by using the `x.var.idx` argument, as demonstrated in the following code (not run).
+We could also have estimated the within-model ensemble uncertainty by using the `x.var.idx` argument, as demonstrated in the following code (not run).
 
 ```{r, eval=FALSE}
 # Create an ensemble and calculate within-model uncertainty; code not run

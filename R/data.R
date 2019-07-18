@@ -1,6 +1,6 @@
 #' Low resolution GSHHG world map
 #'
-#' Low resolution GSHHG world map, includes heirarchial levels
+#' Low resolution GSHHG world map, includes hierarchical levels
 #'   L1 and L6. Processed using \code{lwgeom::st_make_valid()}
 #'
 #' @format An object of class \code{\link[sf]{sfc}}

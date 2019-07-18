@@ -28,8 +28,8 @@ The default value is \code{1 / length(x.idx)}, i.e. an unweighted ensemble}
 indicates columns in \code{x} with variance values with which to
 calculate uncertainty values for the ensemble.
 If \code{x.var.idx} is specified, it must be the same length as \code{x.idx}.
-Use \code{x.var.idx = NULL} (the default) if none of the predictions have assocaited uncertainty values;
-in this case the uncertainty values for the ensemble will be calcualted using the among-model uncertainty.
+Use \code{x.var.idx = NULL} (the default) if none of the predictions have associated uncertainty values;
+in this case the uncertainty values for the ensemble will be calculated using the among-model uncertainty.
 See the 'Details' section for more information}
 
 \item{...}{Arguments to be passed to methods; specifically designed for passing
@@ -49,17 +49,18 @@ An object of the same class as \code{x} with two columns appended to the data fr
   2) the \code{agr} attribute will be set as 'constant' for 'Pred_ens' and 'Var_ens'
 }
 \description{
-Create a weighted or unweighted ensemble of SDM predictions, including assocaited uncertainty values
+Create a weighted or unweighted ensemble of SDM predictions, including associated uncertainty values
 }
 \details{
 \code{ensemble_create} is designed to be used after overlaying predictions with \code{\link{overlay_sdm}} and
   (if desired) rescaling the overlaid predictions with \code{\link{ensemble_rescale}}.
 
-  This function implements ensembling methods provided in \link{eSDM_GUI}.
+  This function implements ensemble methods provided in \link{eSDM_GUI}.
   Note that it does not implement regional exclusion, which must be done manually if not using the GUI.
 
   Ensemble uncertainty is calculated using either the within-model uncertainty (if \code{x.var.idx} is specified) or
-  the among-model uncertainty (if \code{x.var.idx} is \code{NULL}). SMW todo: formulas
+  the among-model uncertainty (if \code{x.var.idx} is \code{NULL}).
+  See the eSDM GUI manual for applicable formulas.
 }
 \examples{
 ensemble_create(preds.1, c("Density", "Density2"), c(0.2, 0.8))

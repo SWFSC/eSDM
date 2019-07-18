@@ -11,7 +11,7 @@
 #' @param x.var.idx vector of column names or column indices;
 #'   indicates columns in \code{x} with variance values that will be rescaled.
 #'   If \code{x.var.idx} is specified, it must be the same length as \code{x.idx}.
-#'   Use \code{x.var.idx = NULL} (the default) if none of the predictions have assocaited uncertainty values;
+#'   Use \code{x.var.idx = NULL} (the default) if none of the predictions have associated uncertainty values;
 #'   see the 'Details' section for more information
 #'
 #' @importFrom purrr map2_df
@@ -30,7 +30,7 @@
 #'   }
 #'
 #'   SDM uncertainty values must be rescaled differently than the prediction values.
-#'   Columns specified in \code{x.var.idx} must containt variance values.
+#'   Columns specified in \code{x.var.idx} must contain variance values.
 #'   These values will be rescaled using the formula \code{var(c * x) = c^2 * var(x)},
 #'   where \code{c} is the rescaling factor for the associated predictions.
 #'
@@ -38,7 +38,7 @@
 #'   \code{x.var.idx[1]} contains the variance values associated with the predictions in \code{x.idx[1]},
 #'   \code{x.var.idx[2]} contains the variance values associated with the predictions in \code{x.idx[2]}, etc.
 #'   Use \code{NA} in \code{x.var.idx} to indicate a set of predictions that does not have
-#'   assocaited uncertainty values (e.g., \code{x.var.idx = c(4, NA, 5)})
+#'   associated uncertainty values (e.g., \code{x.var.idx = c(4, NA, 5)})
 #'
 #' @return The \code{sf} object \code{x} with the columns specified by \code{x.idx} and \code{x.var.idx} rescaled.
 #'   The \code{agr} attributes of \code{x} will be conserved

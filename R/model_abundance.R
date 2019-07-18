@@ -14,8 +14,8 @@
 #' @importFrom sf st_set_geometry
 #'
 #' @details Multiplies the values in the specified column(s) (i.e. the density predictions)
-#'   by the area in square kilometers of their corresponding prediciton polygon.
-#'   The area of each prediction polygon is calcualted using \code{st_area} from \code{\link[sf]{geos_measures}}.
+#'   by the area in square kilometers of their corresponding prediction polygon.
+#'   The area of each prediction polygon is calculated using \code{st_area} from \code{\link[sf]{geos_measures}}.
 #'   x must have a valid crs code to calculate area for these abundance calculations.
 #'
 #' @return If \code{sum.abund == TRUE}, then a vector of the same length as \code{dens.idx}

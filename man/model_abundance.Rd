@@ -30,8 +30,8 @@ Calculates the predicted abundance by multiplying the density prediction values 
 }
 \details{
 Multiplies the values in the specified column(s) (i.e. the density predictions)
-  by the area in square kilometers of their corresponding prediciton polygon.
-  The area of each prediction polygon is calcualted using \code{st_area} from \code{\link[sf]{geos_measures}}.
+  by the area in square kilometers of their corresponding prediction polygon.
+  The area of each prediction polygon is calculated using \code{st_area} from \code{\link[sf]{geos_measures}}.
   x must have a valid crs code to calculate area for these abundance calculations.
 }
 \examples{
