@@ -1,6 +1,10 @@
+## Resubmission
+This is a resubmission In this version I have:
+
+* Added reference describing the methods in the package to the description field of the DESCRIPTION file. The paper is currently in review; I will update the reference with the doi when it becomes available.
+
 ## Release summary
-Resubmission of the package eSDM to CRAN. 
-* Added reference describing the methods in the package to the description field of the DESCRIPTION file as requested. The paper is currently in review; I will update the reference with the doi when it becomes available.
+First submission of the package eSDM to CRAN
 
 ## Test environments
 * Windows 10, R 3.6.1 (local)
