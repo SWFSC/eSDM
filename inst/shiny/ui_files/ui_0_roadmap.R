@@ -11,10 +11,10 @@ ui.roadmap <- function() {
             title = "Load or Save the GUI Workspace", status = "warning", solidHeader = FALSE, width = 12, collapsible = TRUE,
             tags$h5(tags$strong("GUI workspace definition:"),
                     "The 'GUI workspace' consists of data that has been imported into the GUI",
-                    "(e.g. predictions, a study area polygon, or validation data) or created using the GUI",
+                    "(e.g., predictions or validation data) or created using the GUI",
                     "(e.g. overlaid or ensemble predictions, evaluation metrics, or saved high quality maps)",
                     "Thus, this data is saved in the downloaded '.RDATA' file and can be loaded back into the GUI.",
-                    "However, user selections (e.g. high quality map parameters) and displayed plots",
+                    "However, user selections (e.g., high quality map parameters) and displayed plots",
                     "are not saved in the workspace and cannot be restored."),
             fluidRow(
               box(
@@ -54,6 +54,15 @@ ui.roadmap <- function() {
                 )
               )
             )
+          ),
+          box(
+            width = 12,
+            tags$h5(
+              tags$strong("Citation"),
+              tags$p("Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., and Redfern, J.V.",
+                     "(In review). eSDM: A tool for creating and exploring ensembles",
+                     "of predictions from species distribution and abundance models.")
+            )
           )
         )
       ),
@@ -68,28 +77,31 @@ ui.roadmap <- function() {
                     "Ensemble tool for predictions from Species Distribution Models (eSDM) is a user-friendly spatial tool",
                     "that includes this graphical user interface (GUI), making eSDM accessible to non-R users.",
                     "eSDM allows users to overlay SDM predictions onto a single base geometry, ",
-                    "create ensembles of overlaid predictions via weighted or unweighted averages,",
+                    "create ensembles of overlaid predictions via weighted or unweighted averages",
+                    "and their associated uncertainty,",
                     "calculate performance metrics for each set of predictions and for resulting ensembles,",
                     "and visually compare predictions."),
             tags$h5("This roadmap provides a brief overview of the various sections of the GUI,",
                     "and the order in which you can use them.",
-                    "The roadmap is NOT intended to replace the manual, and you should refer to the manual for format requirements",
-                    "of input files and other technical details."),
+                    "The roadmap is NOT intended to replace the GUI manual, and you should refer to the manual for",
+                    "technical details, such as format requirements of input files."),
             #------------------------------------------------------------------
             tags$h5(tags$strong("1) Import predictions or load workspace:"),
-                    "To begin, you can either import SDM predictions (including their associated uncertainty)",
-                    "in the 'Import Predictions' tab,",
+                    "To begin your session, you can either import SDM predictions",
+                    "(including their associated uncertainty) in the 'Import Predictions' tab,",
                     "or load a saved workspace from a previous GUI session in the",
                     tags$em("Load a saved GUI workspace"), "section of this tab.",
                     "You cannot use any of the other sections of the GUI until you perform one of these two steps."),
-            tags$h5("Note: you can download a zip file with sample files (SDM predictions, study areas, and validation data)",
-                    "that you can use in the GUI by clicking the", tags$em("Download sample data"), "button below.",
-                    "These sample data can be a useful reference for data format requirements."),
+            tags$h5("Note: you can download zip files with sample data (SDM predictions, regional polygons, and validation data)",
+                    "or the data used in the example analysis of Woodman et al. (in review)",
+                    "by clicking the", tags$em("Download sample data"), "or the",
+                    tags$em("Download manuscript data"), "buttons below, respectively.",
+                    "These data can be a useful reference for data format requirements."),
             #------------------------------------------------------------------
             tags$h5(tags$strong("2) Overlay predictions:"),
                     "In the 'Overlay Predictions' tab, you can overlay imported SDM predictions (i.e., original predictions)",
                     "onto a base geometry so all predictions have the same spatial resolution and coordinate system.",
-                    "You can also import a study area polygon and/or an erasing polygon to",
+                    "You can also import a study area polygon= and/or an erasing polygon to",
                     "clip or erase area from the base geometry, respectively",
                     "(e.g., to specify a study area or erase land from marine predictions.)"),
             #------------------------------------------------------------------
@@ -99,7 +111,7 @@ ui.roadmap <- function() {
                     "Weights can be based on the evaluation metrics of the overlaid predictions,",
                     "the inverse of the variance of the overlaid predictions, or assigned by users",
                     "either for the entire study area or for each prediction polygon.",
-                    "Each set of ensemble predictions will have assocaited uncertainty values, calculated",
+                    "Each set of ensemble predictions will have associated uncertainty values, calculated",
                     "using either the user-specified prediction (within-model) uncertainty  or the among-model uncertainty"),
             #------------------------------------------------------------------
             tags$h5(tags$strong("4) Calculate metrics, plot maps, and export predictions:"),
@@ -130,20 +142,21 @@ ui.roadmap <- function() {
             #------------------------------------------------------------------
             tags$strong("GUI tips:"),
             tags$ul(
-              tags$li("If text or images overlap, please adjust the text size in your browser (e.g. Ctrl - minus ('-') on Windows systems)"),
-              tags$li("The GUI can only perform a single operation at a time. Thus, if a process,",
-                      "e.g. the overlay process, is running, do not try to perform other actions",
+              tags$li("If text or images overlap, please adjust the text size in your browser (e.g., Ctrl - minus ('-') on Windows systems)"),
+              tags$li("The GUI can only perform a single operation at a time. Thus, if a process",
+                      "(e.g., the overlay process) is running, do not try to perform other actions",
                       "as this may cause undefined behavior within the GUI."),
               tags$li("When a longer process is running, a progress bar will appear in the bottom right corner of the GUI.",
-                      "This progress bar has an 'X' that if clicked closes the progress bar,",
-                      "but closing this bar will not stop the currently running process."),
+                      "Clicking the 'X' on the progress bar closes the bar,",
+                      "but does not stop the currently running process."),
               tags$li("The larger the data sets, the longer all processes will take.",
-                      "In particular, plotting will take longer when predictions span the antimeridian (i.e. 180 decimal degrees).")
+                      "In particular, plotting will take longer when predictions span the antimeridian (i.e., 180 decimal degrees)."),
+              tags$li("If your download (e.g., of manuscript data) is a 'download.htm' file, cancel and try the download again.")
             ),
             tags$br(),
             tags$h5("Contact Sam Woodman (sam.woodman@noaa.gov) with any questions."),
             tags$br(),
-            # downloadButton("download_data_manuscript", "Download manuscript data"),
+            downloadButton("download_data_manuscript", "Download manuscript data"),
             downloadButton("download_data_sample", "Download sample data"),
             downloadButton("download_manual", "Download manual")
           )

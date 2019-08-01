@@ -1,9 +1,13 @@
 # Download manuscript data, sample data, or manual
+# NOTEs:
+#   The shiny app must finish fully loading/rendering before
+#   the user can download files.
+#   If user clicks download button too soon, they'll get html download
 
 ###############################################################################
 # Download manuscript data
 output$download_data_manuscript <- downloadHandler(
-  filename = "eSDM_data_manuscript.zip",
+  filename = function() "eSDM_data_manuscript.zip",
 
   content = function(file) {
     withProgress(message = "Downloading manuscript data", value = 0.6, {
@@ -15,13 +19,7 @@ output$download_data_manuscript <- downloadHandler(
         silent = TRUE
       )
 
-      req(sample.try) #validate() does nothing inside downloadHandler()
-      # validate(
-      #   need(sample.try,
-      #        paste("The manuscript data could not be downloaded; please check",
-      #              "your internet connection. If this problem persists, please",
-      #              "report this issue at https://github.com/smwoodman/eSDMissues"))
-      # )
+      req(sample.try)
       incProgress(0.4)
     })
   }
@@ -31,7 +29,7 @@ output$download_data_manuscript <- downloadHandler(
 ###############################################################################
 # Download sample data
 output$download_data_sample <- downloadHandler(
-  filename = "eSDM_data_sample.zip",
+  filename = function() "eSDM_data_sample.zip",
 
   content = function(file) {
     withProgress(message = "Downloading sample data", value = 0.6, {
@@ -43,13 +41,7 @@ output$download_data_sample <- downloadHandler(
         silent = TRUE
       )
 
-      req(sample.try) #validate() does nothing inside downloadHandler()
-      # validate(
-      #   need(sample.try,
-      #        paste("The sample data could not be downloaded; please check",
-      #              "your internet connection. If this problem persists, please",
-      #              "report this issue at https://github.com/smwoodman/eSDM/issues"))
-      # )
+      req(sample.try)
       incProgress(0.4)
     })
   }
@@ -59,7 +51,7 @@ output$download_data_sample <- downloadHandler(
 ###############################################################################
 # Download manual
 output$download_manual <- downloadHandler(
-  filename = "eSDM_manual.pdf",
+  filename = function() "eSDM_manual.pdf",
 
   content = function(file) {
     withProgress(message = "Downloading manual", value = 0.6, {
@@ -71,17 +63,10 @@ output$download_manual <- downloadHandler(
         silent = TRUE
       )
 
-      req(sample.try) #validate() does nothing inside downloadHandler()
-      # validate(
-      #   need(sample.try,
-      #        paste("The manual could not be downloaded; please check",
-      #              "your internet connection. If this problem persists, please",
-      #              "report this issue at https://github.com/smwoodman/eSDM/issues"))
-      # )
+      req(sample.try)
       incProgress(0.4)
     })
   }
 )
-
 
 ###############################################################################
