@@ -401,8 +401,8 @@ preview_interactive <- function(sdm.ll, data.names, title.ll = NULL, perc,
     addControl(tags$h5(title.ll), layerId = "SDM name", position = "bottomleft") %>%
     setView(lng = sdm.cent[1], lat = sdm.cent[2], zoom = 5)
 
-  if (requireNamespace("mapview", quietly = TRUE)) {
-    leaf.map <- leaf.map %>% mapview::addMouseCoordinates(style = "basic")
+  if (requireNamespace("leafem", quietly = TRUE)) {
+    leaf.map <- leaf.map %>% leafem::addMouseCoordinates()
   }
 
 

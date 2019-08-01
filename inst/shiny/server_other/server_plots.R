@@ -120,8 +120,8 @@ overlay_preview_base_create <- eventReactive(input$overlay_preview_base_execute,
         stroke = TRUE, color = "black", fillColor = "lightskyblue",
         fillOpacity = 0.8, group = "Base geometry")
 
-    if (requireNamespace("mapview", quietly = TRUE)) {
-      leaf.map <- leaf.map %>% mapview::addMouseCoordinates(style = "basic")
+    if (requireNamespace("leafem", quietly = TRUE)) {
+      leaf.map <- leaf.map %>% leafem::addMouseCoordinates()
     }
 
     overlay.groups <- "Base geometry"
