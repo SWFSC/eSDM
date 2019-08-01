@@ -167,10 +167,19 @@ output$eval_metrics_table_save <- downloadHandler(
     models.which <- vals$eval.models.idx
 
     ### Get info of predictions that have eval metrics calculated for them
-    orig.table <- cbind(table_orig(), table_orig_stats()[, -1])
+    # No full tidyverse for if tables are NULL (and to preserve row names)
+    orig.table <- cbind(
+      table_orig(), select(table_orig_stats(), -"SDM filename")
+    )
     orig.table <- orig.table[models.which[[1]], ]
+
     over.table <- table_overlaid()[models.which[[2]], ]
-    ens.table  <- table_ensembles()[models.which[[3]], ]
+
+    ens.table <- cbind(
+      table_ensembles(),
+      select(table_ensembles_stats(), -"Predictions used", -"Ensemble method")
+    )
+    ens.table <- ens.table[models.which[[3]], ]
 
     if (!is.null(orig.table)) {if (nrow(orig.table) == 0) orig.table <- NULL}
     if (!is.null(over.table)) {if (nrow(over.table) == 0) over.table <- NULL}
@@ -178,49 +187,42 @@ output$eval_metrics_table_save <- downloadHandler(
 
     ### Create and set column names as necessary
     if ((!is.null(orig.table) | !is.null(over.table)) & !is.null(ens.table)) {
-      if (!is.null(orig.table)) {
-        all.models.names <- c(
-          paste(names(orig.table), names(ens.table), sep = "/")[1:4],
-          names(orig.table)[5:9]
-        )
-        names(orig.table) <- all.models.names
+      curr.table <- if(!is.null(orig.table)) orig.table else over.table
+      ens.ncol <- ncol(ens.table)
 
-      } else {
-        all.models.names <- c(
-          paste(names(over.table), names(ens.table), sep = "/")[1:4],
-          names(over.table)[5:9]
-        )
-      }
+      all.models.names <- c(
+        paste(names(curr.table), names(ens.table), sep = "/")[seq_len(ens.ncol)],
+        names(curr.table)[(ens.ncol+1):ncol(curr.table)]
+      )
 
+      if (!is.null(orig.table)) names(orig.table) <- all.models.names
       if (!is.null(over.table)) names(over.table) <- all.models.names
 
-      ens.table <- purrr::set_names(
-        cbind(ens.table, NA, NA, NA, NA, NA), all.models.names
-      )
+      for (i in seq_len(length(all.models.names) - ens.ncol)) {
+        ens.table <- cbind(ens.table, NA)
+      }
+      names(ens.table) <- all.models.names
     }
     # Else: Either some combo of orig.table and over.table,
     #   or it's only ens.table. Either way, names are already correct.
-
 
     ### Combine info tables
     models.list.all <- list(orig.table, over.table, ens.table)
     models.list.all <- models.list.all[!sapply(models.list.all, is.null)]
 
     need.check.table <- all(sapply(models.list.all, function(j, names.1) {
-      names(j) == names(models.list.all[[1]])
-    }, names.1 = models.list.all[[1]]))
+      names(j) == names.1
+    }, names.1 = names(models.list.all[[1]])))
 
     req(zero_range(sapply(models.list.all, ncol)), need.check.table)
     all.models.info <- do.call(rbind, models.list.all)
 
 
-    ### Combine metric table and info table
+    ### Combine metric table and info table and write csv
     req(nrow(all.models.info) == nrow(eval.metrics))
-    eval.metrics.models.info <- cbind(eval.metrics, all.models.info)
-
-
-    ### Write csv
-    write.csv(eval.metrics.models.info, file = file, row.names = FALSE)
+    write.csv(
+      cbind(eval.metrics, all.models.info), file = file, row.names = FALSE
+    )
   }
 )
 
