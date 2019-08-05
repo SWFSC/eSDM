@@ -87,7 +87,7 @@ outputOptions(output, "export_range360_flag", suspendWhenHidden = FALSE)
 ###############################################################################
 ### Export predictions as csv, shp, or kml
 # Download shapefile code is adapted from:
-#   https://gist.github.com/RCura/b6b1759ddb8ab4035f30
+#   stackoverflow.com/questions/41707760/download-a-shape-file-from-shiny
 output$export_out <- downloadHandler(
   filename = function() {
     if (input$export_format == 1) {
@@ -114,16 +114,18 @@ output$export_out <- downloadHandler(
         write.csv(data.out, file = file, row.names = FALSE)
 
       } else if (export.format == 2) {
-        name.base <- input$export_filename
+        tmp.path <- paste(head(strsplit(file, "\\\\")[[1]], -1), collapse = "\\")
+
+        name.base <- paste(tmp.path, input$export_filename, sep = "\\")
         name.glob <- paste0(name.base, ".*")
-        name.shp <- paste0(name.base, ".shp")
-        name.zip <- paste0(name.base, ".zip")
+        name.shp  <- paste0(name.base, ".shp")
+        name.zip  <- paste0(name.base, ".zip")
 
         if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
         st_write(data.out, dsn = name.shp, layer = "shpExport",
                  driver = "ESRI Shapefile", quiet = TRUE)
-        zip(zipfile = name.zip, files = Sys.glob(name.glob))
-        file.copy(name.zip, file)
+        zip::zipr(zipfile = name.zip, files = Sys.glob(name.glob))
+        req(file.copy(name.zip, file))
 
         if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
 

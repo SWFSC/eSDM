@@ -34,6 +34,7 @@ library(stats)
 library(tmap)
 library(units)
 library(viridis)
+library(zip)
 
 
 ###############################################################################
