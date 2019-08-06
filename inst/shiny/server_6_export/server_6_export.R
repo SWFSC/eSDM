@@ -114,9 +114,9 @@ output$export_out <- downloadHandler(
         write.csv(data.out, file = file, row.names = FALSE)
 
       } else if (export.format == 2) {
-        tmp.path <- paste(head(strsplit(file, "\\\\")[[1]], -1), collapse = "\\")
+        tmp.path <- dirname(file)
 
-        name.base <- paste(tmp.path, input$export_filename, sep = "\\")
+        name.base <- file.path(tmp.path, input$export_filename)
         name.glob <- paste0(name.base, ".*")
         name.shp  <- paste0(name.base, ".shp")
         name.zip  <- paste0(name.base, ".zip")
