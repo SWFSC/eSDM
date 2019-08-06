@@ -62,7 +62,7 @@ ui.roadmap <- function() {
               tags$p("Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., and Redfern, J.V.",
                      "(in press). eSDM: A tool for creating and exploring ensembles",
                      "of predictions from species distribution and abundance models.",
-                     "Methods in Ecology and Evolution.")
+                     tags$em("Methods in Ecology and Evolution."))
             )
           )
         )
