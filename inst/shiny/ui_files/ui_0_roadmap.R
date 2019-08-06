@@ -94,7 +94,7 @@ ui.roadmap <- function() {
                     tags$em("Load a saved GUI workspace"), "section of this tab.",
                     "You cannot use any of the other sections of the GUI until you perform one of these two steps."),
             tags$h5("Note: you can download zip files with sample data (SDM predictions, regional polygons, and validation data)",
-                    "or the data used in the example analysis of Woodman et al. (in review)",
+                    "or the data used in the example analysis of Woodman et al. (in press)",
                     "by clicking the", tags$em("Download sample data"), "or the",
                     tags$em("Download manuscript data"), "buttons below, respectively.",
                     "These data can be a useful reference for data format requirements."),

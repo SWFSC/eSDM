@@ -52,7 +52,8 @@ observeEvent(input$load_app_envir_file, {
 
   file.load <- input$load_app_envir_file
   file.load.ext <- substr_right(input$load_app_envir_file$name, 6)
-  temp <- file.load.ext %in% c(".RDATA", ".RData") &
+  temp <- toupper(file.load.ext) %in% c(".RDATA") &
+    # temp <- file.load.ext %in% c(".RDATA", ".RData", ".rdata") &
     input$load_app_envir_file$type == ""
 
   if (temp) {

@@ -190,13 +190,13 @@ ui.evalMetrics <- function() {
                              "meaning it depends a presence/absence threshold for converting continuous predictions ",
                              "to binary predictions.",
                              "This threshold is determined using the sensitivity-specificity maximization approach",
-                             "(", tags$a(HTML(paste("Liu", tags$em("et al."), "2005")),
+                             "(", tags$a(HTML(paste("Liu et al. 2005")),
                                          href = "https://doi.org/10.1111/j.0906-7590.2005.03957.x"), ").",
                              "Note that this approach is equivalent to determining the maximum TSS using all possible thresholds.",
                              "TSS is recommended for use in place of kappa because unlike kappa,",
                              "TSS is not inherently dependent on prevalence."),
                       tags$p("TSS = sensitivity (true positive rate) + specificity (true negative rate) - 1"),
-                      "See", tags$a(HTML(paste("Allouche", tags$em("et al."), "(2006)")),
+                      "See", tags$a(HTML(paste("Allouche et al. 2006)")),
                                     href = "https://doi.org/10.1111/j.1365-2664.2006.01214.x"),
                       "for more information."
                     )
