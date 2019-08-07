@@ -13,7 +13,7 @@
 
 
 ###############################################################################
-library(raster) # First so that raster::select() wont't mask dplyr::select()
+library(raster) #First so that raster::select() wont't mask dplyr::select()
 
 library(colorRamps)
 library(colourpicker)
