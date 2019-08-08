@@ -427,7 +427,7 @@ We can see that the ensemble with weights based on TSS values had the highest sc
 ```{r, fig.width=7}
 # Simple code to visualize ensemble created with weights based on TSS values
 plot_sf_3panel(
-  rename(ens.sf.wtss, se = SE), "Pred_ens", main.txt = "Ensemble - TSS", 
+  rename(ens.sf.wtss, se = SE), "Pred_ens", main.txt = "Ensemble-TSS - ", 
   map.base = map.world
 )
 ```
