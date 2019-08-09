@@ -154,8 +154,8 @@ create_ens_data_rescale <- reactive({
   models.overlaid <- vals$overlaid.models[create_ens_overlaid_idx()]
   j <- seq_along(models.overlaid)
 
-  overlaid.sf <- data.frame(lapply(models.overlaid, select, Pred)) %>%
-    bind_cols(data.frame(lapply(models.overlaid, select, SE)) ^ 2) %>%
+  overlaid.sf <- data.frame(lapply(models.overlaid, dplyr::select, Pred)) %>%
+    bind_cols(data.frame(lapply(models.overlaid, dplyr::select, SE)) ^ 2) %>%
     purrr::set_names(paste0("Pred", j), paste0("Var", j)) %>%
     st_sf(geometry = vals$overlay.base.sfc, agr = "constant")
 
