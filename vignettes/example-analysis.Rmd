@@ -21,8 +21,6 @@ knitr::opts_chunk$set(
 library(dplyr)
 library(eSDM)
 library(lwgeom)
-library(maps)
-library(maptools)
 library(sf)
 
 source(system.file("eSDM_vignette_helper.R", package = "eSDM"), local = TRUE, echo = FALSE)
@@ -61,7 +59,10 @@ model.b.sf <- readRDS(system.file("extdata/Predictions_Beckeretal2016.rds", pack
 model.b.sf
 
 # Make base map
-map.world <- st_geometry(st_as_sf(map('world', plot = FALSE, fill = TRUE)))
+map.world <- eSDM::gshhg.l.L16
+
+# Other option for making base map
+# map.world <- st_geometry(st_as_sf(maps::map('world', plot = FALSE, fill = TRUE)))
 ```
 
 ```{r, fig.width=7}
@@ -186,7 +187,7 @@ plot_sf_3panel(over3.sf, "pred_bm", main.txt = "Overlaid Model_R - ", map.base =
 
 To evaluate predictions and create ensembles with weights based on evaluation metrics, we must load and process the validation data sets for use with `evaluation metrics`. The validation data must be points of class `sf` with a column with either binary presence/absence or count data. For the example analysis, we use three validation sets in the example analysis, line transect data (Becker _et al._ 2016), home range data (Irvine _et al._ 2014), and these two data sets combined. Because our validation data are binary (i.e., presence/absence), there is a column indicating whether each value is a presence point (1) or absence point (0).
 
-Note that in this vignette, the validation data are read from .rda files because the original file was too big to be included in the package. However, the original file can be downloaded through the GUI or from https://github.com/smwoodman/eSDM-data
+Note that in this vignette, the validation data are read from .rds files because the original file was too big to be included in the package. However, the original file can be downloaded through the GUI or from https://github.com/smwoodman/eSDM-data
 
 Use the function `sf::st_as_sf` to convert a data frame with lon/lat coordinates to an `sf` object.
 
@@ -436,6 +437,7 @@ Below is code to visualize the unweighted ensembles and this ensemble (i.e., cre
 
 ```{r, fig.width=7, fig.height=4, eval=FALSE}
 ### Figure 4; code not run
+library(tmap)
 
 # Values passed to tmap_sdm - range of map
 range.poly <- st_sfc(
@@ -448,8 +450,8 @@ rpoly.mat <- matrix(st_bbox(range.poly), ncol = 2)
 
 # Values passed to tmap_sdm - size of text labels and legend width
 main.size <- 0.8
-leg.size  <- 0.6
-leg.width <- 0.45
+leg.size  <- 0.55
+leg.width <- 0.43
 grid.size <- 0.55
 
 # Values passed to tmap_sdm - color scale info

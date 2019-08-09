@@ -322,7 +322,7 @@ output$pretty_title_uiOut_text <- renderUI({
 
 
 ###############################################################################
-# Coordinate grid lines and labels
+# Coordinate grid marks and labels
 
 ### Longitude start
 output$pretty_tick_lon_start_uiOut_numeric <- renderUI({
@@ -340,7 +340,7 @@ output$pretty_tick_lon_start_uiOut_numeric <- renderUI({
     }
   }
 
-  numericInput("pretty_tick_lon_start", tags$h5("Longitude grid line start"),
+  numericInput("pretty_tick_lon_start", tags$h5("Longitude grid mark start"),
                value = val.def, min = 0, step = 5)
 })
 
@@ -375,7 +375,7 @@ output$pretty_tick_lon_interval_uiOut_numeric <- renderUI({
     }
   }
 
-  numericInput("pretty_tick_lon_interval", tags$h5("Longitude grid line interval"),
+  numericInput("pretty_tick_lon_interval", tags$h5("Longitude grid mark interval"),
                value = val.def, min = 0, step = val.def)
 })
 
@@ -393,7 +393,7 @@ output$pretty_tick_lat_start_uiOut_numeric <- renderUI({
     val.def <- val.def[dplyr::between(val.def, num.range[1], num.range[2])][1]
   }
 
-  numericInput("pretty_tick_lat_start", tags$h5("Latitude grid line start"),
+  numericInput("pretty_tick_lat_start", tags$h5("Latitude grid mark start"),
                value = val.def, min = 0, step = 0.1)
 })
 
@@ -426,7 +426,7 @@ output$pretty_tick_lat_interval_uiOut_numeric <- renderUI({
     }
   }
 
-  numericInput("pretty_tick_lat_interval", tags$h5("Latitude grid line interval"),
+  numericInput("pretty_tick_lat_interval", tags$h5("Latitude grid mark interval"),
                value = val.def, min = 0, step = val.def)
 })
 

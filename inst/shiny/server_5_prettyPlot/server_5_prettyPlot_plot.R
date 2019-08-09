@@ -203,18 +203,17 @@ plot_pretty <- function(model.toplot, map.range, background.color,
   if (l4$inc) {
     if (st_is_longlat(m.orig)) {
       tmap.obj <- tmap.obj +
-        tm_grid(x = l4$x.vals, y = l4$y.vals, col = l4$grid.col,
-                lwd = l4$grid.lw, alpha = l4$grid.alpha,
-                labels.inside.frame = l4$grid.labs.in,
-                labels.size = l4$grid.labs.size, labels.rot = c(0, 90),
-                labels.format = list(fun = function(i) {
-                  parse(text = paste(i, "*degree"))
-                }))
+        tm_graticules(x = l4$x.vals, y = l4$y.vals, col = l4$grid.col,
+                      lwd = l4$grid.lw, alpha = l4$grid.alpha,
+                      lines = l4$grid.lines, ticks = l4$grid.ticks,
+                      labels.inside.frame = l4$grid.labs.in,
+                      labels.size = l4$grid.labs.size, labels.rot = c(0, 90))
 
     } else {
       tmap.obj <- tmap.obj +
         tm_grid(x = l4$x.vals, y = l4$y.vals, col = l4$grid.col,
                 lwd = l4$grid.lw, alpha = l4$grid.alpha,
+                lines = l4$grid.lines, ticks = l4$grid.ticks,
                 labels.inside.frame = l4$grid.labs.in,
                 labels.size = l4$grid.labs.size, labels.rot = c(0, 90))
     }

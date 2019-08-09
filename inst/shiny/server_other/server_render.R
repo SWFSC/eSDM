@@ -415,6 +415,18 @@ output$pretty_toplot_table_out <- renderDT({
 output$pretty_plot_text <- renderText(pretty_plot())
 
 #----------------------------------------------------------
+# Coordinate grid marks and labels
+### Message when ticks and labels inside frame are specified
+output$pretty_tick_label_message <- renderText({
+  req(input$pretty_tick, input$pretty_tick_which,
+      input$pretty_tick_label_inout)
+
+  req((2 %in% input$pretty_tick_which) & (input$pretty_tick_label_inout == 1))
+
+  "Tick marks will not be plotted when labels are inside the frame"
+})
+
+#----------------------------------------------------------
 # Additional object section
 ### Text output for adding additional object
 output$pretty_addobj_add_out <- renderText(pretty_addobj_add())

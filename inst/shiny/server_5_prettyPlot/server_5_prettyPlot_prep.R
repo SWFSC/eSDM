@@ -324,6 +324,11 @@ pretty_tick_list <- reactive({
                "'Latitude maximum'"))
   )
 
+  grid.ticks <- ifelse(
+    input$pretty_tick_label_inc & (input$pretty_tick_label_inout == 1),
+    FALSE, 2 %in% input$pretty_tick_which
+  )
+
   lon.grid.vals <- seq(
     from = input$pretty_tick_lon_start, to = input$pretty_range_xmax,
     by = input$pretty_tick_lon_interval
@@ -334,18 +339,23 @@ pretty_tick_list <- reactive({
     by = input$pretty_tick_lat_interval
   )
 
+  grid.labs.in <- ifelse(
+    input$pretty_tick_label_inc, input$pretty_tick_label_inout == 1, FALSE
+  )
+
   grid.labs.size <- ifelse(
     input$pretty_tick_label_inc, input$pretty_tick_label_size, 0
   )
 
   list(
     inc = input$pretty_tick,
+    grid.lines = 1 %in% input$pretty_tick_which, grid.ticks = grid.ticks,
     x.vals = lon.grid.vals, y.vals = lat.grid.vals,
     grid.lw = input$pretty_tick_lw,
     grid.alpha = input$pretty_tick_alpha,
     grid.col = input$pretty_tick_color,
     grid.labs.size = grid.labs.size,
-    grid.labs.in = input$pretty_tick_label_inout == 1
+    grid.labs.in = grid.labs.in
   )
 })
 

@@ -187,14 +187,11 @@ tmap_sdm <- function(tmap.obj, t.col, t.blp, t.map, t.mat, t.title,
               text.size = t.leg.size, #0.6,
               width = t.leg.width, #0.45,
               frame = "black") +
-    tm_grid(x = seq(-135, -120, by = 5), y = seq(30, 50, by = 5),
-            col = t.grid.col, lwd = 1, alpha = 1,
-            ticks = t.ticks, lines = t.lines,
-            labels.inside.frame = FALSE, labels.size = t.grid.size, #0.6,
-            labels.rot = c(0, 90),
-            labels.format = list(fun = function(i) {
-              parse(text = paste(i, "*degree"))
-            }))
+    tm_graticules(x = seq(-135, -120, by = 5), y = seq(30, 50, by = 5),
+                  col = t.grid.col, lwd = 1, alpha = 1,
+                  ticks = t.ticks, lines = t.lines,
+                  labels.inside.frame = FALSE, labels.size = t.grid.size,
+                  labels.rot = c(0, 90))
 }
 
 ###############################################################################
