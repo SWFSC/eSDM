@@ -169,7 +169,7 @@ output$eval_metrics_table_save <- downloadHandler(
     ### Get info of predictions that have eval metrics calculated for them
     # No full tidyverse for if tables are NULL (and to preserve row names)
     orig.table <- cbind(
-      table_orig(), select(table_orig_stats(), -"SDM filename")
+      table_orig(), dplyr::select(table_orig_stats(), -"SDM filename")
     )
     orig.table <- orig.table[models.which[[1]], ]
 
@@ -177,7 +177,8 @@ output$eval_metrics_table_save <- downloadHandler(
 
     ens.table <- cbind(
       table_ensembles(),
-      select(table_ensembles_stats(), -"Predictions used", -"Ensemble method")
+      dplyr::select(table_ensembles_stats(), -"Predictions used",
+                    -"Ensemble method")
     )
     ens.table <- ens.table[models.which[[3]], ]
 

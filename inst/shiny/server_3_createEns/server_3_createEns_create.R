@@ -63,8 +63,8 @@ create_ensemble <- eventReactive(input$create_ens_create_action, {
     }
 
     ens.df <- ens.df %>%
-      mutate(SE_ens = sqrt(Var_ens)) %>%
-      select(Pred_ens, SE_ens)
+      dplyr::mutate(SE_ens = sqrt(Var_ens)) %>%
+      dplyr::select(Pred_ens, SE_ens)
 
     incProgress(0.3)
 
@@ -193,8 +193,8 @@ create_ens_data_rescale <- reactive({
   temp <- st_set_geometry(temp, NULL)
 
   list(
-    temp %>% select(starts_with("Pred")),
-    temp %>% select(starts_with("Var"))
+    temp %>% dplyr::select(starts_with("Pred")),
+    temp %>% dplyr::select(starts_with("Var"))
   )
 })
 

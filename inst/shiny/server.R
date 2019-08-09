@@ -13,8 +13,6 @@
 
 
 ###############################################################################
-library(raster) #First so that raster::select() wont't mask dplyr::select()
-
 library(colorRamps)
 library(colourpicker)
 library(dichromat)
@@ -27,6 +25,7 @@ library(methods)
 library(purrr)
 library(RColorBrewer)
 library(rlang)
+library(raster)
 library(ROCR)
 library(sf)
 library(shinyjs)

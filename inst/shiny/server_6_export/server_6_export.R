@@ -169,7 +169,7 @@ export_model_selected <- reactive({
     }
 
     model.data <- model.data %>%
-      select(Pred, SE, Weight)
+      dplyr::select(Pred, SE, Weight)
   }
 
   st_sf(model.data, curr.geom, agr = "constant")

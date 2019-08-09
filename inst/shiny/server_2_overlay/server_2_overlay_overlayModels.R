@@ -184,7 +184,7 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
         temp %>%
           st_set_geometry(NULL) %>%
           mutate(SE = sqrt(var), idx = seq_along(Pred)) %>%
-          select(Pred, SE, Weight, idx)
+          dplyr::select(Pred, SE, Weight, idx)
       }
     },
     samegeo.flag, models.preoverlay,
