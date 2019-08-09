@@ -168,7 +168,8 @@ tmap_sdm_help_perc <- function(x, x.col, pal.len = 10) {
 # Create tmap maps
 tmap_sdm <- function(tmap.obj, t.col, t.blp, t.map, t.mat, t.title,
                      t.main.size, t.leg.size, t.leg.width, t.grid.size,
-                     t.alpha = 1) {
+                     t.alpha = 1, t.grid.col = "black",
+                     t.ticks = TRUE, t.lines = FALSE) {
   tm_shape(t.map, bbox = t.mat, projection = 4326) +
     tm_polygons(col = "tan", border.col = NA, alpha = 1, lty = 1, lwd = 1) +
 
@@ -187,7 +188,8 @@ tmap_sdm <- function(tmap.obj, t.col, t.blp, t.map, t.mat, t.title,
               width = t.leg.width, #0.45,
               frame = "black") +
     tm_grid(x = seq(-135, -120, by = 5), y = seq(30, 50, by = 5),
-            col = "grey", lwd = 1, alpha = 1,
+            col = t.grid.col, lwd = 1, alpha = 1,
+            ticks = t.ticks, lines = t.lines,
             labels.inside.frame = FALSE, labels.size = t.grid.size, #0.6,
             labels.rot = c(0, 90),
             labels.format = list(fun = function(i) {
