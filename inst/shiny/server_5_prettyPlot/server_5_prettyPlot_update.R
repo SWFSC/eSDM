@@ -14,6 +14,7 @@ observeEvent(input$pretty_update_toplot_show, {
 observe({
   input$tabs
   input$pretty_mapcontrol
+  input$pretty_toplot_remove_execute
 
   val.pretty.update.mess(NULL)
 })
@@ -38,7 +39,7 @@ toplot_update_modal <- function(failed) {
       "Map coordinate system and range" = 1,
       "Background color and prediction color scheme" = 2,
       "Legend" = 3, "Title, axis labels, and margins" = 4,
-      "Coordinate grid lines and labels" = 5,
+      "Coordinate grid marks and labels" = 5,
       "Additional objects (points or polygons)" = 6, "Map ID" = 7
     )
 
@@ -196,27 +197,31 @@ pretty_toplot_update_table <- reactive({
 
     #------------------------------------------------------
   } else if (z == 5) {
-    # Coordinate grid lines and labels
+    # Coordinate grid marks and labels
     y.t <- y$list.tick
     params.names <- c(
-      "Include coordinate grid lines",
-      "Longitude grid line locations", "Latitude grid line locations",
-      "Grid line width", "Grid line transparency (1: solid; 0: transparent)",
-      "Coordinate grid line color", "Include coordinate labels",
+      "Include coordinate grid marks",
+      "Include grid lines", "Include tick marks",
+      "Longitude grid mark locations", "Latitude grid mark locations",
+      "Grid mark width", "Grid mark transparency (1: solid; 0: transparent)",
+      "Coordinate grid mark color", #"Include coordinate labels",
       "Coordinate label location", "Coordinate label size"
     )
     if (y.t$inc) {
-      y.t.labinc <- y.t$grid.labs.size > 0
+      # y.t.labinc <- y.t$grid.labs.size > 0
       params.vals <- c(
-        TRUE, paste(y.t$x.vals, collapse = ", "), paste(y.t$y.vals, collapse = ", "),
-        y.t$grid.lw, y.t$grid.alpha, y.t$grid.col, y.t.labinc,
-        ifelse(y.t.labinc, ifelse(y.t$grid.labs.in, "Inside frame", "Outside frame"),
-               "N/A: coordinate labels not included"),
-        ifelse(y.t.labinc, y.t$grid.labs.size, "N/A: coordinate labels not included")
+        TRUE, y.t$grid.lines, y.t$grid.ticks,
+        paste(y.t$x.vals, collapse = ", "), paste(y.t$y.vals, collapse = ", "),
+        y.t$grid.lw, y.t$grid.alpha, y.t$grid.col, #y.t.labinc,
+        ifelse(y.t$grid.labs.in, "Inside frame", "Outside frame"),
+        y.t$grid.labs.size
+        # ifelse(y.t.labinc, ifelse(y.t$grid.labs.in, "Inside frame", "Outside frame"),
+        #        "N/A: coordinate labels not included"),
+        # ifelse(y.t.labinc, y.t$grid.labs.size, "N/A: coordinate labels not included")
       )
     } else {
       params.vals <- c(
-        FALSE, rep("N/A: coordinate grid lines not included", 8)
+        FALSE, rep("N/A: coordinate grid marks not included", length(params.names) - 1)
       )
     }
 
@@ -275,40 +280,7 @@ observeEvent(input$pretty_toplot_update_execute, {
 
   #--------------------------------------------------------
   if (z == 1 && z2 != 1) {
-    # y$map.range[z2 - 1] <- req(input$pretty_toplot_update_thing1)
-    #
-    # # May need to update grid line locations
-    # if (z2 %in% 2:3) {
-    #   x.tf <- dplyr::between(y$list.tick$x.vals, y$map.range[1], y$map.range[2])
-    #   y$list.tick$x.vals <- y$list.tick$x.vals[x.tf]
-    #
-    #   if (length(y$list.tick$x.vals) == 0) {
-    #     y$list.tick$x.vals <- y$map.range[1:2]
-    #   } else {
-    #     x.interval <- unique(diff(y$list.tick$x.vals))
-    #     y$list.tick$x.vals <- unique(c(
-    #       rev(seq(from = y$list.tick$x.vals[1], to = y$map.range[1], by = -x.interval)),
-    #       seq(from = y$list.tick$x.vals[1], to = y$map.range[2], by = x.interval)
-    #     ))
-    #   }
-    #
-    # } else { #z2 %in% 4:5
-    #   y.tf <- dplyr::between(y$list.tick$y.vals, y$map.range[3], y$map.range[4])
-    #   y$list.tick$y.vals <- y$list.tick$y.vals[y.tf]
-    #
-    #   if (length(y$list.tick$y.vals) == 0) {
-    #     y$list.tick$y.vals <- y$map.range[1:2]
-    #   } else {
-    #     y.interval <- unique(diff(y$list.tick$y.vals))
-    #     y$list.tick$y.vals <- unique(c(
-    #       rev(seq(from = y$list.tick$y.vals[1], to = y$map.range[3], by = -y.interval)),
-    #       seq(from = y$list.tick$y.vals[1], to = y$map.range[4], by = y.interval)
-    #     ))
-    #   }
-    # }
-
-
-    # May need to update grid line locations
+    # May need to update grid mark locations
     if (z2 == 2) {
       y$map.range[1] <- req(input$pretty_toplot_update_thing1)
       y$map.range[2] <- req(input$pretty_toplot_update_thing2)
@@ -411,6 +383,13 @@ observeEvent(input$pretty_toplot_update_execute, {
       y.t$inc <- input$pretty_toplot_update_thing1
 
     } else if (z2 == 2) {
+      y.t$grid.lines <- input$pretty_toplot_update_thing1
+
+    } else if (z2 == 3) {
+      if (!y.t$grid.labs.in)
+        y.t$grid.ticks <- input$pretty_toplot_update_thing1
+
+    } else if (z2 == 4) {
       req(dplyr::between(
         input$pretty_toplot_update_thing1, y$map.range[1], y$map.range[2]
       ))
@@ -419,7 +398,7 @@ observeEvent(input$pretty_toplot_update_execute, {
         by = req(input$pretty_toplot_update_thing2)
       )
 
-    } else if (z2 == 3) {
+    } else if (z2 == 5) {
       req(dplyr::between(
         input$pretty_toplot_update_thing1, y$map.range[3], y$map.range[4]
       ))
@@ -428,25 +407,22 @@ observeEvent(input$pretty_toplot_update_execute, {
         by = req(input$pretty_toplot_update_thing2)
       )
 
-    } else if (z2 == 4) {
+    } else if (z2 == 6) {
       y.t$grid.lw <- input$pretty_toplot_update_thing1
 
-    } else if (z2 == 5) {
+    } else if (z2 == 7) {
       y.t$grid.alpha <- input$pretty_toplot_update_thing1
 
-    } else if (z2 == 6) {
+    } else if (z2 == 8) {
       y.t$grid.col <- input$pretty_toplot_update_thing1
 
-    } else if (z2 == 7) {
-      if (!(input$pretty_toplot_update_thing1 & y.t$grid.labs.size != 0)) {
-        y.t$grid.labs.size <- ifelse(input$pretty_toplot_update_thing1, 1, 0)
-      }
-
-    } else if (z2 == 8) {
+    } else if (z2 == 9) {
       y.t$grid.labs.in <- input$pretty_toplot_update_thing1 == 1
+      if (y.t$grid.labs.in) y.t$grid.ticks <- FALSE
 
-    } else { #z2 == 9
-      y.t$grid.labs.size <- input$pretty_toplot_update_thing1
+    } else { #z2 == 10
+      if (input$pretty_toplot_update_thing1 > 0)
+        y.t$grid.labs.size <- input$pretty_toplot_update_thing1
     }
 
     y$list.tick <- y.t
