@@ -294,39 +294,38 @@ pretty_margin_list <- reactive({
 
 
 ###############################################################################
-### Generate list of coordinate grid line and label info
+### Generate list of coordinate grid mark and label info
 pretty_tick_list <- reactive({
   validate(
     need(input$pretty_tick_lon_start,
-         "Error: The 'Longitude grid line start' entry must be a number"),
+         "Error: The 'Longitude grid mark start' entry must be a number"),
     need(input$pretty_tick_lon_interval,
-         "Error: The 'Longitde grid line interval' entry must be a number"),
+         "Error: The 'Longitde grid mark interval' entry must be a number"),
     need(input$pretty_tick_lat_start,
-         "Error: The 'Latitude grid line start' entry must be a number"),
+         "Error: The 'Latitude grid mark start' entry must be a number"),
     need(input$pretty_tick_lat_interval,
-         "Error: The 'Latitude grid line interval' entry must be a number"),
+         "Error: The 'Latitude grid mark interval' entry must be a number"),
     need(input$pretty_tick_lw,
-         "Error: The 'Grid line width' entry must be a number"),
+         "Error: The 'Grid mark width' entry must be a number"),
     need(input$pretty_tick_alpha,
-         "Error: The 'Grid line transparency' entry must be a number"),
-    if (input$pretty_tick_label_inc) {
-      need(input$pretty_tick_label_size,
-           "Error: The 'Coordinate label size' entry must be a number")
-    }
+         "Error: The 'Grid mark transparency' entry must be a number"),
+    need(input$pretty_tick_label_size,
+         "Error: The 'Coordinate label size' entry must be a number")
   )
 
   validate(
     need(input$pretty_tick_lon_start < input$pretty_range_xmax,
-         paste("Error: The 'Longitude grid line start' must be less than the",
+         paste("Error: The 'Longitude grid mark start' must be less than the",
                "'Longitude maximum'")),
     need(input$pretty_tick_lat_start < input$pretty_range_ymax,
-         paste("Error: The 'Latitude grid line start' must be less than the",
-               "'Latitude maximum'"))
+         paste("Error: The 'Latitude grid mark start' must be less than the",
+               "'Latitude maximum'")),
+    need(input$pretty_tick_label_size > 0,
+         "Error: The 'Coordinate label size' entry must be greater than zero")
   )
 
   grid.ticks <- ifelse(
-    input$pretty_tick_label_inc & (input$pretty_tick_label_inout == 1),
-    FALSE, 2 %in% input$pretty_tick_which
+    input$pretty_tick_label_inout == 1, FALSE, 2 %in% input$pretty_tick_which
   )
 
   lon.grid.vals <- seq(
@@ -339,14 +338,6 @@ pretty_tick_list <- reactive({
     by = input$pretty_tick_lat_interval
   )
 
-  grid.labs.in <- ifelse(
-    input$pretty_tick_label_inc, input$pretty_tick_label_inout == 1, FALSE
-  )
-
-  grid.labs.size <- ifelse(
-    input$pretty_tick_label_inc, input$pretty_tick_label_size, 0
-  )
-
   list(
     inc = input$pretty_tick,
     grid.lines = 1 %in% input$pretty_tick_which, grid.ticks = grid.ticks,
@@ -354,8 +345,8 @@ pretty_tick_list <- reactive({
     grid.lw = input$pretty_tick_lw,
     grid.alpha = input$pretty_tick_alpha,
     grid.col = input$pretty_tick_color,
-    grid.labs.size = grid.labs.size,
-    grid.labs.in = grid.labs.in
+    grid.labs.size = input$pretty_tick_label_size,
+    grid.labs.in = input$pretty_tick_label_inout == 1
   )
 })
 

@@ -375,20 +375,13 @@ ui.prettyPlot <- function() {
                 fluidRow(
                   box(
                     width = 12,
-                    fluidRow(
-                      column(6, checkboxInput("pretty_tick", "Include coordinate grid marks", value = TRUE)),
-                      column(
-                        width = 6,
-                        conditionalPanel(
-                          condition = "input.pretty_tick",
-                          checkboxGroupInput("pretty_tick_which", label = NULL,
-                                             choices = list("Include grid lines" = 1, "Include tick marks" = 2),
-                                             selected = 2)
-                        )
-                      )
-                    ),
+                    checkboxInput("pretty_tick", "Include coordinate grid marks and labels", value = TRUE),
                     conditionalPanel(
                       condition = "input.pretty_tick",
+                      tags$hr(),
+                      checkboxGroupInput("pretty_tick_which", label = NULL,
+                                         choices = list("Include grid lines" = 1, "Include tick marks" = 2),
+                                         selected = 2),
                       helpText("Grid mark start and interval units are the same as the units of the specified coordinate system.",
                                "The range of these values must adhere to the requirements specified in the map range section.",
                                tags$br(),
@@ -411,16 +404,12 @@ ui.prettyPlot <- function() {
                         )
                       ),
                       tags$hr(),
-                      checkboxInput("pretty_tick_label_inc", "Include coordinate labels", value = TRUE),
-                      conditionalPanel(
-                        condition = "input.pretty_tick_label_inc",
-                        tags$span(textOutput("pretty_tick_label_message"), style = "color: red;"),
-                        fluidRow(
-                          column(6, radioButtons("pretty_tick_label_inout", tags$h5("Coordinate label location"),
-                                                 choices = list("Inside frame" = 1, "Outside frame" = 2), selected = 2)),
-                          column(6, numericInput("pretty_tick_label_size", tags$h5("Coordinate label size"),
-                                                 value = 1.0, min = 0.1, step = 0.1))
-                        )
+                      tags$span(textOutput("pretty_tick_label_message"), style = "color: red;"),
+                      fluidRow(
+                        column(6, radioButtons("pretty_tick_label_inout", tags$h5("Coordinate label location"),
+                                               choices = list("Inside frame" = 1, "Outside frame" = 2), selected = 2)),
+                        column(6, numericInput("pretty_tick_label_size", tags$h5("Coordinate label size"),
+                                               value = 1.0, min = 0.1, step = 0.1))
                       )
                     )
                   )
