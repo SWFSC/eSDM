@@ -1,10 +1,8 @@
-## Resubmission
-This is a resubmission In this version I have:
-
-* Added reference describing the methods in the package to the description field of the DESCRIPTION file. The paper is currently in review; I will update the reference with the doi when it becomes available.
-
 ## Release summary
-First submission of the package eSDM to CRAN
+* Updated citation (and where applicable) to 'in press' due to paper acceptance
+* Several bug fixes (documented in NEWS.md)
+* Added functionality to GUI (shiny app)
+* Updated code to keep package current with updates of imported packages
 
 ## Test environments
 * Windows 10, R 3.6.1 (local)
@@ -17,12 +15,12 @@ There were no ERRORs or WARNINGs
 There was 1 NOTE (only when testing on local OS X):
 
 * checking installed package size ... NOTE
-    installed size is  9.2Mb
+    installed size is  9.4Mb
     sub-directories of 1Mb or more:
       doc     5.9Mb
-      shiny   1.7Mb
+      shiny   1.9Mb
 
-  The size of the shiny sub-directory is primarily because of the (compressed) PDF manual for the shiny app. The vignette demonstrates an example analysis (case study) in our paper describing this package (Woodman et al., in review). 
+  The size of the shiny sub-directory is primarily because of the PDF manual for the shiny app. The vignette demonstrates an example analysis (case study) in our paper describing this package (Woodman et al., in press). 
 
 ## Downstream dependencies
-N/A - first submission of eSDM
+No downstream dependencies

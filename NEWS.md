@@ -1,4 +1,4 @@
-## eSDM 0.3
+## eSDM 0.3.0
 * Updated citation to 'in press' in Methods in Ecology and Evolution
 * Added button to download manuscript example analysis data through the GUI
 * Added ability to have tick marks on high quality maps (`tmap` update)
