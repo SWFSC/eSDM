@@ -24,3 +24,8 @@ save(ens.sf.unw, file = "data-raw/ens_sf_unw.rda")
 ens.sf.wtss <- vals.save$ensemble.models[[3]] %>%
   st_sf(geometry = vals.save$overlay.base.sfc,agr = "constant")
 save(ens.sf.wtss, file = "data-raw/ens_sf_wtss.rda")
+
+# Validation presence data
+valid.sf.pres <- vals.save$eval.data %>%
+  filter(sight == 1)
+save(valid.sf.pres, file = "data-raw/valid_sf_pres.rda")

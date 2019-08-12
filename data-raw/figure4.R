@@ -12,10 +12,6 @@ library(tmap)
 ### Base map
 load("data/gshhg.l.L16.rda")
 map.world <- gshhg.l.L16
-rm(gshhg.l.L16)
-# map.world <- st_geometry(
-#   st_as_sf(maps::map('world', plot = FALSE, fill = TRUE))
-# )
 
 ### Plot extent
 range.poly <- st_sfc(
@@ -31,17 +27,14 @@ main.size <- 1.4
 leg.size  <- 1
 leg.width <- 1
 grid.size <- 1
+txt.size  <- 1.2
 
 ### Plotting functions
-source("inst/eSDM_vignette_helper.R", local = TRUE, echo = FALSE)
-# source(
-#   system.file("eSDM_vignette_helper.R", package = "eSDM"),
-#   local = TRUE, echo = FALSE
-# )
+source("data-raw/figure_plot.R", local = TRUE, echo = FALSE)
 
 
 ###############################################################################
-# Create and save map
+# Create and save figure
 
 ### Load unweighted ensemble and prep plots
 # rda file created in data-raw/create_ens_sf.R
@@ -54,25 +47,36 @@ blp2 <- tmap_sdm_help(ens.sf.unw, "CV_ens")
 tmap.obj1 <- tmap_sdm(
   ens.sf.unw, "Pred_ens", blp1, map.world, rpoly.mat, NA,
   main.size, leg.size, leg.width, grid.size
-)
+) +
+  tm_credits(expression("Predictions\n(whales km"^-2*")"),
+             fontfamily = "sans", size = txt.size,
+             position = c("left", "bottom"))
+
 # Plot of SE values (with same color scheme as predictions)
 tmap.obj2 <- tmap_sdm(
   ens.sf.unw, "SE_ens", blp1, map.world, rpoly.mat, NA,
   main.size, leg.size, leg.width, grid.size
-)
+) +
+  tm_credits(expression("SE of\npredictions\n(whales km"^-2*")"),
+             fontfamily = "sans", size = txt.size,
+             position = c("left", "bottom"))
+
 # Plot of CV values
 tmap.obj3 <- tmap_sdm(
   ens.sf.unw, "CV_ens", blp2, map.world, rpoly.mat, NA,
   main.size, leg.size, leg.width, grid.size
-)
+) +
+  tm_credits(expression("CV of\npredictions\n(whales km"^-2*")"),
+             fontfamily = "sans", size = txt.size,
+             position = c("left", "bottom"))
 
 
 ### Generate and save plot
-png("../eSDM paper/Figures_working/Fig 4.png", height = 6.9, width = 13,
+png("../eSDM paper/Figures_working/Fig4.png", height = 6.9, width = 13,
     units = "in", res = 300)
 tmap_arrange(
   list(tmap.obj1, tmap.obj2, tmap.obj3), ncol = 3, asp = NULL,
-  outer.margins = 0.05
+  outer.margins = 0.02
 )
 dev.off()
 
