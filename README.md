@@ -44,7 +44,7 @@ browseVignettes("eSDM")
 # To open a specific vignette
 vignette("example-analysis")
 ```
-* Woodman et al (in review) - Example analysis ([example-analysis](https://github.com/smwoodman/eSDM/blob/master/vignettes/example-analysis.Rmd))
+* Woodman et al (in press) - Example analysis ([example-analysis](https://github.com/smwoodman/eSDM/blob/master/vignettes/example-analysis.Rmd))
 
 ## Citation
 
@@ -52,4 +52,8 @@ Contact the authors for information about the paper describing this tool, which 
 
 Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (in press). eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. Methods in Ecology and Evolution.
 
-See https://github.com/smwoodman/eSDM/tree/master/data-raw for code for creating applicable figures in the manuscript
+For code used to create applicable figures in the manuscript: 
+[Figure 2](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure2_overlay.R), 
+[Figure 3](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure3.R), 
+[Figure 4](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure4.R), 
+[Figure 5](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure5.R)
