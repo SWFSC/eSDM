@@ -1,4 +1,4 @@
-# Code for creating Figure 2 for eSDM manuscript (Woodman et al. in prep)
+# Code for creating Figure 2 for eSDM manuscript
 
 ###################################################################################################
 library(eSDM) #devtools::install_github("smwoodman/eSDM")

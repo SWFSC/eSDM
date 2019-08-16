@@ -1,4 +1,4 @@
-# Code for creating Figure 3 for Woodman et al. (in press)
+# Code for creating Figure 3 for eSDM manuscript
 
 ###############################################################################
 library(RColorBrewer)
