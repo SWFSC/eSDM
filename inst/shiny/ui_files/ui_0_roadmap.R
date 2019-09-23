@@ -63,7 +63,7 @@ ui.roadmap <- function() {
                      "(2019). eSDM: A tool for creating and exploring ensembles of predictions",
                      "from species distribution and abundance models.",
                      tags$em("Methods Ecol Evol."), "2019;00:1-11. doi:10.1111/2041-210X.13283"),
-              tags$a("PDF", href = "https://doi.org/10.1111/2041-210X.13283")
+              tags$a("Woodman et al. 2019 - PDF", href = "https://doi.org/10.1111/2041-210X.13283")
             )
           )
         )
@@ -95,7 +95,7 @@ ui.roadmap <- function() {
                     tags$em("Load a saved GUI workspace"), "section of this tab.",
                     "You cannot use any of the other sections of the GUI until you perform one of these two steps."),
             tags$h5("Note: you can download zip files with sample data (SDM predictions, regional polygons, and validation data)",
-                    "or the data used in the example analysis of Woodman et al. (in press)",
+                    "or the data used in the example analysis of Woodman et al. (2019)",
                     "by clicking the", tags$em("Download sample data"), "or the",
                     tags$em("Download manuscript data"), "buttons below, respectively.",
                     "These data can be a useful reference for data format requirements."),
