@@ -174,7 +174,7 @@ output$pretty_range_lastmap_uiOut_button <- renderUI({
 
 ### Update map range values to range of last saved map
 pretty_range_lastmap_execute <- observeEvent(input$pretty_range_lastmap, {
-  d <- tail(req(vals$pretty.params.toplot))[[1]]$map.range
+  d <- tail(req(vals$pretty.params.toplot), 1)[[1]]$map.range
 
   updateNumericInput(session, "pretty_range_xmin", value = d[1])
   updateNumericInput(session, "pretty_range_xmax", value = d[2])
