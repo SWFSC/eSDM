@@ -1,3 +1,7 @@
+## eSDM 0.3.1 (on GitHub only)
+* Fixed bug in eSDM GUI 'update map range' button
+* Added eSDM paper citation details (doi, etc) where applicable
+
 ## eSDM 0.3.0
 * Updated citation to 'in press' in Methods in Ecology and Evolution
 * Added button to download manuscript example analysis data through the GUI

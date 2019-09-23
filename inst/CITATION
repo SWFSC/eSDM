@@ -3,7 +3,7 @@ citHeader("To cite eSDM in publications use:")
 citEntry(
   entry = "Article",
   title = "eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models",
-  year = "in press",
+  year = "2019",
   author = personList(
     as.person("Samuel M. Woodman"),
     as.person("Karin A. Forney"),
@@ -14,7 +14,7 @@ citEntry(
     as.person("Jessica V. Redfern")
   ),
   journal = "Methods in Ecology and Evolution",
-  # doi = "N/A",
-  url = "https://github.com/smwoodman/eSDM",
-  textVersion = paste("Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., and Redfern, J.V. (in press). eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. Methods in Ecology and Evolution")
+  doi = "10.1111/2041‐210X.1328",
+  url = "https://doi.org/10.1111/2041-210X.13283",
+  textVersion = paste("Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). eSDM: A tool for creating and exploring ensembles ofpredictions from species distribution and abundance models. Methods Ecol Evol. 2019;00:1–11. doi:10.1111/2041‐210X.13283")
 )

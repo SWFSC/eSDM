@@ -59,10 +59,11 @@ ui.roadmap <- function() {
             width = 12,
             tags$h5(
               tags$strong("Citation"),
-              tags$p("Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., and Redfern, J.V.",
-                     "(in press). eSDM: A tool for creating and exploring ensembles",
-                     "of predictions from species distribution and abundance models.",
-                     tags$em("Methods in Ecology and Evolution."))
+              tags$p("Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V.",
+                     "(2019). eSDM: A tool for creating and exploring ensembles of predictions",
+                     "from species distribution and abundance models.",
+                     tags$em("Methods Ecol Evol."), "2019;00:1-11. doi:10.1111/2041-210X.13283"),
+              tags$a("PDF", href = "https://doi.org/10.1111/2041-210X.13283")
             )
           )
         )
