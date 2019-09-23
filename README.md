@@ -44,7 +44,7 @@ browseVignettes("eSDM")
 # To open a specific vignette
 vignette("example-analysis")
 ```
-* Woodman et al (in press) - Example analysis ([example-analysis](https://github.com/smwoodman/eSDM/blob/master/vignettes/example-analysis.Rmd))
+* Woodman et al. (2019) - Example analysis ([example-analysis](https://github.com/smwoodman/eSDM/blob/master/vignettes/example-analysis.Rmd))
 
 ## Citation
 
