@@ -1,4 +1,4 @@
-## eSDM 0.3.1 (on GitHub only)
+## eSDM 0.3.1
 * Fixed bug in eSDM GUI 'update map range' button
 * Added eSDM paper citation details (doi, etc) where applicable
 
