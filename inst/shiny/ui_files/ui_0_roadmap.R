@@ -156,7 +156,9 @@ ui.roadmap <- function() {
               tags$li("If your download (e.g., of manuscript data) is a 'download.htm' file, cancel and try the download again.")
             ),
             tags$br(),
-            tags$h5("Contact Sam Woodman (sam.woodman@noaa.gov) with any questions."),
+            tags$h5("Submit suggestions and bug reports at",
+                    tags$a("https://github.com/smwoodman/eSDM/issues,", href = "https://github.com/smwoodman/eSDM/issues"),
+                    "or contact Sam Woodman (sam.woodman@noaa.gov) with any questions"),
             tags$br(),
             downloadButton("download_data_manuscript", "Download manuscript data"),
             downloadButton("download_data_sample", "Download sample data"),
