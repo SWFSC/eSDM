@@ -39,17 +39,26 @@
 #' @export
 evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   #------------------------------------------------------------------
+  # Input checks and some processing
   if (!all(vapply(list(x, y), inherits, TRUE, "sf"))) {
     stop("x and y must both be objects of class sf")
   }
   if (!identical(st_crs(x), st_crs(y))) {
     stop("x and y must have identical coordinate systems")
   }
-  stopifnot(inherits(count.flag, "logical"))
+  stopifnot(
+    length(x.idx) == 1,
+    length(y.idx) == 1,
+    inherits(count.flag, "logical")
+  )
 
-  x.dens <- st_set_geometry(x, NULL)[, x.idx]
-  x.dens <- x.dens[!is.na(x.dens)]
-  y.data <- st_set_geometry(y, NULL)[, y.idx]
+  x.dens <- st_set_geometry(x, NULL)[[x.idx]]
+  x.dens.nona <- !is.na(x.dens)
+  x.dens <- x.dens[x.dens.nona]
+
+  y.data <- st_set_geometry(y, NULL)[[y.idx]]
+  y.data.nona <- !is.na(y.data)
+  y.data <- y.data[y.data.nona]
 
   if (!is.numeric(x.dens)) {
     stop("The data in column x.idx of object x must all be numbers")
@@ -65,7 +74,9 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   }
 
   #------------------------------------------------------------------
-  x <- x[!is.na(st_set_geometry(x, NULL)[, 1]), ]
+  # Remove NAs, then get intersection of predictions and validation data
+  x <- x[x.dens.nona, ]
+  y <- y[y.data.nona, ]
   yx.sgbp <- suppressMessages(st_intersects(y, x))
 
   temp <- sapply(yx.sgbp, length)
@@ -89,9 +100,8 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   #------------------------------------------------------------------
   # Data kept as separate vectors because in mapply() accessing several vector
   #   objects is faster than accessing one data.frame
-  y.data <- na.omit(y.data)
   if (count.flag) {
-    x.abund <- unname(unlist(eSDM::model_abundance(x, x.idx, FALSE)))
+    x.abund <- unname(unlist(eSDM::model_abundance(x, x.idx, sum.abund = FALSE)))
     y.sight <- ifelse(y.data >= 1, 1, 0)
     y.count <- y.data
 
@@ -114,6 +124,7 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
 
 
   #------------------------------------------------------------------
+  # Make data frame with corresponding density and validation data values
   xy.data.overlap.list <- mapply(function(i, j) {
     if (length(j) == 0) {
       NULL
@@ -123,11 +134,12 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   }, yx.sgbp, seq_along(yx.sgbp), SIMPLIFY = FALSE)
 
   xy.data.overlap <- data.frame(do.call(rbind, xy.data.overlap.list))
+  names(xy.data.overlap) <- c("dens", "sight", "abund", "count")
 
 
   #------------------------------------------------------------------
   # AUC and TSS
-  pred.out <- prediction(xy.data.overlap[, 1], xy.data.overlap[, 2])
+  pred.out <- prediction(xy.data.overlap[[1]], xy.data.overlap[[2]])
 
   m1 <- slot(performance(pred.out, measure = "auc"), "y.values")[[1]]
 
@@ -137,7 +149,7 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
 
   # RMSE
   m3 <- ifelse(
-    count.flag, esdm_rmse(xy.data.overlap[, 3], xy.data.overlap[, 4]), NA
+    count.flag, esdm_rmse(xy.data.overlap[[3]], xy.data.overlap[[4]]), NA
   )
 
   #------------------------------------------------------------------
