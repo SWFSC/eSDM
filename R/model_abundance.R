@@ -51,13 +51,13 @@ model_abundance <- function(x, dens.idx, sum.abund = TRUE) {
   x.df <- st_set_geometry(x, NULL)
 
   if (sum.abund) {
-    sapply(dens.idx, function(j) {sum(x.df[, j] * x.area, na.rm = TRUE)})
+    sapply(dens.idx, function(j) {sum(x.df[[j]] * x.area, na.rm = TRUE)})
 
   } else {
     if (length(dens.idx) == 1) {
       x.df[, dens.idx] * x.area
     } else {
-      data.frame(sapply(dens.idx, function(j) {x.df[, j] * x.area})) %>%
+      data.frame(sapply(dens.idx, function(j) {x.df[[j]] * x.area})) %>%
         set_names(paste0(dens.idx, ".abund"))
     }
   }

@@ -116,6 +116,7 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   #   rows of sdm.idx[1] or contain only NAs (i.e. unused weight column in GUI)
   if (length(sdm.idx) > 1) {
     sdm.df <- st_set_geometry(sdm, NULL)[, sdm.idx]
+    #^ singe bracket ok because of length() check in if()
     sdm.na <- map(sdm.df, function(i) which(is.na(i)))
     sdm.temp <- vapply(
       sdm.na, function(i, j, k) {
@@ -170,7 +171,7 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   if (nrow(int) == 0) {
     stop("No 'base.geom' polygons overlap with any 'sdm' polygons")
   }
-  stopifnot(all(!is.na(st_set_geometry(sdm, NULL)[, 1])))
+  stopifnot(all(!is.na(st_set_geometry(sdm, NULL)[[1]])))
 
   #----------------------------------------------------------------------------
   # 2) Get predicted densities for base polys that had any overlap

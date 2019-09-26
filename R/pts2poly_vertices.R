@@ -48,7 +48,7 @@ pts2poly_vertices <- function(x, ...) {
   stopifnot(
     inherits(x, "data.frame"),
     ncol(x) >= 2,
-    identical(is.na(x[, 1]), is.na(x[, 2]))
+    identical(is.na(x[[1]]), is.na(x[[2]]))
   )
 
   x <- x %>%
