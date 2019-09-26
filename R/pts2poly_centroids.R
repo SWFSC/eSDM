@@ -53,11 +53,17 @@
 #'
 #' @export
 pts2poly_centroids <- function(x, y, ...) {
+  # Input checks
   stopifnot(
     inherits(x, "data.frame"),
     ncol(x) >= 2,
     is.numeric(y)
   )
+
+  if (ncol(x) == 2 & ("agr" %in% names(list(...))))
+    stop("agr cannot be passed to st_sfc(), ",
+         "meaning when x only has two columns")
+
 
   # Use first two (lon and lat) columns to create list of sfg objects
   x.lonlat <- x %>%
