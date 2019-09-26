@@ -156,10 +156,11 @@ ensemble_rescale <- function(x, x.idx, y, y.abund = NULL, x.var.idx = NULL) {
   #--------------------------------------------------------
   ### Replace original values with rescaled values
   x.df.idx.rescaled     <- map2_df(x.df.idx, d, function(i, j) i / j)
-  x.df.var.idx.rescaled <- map2_df(x.df.var.idx, d, function(i, j) i / (j^2))[, !is.na(x.var.idx)]
-
   x.df[, x.idx] <- x.df.idx.rescaled
-  x.df[, na.omit(x.var.idx)] <- x.df.var.idx.rescaled
 
+  if (!is.null(x.var.idx)) {
+    x.df.var.idx.rescaled <- map2_df(x.df.var.idx, d, function(i, j) i / (j^2)) #%>% select(which(!is.na(x.var.idx)))
+    x.df[, x.var.idx] <- x.df.var.idx.rescaled
+  }
   st_sf(x.df, geometry = x.geom, agr = st_agr(x))
 }
