@@ -30,11 +30,11 @@ ui.evalMetrics <- function() {
                                    choices = list("Count (numerical)" = 1, "Presence/absence" = 2),
                                    selected = 1))
           ),
-          #########################################################  Excel csv file
+          #########################################################  CSV file
           conditionalPanel(
             condition = "input.eval_load_type == 1",
             ui.instructions.upload.csv(),
-            helpText("The Excel .csv file must have columns with the longitude and latitude coordinates of the data,",
+            helpText("The CSV file must have columns with the longitude and latitude coordinates of the data,",
                      "in addition to the column with validation data.",
                      "The longitude and latitude coordinates are assumed to be WGS 84 geographic coordinates."),
             fileInput("eval_csv", label.csv.upload, accept = ".csv"),
@@ -238,7 +238,7 @@ ui.evalMetrics <- function() {
                 tags$br(),
                 tags$br(),
                 helpText(tags$strong("Note:"),
-                         "The downloaded Excel csv file will have both metric values and information about each set of predictions.",
+                         "The downloaded CSV file will have both metric values and information about each set of predictions.",
                          "Ensemble predictions have different information than original and overlaid predictions,",
                          "and thus if evaluation metrics have been calculated for both ensemble predictions and",
                          "original and/or overlaid predictions then some column headers will be formatted as",
