@@ -5,8 +5,8 @@ account: swoodman
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 360627
-bundleId: 2448300
+bundleId: 2448543
 url: https://swoodman.shinyapps.io/eSDM/
-when: 1569529808.65888
+when: 1569536638.32136
 asMultiple: FALSE
 asStatic: FALSE
