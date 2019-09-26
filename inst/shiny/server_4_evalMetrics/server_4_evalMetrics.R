@@ -111,7 +111,7 @@ eval_metrics <- eventReactive(input$eval_metrics_execute, {
       }
     }, models.toeval, seq_along(models.toeval), SIMPLIFY = TRUE)
 
-    incProgress(0.1, "Processing metrics")
+    incProgress(0.1, "Processing metrics", detail = "")
     eval.results <- eval.results[c("AUC", "TSS", "RMSE") %in% which.metrics, ]
     if (length(which.metrics) == 1) {
       eval.results <- matrix(eval.results, nrow = 1)
