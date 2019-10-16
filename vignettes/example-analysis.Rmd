@@ -1,10 +1,10 @@
 ---
-title: "Woodman et al (in press) - Example analysis"
+title: "Woodman et al 2019 - Example analysis"
 author: "Samuel Woodman"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Woodman et al (in press) - Example analysis}
+  %\VignetteIndexEntry{Woodman et al 2019 - Example analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -28,7 +28,7 @@ source(system.file("eSDM_vignette_helper.R", package = "eSDM"), local = TRUE, ec
 
 
 ## Overview
-`eSDM` allows users to create ensembles of predictions from species distribution models (SDMs), either using the `eSDM` GUI or manually in R using `eSDM` functions. This vignette demonstrates creating and evaluating ensembles using `eSDM` functions by manually performing the example analysis from Woodman _et al._ (in press). The example analysis explores differences between blue whale SDM predictions for the California Current Ecosystem (CCE) from Becker _et al._ (2016; i.e., Model_B), Hazen _et al._ (2017; i.e., Model_H), and Redfern _et al._ (2017; i.e., Model_R). It also creates and evaluates ensembles of the predictions, with associated uncertainty. See Woodman _et al._ (in press) for additional details, and in particular Table 1 for details about differences between the models.
+`eSDM` allows users to create ensembles of predictions from species distribution models (SDMs), either using the `eSDM` GUI or manually in R using `eSDM` functions. This vignette demonstrates creating and evaluating ensembles using `eSDM` functions by manually performing the example analysis from Woodman _et al._ (2019). The example analysis explores differences between blue whale SDM predictions for the California Current Ecosystem (CCE) from Becker _et al._ (2016; i.e., Model_B), Hazen _et al._ (2017; i.e., Model_H), and Redfern _et al._ (2017; i.e., Model_R). It also creates and evaluates ensembles of the predictions, with associated uncertainty. See Woodman _et al._ (2019) for additional details, and in particular Table 1 for details about differences between the models.
 
 In this vignette, the three sets of predictions and the validation data are read from .rds files because the original files were too large to be included in the package. The sections where these data are imported includes the code for reading the data from their original files, although this code has been commented out. The original files can be downloaded through the GUI or from https://github.com/smwoodman/eSDM-data. 
 
@@ -44,9 +44,9 @@ The first step of the example analysis is to import and process the Model_B, Mod
 * All predictions are `sf` objects. See below for examples of converting a CSV file of grid centroids or a `raster` object to an `sf` object.
 * The geometries of the predictions are valid; this can be checked using `sf::st_is_valid`.
 * The geometries of the predictions have a defined coordinate reference system (crs); this can be checked using `sf::st_crs`.
-* The predictions have the same longitudinal range (i.e., either [0, 360] or [-180, 180]); this can be checked using `sf::st_bbox`. You can use `sf::st_wrap_dateline` to convert an `sf` object to the longitudinal range [-180, 180], but note that this will cause plots to span [180, 180].
+* The predictions have the same longitudinal range (i.e., either [0, 360] or [-180, 180]); this can be checked using `sf::st_bbox`. You can use `sf::st_wrap_dateline` to convert an `sf` object to the longitudinal range [-180, 180], but note that this will cause plots to span [-180, 180] as well.
 
-We can visualize the SDM predictions after importing and processing them. The plots below make up Fig. 3 in Woodman _et al._ (in press). This vignette uses the custom `plot_sf_3panel` function (in 'vignette_helper.R' located at `system.file("vignette_helper.R", package = "eSDM"`) for plotting. `plot_sf_3panel` and `tmap_sdm` (used later in this vignette) were not included as functions in the `eSDM` package because they are specific to the example analysis region and SDMs. However, they can provide guidelines and a framework for plotting SDMs using the `sf` and `tmap` packages, allowing you to adapt these functions to your specific plotting needs.
+We can visualize the SDM predictions after importing and processing them. The plots below make up Fig. 3 in Woodman _et al._ (2019). This vignette uses the custom `plot_sf_3panel` function (in 'vignette_helper.R' located at `system.file("vignette_helper.R", package = "eSDM"`) for plotting. `plot_sf_3panel` and `tmap_sdm` (used later in this vignette) were not included as functions in the `eSDM` package because they are specific to the example analysis region and SDMs. However, they can provide guidelines and a framework for plotting SDMs using the `sf` and `tmap` packages, allowing you to adapt these functions to your specific plotting needs.
 
 ```{r}
 # Import, process, and plot Model_B predictions
@@ -108,7 +108,7 @@ logo.sf <- as(logo, "SpatialPolygonsDataFrame") %>%
 
 ## Overlay predictions
 
-Because the original predictions have both different spatial resolutions and coordinate systems, we must overlay them onto the same base geometry. See Woodman _et al._ (in press), the `eSDM` GUI manual, or the `overlay_sdm` documentation for details about the overlay process. For the example analysis, we use the geometry of Model_R as the base geometry. However, first we must import and process the study area and erasing polygons, with which we clip and erase land from the base geometry, respectively. We also visualize the base geometry.
+Because the original predictions have both different spatial resolutions and coordinate systems, we must overlay them onto the same base geometry. See Woodman _et al._ (2019), the `eSDM` GUI manual, or the `overlay_sdm` documentation for details about the overlay process. For the example analysis, we use the geometry of Model_R as the base geometry. However, first we must import and process the study area and erasing polygons, with which we clip and erase land from the base geometry, respectively. We also visualize the base geometry.
 
 ```{r}
 # Study area polygon
@@ -213,7 +213,7 @@ valid.data %>%
   knitr::kable(caption = "Validation data summary")
 ```
 
-Now we can calculate the AUC and TSS metrics for the original and overlaid predictions. The displayed table is from Table 3 of Woodman _et al._ (in press). Note that `evaluation_metrics` requires that validation data have the same coordinate reference system as the predictions being evaluated.
+Now we can calculate the AUC and TSS metrics for the original and overlaid predictions. The displayed table is from Table 3 of Woodman _et al._ (2019). Note that `evaluation_metrics` requires that validation data have the same coordinate reference system as the predictions being evaluated.
 
 ```{r, eval=FALSE}
 # Calculate evaluation metrics with different validation data sets; code not run
@@ -379,7 +379,7 @@ ens.sf.unw.wmv <- eSDM::ensemble_create(
   dplyr::select(Pred_ens , SE)
 ```
 
-Now we can calculate AUC and TSS scores for the ensembles and compare them to those of original and ensemble predictions. Again, the evaluation code is not run; the displayed table is Table 3 from Woodman _et al._ (in press).
+Now we can calculate AUC and TSS scores for the ensembles and compare them to those of original and ensemble predictions. Again, the evaluation code is not run; the displayed table is Table 3 from Woodman _et al._ (2019).
 
 ```{r, eval=FALSE}
 # Calculate evaluation metrics for ensembles; code not run
@@ -529,13 +529,12 @@ tmap_arrange(
 
 ## References
 
-Becker, E., Forney, K., Fiedler, P., Barlow, J., Chivers, S., Edwards, C., ... Redfern, J. (2016). Moving towards dynamic ocean management: how well do modeled ocean products predict species distributions? Remote Sensing, 8, 149. 10.3390/rs8020149
+Becker, E., Forney, K., Fiedler, P., Barlow, J., Chivers, S., Edwards, C., ... Redfern, J. (2016). Moving towards dynamic ocean management: how well do modeled ocean products predict species distributions? Remote Sensing, 8, 149. doi:10.3390/rs8020149
 
-Hazen, E.L., Palacios, D.M., Forney, K.A., Howell, E.A., Becker, E., Hoover, A.L., ... Bailey, H. (2017). WhaleWatch: a dynamic management tool for predicting blue whale density in the California Current. Journal of Applied Ecology, 54, 1415-1428. 10.1111/1365-2664.12820
+Hazen, E.L., Palacios, D.M., Forney, K.A., Howell, E.A., Becker, E., Hoover, A.L., ... Bailey, H. (2017). WhaleWatch: a dynamic management tool for predicting blue whale density in the California Current. Journal of Applied Ecology, 54, 1415-1428. doi:10.1111/1365-2664.12820
 
-Irvine, L.M., Mate, B.R., Winsor, M.H., Palacios, D.M., Bograd, S.J., Costa, D.P. & Bailey, H. (2014). Spatial and temporal occurrence of blue whales off the U.S. West Coast, with implications for management. PLoS One, 9, e102959. 10.1371/journal.pone.0102959
+Irvine, L.M., Mate, B.R., Winsor, M.H., Palacios, D.M., Bograd, S.J., Costa, D.P. & Bailey, H. (2014). Spatial and temporal occurrence of blue whales off the U.S. West Coast, with implications for management. PLoS One, 9, e102959. doi:10.1371/journal.pone.0102959
 
-Redfern, J.V., Moore, T.J., Fiedler, P.C., de Vos, A., Brownell, R.L., Forney, K.A., ... Heikkinen, R. (2017). Predicting cetacean distributions in data-poor marine ecosystems. Diversity and Distributions, 23, 394-408. 10.1111/ddi.12537
+Redfern, J.V., Moore, T.J., Fiedler, P.C., de Vos, A., Brownell, R.L., Forney, K.A., ... Heikkinen, R. (2017). Predicting cetacean distributions in data-poor marine ecosystems. Diversity and Distributions, 23, 394-408. doi:10.1111/ddi.12537
 
-Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (in press). eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. Methods in Ecology and Evolution.
-
+Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. Methods in Ecology and Evolution. 2019;00:1-11. doi:10.1111/2041-210X.13283
