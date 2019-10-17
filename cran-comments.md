@@ -1,3 +1,9 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Changed the doi idioms to fully specified URLs in the example-analysis vignette
+* Replaced the non-ASCII character in the doi in inst/CITATION
+
 ## Release summary
 * Updated citation with doi, etc. due to paper being published
 * Updated vignette with proper citation information
