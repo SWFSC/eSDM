@@ -1,6 +1,6 @@
 # eSDM
 
-[![CRAN version](http://www.r-pkg.org/badges/version/eSDM?color=red)](https://cran.r-project.org/package=eSDM)
+[![CRAN version](http://www.r-pkg.org/badges/version/eSDM?color=green)](https://cran.r-project.org/package=eSDM)
 [![Build Status](https://travis-ci.org/smwoodman/eSDM.svg?branch=master)](https://travis-ci.org/smwoodman/eSDM)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/smwoodman/eSDM?branch=master&svg=true)](https://ci.appveyor.com/project/smwoodman/eSDM)
 
@@ -20,7 +20,7 @@ install.packages('eSDM')
 To install the latest version from GitHub:
 
 ```r
-if (!require('devtools')) install.packages('devtools')
+# install.packages('devtools')
 devtools::install_github('smwoodman/eSDM', build_vignettes = TRUE)
 ```
 
