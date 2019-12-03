@@ -27,7 +27,7 @@ devtools::install_github('smwoodman/eSDM', build_vignettes = TRUE)
 ## `eSDM` GUI
 You can access the GUI online at https://swoodman.shinyapps.io/eSDM/. You do not need to have R or RStudio installed to access the GUI online.
 
-To run the GUI locally: install `eSDM` as specified above, and then run the following code in your RStudio console:
+To run the GUI locally: install `eSDM` as described above, and then run the following code in your RStudio console:
 
 ```r
 eSDM::eSDM_GUI()
@@ -50,7 +50,7 @@ vignette("example-analysis")
 
 The paper can be obtained [here](https://doi.org/10.1111/2041-210X.13283), and is cited as (preferred):
 
-Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). _eSDM_: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. _Methods Ecol Evol_. 2019;00:1-11. doi:10.1111/2041-210X.13283
+Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). _eSDM_: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. _Methods Ecol Evol_. 2019;10:1923-1933. doi:10.1111/2041-210X.13283
 
 For code used to create applicable figures from the manuscript: 
 [Figure 2](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure2_overlay.R), 
