@@ -10,8 +10,7 @@ ensemble_create(x, x.idx, w = NULL, x.var.idx = NULL, ...)
 
 \method{ensemble_create}{sf}(x, x.idx, w = NULL, x.var.idx = NULL, ...)
 
-\method{ensemble_create}{data.frame}(x, x.idx, w = NULL,
-  x.var.idx = NULL, ...)
+\method{ensemble_create}{data.frame}(x, x.idx, w = NULL, x.var.idx = NULL, ...)
 }
 \arguments{
 \item{x}{object of class \code{sf} or class \code{data.frame}}
