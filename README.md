@@ -1,6 +1,6 @@
 # eSDM
 
-[![CRAN version](http://www.r-pkg.org/badges/version/eSDM?color=green)](https://cran.r-project.org/package=eSDM)
+[![CRAN version](http://www.r-pkg.org/badges/version/eSDM)](https://cran.r-project.org/package=eSDM)
 [![Build Status](https://travis-ci.org/smwoodman/eSDM.svg?branch=master)](https://travis-ci.org/smwoodman/eSDM)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/smwoodman/eSDM?branch=master&svg=true)](https://ci.appveyor.com/project/smwoodman/eSDM)
 
@@ -24,7 +24,7 @@ To install the latest version from GitHub:
 devtools::install_github('smwoodman/eSDM', build_vignettes = TRUE)
 ```
 
-## `eSDM` GUI
+## eSDM GUI
 You can access the GUI online at https://swoodman.shinyapps.io/eSDM/. You do not need to have R or RStudio installed to access the GUI online.
 
 To run the GUI locally: install `eSDM` as described above, and then run the following code in your RStudio console:
@@ -44,7 +44,6 @@ browseVignettes("eSDM")
 # To open a specific vignette
 vignette("example-analysis")
 ```
-* Woodman et al. (2019) - Example analysis ([example-analysis](https://github.com/smwoodman/eSDM/blob/master/vignettes/example-analysis.Rmd))
 
 ## Citation
 

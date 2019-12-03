@@ -23,7 +23,7 @@ breaks_calc <- function(x, breaks = c(seq(0.4, 0.05, by = -0.05), 0.02)) {
 #------------------------------------------------------------------------------
 # Simple plot of sf object by relative percentages (percentiles)
 plot_sf_perc <- function(obj.sf, col.data = 1, map.base, round.num = 3,
-                         plot.main, leg.cex = 1) {
+                         plot.main, leg.cex = 1, x.axis.at = NULL) {
 
   obj.data <- st_set_geometry(obj.sf, NULL)[, col.data]
   b.val <- breaks_calc(obj.data)
@@ -40,8 +40,11 @@ plot_sf_perc <- function(obj.sf, col.data = 1, map.base, round.num = 3,
   plot(
     obj.sf[col.data], axes = TRUE, border = NA,
     main = plot.main, cex.main = 1.4,
+    xaxt = "n", yaxt = "n",
     breaks = b.val, pal = col.pal, key.pos = NULL, reset = FALSE
   )
+  if (is.null(x.axis.at)) sf::.degAxis(1) else sf::.degAxis(1, at = x.axis.at)
+  sf::.degAxis(2)
 
   plot(map.base, add = TRUE, col = "tan", border = NA)
 
@@ -54,7 +57,8 @@ plot_sf_perc <- function(obj.sf, col.data = 1, map.base, round.num = 3,
 # Plot of predictions (numeric), SE values, and predictions (percentage)
 # obj.sf must contain columns with names 'se' and 'cv'
 plot_sf_3panel <- function(obj.sf, col.data.pred, main.txt = "",
-                           map.base, plot.perc = TRUE) {
+                           map.base, plot.perc = TRUE,
+                           x.axis.at = NULL) {
 
   #----------------------------------------------------------------------------
   ### Prep
@@ -92,30 +96,37 @@ plot_sf_3panel <- function(obj.sf, col.data.pred, main.txt = "",
   # Preds - numeric
   plot(
     obj.sf["pred_all"], axes = TRUE, border = NA,
+    xaxt = "n", yaxt = "n",
     breaks = b.val, pal = col.pal, key.pos = NULL, reset = FALSE,
     main = paste0(main.txt, "Predictions"), cex.main = 1.4
   )
   plot(map.base, add = TRUE, col = "tan", border = NA)
   legend("topright", legend = leg.txt, col = leg.col.pal, pch = 15,
          cex = leg.cex, pt.cex = leg.pt.cex)
+  if (is.null(x.axis.at)) sf::.degAxis(1) else sf::.degAxis(1, at = x.axis.at)
+  sf::.degAxis(2)
   graphics::box()
 
   # SE
   plot(
     obj.sf["se"], axes = TRUE, border = NA,
+    xaxt = "n", yaxt = "n",
     breaks = b3.val, pal = col.pal, key.pos = NULL, reset = FALSE,
     main = paste0(main.txt, "SE"), cex.main = 1.4
   )
+
   plot(map.base, add = TRUE, col = "tan", border = NA)
   legend("topright", legend = leg3.txt, col = leg.col.pal, pch = 15,
          cex = leg.cex, pt.cex = leg.pt.cex)
   graphics::box()
+  if (is.null(x.axis.at)) sf::.degAxis(1) else sf::.degAxis(1, at = x.axis.at)
+  sf::.degAxis(2)
 
   # Preds - percentage
   if (plot.perc) {
     plot_sf_perc(
       obj.sf, col.data = "pred_all", plot.main = paste0(main.txt, "Predictions"),
-      leg.cex = leg.cex, map.base = map.base
+      leg.cex = leg.cex, map.base = map.base, x.axis.at = x.axis.at
     )
     graphics::box()
   }

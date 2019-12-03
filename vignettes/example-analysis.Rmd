@@ -1,10 +1,10 @@
 ---
-title: "Woodman et al 2019 - Example analysis"
+title: "Example analysis - Woodman et al 2019"
 author: "Samuel Woodman"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Woodman et al 2019 - Example analysis}
+  %\VignetteIndexEntry{Example analysis - Woodman et al 2019}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -65,8 +65,11 @@ map.world <- eSDM::gshhg.l.L16
 # map.world <- st_geometry(st_as_sf(maps::map('world', plot = FALSE, fill = TRUE)))
 ```
 
-```{r, fig.width=7}
-plot_sf_3panel(model.b.sf, "pred_bm", main.txt = "Model_B - ", map.base = map.world)
+```{r, fig.width=7, fig.height=3}
+plot_sf_3panel(
+  model.b.sf, "pred_bm", main.txt = "Model_B - ", map.base = map.world, 
+  x.axis.at = c(-130, -125, -120)
+)
 ```
 
 ```{r}
@@ -79,11 +82,14 @@ model.h.sf <- readRDS(system.file("extdata/Predictions_Hazenetal2017.rds", packa
 model.h.sf
 ```
 
-```{r, fig.width=7}
-plot_sf_3panel(model.h.sf, "pred_bm", main.txt = "Model_H - ", map.base = map.world)
+```{r, fig.width=7, fig.height=3}
+plot_sf_3panel(
+  model.h.sf, "pred_bm", main.txt = "Model_H - ", map.base = map.world, 
+  x.axis.at = c(-135, -130, -125, -120)
+)
 ```
 
-```{r, fig.width=7}
+```{r}
 # Import, process, and plot Model_R predictions
 # model.r <- st_read("Shapefiles/Predictions_Redfernetal2017.shp")
 model.r.sf <- readRDS(system.file("extdata/Predictions_Redfernetal2017.rds", package = "eSDM")) %>% 
@@ -93,8 +99,11 @@ model.r.sf <- readRDS(system.file("extdata/Predictions_Redfernetal2017.rds", pac
 model.r.sf
 ```
 
-```{r, fig.width=7}
-plot_sf_3panel(model.r.sf, "pred_bm", main.txt = "Model_R - ", map.base = map.world)
+```{r, fig.width=7, fig.height=3}
+plot_sf_3panel(
+  model.r.sf, "pred_bm", main.txt = "Model_R - ", map.base = map.world, 
+  x.axis.at = c(-130, -125, -120)
+)
 ```
 
 
@@ -175,7 +184,7 @@ rm(over3.sfb)
 
 We also could plot the overlaid predictions to show that the overlaid distribution patterns are very similar to those of the original predictions.
 
-```{r, fig.width=7, eval=FALSE}
+```{r, fig.width=7, fig.height=3, eval=FALSE}
 # Plot overlaid predictions; code not run
 plot_sf_3panel(over1.sf, "pred_bm", main.txt = "Overlaid Model_B - ", map.base = map.world)
 plot_sf_3panel(over2.sf, "pred_bm", main.txt = "Overlaid Model_H - ", map.base = map.world)
@@ -260,14 +269,14 @@ eval.combo <- data.frame(do.call(rbind, list(
 read.csv(system.file("extdata/Table3.csv", package = "eSDM")) %>%
   filter(grepl("Model_", Predictions)) %>% 
   dplyr::select(Predictions, AUC, TSS, `AUC-LT` = AUC.LT, `TSS-LT` = TSS.LT, 
-         `AUC-HR` = AUC.HR, `TSS-HR` = TSS.HR) %>% 
+                `AUC-HR` = AUC.HR, `TSS-HR` = TSS.HR) %>% 
   knitr::kable(caption = "Evaluation metrics", digits = 3, align = "lcccccc")
 ```
 
 We can see that for each set of predictions, the original and overlaid evaluation metrics are quite similar, again showing that the overlay conserved the predicted blue whale distributions.
 
 
-## Create ensemble predictions
+## Create and evaluate ensemble predictions
 
 Before creating the ensembles, we must rescale the overlaid predictions. We rescaled the predictions using the abundance rescaling method and an abundance of 1648 (Becker _et al._ 2016). Using the sum to 1 rescaling method would result in ensembles with similar distribution patterns, but the actual density values could not be used to provide a meaningful abundance estimate.
 
@@ -419,17 +428,17 @@ eval.combo.ens <- data.frame(do.call(rbind, list(
 ```{r}
 read.csv(system.file("extdata/Table3.csv", package = "eSDM")) %>%
   dplyr::select(Predictions, AUC, TSS, `AUC-LT` = AUC.LT, `TSS-LT` = TSS.LT, 
-         `AUC-HR` = AUC.HR, `TSS-HR` = TSS.HR) %>% 
+                `AUC-HR` = AUC.HR, `TSS-HR` = TSS.HR) %>% 
   knitr::kable(caption = "Evaluation metrics", digits = 3, align = "lcccccc")
 ```
 
 We can see that the ensemble with weights based on TSS values had the highest scores of the ensemble predictions, and mostly higher scores that the original predictions. We can visualize this ensemble to compare it with known blue whale habitat.
 
-```{r, fig.width=7}
+```{r, fig.width=7, fig.height=3}
 # Simple code to visualize ensemble created with weights based on TSS values
 plot_sf_3panel(
   rename(ens.sf.wtss, se = SE), "Pred_ens", main.txt = "Ensemble-TSS - ", 
-  map.base = map.world
+  map.base = map.world, x.axis.at = c(-130, -125, -120)
 )
 ```
 
