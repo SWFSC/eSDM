@@ -53,7 +53,7 @@ faster than running in online. If text or images overlap within the GUI,
 please make the browser window full screen or adjust the text size in
 your browser (e.g., Ctrl - minus (‘-’) on Windows systems)
 
-## Reference
+## Manuscript reference
 
 The paper can be obtained
 [here](https://doi.org/10.1111/2041-210X.13283), and is cited as
@@ -68,7 +68,7 @@ abundance models. *Methods Ecol Evol*. 2019;10:1923-1933.
 For data used in the example analysis, see
 <https://github.com/smwoodman/eSDM-data>
 
-For code used to create applicable figures from the paper:
+For code used to create applicable figures from the manuscript:
 [Figure 2](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure2_overlay.R),
 [Figure 3](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure3.R),
 [Figure 4](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure4.R),

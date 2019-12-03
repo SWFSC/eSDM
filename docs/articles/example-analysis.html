@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Woodman et al 2019 - Example analysis • eSDM</title>
+<title>Example analysis - Woodman et al 2019 • eSDM</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Woodman et al 2019 - Example analysis">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Example analysis - Woodman et al 2019">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -54,7 +54,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/example-analysis.html">Woodman et al 2019 - Example analysis</a>
+      <a href="../articles/example-analysis.html">Example analysis - Woodman et al 2019</a>
     </li>
   </ul>
 </li>
@@ -82,7 +82,7 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Woodman et al 2019 - Example analysis</h1>
+      <h1>Example analysis - Woodman et al 2019</h1>
                         <h4 class="author">Samuel Woodman</h4>
             
             <h4 class="date">2019-12-03</h4>
@@ -104,7 +104,7 @@
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
 <p><code>eSDM</code> allows users to create ensembles of predictions from species distribution models (SDMs), either using the <code>eSDM</code> GUI or manually in R using <code>eSDM</code> functions. This vignette demonstrates creating and evaluating ensembles using <code>eSDM</code> functions by manually performing the example analysis from Woodman <em>et al.</em> (2019). The example analysis explores differences between blue whale SDM predictions for the California Current Ecosystem (CCE) from Becker <em>et al.</em> (2016; i.e., Model_B), Hazen <em>et al.</em> (2017; i.e., Model_H), and Redfern <em>et al.</em> (2017; i.e., Model_R). It also creates and evaluates ensembles of the predictions, with associated uncertainty. See Woodman <em>et al.</em> (2019) for additional details, and in particular Table 1 for details about differences between the models.</p>
-<p>In this vignette, the three sets of predictions and the validation data are read from .rds files because the original files were too large to be included in the package. The sections where these data are imported includes the code for reading the data from their original files, although this code has been commented out. The original files can be downloaded through the GUI or from <a href="https://github.com/smwoodman/eSDM-data" class="uri">https://github.com/smwoodman/eSDM-data</a>.</p>
+<p>In this vignette, the three sets of predictions and the validation data are read from .rds files because the original files were too large to be included in the package. The sections where these data are imported includes the code for reading the data from their original files, although this code has been commented out. The original files can be downloaded through the GUI or at <a href="https://github.com/smwoodman/eSDM-data" class="uri">https://github.com/smwoodman/eSDM-data</a>.</p>
 <p>This document contains code for plotting predictions. However, by default some of the plotting code is not run because it can take several minutes (these code chunks contain the comment “code not run”). If desired, you may run these code chunks manually in R.</p>
 <p>Before using data from this example analysis, please see the README.txt file for proper citation information (located at <code>system.file("extdata/README.txt", package = "eSDM"</code>) and contact the author.</p>
 </div>
@@ -152,7 +152,10 @@
 <span id="cb2-31"><a href="#cb2-31"></a></span>
 <span id="cb2-32"><a href="#cb2-32"></a><span class="co"># Other option for making base map</span></span>
 <span id="cb2-33"><a href="#cb2-33"></a><span class="co"># map.world &lt;- st_geometry(st_as_sf(maps::map('world', plot = FALSE, fill = TRUE)))</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">plot_sf_3panel</span>(model.b.sf, <span class="st">"pred_bm"</span>, <span class="dt">main.txt =</span> <span class="st">"Model_B - "</span>, <span class="dt">map.base =</span> map.world)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">plot_sf_3panel</span>(</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  model.b.sf, <span class="st">"pred_bm"</span>, <span class="dt">main.txt =</span> <span class="st">"Model_B - "</span>, <span class="dt">map.base =</span> map.world, </span>
+<span id="cb3-3"><a href="#cb3-3"></a>  <span class="dt">x.axis.at =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="dv">130</span>, <span class="dv">-125</span>, <span class="dv">-120</span>)</span>
+<span id="cb3-4"><a href="#cb3-4"></a>)</span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Import, process, and plot Model_H predictions</span></span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co"># model.h &lt;- read.csv("Predictions_Hazenetal2017.csv")</span></span>
@@ -180,7 +183,10 @@
 <span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; 8  0.03529852 0.017022402 POLYGON ((-133.125 30.125, ...</span></span>
 <span id="cb4-25"><a href="#cb4-25"></a><span class="co">#&gt; 9  0.10666410 0.063944752 POLYGON ((-132.875 30.125, ...</span></span>
 <span id="cb4-26"><a href="#cb4-26"></a><span class="co">#&gt; 10 0.11393473 0.061255526 POLYGON ((-132.625 30.125, ...</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">plot_sf_3panel</span>(model.h.sf, <span class="st">"pred_bm"</span>, <span class="dt">main.txt =</span> <span class="st">"Model_H - "</span>, <span class="dt">map.base =</span> map.world)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">plot_sf_3panel</span>(</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  model.h.sf, <span class="st">"pred_bm"</span>, <span class="dt">main.txt =</span> <span class="st">"Model_H - "</span>, <span class="dt">map.base =</span> map.world, </span>
+<span id="cb5-3"><a href="#cb5-3"></a>  <span class="dt">x.axis.at =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="dv">135</span>, <span class="dv">-130</span>, <span class="dv">-125</span>, <span class="dv">-120</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>)</span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Import, process, and plot Model_R predictions</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="co"># model.r &lt;- st_read("Shapefiles/Predictions_Redfernetal2017.shp")</span></span>
@@ -208,7 +214,10 @@
 <span id="cb6-24"><a href="#cb6-24"></a><span class="co">#&gt; 8  0.004699313 0.0014451453 MULTIPOLYGON (((-13177508 3...</span></span>
 <span id="cb6-25"><a href="#cb6-25"></a><span class="co">#&gt; 9  0.004930461 0.0011039563 MULTIPOLYGON (((-13197508 3...</span></span>
 <span id="cb6-26"><a href="#cb6-26"></a><span class="co">#&gt; 10          NA           NA MULTIPOLYGON (((-13067508 3...</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">plot_sf_3panel</span>(model.r.sf, <span class="st">"pred_bm"</span>, <span class="dt">main.txt =</span> <span class="st">"Model_R - "</span>, <span class="dt">map.base =</span> map.world)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">plot_sf_3panel</span>(</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  model.r.sf, <span class="st">"pred_bm"</span>, <span class="dt">main.txt =</span> <span class="st">"Model_R - "</span>, <span class="dt">map.base =</span> map.world, </span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="dt">x.axis.at =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="dv">130</span>, <span class="dv">-125</span>, <span class="dv">-120</span>)</span>
+<span id="cb7-4"><a href="#cb7-4"></a>)</span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Example code for converting raster to sf object; code not run</span></span>
 <span id="cb8-2"><a href="#cb8-2"></a>logo &lt;-<span class="st"> </span>raster<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/rlogo.grd"</span>, <span class="dt">package=</span><span class="st">"raster"</span>))</span>
@@ -223,7 +232,7 @@
 <span id="cb9-2"><a href="#cb9-2"></a>poly.study &lt;-<span class="st"> </span><span class="kw">st_read</span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Shapefiles/Study_Area_CCE.shp"</span>, <span class="dt">package =</span> <span class="st">"eSDM"</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb9-3"><a href="#cb9-3"></a><span class="st">  </span><span class="kw">st_geometry</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb9-4"><a href="#cb9-4"></a><span class="st">  </span><span class="kw">st_transform</span>(<span class="kw">st_crs</span>(model.r.sf))</span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt; Reading layer `Study_Area_CCE' from data source `C:\Users\sam.woodman\AppData\Local\Temp\RtmpeC8X8U\temp_libpath1bf473537576\eSDM\extdata\Shapefiles\Study_Area_CCE.shp' using driver `ESRI Shapefile'</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt; Reading layer `Study_Area_CCE' from data source `C:\Users\sam.woodman\AppData\Local\Temp\Rtmpczj0KB\temp_libpath1d7466251f57\eSDM\extdata\Shapefiles\Study_Area_CCE.shp' using driver `ESRI Shapefile'</span></span>
 <span id="cb9-6"><a href="#cb9-6"></a><span class="co">#&gt; Simple feature collection with 1 feature and 6 fields</span></span>
 <span id="cb9-7"><a href="#cb9-7"></a><span class="co">#&gt; geometry type:  POLYGON</span></span>
 <span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt; dimension:      XY</span></span>
@@ -369,7 +378,7 @@
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Table3.csv"</span>, <span class="dt">package =</span> <span class="st">"eSDM"</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb16-2"><a href="#cb16-2"></a><span class="st">  </span><span class="kw"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">"Model_"</span>, Predictions)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb16-3"><a href="#cb16-3"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(Predictions, AUC, TSS, <span class="st">`</span><span class="dt">AUC-LT</span><span class="st">`</span> =<span class="st"> </span>AUC.LT, <span class="st">`</span><span class="dt">TSS-LT</span><span class="st">`</span> =<span class="st"> </span>TSS.LT, </span>
-<span id="cb16-4"><a href="#cb16-4"></a>         <span class="st">`</span><span class="dt">AUC-HR</span><span class="st">`</span> =<span class="st"> </span>AUC.HR, <span class="st">`</span><span class="dt">TSS-HR</span><span class="st">`</span> =<span class="st"> </span>TSS.HR) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb16-4"><a href="#cb16-4"></a>                <span class="st">`</span><span class="dt">AUC-HR</span><span class="st">`</span> =<span class="st"> </span>AUC.HR, <span class="st">`</span><span class="dt">TSS-HR</span><span class="st">`</span> =<span class="st"> </span>TSS.HR) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb16-5"><a href="#cb16-5"></a><span class="st">  </span>knitr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="dt">caption =</span> <span class="st">"Evaluation metrics"</span>, <span class="dt">digits =</span> <span class="dv">3</span>, <span class="dt">align =</span> <span class="st">"lcccccc"</span>)</span></code></pre></div>
 <table class="table">
 <caption>Evaluation metrics</caption>
@@ -441,9 +450,9 @@
 </table>
 <p>We can see that for each set of predictions, the original and overlaid evaluation metrics are quite similar, again showing that the overlay conserved the predicted blue whale distributions.</p>
 </div>
-<div id="create-ensemble-predictions" class="section level2">
+<div id="create-and-evaluate-ensemble-predictions" class="section level2">
 <h2 class="hasAnchor">
-<a href="#create-ensemble-predictions" class="anchor"></a>Create ensemble predictions</h2>
+<a href="#create-and-evaluate-ensemble-predictions" class="anchor"></a>Create and evaluate ensemble predictions</h2>
 <p>Before creating the ensembles, we must rescale the overlaid predictions. We rescaled the predictions using the abundance rescaling method and an abundance of 1648 (Becker <em>et al.</em> 2016). Using the sum to 1 rescaling method would result in ensembles with similar distribution patterns, but the actual density values could not be used to provide a meaningful abundance estimate.</p>
 <p><code>ensemble_rescale</code> requires a single <code>sf</code> object that contains all of the data being rescaled. Thus, we extract the prediction and variance values before using the rescaling function.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># Rescale predictions</span></span>
@@ -605,7 +614,7 @@
 <span id="cb21-32"><a href="#cb21-32"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(Preds, <span class="dt">AUC =</span> X1, <span class="dt">TSS =</span> X2)</span></code></pre></div>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Table3.csv"</span>, <span class="dt">package =</span> <span class="st">"eSDM"</span>)) <span class="op">%&gt;%</span></span>
 <span id="cb22-2"><a href="#cb22-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(Predictions, AUC, TSS, <span class="st">`</span><span class="dt">AUC-LT</span><span class="st">`</span> =<span class="st"> </span>AUC.LT, <span class="st">`</span><span class="dt">TSS-LT</span><span class="st">`</span> =<span class="st"> </span>TSS.LT, </span>
-<span id="cb22-3"><a href="#cb22-3"></a>         <span class="st">`</span><span class="dt">AUC-HR</span><span class="st">`</span> =<span class="st"> </span>AUC.HR, <span class="st">`</span><span class="dt">TSS-HR</span><span class="st">`</span> =<span class="st"> </span>TSS.HR) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>                <span class="st">`</span><span class="dt">AUC-HR</span><span class="st">`</span> =<span class="st"> </span>AUC.HR, <span class="st">`</span><span class="dt">TSS-HR</span><span class="st">`</span> =<span class="st"> </span>TSS.HR) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb22-4"><a href="#cb22-4"></a><span class="st">  </span>knitr<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="dt">caption =</span> <span class="st">"Evaluation metrics"</span>, <span class="dt">digits =</span> <span class="dv">3</span>, <span class="dt">align =</span> <span class="st">"lcccccc"</span>)</span></code></pre></div>
 <table class="table">
 <caption>Evaluation metrics</caption>
@@ -715,7 +724,7 @@
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="co"># Simple code to visualize ensemble created with weights based on TSS values</span></span>
 <span id="cb23-2"><a href="#cb23-2"></a><span class="kw">plot_sf_3panel</span>(</span>
 <span id="cb23-3"><a href="#cb23-3"></a>  <span class="kw">rename</span>(ens.sf.wtss, <span class="dt">se =</span> SE), <span class="st">"Pred_ens"</span>, <span class="dt">main.txt =</span> <span class="st">"Ensemble-TSS - "</span>, </span>
-<span id="cb23-4"><a href="#cb23-4"></a>  <span class="dt">map.base =</span> map.world</span>
+<span id="cb23-4"><a href="#cb23-4"></a>  <span class="dt">map.base =</span> map.world, <span class="dt">x.axis.at =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="dv">130</span>, <span class="dv">-125</span>, <span class="dv">-120</span>)</span>
 <span id="cb23-5"><a href="#cb23-5"></a>)</span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-23-1.png" width="672"></p>
 <p>Below is code to visualize the unweighted ensembles and this ensemble (i.e., create plots similar to Figs. 4 and 5 in Woodman <em>et al.</em>). This code uses custom functions (located at <code><a href="https://rdrr.io/r/base/system.file.html">system.file("eSDM_vignette_helper.R", package = "eSDM")</a></code>) that leverage the <code>tmap</code> package to generate plots. However, by default this code is not run because each plot takes several minutes to generate.</p>
@@ -812,7 +821,7 @@
 <p>Hazen, E.L., Palacios, D.M., Forney, K.A., Howell, E.A., Becker, E., Hoover, A.L., … Bailey, H. (2017). WhaleWatch: a dynamic management tool for predicting blue whale density in the California Current. Journal of Applied Ecology, 54, 1415-1428. <a href="https://doi.org/10.1111/1365-2664.12820" class="uri">https://doi.org/10.1111/1365-2664.12820</a></p>
 <p>Irvine, L.M., Mate, B.R., Winsor, M.H., Palacios, D.M., Bograd, S.J., Costa, D.P. &amp; Bailey, H. (2014). Spatial and temporal occurrence of blue whales off the U.S. West Coast, with implications for management. PLoS One, 9, e102959. <a href="https://doi.org/10.1371/journal.pone.0109485" class="uri">https://doi.org/10.1371/journal.pone.0109485</a></p>
 <p>Redfern, J.V., Moore, T.J., Fiedler, P.C., de Vos, A., Brownell, R.L., Forney, K.A., … Heikkinen, R. (2017). Predicting cetacean distributions in data-poor marine ecosystems. Diversity and Distributions, 23, 394-408. <a href="https://doi.org/10.1111/ddi.12537" class="uri">https://doi.org/10.1111/ddi.12537</a></p>
-<p>Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. Methods in Ecology and Evolution. 2019;00:1-11. <a href="https://doi.org/10.1111/2041-210X.13283" class="uri">https://doi.org/10.1111/2041-210X.13283</a></p>
+<p>Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. Methods in Ecology and Evolution. 2019;10:1923-1933. <a href="https://doi.org/10.1111/2041-210X.13283" class="uri">https://doi.org/10.1111/2041-210X.13283</a></p>
 </div>
   </div>
 
@@ -826,7 +835,7 @@
       <li><a href="#import-sdm-predictions">Import SDM predictions</a></li>
       <li><a href="#overlay-predictions">Overlay predictions</a></li>
       <li><a href="#calculate-evaluation-metrics">Calculate evaluation metrics</a></li>
-      <li><a href="#create-ensemble-predictions">Create ensemble predictions</a></li>
+      <li><a href="#create-and-evaluate-ensemble-predictions">Create and evaluate ensemble predictions</a></li>
       <li><a href="#references">References</a></li>
       </ul>
 </div>

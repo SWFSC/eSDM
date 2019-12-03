@@ -59,7 +59,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/example-analysis.html">Woodman et al 2019 - Example analysis</a>
+      <a href="articles/example-analysis.html">Example analysis - Woodman et al 2019</a>
     </li>
   </ul>
 </li>
@@ -89,28 +89,33 @@
 <div id="esdm" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#esdm" class="anchor"></a>eSDM</h1></div>
+<!-- badges: start -->
 
-<div id="description" class="section level2">
+<p><code>eSDM</code> is an R package designed to allow users to create ensembles of predictions from species distribution models (SDMs) made at different spatial scales or with different prediction units. Included in the package is the eSDM GUI, an R Shiny tool that provides the user with a graphical user interface that they can use to import, overlay, and create ensembles of SDM predictions.</p>
+<div id="installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#description" class="anchor"></a>Description</h2>
-<p><code>eSDM</code> is an R package designed to allow users to create ensembles from predictions from species distribution models (SDMs) made at different spatial scales or with different prediction units. Included in the package is the eSDM GUI, an R Shiny tool that provides the user with a graphical user interface that they can use to import, overlay, and create ensembles from SDM predictions.</p>
-</div>
-<div id="install-r-package" class="section level2">
-<h2 class="hasAnchor">
-<a href="#install-r-package" class="anchor"></a>Install R package</h2>
-<p>To install the stable version from CRAN:</p>
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install the released version of eSDM from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">'eSDM'</span>)</span></code></pre></div>
-<p>To install the latest version from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span>(<span class="st">'devtools'</span>)) <span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">'devtools'</span>)</span>
+<p>To install the latest version from <a href="https://github.com">GitHub</a>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># install.packages('devtools')</span></span>
 <span id="cb2-2"><a href="#cb2-2"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">'smwoodman/eSDM'</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
 <div id="esdm-gui" class="section level2">
 <h2 class="hasAnchor">
-<a href="#esdm-gui" class="anchor"></a><code>eSDM</code> GUI</h2>
+<a href="#esdm-gui" class="anchor"></a>eSDM GUI</h2>
 <p>You can access the GUI online at <a href="https://swoodman.shinyapps.io/eSDM/" class="uri">https://swoodman.shinyapps.io/eSDM/</a>. You do not need to have R or RStudio installed to access the GUI online.</p>
-<p>To run the GUI locally: install <code>eSDM</code> as specified above, and then run the following code in your RStudio console:</p>
+<p>To run the GUI locally: install <code>eSDM</code> as described above, and then run the following code in your RStudio console:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>eSDM<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/eSDM/man/eSDM_GUI.html">eSDM_GUI</a></span>()</span></code></pre></div>
 <p>Depending on your internet connection, running the GUI locally may be faster than running in online. If text or images overlap within the GUI, please make the browser window full screen or adjust the text size in your browser (e.g., Ctrl - minus (‘-’) on Windows systems)</p>
+</div>
+<div id="manuscript-reference" class="section level2">
+<h2 class="hasAnchor">
+<a href="#manuscript-reference" class="anchor"></a>Manuscript reference</h2>
+<p>The paper can be obtained <a href="https://doi.org/10.1111/2041-210X.13283">here</a>, and is cited as (preferred):</p>
+<p>Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). <em>eSDM</em>: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. <em>Methods Ecol Evol</em>. 2019;10:1923-1933. <a href="doi:10.1111/2041-210X.13283" class="uri">doi:10.1111/2041-210X.13283</a></p>
+<p>For data used in the example analysis, see <a href="https://github.com/smwoodman/eSDM-data" class="uri">https://github.com/smwoodman/eSDM-data</a></p>
+<p>For code used to create applicable figures from the manuscript: <a href="https://github.com/smwoodman/eSDM/blob/master/data-raw/figure2_overlay.R">Figure 2</a>, <a href="https://github.com/smwoodman/eSDM/blob/master/data-raw/figure3.R">Figure 3</a>, <a href="https://github.com/smwoodman/eSDM/blob/master/data-raw/figure4.R">Figure 4</a>, <a href="https://github.com/smwoodman/eSDM/blob/master/data-raw/figure5.R">Figure 5</a></p>
 </div>
 <div id="vignettes" class="section level2">
 <h2 class="hasAnchor">
@@ -120,16 +125,6 @@
 <span id="cb4-3"><a href="#cb4-3"></a></span>
 <span id="cb4-4"><a href="#cb4-4"></a><span class="co"># To open a specific vignette</span></span>
 <span id="cb4-5"><a href="#cb4-5"></a><span class="kw"><a href="https://rdrr.io/r/utils/vignette.html">vignette</a></span>(<span class="st">"example-analysis"</span>)</span></code></pre></div>
-<ul>
-<li>Woodman et al. (2019) - Example analysis (<a href="https://github.com/smwoodman/eSDM/blob/master/vignettes/example-analysis.Rmd">example-analysis</a>)</li>
-</ul>
-</div>
-<div id="citation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#citation" class="anchor"></a>Citation</h2>
-<p>The paper can be obtained <a href="https://doi.org/10.1111/2041-210X.13283">here</a>, and is cited as (preferred):</p>
-<p>Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). <em>eSDM</em>: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. <em>Methods Ecol Evol</em>. 2019;00:1-11. <a href="doi:10.1111/2041-210X.13283" class="uri">doi:10.1111/2041-210X.13283</a></p>
-<p>For code used to create applicable figures from the manuscript: <a href="https://github.com/smwoodman/eSDM/blob/master/data-raw/figure2_overlay.R">Figure 2</a>, <a href="https://github.com/smwoodman/eSDM/blob/master/data-raw/figure3.R">Figure 3</a>, <a href="https://github.com/smwoodman/eSDM/blob/master/data-raw/figure4.R">Figure 4</a>, <a href="https://github.com/smwoodman/eSDM/blob/master/data-raw/figure5.R">Figure 5</a></p>
 </div>
 </div>
   </div>
@@ -143,6 +138,8 @@
 <li>Browse source code at <br><a href="https://github.com/smwoodman/eSDM">https://​github.com/​smwoodman/​eSDM</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/smwoodman/eSDM/issues">https://​github.com/​smwoodman/​eSDM/​issues</a>
+</li>
+<li>Access the eSDM GUI online at <br><a href="https://swoodman.shinyapps.io/eSDM">https://​swoodman.shinyapps.io/​eSDM</a>
 </li>
 </ul>
 </div>
@@ -168,7 +165,7 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=eSDM"><img src="http://www.r-pkg.org/badges/version/eSDM?color=red" alt="CRAN version"></a></li>
+<li><a href="https://cran.r-project.org/package=eSDM"><img src="http://www.r-pkg.org/badges/version/eSDM" alt="CRAN version"></a></li>
 <li><a href="https://travis-ci.org/smwoodman/eSDM"><img src="https://travis-ci.org/smwoodman/eSDM.svg?branch=master" alt="Build Status"></a></li>
 <li><a href="https://ci.appveyor.com/project/smwoodman/eSDM"><img src="https://ci.appveyor.com/api/projects/status/github/smwoodman/eSDM?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a></li>
 </ul>
