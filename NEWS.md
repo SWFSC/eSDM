@@ -5,7 +5,7 @@
 ## eSDM 0.3.1
 * Fixed bug in eSDM GUI 'update map range' button
 * Fixed bug in evaluation_metrics when validation data contains NA values
-* When subsetting for a single column, replaced [,] with [[]] so both data frames and tibbles return a vector
+* When subsetting for a single column, replaced `[,]` with `[[]]` so both data frames and tibbles return a vector
 * Improved documentation and messages in GUI
 * Added eSDM paper citation details (doi, etc) where applicable
 
