@@ -13,6 +13,9 @@ r:
   - devel
 
 
+warnings_are_errors: true
+
+
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ppa --yes
   - sudo apt-get --yes --force-yes update -qq
@@ -20,4 +23,12 @@ before_install:
   - R -e 'install.packages("rgdal", repos="http://R-Forge.R-project.org")'
 
 
-warnings_are_errors: true
+jobs:
+  include:
+  - r: release
+    before_cache:
+    - Rscript -e 'remotes::install_cran("pkgdown")'
+    deploy:
+      provider: script
+      script: Rscript -e 'pkgdown::deploy_site_github(verbose = TRUE)'
+      skip_cleanup: true
