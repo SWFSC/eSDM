@@ -10,31 +10,6 @@
 #'   prediction polygons for overlaid density value to be calculated and
 #'   not set as NA
 #'
-#' @importFrom dplyr %>%
-#' @importFrom dplyr arrange
-#' @importFrom dplyr between
-#' @importFrom dplyr bind_rows
-#' @importFrom dplyr filter
-#' @importFrom dplyr left_join
-#' @importFrom dplyr mutate
-#' @importFrom dplyr rename
-#' @importFrom dplyr select
-#' @importFrom purrr map
-#' @importFrom purrr set_names
-#' @importFrom rlang .data
-#' @importFrom rlang sym
-#' @importFrom sf st_area
-#' @importFrom sf st_bbox
-#' @importFrom sf st_crop
-#' @importFrom sf st_crs
-#' @importFrom sf st_intersection
-#' @importFrom sf st_geometry
-#' @importFrom sf st_sf
-#' @importFrom sf st_set_geometry
-#' @importFrom sf st_set_agr
-#' @importFrom units set_units
-#' @importFrom utils head
-
 #' @details See the eSDM GUI manual for specifics about the overlay process.
 #'   This process is equivalent to areal interpolation (Goodchild and Lam 1980),
 #'   where \code{base.geom} is the target, \code{sdm} is the source, and the data

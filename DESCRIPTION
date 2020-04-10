@@ -18,6 +18,7 @@ Imports:
     dplyr (>= 0.7-0), 
     DT, 
     leaflet, 
+    magrittr,
     methods,
     purrr, 
     raster, 

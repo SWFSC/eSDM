@@ -4,8 +4,7 @@
 # Only put low resolution file in package - others too big
 
 library(sf)
-library(lwgeom)
-library(devtools)
+library(usethis)
 
 # Load L1 (world except for Antarctica) and L6 (Antarctica ground line)
 # gshhg.f.L1 <- st_read("../Data files/GSHHG_shp/f/GSHHS_f_L1.shp")
@@ -55,7 +54,7 @@ all(st_is_valid(gshhg.l.L16))
 # devtools::use_data(gshhg.f.L16)
 # devtools::use_data(gshhg.h.L16)
 # devtools::use_data(gshhg.i.L16)
-devtools::use_data(gshhg.l.L16)
+usethis::use_data(gshhg.l.L16)
 # devtools::use_data(gshhg.c.L16)
 
 

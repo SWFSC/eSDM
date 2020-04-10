@@ -14,13 +14,6 @@
 #'   Use \code{x.var.idx = NULL} (the default) if none of the predictions have associated uncertainty values;
 #'   see the 'Details' section for more information
 #'
-#' @importFrom purrr map2_df
-#' @importFrom sf st_agr
-#' @importFrom sf st_sf
-#' @importFrom sf st_geometry
-#' @importFrom sf st_set_geometry
-#' @importFrom stats na.omit
-#'
 #' @details \code{ensemble_rescale} is intended to be used after overlaying predictions with
 #'   \code{\link{overlay_sdm}} and before creating ensembles with \code{\link{ensemble_create}}.
 #'   The provided rescaling methods are:

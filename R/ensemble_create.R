@@ -19,14 +19,6 @@
 #' @param ... Arguments to be passed to methods; specifically designed for passing
 #'   \code{na.rm} argument to \code{sum}
 #'
-#' @importFrom dplyr select
-#' @importFrom sf st_agr
-#' @importFrom sf st_geometry
-#' @importFrom sf st_set_geometry
-#' @importFrom sf st_sf
-#' @importFrom utils head
-#' @importFrom utils tail
-#'
 #' @details \code{ensemble_create} is designed to be used after overlaying predictions with \code{\link{overlay_sdm}} and
 #'   (if desired) rescaling the overlaid predictions with \code{\link{ensemble_rescale}}.
 #'

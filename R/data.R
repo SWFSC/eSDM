@@ -26,8 +26,6 @@
 #'   Sample_predictions_4_gdb into the eSDM GUI, exporting predictions, and then
 #'   clipping them to the SoCal_bite.csv region
 #'
-#' @aliases preds.1 preds.2 preds.3
-#'
 #' @format Objects of class \code{sf} with a column of density predictions (name: \code{Density}) and
 #'   a simple feature list column (name: \code{geometry}).
 #'   \code{preds.1} also has a second column of sample density predictions (name: \code{Density2}),

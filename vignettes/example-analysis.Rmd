@@ -92,7 +92,7 @@ plot_sf_3panel(
 # Import, process, and plot Model_R predictions
 # model.r <- st_read("Shapefiles/Predictions_Redfernetal2017.shp")
 model.r.sf <- readRDS(system.file("extdata/Predictions_Redfernetal2017.rds", package = "eSDM")) %>% 
-  st_make_valid() %>% #Fix self-intersection
+  st_make_valid() %>%
   st_set_agr("constant")
 
 model.r.sf
