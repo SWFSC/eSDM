@@ -20,7 +20,6 @@ knitr::opts_chunk$set(
 ```{r setup, message=FALSE}
 library(dplyr)
 library(eSDM)
-library(lwgeom)
 library(sf)
 
 source(system.file("eSDM_vignette_helper.R", package = "eSDM"), local = TRUE, echo = FALSE)
@@ -93,7 +92,7 @@ plot_sf_3panel(
 # Import, process, and plot Model_R predictions
 # model.r <- st_read("Shapefiles/Predictions_Redfernetal2017.shp")
 model.r.sf <- readRDS(system.file("extdata/Predictions_Redfernetal2017.rds", package = "eSDM")) %>% 
-  st_make_valid() %>% #
+  st_make_valid() %>%
   st_set_agr("constant")
 
 model.r.sf
@@ -128,7 +127,7 @@ poly.study <- st_read(system.file("extdata/Shapefiles/Study_Area_CCE.shp", packa
 # Erasing polygon; clip to the buffered study area polygon reduces future computation time
 poly.erase <- eSDM::gshhg.l.L16 %>%
   st_transform(st_crs(model.r.sf)) %>%
-  lwgeom::st_make_valid() %>%
+  st_make_valid() %>%
   st_crop(st_buffer(poly.study, 100000))
 
 # Create the base geometry; st_erase() function defined in eSDM_vignette_helper.R

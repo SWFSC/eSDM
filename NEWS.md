@@ -1,3 +1,6 @@
+## eSDM 0.3.3
+* Import `st_make_valid` from `sf` rather than `lwgeom`
+
 ## eSDM 0.3.2
 * Updated citation details with MEE issue and page numbers
 * Updated vignette formatting 

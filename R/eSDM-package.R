@@ -16,8 +16,12 @@
 #'   such as loading other polygons to use and visualizing predictions.
 #'   However, user choices are restricted to the workflow provided by the GUI.
 #'
-#' @docType package
 #' @name eSDM-package
 #' @aliases eSDM
+#' @docType package
+#' @title Ensemble tool for predictions from Species Distribution Models
+#' @author Sam Woodman \email{sam.woodman@@noaa.gov}
+#' @seealso \url{https://smwoodman.github.io/eSDM/}
+#'
 #' @keywords package
 NULL

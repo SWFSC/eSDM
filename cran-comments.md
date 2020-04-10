@@ -1,7 +1,5 @@
 ## Release summary
-* Updated citation with final publication information
-* Standardized formatting in the 'example-analysis' vignette
-* Added eSDM website built with pkgdown to DESCRIPTION
+* Import st_make_valid from sf rather than lwgeom, as per message from sf author
 
 ## Test environments
 * Windows 10, R 3.6.1 (local)
