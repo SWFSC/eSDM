@@ -3,7 +3,7 @@
 # 'cache' changed from 'cache: packages' b/c of https://github.com/mtennekes/tmap/issues/263
 
 language: r
-cache: false
+cache: packages
 sudo: required
 dist: trusty
 
@@ -19,5 +19,4 @@ warnings_are_errors: true
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ppa --yes
   - sudo apt-get --yes --force-yes update -qq
-  - sudo apt-get install --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev libnetcdf-dev netcdf-bin
-  - R -e 'install.packages("rgdal", repos="http://R-Forge.R-project.org")'
+  - sudo apt-get install --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev
