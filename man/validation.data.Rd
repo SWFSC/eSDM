@@ -4,12 +4,14 @@
 \name{validation.data}
 \alias{validation.data}
 \title{Sample validation data}
-\format{An object of class \code{\link[sf]{sf}} with 8 rows and 3 variables
+\format{
+An object of class \code{\link[sf]{sf}} with 8 rows and 3 variables
 \describe{
   \item{sight}{1's and 0's indicating species presence/absence}
   \item{count}{number of individuals observed at each point}
   \item{geometry}{simple feature list column representing validation data points}
-}}
+}
+}
 \usage{
 validation.data
 }

@@ -7,9 +7,24 @@
 \alias{preds.2}
 \alias{preds.3}
 \title{Sample SDM density predictions}
-\format{Objects of class \code{sf} with a column of density predictions (name: \code{Density}) and
+\format{
+Objects of class \code{sf} with a column of density predictions (name: \code{Density}) and
   a simple feature list column (name: \code{geometry}).
-  \code{preds.1} also has a second column of sample density predictions (name: \code{Density2})}
+  \code{preds.1} also has a second column of sample density predictions (name: \code{Density2}),
+  as well as \code{Var1} and \code{Var2}, representing the variance
+
+  \code{preds1}: An object of class sf (inherits from data.frame) with 325 rows and 5 columns.
+
+  \code{preds2}: An object of class sf (inherits from data.frame) with 1891 rows and 2 columns.
+
+  \code{preds3}: An object of class sf (inherits from data.frame) with 1445 rows and 2 columns.
+
+
+
+
+
+
+}
 \usage{
 preds.1
 

@@ -196,7 +196,7 @@ check_pred_var_weight <- function(x, pred.idx, var.idx, weight.idx,
 make_geom_valid <- function(geom.invalid, dens.col = NA, geom.info = NA,
                             message.invalid = NA) {
   #----------------------------------------------------------------------------
-  geom.maybe <- lwgeom::st_make_valid(geom.invalid)
+  geom.maybe <- st_make_valid(geom.invalid)
 
   check1 <- !all(st_is_valid(geom.maybe))
   if (inherits(geom.invalid, "sf")) {
@@ -222,9 +222,9 @@ make_geom_valid <- function(geom.invalid, dens.col = NA, geom.info = NA,
 
     alert2 <- paste(
       "The GUI was unable to make the geometry valid using the",
-      "st_make_valid() function from the lwgeom package (see",
+      "st_make_valid() function from the sf package (see",
       tags$a("the function documentation",
-             href = "https://r-spatial.github.io/lwgeom/reference/valid.html"),
+             href = "https://r-spatial.github.io/sf/reference/valid.html"),
       "for more details).",
       "You may attempt to still use this object in the GUI,",
       "particularly if the invalid region will be clipped later,",
@@ -289,7 +289,7 @@ make_geom_valid <- function(geom.invalid, dens.col = NA, geom.info = NA,
 
     alert2 <- paste(
       "The GUI made the geometry valid using the st_make_valid() function",
-      "from the lwgeom package (see",
+      "from the sf package (see",
       tags$a("the function documentation",
              href = "https://r-spatial.github.io/lwgeom/reference/valid.html"),
       "for more details).",

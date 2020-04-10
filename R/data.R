@@ -1,7 +1,7 @@
 #' Low resolution GSHHG world map
 #'
 #' Low resolution GSHHG world map, includes hierarchical levels
-#'   L1 and L6. Processed using \code{lwgeom::st_make_valid()}
+#'   L1 and L6. Processed using \code{\link[sf:valid]{st_make_valid}}
 #'
 #' @format An object of class \code{\link[sf]{sfc}}
 #' @source \url{http://www.soest.hawaii.edu/pwessel/gshhg/}
@@ -30,18 +30,29 @@
 #'
 #' @format Objects of class \code{sf} with a column of density predictions (name: \code{Density}) and
 #'   a simple feature list column (name: \code{geometry}).
-#'   \code{preds.1} also has a second column of sample density predictions (name: \code{Density2})
+#'   \code{preds.1} also has a second column of sample density predictions (name: \code{Density2}),
+#'   as well as \code{Var1} and \code{Var2}, representing the variance
+#'
+#'   \code{preds1}: An object of class sf (inherits from data.frame) with 325 rows and 5 columns.
+#'
+#'   \code{preds2}: An object of class sf (inherits from data.frame) with 1891 rows and 2 columns.
+#'
+#'   \code{preds3}: An object of class sf (inherits from data.frame) with 1445 rows and 2 columns.
 #'
 #' @name preds
+#' @aliases preds.1 preds.2 preds.3
 
 
 #' @rdname preds
+#' @format
 "preds.1"
 
 #' @rdname preds
+#' @format
 "preds.2"
 
 #' @rdname preds
+#' @format
 "preds.3"
 
 
