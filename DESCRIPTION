@@ -29,7 +29,7 @@ Imports:
     shinycssloaders,
     shinydashboard,
     shinyjs,
-    sf (>= 0.6-3),
+    sf (>= 0.9-1),
     stats,
     tmap (>= 2.3),
     units,
@@ -38,6 +38,7 @@ Imports:
 Suggests:
     knitr, 
     leafem,
+    lwgeom, 
     maps, 
     maptools, 
     rmarkdown, 
