@@ -19,6 +19,7 @@ Imports:
     DT, 
     leaflet, 
     lwgeom,
+    magrittr, 
     methods,
     purrr, 
     raster, 

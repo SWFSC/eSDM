@@ -7,8 +7,6 @@
 #'
 #' @usage eSDM_GUI(launch.browser = TRUE)
 #'
-#' @importFrom shiny runApp
-#'
 #' @export
 eSDM_GUI <- function(launch.browser = TRUE) {
   appDir <- system.file("shiny", package = "eSDM")
@@ -16,5 +14,6 @@ eSDM_GUI <- function(launch.browser = TRUE) {
     stop("The eSDM GUI folder could not be found. Try re-installing 'eSDM'",
          call. = FALSE)
   }
+
   runApp(appDir, launch.browser = launch.browser, display.mode = "normal")
 }

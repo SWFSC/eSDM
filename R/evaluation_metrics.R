@@ -11,14 +11,6 @@
 #'   while \code{FALSE} indicates that the data is presence/absence.
 #'   See details for differences in data processing based on this flag.
 #'
-#' @importFrom methods slot
-#' @importFrom ROCR performance
-#' @importFrom ROCR prediction
-#' @importFrom sf st_crs
-#' @importFrom sf st_intersects
-#' @importFrom sf st_set_geometry
-#' @importFrom stats na.omit
-#'
 #' @details If \code{count.flag == TRUE}, then \code{eSDM::model_abundance(x, x.idx, FALSE)} will be run
 #'   to calculate predicted abundance and thus calculate RMSE.
 #'   Note that this assumes the data in column \code{x.idx} of \code{x} are density values.

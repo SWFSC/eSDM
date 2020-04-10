@@ -10,13 +10,6 @@
 #' @param ... passed to \link[sf:sf]{st_sf} or to \link[sf:sfc]{st_sfc},
 #'   e.g. for passing named arguments \code{crs} and \code{agr}
 #'
-#' @importFrom dplyr select
-#' @importFrom purrr set_names
-#' @importFrom rlang .data
-#' @importFrom sf st_polygon
-#' @importFrom sf st_sfc
-#' @importFrom sf st_sf
-#'
 #' @details This function was designed for someone who reads in a .csv file
 #'   with a grid of coordinates representing SDM prediction points and needs to create
 #'   prediction polygons with the .csv file coordinates as the polygon centroids.

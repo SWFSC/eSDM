@@ -15,6 +15,6 @@ gshhg.l.L16
 }
 \description{
 Low resolution GSHHG world map, includes hierarchical levels
-  L1 and L6. Processed using \code{\link[sf]{st_make_valid}}
+  L1 and L6. Processed using \code{\link[sf:valid]{st_make_valid}}
 }
 \keyword{datasets}

@@ -8,17 +8,6 @@
 #' @param ... passed to \link[sf:sfc]{st_sfc},
 #'   e.g. for passing named argument \code{crs}
 #
-#' @importFrom dplyr %>%
-#' @importFrom dplyr filter
-#' @importFrom dplyr group_by
-#' @importFrom dplyr mutate
-#' @importFrom dplyr select
-#' @importFrom dplyr summarise
-#' @importFrom purrr set_names
-#' @importFrom rlang .data
-#' @importFrom sf st_polygon
-#' @importFrom sf st_sfc
-#'
 #' @details Vertices of different polygons must be demarcated by rows with values of \code{NA}
 #'   in both the first and second columns (i.e. the longitude and latitude columns).
 #'

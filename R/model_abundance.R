@@ -8,11 +8,6 @@
 #'   Can be a character vector (column names) or numeric vector (column indices)
 #' @param sum.abund logical; whether or not to sum all of the predicted abundances
 #'
-#' @importFrom dplyr %>%
-#' @importFrom purrr set_names
-#' @importFrom sf st_area
-#' @importFrom sf st_set_geometry
-#'
 #' @details Multiplies the values in the specified column(s) (i.e. the density predictions)
 #'   by the area in square kilometers of their corresponding prediction polygon.
 #'   The area of each prediction polygon is calculated using \code{st_area} from \code{\link[sf]{geos_measures}}.
