@@ -2,10 +2,10 @@ library(sf)
 
 test_that("abundance", {
   da <- data.frame(
-    lon = c(45, 40, 40, 45, 45), lat = c(10, 10, 0, 0, 10)
+    lon = c(45, 40, 40, 45, 45), lat = c(10, 10, 20, 20, 10)
   )
   db <- data.frame(
-    lon = c(50, 45, 45, 50, 50), lat = c(10, 10, 0, 0, 10)
+    lon = c(50, 45, 45, 50, 50), lat = c(10, 10, 20, 20, 10)
   )
 
   sfc1 <- st_sfc(

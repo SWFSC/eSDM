@@ -2,10 +2,10 @@ library(sf)
 
 test_that("rescale", {
   da <- data.frame(
-    lon = c(45, 40, 40, 45, 45), lat = c(10, 10, 0, 0, 10)
+    lon = c(45, 40, 40, 45, 45), lat = c(10, 10, 20, 20, 10)
   )
   db <- data.frame(
-    lon = c(50, 45, 45, 50, 50), lat = c(10, 10, 0, 0, 10)
+    lon = c(50, 45, 45, 50, 50), lat = c(10, 10, 20, 20, 10)
   )
 
   sfc1 <- st_sfc(
@@ -26,7 +26,7 @@ test_that("rescale", {
   expect_equal(ensemble_rescale(sf1, 1, "sumto1"), sf1.e)
   expect_equal(ensemble_rescale(sf2, 1, "sumto1", x.var.idx = 2), sf2.e)
 
-  expect_equal(round(model_abundance(ensemble_rescale(sf1, 1, "abundance", 42), 1), 0), 42)
+  expect_equal(model_abundance(ensemble_rescale(sf1, 1, "abundance", 42), 1), 42)
 })
 
 
