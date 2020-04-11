@@ -28,7 +28,7 @@ Imports:
     shiny, 
     shinydashboard,
     shinyjs,
-    sf (>= 0.9-1),
+    sf (>= 0.9-0),
     stats,
     tmap (>= 2.3),
     units,
@@ -37,6 +37,7 @@ Imports:
 Suggests:
     knitr, 
     leafem,
+    lwgeom,
     maps, 
     maptools, 
     rmarkdown, 
