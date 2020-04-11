@@ -26,7 +26,7 @@ test_that("rescale", {
   expect_equal(ensemble_rescale(sf1, 1, "sumto1"), sf1.e)
   expect_equal(ensemble_rescale(sf2, 1, "sumto1", x.var.idx = 2), sf2.e)
 
-  # expect_equal(round(model_abundance(ensemble_rescale(sf1, 1, "abundance", 42), 1), 0), 42)
+  expect_equal(round(model_abundance(ensemble_rescale(sf1, 1, "abundance", 42), 1), 0), 42)
 })
 
 
