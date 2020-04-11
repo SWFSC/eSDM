@@ -13,12 +13,15 @@
 
 
 ###############################################################################
-library(DT)
-library(leaflet)
-library(shiny)
-# library(shinycssloaders)
-library(shinydashboard)
-library(shinyjs)
+# library(shinybusy)
+stopifnot(
+  require(DT),
+  require(leaflet),
+  require(shiny),
+  # library(shinycssloaders)
+  require(shinydashboard),
+  require(shinyjs)
+)
 
 
 ###########################################################

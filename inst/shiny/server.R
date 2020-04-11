@@ -13,26 +13,28 @@
 
 
 ###############################################################################
-library(colorRamps)
-library(colourpicker)
-library(dichromat)
-library(dplyr)
-library(DT)
-library(eSDM)
-library(leaflet)
-library(methods)
-library(purrr)
-library(RColorBrewer)
-library(rlang)
-library(raster)
-library(ROCR)
-library(sf)
-library(shinyjs)
-library(stats)
-library(tmap)
-library(units)
-library(viridis)
-library(zip)
+stopifnot(
+  require(colorRamps),
+  require(colourpicker),
+  require(dichromat),
+  require(dplyr),
+  require(DT),
+  require(eSDM),
+  require(leaflet),
+  require(methods),
+  require(purrr),
+  require(RColorBrewer),
+  require(rlang),
+  require(raster),
+  require(ROCR),
+  require(sf),
+  require(shinyjs),
+  require(stats),
+  require(tmap),
+  require(units),
+  require(viridis),
+  require(zip)
+)
 
 
 ###############################################################################

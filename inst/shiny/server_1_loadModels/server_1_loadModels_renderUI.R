@@ -282,22 +282,6 @@ output$model_preview_interactive_execute_uiOut_button <- renderUI({
   actionButton("model_preview_interactive_execute", "Plot interactive preview")
 })
 
-#------------------------------------------------------------------------------
-### Uncertainty widget for static plot
-output$model_preview_var_uiOut_radio <- renderUI({
-  req(input$model_select_action == 2)
-
-  browser()
-  # validate(
-  #   need(length(input$models_loaded_table_rows_selected) == 1,
-  #        paste("You can only interactively preview one set of",
-  #              "original predictions at a time")),
-  #   errorClass = "validation2"
-  # )
-
-  radioButtons("model_preview_var", tags$h5("Uncertainty"),
-  )
-})
 
 #------------------------------------------------------------------------------
 ### Generate default filename for download of static preview
