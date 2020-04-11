@@ -37,7 +37,6 @@ Imports:
 Suggests:
     knitr, 
     leafem,
-    lwgeom,
     maps, 
     maptools, 
     rmarkdown, 
