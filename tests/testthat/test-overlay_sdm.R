@@ -2,13 +2,13 @@ library(sf)
 
 test_that("simple overlay", {
   d <- data.frame(
-    lon = c(40, 40, 50, 50, 40), lat = c(0, 10, 10, 0, 0)
+    lon = c(40, 40, 50, 50, 40), lat = c(10, 20, 20, 10, 10)
   )
   da <- data.frame(
-    lon = c(40, 40, 45, 45, 40), lat = c(0, 10, 10, 0, 0)
+    lon = c(40, 40, 45, 45, 40), lat = c(10, 20, 20, 10, 10)
   )
   db <- data.frame(
-    lon = c(45, 45, 50, 50, 45), lat = c(0, 10, 10, 0, 0)
+    lon = c(45, 45, 50, 50, 45), lat = c(10, 20, 20, 10, 10)
   )
 
   sfc1 <- st_sfc(

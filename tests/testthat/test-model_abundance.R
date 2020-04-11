@@ -19,7 +19,7 @@ test_that("abundance", {
   sf1 <- st_sf(data.frame(dens = c(2, 2)), geometry = sfc1, agr = "constant")
   sf2 <- st_sf(data.frame(dens = c(2, 2)), geometry = sfc2, agr = "constant")
 
-  area1 <- as.numeric(st_area(sfc1) / 1e+06) * 2
+  area1 <- as.numeric(units::set_units(st_area(sfc1), "km^2")) * 2
 
   expect_equal(model_abundance(sf1, 1), sum(area1))
   expect_equal(model_abundance(sf1, 1, sum.abund = FALSE), area1)
