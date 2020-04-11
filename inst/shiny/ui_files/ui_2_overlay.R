@@ -267,11 +267,13 @@ ui.overlay <- function() {
               ),
               conditionalPanel(
                 condition = "input.overlay_preview_which == 1",
-                shinycssloaders::withSpinner(leaflet::leafletOutput("overlay_preview_base"), type = 1)
+                # shinycssloaders::withSpinner(leaflet::leafletOutput("overlay_preview_base"), type = 1)
+                leafletOutput("overlay_preview_base")
               ),
               conditionalPanel(
                 condition = "input.overlay_preview_which == 2",
-                shinycssloaders::withSpinner(plotOutput("overlay_preview_overlaid"), type = 1)
+                # shinycssloaders::withSpinner(plotOutput("overlay_preview_overlaid"), type = 1)
+                plotOutput("overlay_preview_overlaid")
               )
             )
           )

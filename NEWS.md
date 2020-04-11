@@ -1,5 +1,6 @@
 ## eSDM 0.3.3
 * Import `st_make_valid` from `sf` rather than `lwgeom`
+* Use `shinybusy` rather than `shinycssloaders` in eSDM GUI because of unknown error
 
 ## eSDM 0.3.2
 * Updated citation details with MEE issue and page numbers

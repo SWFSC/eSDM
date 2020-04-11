@@ -470,7 +470,8 @@ output$pretty_display <- renderUI({
   box(
     title = "High Quality Maps", solidHeader = TRUE, status = "primary", width = 12, align = "center",
     height = ifelse(isTruthy(vals$pretty.plot), vals$pretty.plot$dims["height"], 4 * 96) + 60,
-    shinycssloaders::withSpinner(plotOutput("pretty_plot_out"), type = 1)
+    # shinycssloaders::withSpinner(plotOutput("pretty_plot_out"), type = 1)
+    plotOutput("pretty_plot_out")
   )
 })
 

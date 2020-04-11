@@ -16,7 +16,7 @@
 library(DT)
 library(leaflet)
 library(shiny)
-library(shinycssloaders)
+# library(shinycssloaders)
 library(shinydashboard)
 library(shinyjs)
 
@@ -68,6 +68,14 @@ ui <- dashboardPage(
     ### Use shinyjs package and window-closing functionlity
     useShinyjs(),
     extendShinyjs(text = jscode, functions = c("closeWindow")),
+
+    ### Use shinybusy to indicate when plot work is being done
+    if (requireNamespace("shinybusy", quietly = TRUE)) {
+      shinybusy::add_busy_spinner(
+        spin = "double-bounce", position = "top-right", margin = c(20, 20),
+        height = "100px", width = "100px"
+      )},
+
 
     ### Control validate text output
     tags$head(

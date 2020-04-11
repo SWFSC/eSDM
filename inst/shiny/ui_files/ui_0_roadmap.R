@@ -144,13 +144,16 @@ ui.roadmap <- function() {
             #------------------------------------------------------------------
             tags$strong("GUI tips:"),
             tags$ul(
-              tags$li("If text or images overlap, please adjust the text size in your browser (e.g., Ctrl - minus ('-') on Windows systems)"),
-              tags$li("The GUI can only perform a single operation at a time. Thus, if a process",
-                      "(e.g., the overlay process) is running, do not try to perform other actions",
-                      "as this may cause undefined behavior within the GUI."),
-              tags$li("When a longer process is running, a progress bar will appear in the bottom right corner of the GUI.",
+              tags$li("If text or images overlap, please adjust the text size in your browser ",
+                      "(e.g., Ctrl - minus ('-') on Windows systems)"),
+              tags$li("When a longer process is running one or both of the following will happen:",
+                      "a pulsing dot will appear in the top right corner of the window,",
+                      "or a progress bar will appear in the bottom right corner of the GUI.",
                       "Clicking the 'X' on the progress bar closes the bar,",
                       "but does not stop the currently running process."),
+              tags$li("The GUI can only perform a single operation at a time. Thus, if a process",
+                      "(e.g., the overlay process) is running, do not try to perform other actions,",
+                      "as this may cause undefined behavior within the GUI."),
               tags$li("The larger the data sets, the longer all processes will take.",
                       "In particular, plotting will take longer when predictions span the antimeridian (i.e., 180 decimal degrees)."),
               tags$li("If your download (e.g., of manuscript data) is a 'download.htm' file, cancel and try the download again.")

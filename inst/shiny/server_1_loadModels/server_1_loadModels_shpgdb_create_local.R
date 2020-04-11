@@ -36,13 +36,13 @@ withProgress(message = prog.message, value = 0.3, {
   # Names of sf object columns set in other create_local code
   sf.load.ll <- sf.load.ll %>%
     st_set_geometry(NULL) %>%
-    dplyr::select(pred.idx) %>%
+    dplyr::select(all_of(pred.idx)) %>%
     dplyr::mutate(toadd.v, toadd.w, idx = seq_along(toadd.v)) %>%
     st_sf(geometry = st_geometry(sf.load.ll), agr = "constant")
 
   sf.load.orig <- sf.load.orig %>%
     st_set_geometry(NULL) %>%
-    dplyr::select(pred.idx) %>%
+    dplyr::select(all_of(pred.idx)) %>%
     dplyr::mutate(toadd.v, toadd.w, idx = seq_along(toadd.v)) %>%
     st_sf(geometry = st_geometry(sf.load.orig), agr = "constant")
   incProgress(0.1)

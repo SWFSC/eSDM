@@ -6,7 +6,7 @@ Description: A tool which allows users to create and evaluate ensembles
     This tool can assist users in identifying spatial uncertainties and 
     making informed conservation and management decisions. The package is 
     further described in Woodman et al (2019) <doi:10.1111/2041-210X.13283>.
-Version: 0.3.3.9000
+Version: 0.3.3
 Authors@R: person("Sam", "Woodman", email = "sam.woodman@noaa.gov", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-6071-8186"))
 URL: https://smwoodman.github.io/eSDM, https://github.com/smwoodman/eSDM
 BugReports: https://github.com/smwoodman/eSDM/issues
@@ -26,7 +26,6 @@ Imports:
     RColorBrewer, 
     ROCR, 
     shiny, 
-    shinycssloaders,
     shinydashboard,
     shinyjs,
     sf (>= 0.9-1),
@@ -41,6 +40,7 @@ Suggests:
     maps, 
     maptools, 
     rmarkdown, 
+    shinybusy, 
     testthat (>= 2.1.0)
 License: GPL-3
 Encoding: UTF-8

@@ -90,7 +90,8 @@ ui.createEns <- function() {
                           column(6, uiOutput("create_ens_reg_preview_execute_uiOut_button"))
                         ),
                         helpText("The overlaid predictions will be black and the exclusion polygon(s) will have a red border"),
-                        shinycssloaders::withSpinner(plotOutput("create_ens_reg_preview_plot"), type = 1)
+                        # shinycssloaders::withSpinner(plotOutput("create_ens_reg_preview_plot"), type = 1)
+                        plotOutput("create_ens_reg_preview_plot")
                       )
                     )
                   )
@@ -418,11 +419,13 @@ ui.createEns <- function() {
             title = "Ensemble Preview", status = "primary", solidHeader = TRUE, width = 6, collapsible = TRUE,
             conditionalPanel(
               condition = "input.ens_select_action == 1",
-              shinycssloaders::withSpinner(leafletOutput("ens_preview_interactive_plot", height = 500), type = 1)
+              # shinycssloaders::withSpinner(leafletOutput("ens_preview_interactive_plot", height = 500), type = 1)
+              leafletOutput("ens_preview_interactive_plot", height = 500)
             ),
             conditionalPanel(
               condition = "input.ens_select_action == 2",
-              shinycssloaders::withSpinner(plotOutput("ens_preview_plot", height = 500), type = 1)
+              # shinycssloaders::withSpinner(plotOutput("ens_preview_plot", height = 500), type = 1)
+              plotOutput("ens_preview_plot", height = 500)
             )
           )
         )
