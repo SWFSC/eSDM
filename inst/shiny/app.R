@@ -6,9 +6,9 @@
 stopifnot(require(eSDM))
 list.packages <- list(
   "DT", "shiny", "shinybusy", "shinydashboard", "shinyjs",
-  "colorRamps", "colourpicker", "dichromat", "dplyr", "leaflet", "methods",
-  "purrr", "RColorBrewer", "rlang", "raster", "ROCR", "sf", "stats",
-  "tmap", "units", "viridis", "zip"
+  "colorRamps", "colourpicker", "dichromat", "dplyr", "leaflet", "leafem",
+  "methods", "purrr", "RColorBrewer", "raster", "rlang", "ROCR",
+  "sf", "stats", "tmap", "units", "viridis", "zip"
 )
 
 p.check <- vapply(list.packages, requireNamespace, as.logical(1), quietly = TRUE)
