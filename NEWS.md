@@ -1,5 +1,5 @@
 ## eSDM 0.3.3
-* Import `st_make_valid` from `sf` rather than `lwgeom`
+* Import `st_make_valid` from `sf` rather than `lwgeom` (#9)
 * Use `shinybusy` rather than `shinycssloaders` in eSDM GUI because of unknown error
 
 ## eSDM 0.3.2
