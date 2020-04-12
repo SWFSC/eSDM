@@ -24,9 +24,9 @@
 #'   If \code{count.flag == FALSE}, the RMSE value will be \code{NA}
 #'
 #' @examples
-#' evaluation_metrics(preds.1, 1, validation.data, "sight")
+#' evaluation_metrics(preds.1, 2, validation.data, "sight")
 #'
-#' evaluation_metrics(preds.1, "Density", validation.data, "count", TRUE)
+#' evaluation_metrics(preds.1, "Density2", validation.data, "count", TRUE)
 #'
 #' @export
 evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {

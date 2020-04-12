@@ -38,8 +38,8 @@ If \code{count.flag == TRUE}, then \code{eSDM::model_abundance(x, x.idx, FALSE)}
   all rows of \code{y} with a value of \code{NA} in column \code{y.idx} are removed before calculating metrics
 }
 \examples{
-evaluation_metrics(preds.1, 1, validation.data, "sight")
+evaluation_metrics(preds.1, 2, validation.data, "sight")
 
-evaluation_metrics(preds.1, "Density", validation.data, "count", TRUE)
+evaluation_metrics(preds.1, "Density2", validation.data, "count", TRUE)
 
 }
