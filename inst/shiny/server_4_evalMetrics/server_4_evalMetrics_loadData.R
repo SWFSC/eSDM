@@ -89,7 +89,7 @@ eval_data_csv_load <- reactive({
   if (!(file.in$type %in% c("text/csv", "application/vnd.ms-excel"))) return()
 
   csv.data <- read.csv(file.in$datapath, stringsAsFactors = FALSE)
-  return (list(file.in$name, csv.data))
+  list(file.in$name, csv.data)
 })
 
 ### Get options for presence/absence codes

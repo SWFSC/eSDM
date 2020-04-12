@@ -69,10 +69,10 @@ ui.evalMetrics <- function() {
                     column(6, uiOutput("eval_csv_codes_a_uiOut_select"))
                   )
                 ),
-                uiOutput("eval_csv_execute_uiOut_button"),
                 textOutput("eval_csv_data_text")
               )
-            )
+            ),
+            uiOutput("eval_csv_execute_uiOut_button")
           ),
           ######################################################### GIS shp file
           conditionalPanel(
@@ -114,13 +114,14 @@ ui.evalMetrics <- function() {
                   column(6, uiOutput("eval_gis_codes_a_uiOut_select"))
                 )
               ),
-              uiOutput("eval_gis_execute_uiOut_button"),
               textOutput("eval_data_gis_text")
             )
           ),
+          uiOutput("eval_gis_execute_uiOut_button"),
           tags$span(textOutput("eval_data_message"), style = "color: blue")
         )
       ),
+
       fluidRow(
         column(
           width = 6,
