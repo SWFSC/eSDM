@@ -1,3 +1,9 @@
+## Resubmission
+This is a resubmission. In this version I have:
+* Addressed the errors identified in the CRAN pre-tests, including fixing the evaluation metrics test
+* Responded to the notes/warnings on the check page by moving packages only used by the shiny app from 'Imports' to 'Suggests'
+  
+  
 ## Release summary
 * Import st_make_valid from sf rather than lwgeom, as per message from sf author
 * Fixed the shiny app as necessary due to other package updates
