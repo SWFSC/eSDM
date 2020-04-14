@@ -124,7 +124,7 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
 
   xy.data.overlap <- data.frame(do.call(rbind, xy.data.overlap.list)) %>%
     set_names(c("dens", "sight", "abund", "count")) %>%
-    filter(!is.na(dens), !is.na(sight))
+    filter(!is.na(.data$dens), !is.na(.data$sight))
 
 
   #------------------------------------------------------------------
