@@ -11,6 +11,9 @@ eSDM_GUI(launch.browser = TRUE)
 argument of \code{\link[shiny]{runApp}}}
 }
 \description{
-Open the eSDM graphical user interface (GUI); an R Shiny app for creating ensemble predictions using SDM predictions.
-  The GUI can also be accessed at \url{https://swoodman.shinyapps.io/eSDM/}
+Open the eSDM graphical user interface (GUI);
+  an R Shiny app for creating ensemble predictions using SDM predictions.
+}
+\seealso{
+\url{https://smwoodman.github.io/eSDM/}
 }

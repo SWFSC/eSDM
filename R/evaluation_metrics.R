@@ -93,8 +93,8 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   # Data kept as separate vectors because in mapply() accessing several vector
   #   objects is faster than accessing one data.frame
   if (count.flag) {
-    x.abund <- unname(unlist(eSDM::model_abundance(x, x.idx, sum.abund = FALSE)))
     y.sight <- ifelse(y.data >= 1, 1, 0)
+    x.abund <- unname(unlist(eSDM::model_abundance(x, x.idx, sum.abund = FALSE)))
     y.count <- y.data
 
   } else {
@@ -102,16 +102,13 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
       stop("The data in column y.idx of object y must all be numbers 0 or 1")
     }
 
-    x.abund <- as.numeric(NA)
     y.sight <- y.data
+    x.abund <- as.numeric(NA)
     y.count <- as.numeric(NA)
   }
-  rm(y.data)
 
   stopifnot(
-    is.numeric(x.abund),
-    is.numeric(y.sight),
-    is.numeric(y.count)
+    is.numeric(y.sight), is.numeric(x.abund), is.numeric(y.count)
   )
 
 
@@ -125,8 +122,9 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
     }
   }, yx.sgbp, seq_along(yx.sgbp), SIMPLIFY = FALSE)
 
-  xy.data.overlap <- data.frame(do.call(rbind, xy.data.overlap.list))
-  names(xy.data.overlap) <- c("dens", "sight", "abund", "count")
+  xy.data.overlap <- data.frame(do.call(rbind, xy.data.overlap.list)) %>%
+    set_names(c("dens", "sight", "abund", "count")) %>%
+    filter(!is.na(dens), !is.na(sight))
 
 
   #------------------------------------------------------------------
@@ -141,7 +139,9 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
 
   # RMSE
   m3 <- ifelse(
-    count.flag, esdm_rmse(xy.data.overlap[[3]], xy.data.overlap[[4]]), NA
+    count.flag,
+    esdm_rmse(xy.data.overlap[[3]], xy.data.overlap[[4]], na.rm = TRUE),
+    NA
   )
 
   #------------------------------------------------------------------
