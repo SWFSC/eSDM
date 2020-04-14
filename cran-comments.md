@@ -1,6 +1,6 @@
 ## Resubmission
 This is a resubmission. In this version I have:
-* Addressed the errors identified in the CRAN pre-tests, including fixing the evaluation metrics test
+* Addressed the errors identified in the CRAN pre-tests, including fixing the vignette so it passes both the release and devel checks using winbuilder
 * Responded to the notes/warnings on the check page by moving packages only used by the shiny app from 'Imports' to 'Suggests'
   
   
@@ -10,6 +10,7 @@ This is a resubmission. In this version I have:
 
 ## Test environments
 * Windows 10, R 3.6.3 (local)
+* win-builder (devel and release)
 * OS X, R 3.6.3 (local)
 * ubuntu 14.04.5 (on travis-ci.com, R devel and release)
 
