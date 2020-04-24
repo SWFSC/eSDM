@@ -16,8 +16,8 @@ if (!all(p.check))
   stop("To use the eSDM GUI, the following packages must be installed: ",
        paste(list.packages, collapse = ", "), "\n",
        "To install the missing packages, run the following:\n",
-       "install.packages(\"", paste(list.packages[!p.check],
-                                    collapse = "\", \""), "\")")
+       "install.packages(c(\"", paste(list.packages[!p.check],
+                                    collapse = "\", \""), "\"))")
 
 sapply(list.packages, require, character.only = TRUE)
 
