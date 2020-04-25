@@ -25,6 +25,9 @@ matrix:
 # Stages -----------------------------------------------------------------------
 
 before_install:
+  - sudo add-apt-repository ppa:ubuntugis/ppa --yes
+  - sudo apt-get --yes --force-yes update -qq
+  - sudo apt-get install --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install ccache; fi
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then export PATH="/usr/local/opt/ccache/libexec:$PATH"; fi
   - echo -e "options(Ncpus = 8, repos = structure(c(CRAN = 'https://cloud.r-project.org/')))" > $HOME/.Rprofile
@@ -50,3 +53,5 @@ after_deploy: R -q -e 'tic::after_deploy()'
 after_script: R -q -e 'tic::after_script()'
 
 # Custom user code -------------------------------------------------------------
+warnings_are_errors: true
+
