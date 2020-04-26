@@ -1,6 +1,8 @@
 # Copied over from sf/.travis.yml, and then pared down as possible
 language: r
 
+os: linux
+
 r:
   - release
   - oldrel
