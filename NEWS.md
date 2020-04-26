@@ -1,5 +1,5 @@
 ## eSDM 0.3.4
-* Fixed bug in eSDM GUI - wrong error message printed if packages not installed
+* Fixed bug in eSDM GUI - invalid error message printed if packages not installed
 
 ## eSDM 0.3.3
 * Import `st_make_valid` from `sf` rather than `lwgeom` (#9)

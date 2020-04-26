@@ -1,15 +1,8 @@
-## Resubmission
-This is a resubmission. In this version I have:
-* Addressed the errors identified in the CRAN pre-tests, including fixing the vignette so it passes both the release and devel checks using winbuilder
-* Responded to the notes/warnings on the check page by moving packages only used by the shiny app from 'Imports' to 'Suggests'
-  
-  
 ## Release summary
-* Import st_make_valid from sf rather than lwgeom, as per message from sf author
-* Fixed the shiny app as necessary due to other package updates
+* Fixed a small bug in R shiny app
 
 ## Test environments
-* Windows 10, R 3.6.3 (local)
+* Windows 10, R 4.0.0 (local)
 * win-builder (devel and release)
 * OS X, R 3.6.3 (local)
 * ubuntu 14.04.5 (on travis-ci.com, R devel and release)
