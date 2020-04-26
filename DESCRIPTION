@@ -10,7 +10,7 @@ Version: 0.3.4
 Authors@R: person("Sam", "Woodman", email = "sam.woodman@noaa.gov", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-6071-8186"))
 URL: https://smwoodman.github.io/eSDM, https://github.com/smwoodman/eSDM
 BugReports: https://github.com/smwoodman/eSDM/issues
-Depends: R (>= 3.6.0)
+Depends: R (>= 3.5.0)
 Imports:
     dplyr (>= 0.7-0), 
     magrittr,
