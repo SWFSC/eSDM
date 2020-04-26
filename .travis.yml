@@ -1,28 +1,20 @@
-# tic documentation: https://docs.ropensci.org/tic/dev/
-
-# OS ---------------------------------------------------------------------------
-os: linux
-dist: bionic
-
-# meta -------------------------------------------------------------------------
 language: r
+
+r:
+  - release
+  - oldrel # breaks on sf_0.7-2 not available
+  - devel
+
+deploy.skip_cleanup: true
+
+sudo: required
+dist: trusty
+
 cache:
   - packages
   - ccache
+
 latex: false
-
-# multiple R versions ----------------------------------------------------------
-matrix:
-  include:
-  - r: devel
-  - r: oldrel
-  - r: release
-    env:
-    # if you use bookdown or blogdown, replace "PKGDOWN" by the respective
-    # capitalized term. This also might need to be done in tic.R
-    - BUILD_PKGDOWN=true
-
-# Stages -----------------------------------------------------------------------
 
 addons:
   # postgresql: "10"
@@ -33,36 +25,61 @@ addons:
       - sourceline: 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main'
         key_url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc'
     packages:
+      - devscripts # checkbashisms
+      - libprotobuf-dev
+      - protobuf-compiler
+      - libv8-3.14-dev
+      - libjq-dev
       - libudunits2-dev
       - libproj-dev
       - libgeos-dev
+      - libspatialite-dev
       - libgdal-dev
+      - libjson-c-dev
+      - libnetcdf-dev
+      - netcdf-bin
+      # - postgresql-server-dev-9.6
+      # - postgis
 
 before_install:
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install ccache; fi
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then export PATH="/usr/local/opt/ccache/libexec:$PATH"; fi
-  - echo -e "options(Ncpus = 8, repos = structure(c(CRAN = 'https://cloud.r-project.org/')))" > $HOME/.Rprofile
-  - mkdir -p $HOME/.R && echo -e 'CC=ccache gcc -std=gnu99\nCXX=ccache g++\nCXX11=ccache g++ -std=gnu99\nCXX14=ccache g++ -std=gnu99\nCXX17=ccache g++ -std=gnu99\nFC=ccache gfortran\nF77=ccache gfortran' > $HOME/.R/Makevars
-  - mkdir -p $HOME/.ccache && echo -e 'max_size = 5.0G\nsloppiness = include_file_ctime\nhash_dir=false' > $HOME/.ccache/ccache.conf
-  - R -q -e 'if (!requireNamespace("remotes")) install.packages("remotes")'
-  - R -q -e 'if (getRversion() < "3.2" && !requireNamespace("curl")) install.packages("curl")'
-  - R -q -e 'remotes::install_github("ropensci/tic", upgrade = "always"); print(tic::dsl_load()); tic::prepare_all_stages()'
-  - R -q -e 'tic::before_install()'
-install:
-  - R -q -e 'tic::install()'
-before_script: R -q -e 'tic::before_script()'
+  # install postgis from source, to avoid dependency conflict with GDAL >= 2.0:
+  #- wget http://download.osgeo.org/postgis/source/postgis-3.0.1.tar.gz
+  #- (mv postgis* /tmp; cd /tmp; tar xzf postgis-3.0.1.tar.gz)
+  #- (cd /tmp/postgis-3.0.1 ; ./configure; make; sudo make install)
+
+  # activate liblwgeom by:
+  ## - sudo ldconfig
+  # create postgis databases:
+  #- sudo service postgresql restart
+  #- createdb postgis
+  #- psql -d postgis -c "CREATE EXTENSION postgis;"
+  #- psql -d postgis -c "GRANT CREATE ON DATABASE postgis TO travis"
+  #- psql -d postgis -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO travis"
+  #- createdb empty
+  #- psql -d empty -c "CREATE EXTENSION postgis;"
+  - R -e 'install.packages("rgdal", repos="http://R-Forge.R-project.org")'
+  - R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages()'
+
+# after_success:
+  #- dropdb postgis
+  #- dropdb empty
+  #- createdb postgis
+  #- psql -d postgis -c "CREATE EXTENSION postgis;"
+  #- psql -d postgis -c "GRANT CREATE ON DATABASE postgis TO travis"
+  #- psql -d postgis -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO travis"
+  #- createdb empty
+  #- psql -d empty -c "CREATE EXTENSION postgis;"
+  # - R -q -e 'covr::codecov(quiet = FALSE)'
+
+install: R -q -e 'tic::install()'
 script: R -q -e 'tic::script()'
-after_success: R -q -e 'tic::after_success()'
-after_failure: R -q -e 'tic::after_failure()'
 before_deploy: R -q -e 'tic::before_deploy()'
 deploy:
-  provider: script
-  script: R -q -e 'tic::deploy()'
-  on:
-    all_branches: true
-after_deploy: R -q -e 'tic::after_deploy()'
-after_script: R -q -e 'tic::after_script()'
-
-# Custom user code -------------------------------------------------------------
-warnings_are_errors: true
-
+   provider: script
+   script: R -q -e 'tic::deploy()'
+   on:
+     branch: master
+     condition:
+       - $TRAVIS_PULL_REQUEST = false
+       - $TRAVIS_EVENT_TYPE != cron
+       - $TRAVIS_R_VERSION_STRING = release
