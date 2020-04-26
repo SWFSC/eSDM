@@ -1,4 +1,4 @@
-# Copied over from sf/.travis.yml, and then pared down as possible
+# Copied over from sf/.travis.yml, and then cleaned and simplified as possible
 language: r
 
 os: linux
