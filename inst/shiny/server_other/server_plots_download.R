@@ -75,8 +75,8 @@ output$model_download_preview_execute <- downloadHandler(
       if (input$model_download_preview_dim == 2) {
         req(x, y)
         plot.dims <- multiplot_inapp(models.num)
-        pf.dim1 <- x / 96 * 1.5
-        pf.dim2 <- y / 96 * 1.5
+        pf.dim1 <- x / 72
+        pf.dim2 <- y / 72
 
       } else {
         plot.dims <- multiplot_download(models.num)
@@ -178,8 +178,8 @@ output$ens_download_preview_execute <- downloadHandler(
       if (input$ens_download_preview_dim == 2) {
         req(x, y)
         plot.dims <- multiplot_inapp(models.num)
-        pf.dim1 <- x / 96 * 1.5
-        pf.dim2 <- y / 96 * 1.5
+        pf.dim1 <- x / 72
+        pf.dim2 <- y / 72
 
       } else {
         plot.dims <- multiplot_download(models.num)

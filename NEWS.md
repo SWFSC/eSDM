@@ -1,6 +1,8 @@
 # eSDM 0.3.5 (in development)
 
-* Use `==` rather than `identical` to check CRS equivalence (#10) 
+* Use `==` rather than `identical` to check CRS equivalence (#10)
+
+* Fixed bug in the GUI where static previews downloaded with "Dimensions of 'Static Preview' window" did not have exact same dimensions as the window
 
 
 # eSDM 0.3.4
