@@ -34,7 +34,7 @@
 #'
 #' @examples
 #' overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
-#' overlay_sdm(sf::st_geometry(preds.2), preds.1, c("Density", "Density2"), 50)
+#' overlay_sdm(sf::st_geometry(preds.2), preds.1, "Density", 50)
 #'
 #' @export
 overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
@@ -48,13 +48,12 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   }
   if (!inherits(sdm, "sf")) stop("'sdm' must be of class 'sf'")
   if (!(is.numeric(overlap.perc) & between(overlap.perc, 0, 100))) {
-    stop("'overlap.perc' must be a number between (inclusive) 0 and 100")
+    stop("'overlap.perc' must be a number between 0 and 100 (inclusive)")
   }
 
   stopifnot(
-    identical(st_crs(base.geom), st_crs(sdm)),
-    all(sdm.idx %in% names(sdm)) | inherits(sdm.idx, "numeric") |
-      inherits(sdm.idx, "integer")
+    st_crs(base.geom) == st_crs(sdm),
+    all(sdm.idx %in% names(sdm)) | is.numeric(sdm.idx)
   )
 
   base.area.m2 <- st_area(base.geom)
@@ -71,7 +70,8 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   # Throw warning if base.geom and geometry of sdm are identical
   if (identical(base.geom, st_geometry(sdm))) {
     warning("'base.geom' and 'sdm' have the same geometry and thus ",
-            "you shouldn't need to use the full overlay procedure")
+            "you shouldn't need to use the full overlay procedure",
+            immediate. = TRUE)
   }
 
   # If sdm.idx is numeric, get column names and check that they don't start

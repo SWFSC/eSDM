@@ -344,9 +344,7 @@ create_ens_reg_csv_process <- reactive({
     incProgress(0.3)
 
     # Transform polygon as necesary
-    if (!identical(st_crs(csv.poly.sfc), vals$overlay.crs)) {
-      csv.poly.sfc <- st_transform(csv.poly.sfc, vals$overlay.crs)
-    }
+    csv.poly.sfc <- st_transform(csv.poly.sfc, vals$overlay.crs)
     incProgress(0.1)
   })
 

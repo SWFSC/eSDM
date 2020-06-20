@@ -233,7 +233,7 @@ overlay_proj_base <- reactive({
   base.orig <- overlay_base_pre()[[2]]
 
   # Return base with desired crs/projection
-  if (identical(overlay_crs(), crs.ll)) {
+  if (overlay_crs() == crs.ll) {
     base.ll
   } else {
     # Use base.orig so base obj has as few transformations as possible
@@ -243,11 +243,12 @@ overlay_proj_base <- reactive({
 
 ### Output study area polygon in specified projection
 overlay_proj_bound <- reactive({
-  overlay.bound <- vals$overlay.bound
-
-  if (!identical(overlay_crs(), crs.ll)) {
-    overlay.bound <- st_transform(overlay.bound, overlay_crs())
-  }
+  overlay.bound <- st_transform(vals$overlay.bound, overlay_crs())
+  # overlay.bound <- vals$overlay.bound
+  #
+  # if (!identical(overlay_crs(), crs.ll)) {
+  #   overlay.bound <- st_transform(overlay.bound, overlay_crs())
+  # }
 
   temp <- suppressMessages(st_intersects(overlay.bound, overlay_proj_base()))
   validate(
@@ -263,11 +264,12 @@ overlay_proj_bound <- reactive({
 
 ### Output erasing polygon in specified projection
 overlay_proj_land <- reactive({
-  system.time(overlay.land <- overlay_clip_land_llpre())
-
-  if (!identical(overlay_crs(), crs.ll)) {
-    overlay.land <- st_transform(overlay.land, overlay_crs())
-  }
+  overlay.land <- st_transform(overlay_clip_land_llpre(), overlay_crs())
+  # overlay.land <- overlay_clip_land_llpre()
+  #
+  # if (!identical(overlay_crs(), crs.ll)) {
+  #   overlay.land <- st_transform(overlay.land, overlay_crs())
+  # }
 
   temp <- suppressMessages(st_intersects(overlay.land, overlay_proj_base()))
   validate(

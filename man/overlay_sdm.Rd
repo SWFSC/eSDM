@@ -44,7 +44,7 @@ See the eSDM GUI manual for specifics about the overlay process.
 }
 \examples{
 overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
-overlay_sdm(sf::st_geometry(preds.2), preds.1, c("Density", "Density2"), 50)
+overlay_sdm(sf::st_geometry(preds.2), preds.1, "Density", 50)
 
 }
 \references{

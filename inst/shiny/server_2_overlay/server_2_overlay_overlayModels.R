@@ -73,13 +73,10 @@ overlay_all <- eventReactive(input$overlay_create_overlaid_models, {
     # Polygons have already been checked for if they're valid
     incProgress(0, detail = "Projecting predictions if necessary")
 
-    if (identical(overlay_crs(), crs.ll)) {
-      models.preoverlay <- vals$models.ll[-base.idx]
-
+    models.preoverlay <- if (overlay_crs() == crs.ll) {
+      vals$models.ll[-base.idx]
     } else {
-      models.preoverlay <- lapply(
-        vals$models.orig[-base.idx], st_transform, overlay_crs()
-      )
+      lapply(vals$models.orig[-base.idx], st_transform, overlay_crs())
     }
 
 

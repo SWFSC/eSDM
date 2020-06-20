@@ -35,8 +35,8 @@ evaluation_metrics <- function(x, x.idx, y, y.idx, count.flag = FALSE) {
   if (!all(vapply(list(x, y), inherits, TRUE, "sf"))) {
     stop("x and y must both be objects of class sf")
   }
-  if (!identical(st_crs(x), st_crs(y))) {
-    stop("x and y must have identical coordinate systems")
+  if (st_crs(x) != st_crs(y)) {
+    stop("x and y must have equivalent coordinate reference systems")
   }
   stopifnot(
     length(x.idx) == 1,

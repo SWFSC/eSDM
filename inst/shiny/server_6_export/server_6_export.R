@@ -206,11 +206,7 @@ export_model_selected_proj <- reactive({
   model.selected <- export_model_selected() #handles req()
   crs.selected <- export_crs()
 
-  if (!identical(st_crs(model.selected), crs.selected)) {
-    st_transform(model.selected, crs.selected)
-  } else {
-    model.selected
-  }
+  st_transform(model.selected, crs.selected)
 })
 
 
