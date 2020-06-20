@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eSDM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5.9000</span>
       </span>
     </div>
 
@@ -126,59 +126,71 @@
       <small>Source: <a href='https://github.com/smwoodman/eSDM/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="esdm-0-3-4" class="section level2">
-<h2 class="hasAnchor">
-<a href="#esdm-0-3-4" class="anchor"></a>eSDM 0.3.4</h2>
+    <div id="esdm-0-3-5-in-development" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.5">
+<a href="#esdm-0-3-5-in-development" class="anchor"></a>eSDM 0.3.5 (in development)<small> Unreleased </small>
+</h1>
+<ul>
+<li>Use <code><a href="https://rdrr.io/r/base/Comparison.html">==</a></code> rather than <code>identical</code> to check CRS equivalence (<a href='https://github.com/smwoodman/eSDM/issues/10'>#10</a>)</li>
+</ul>
+</div>
+    <div id="esdm-0-3-4" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.4">
+<a href="#esdm-0-3-4" class="anchor"></a>eSDM 0.3.4<small> 2020-04-26 </small>
+</h1>
 <ul>
 <li>Fixed bug in eSDM GUI - invalid error message printed if packages not installed</li>
 </ul>
 </div>
-    <div id="esdm-0-3-3" class="section level2">
-<h2 class="hasAnchor">
-<a href="#esdm-0-3-3" class="anchor"></a>eSDM 0.3.3</h2>
+    <div id="esdm-0-3-3" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.3">
+<a href="#esdm-0-3-3" class="anchor"></a>eSDM 0.3.3<small> 2020-04-15 </small>
+</h1>
 <ul>
-<li>Import <code>st_make_valid</code> from <code>sf</code> rather than <code>lwgeom</code> (<a href='https://github.com/smwoodman/eSDM/issues/9'>#9</a>)</li>
-<li>Use <code>shinybusy</code> rather than <code>shinycssloaders</code> in eSDM GUI because of unknown error</li>
-<li>Move packages only used in the GUI (shiny app) to Suggests</li>
+<li><p>Import <code>st_make_valid</code> from <code>sf</code> rather than <code>lwgeom</code> (<a href='https://github.com/smwoodman/eSDM/issues/9'>#9</a>)</p></li>
+<li><p>Use <code>shinybusy</code> rather than <code>shinycssloaders</code> in eSDM GUI because of unknown error</p></li>
+<li><p>Move packages only used in the GUI (shiny app) to Suggests</p></li>
 </ul>
 </div>
-    <div id="esdm-0-3-2" class="section level2">
-<h2 class="hasAnchor">
-<a href="#esdm-0-3-2" class="anchor"></a>eSDM 0.3.2</h2>
+    <div id="esdm-0-3-2" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.2">
+<a href="#esdm-0-3-2" class="anchor"></a>eSDM 0.3.2<small> 2019-12-16 </small>
+</h1>
 <ul>
-<li>Updated citation details with MEE issue and page numbers</li>
-<li>Updated vignette formatting</li>
+<li><p>Updated citation details with MEE issue and page numbers</p></li>
+<li><p>Updated vignette formatting</p></li>
 </ul>
 </div>
-    <div id="esdm-0-3-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#esdm-0-3-1" class="anchor"></a>eSDM 0.3.1</h2>
+    <div id="esdm-0-3-1" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.1">
+<a href="#esdm-0-3-1" class="anchor"></a>eSDM 0.3.1<small> 2019-10-17 </small>
+</h1>
 <ul>
-<li>Fixed bug in eSDM GUI ‘update map range’ button</li>
-<li>Fixed bug in evaluation_metrics when validation data contains NA values</li>
-<li>When subsetting for a single column, replaced <code>[,]</code> with <code>[[]]</code> so both data frames and tibbles return a vector</li>
-<li>Improved documentation and messages in GUI</li>
-<li>Added eSDM paper citation details (doi, etc) where applicable</li>
+<li><p>Fixed bug in eSDM GUI ‘update map range’ button</p></li>
+<li><p>Fixed bug in evaluation_metrics when validation data contains NA values</p></li>
+<li><p>When subsetting for a single column, replaced <code>[,]</code> with <code>[[]]</code> so both data frames and tibbles return a vector</p></li>
+<li><p>Improved documentation and messages in GUI</p></li>
+<li><p>Added eSDM paper citation details (doi, etc) where applicable</p></li>
 </ul>
 </div>
-    <div id="esdm-0-3-0" class="section level2">
-<h2 class="hasAnchor">
-<a href="#esdm-0-3-0" class="anchor"></a>eSDM 0.3.0</h2>
+    <div id="esdm-0-3-0" class="section level1">
+<h1 class="page-header" data-toc-text="0.3.0">
+<a href="#esdm-0-3-0" class="anchor"></a>eSDM 0.3.0<small> 2019-08-19 </small>
+</h1>
 <ul>
-<li>Updated citation to ‘in press’ in Methods in Ecology and Evolution</li>
-<li>Added button to download manuscript example analysis data through the GUI</li>
-<li>Added ability to have tick marks on high quality maps (<code>tmap</code> update)</li>
-<li>Explicitly call <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select</a></code>, in case it is masked by <code><a href="https://rdrr.io/pkg/raster/man/select.html">raster::select</a></code>
-</li>
-<li>Fixed bug when exporting predictions from the GUI as a shapefile (now use <code>zip</code> package)</li>
-<li>Fixed bug when downloading evaluation metrics from the GUI</li>
-<li>Now call all <code>addMouseCoordinates</code> from <code>leafem</code> rather than <code>mapview</code>
-</li>
+<li><p>Updated citation to ‘in press’ in Methods in Ecology and Evolution</p></li>
+<li><p>Added button to download manuscript example analysis data through the GUI</p></li>
+<li><p>Added ability to have tick marks on high quality maps (<code>tmap</code> update)</p></li>
+<li><p>Explicitly call <code><a href="https://dplyr.tidyverse.org/reference/select.html">dplyr::select</a></code>, in case it is masked by <code><a href="https://rdrr.io/pkg/raster/man/select.html">raster::select</a></code></p></li>
+<li><p>Fixed bug when exporting predictions from the GUI as a shapefile (now use <code>zip</code> package)</p></li>
+<li><p>Fixed bug when downloading evaluation metrics from the GUI</p></li>
+<li><p>Now call all <code>addMouseCoordinates</code> from <code>leafem</code> rather than <code>mapview</code></p></li>
 </ul>
 </div>
-    <div id="esdm-0-2-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#esdm-0-2-1" class="anchor"></a>eSDM 0.2.1</h2>
+    <div id="esdm-0-2-1" class="section level1">
+<h1 class="page-header" data-toc-text="0.2.1">
+<a href="#esdm-0-2-1" class="anchor"></a>eSDM 0.2.1<small> 2019-07-26 </small>
+</h1>
 <ul>
 <li>Initial release</li>
 </ul>

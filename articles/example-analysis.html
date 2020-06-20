@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eSDM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5.9000</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@
       <h1 data-toc-skip>Example analysis - Woodman et al 2019</h1>
                         <h4 class="author">Samuel Woodman</h4>
             
-            <h4 class="date">2020-04-26</h4>
+            <h4 class="date">2020-06-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/smwoodman/eSDM/blob/master/vignettes/example-analysis.Rmd"><code>vignettes/example-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>example-analysis.Rmd</code></div>
@@ -113,7 +113,7 @@
 <p>The first step of the example analysis is to import and process the Model_B, Model_H, and Model_R predictions, along with their standard error (SE) values. Use <code>pts2poly_centroids</code> to create <code>sf</code> objects from polygon centroids from CSV files, <code><a href="https://rdrr.io/pkg/raster/man/raster.html">raster::raster</a></code> to import raster files, and <code><a href="https://rdrr.io/pkg/sf/man/st_read.html">sf::st_read</a></code> to import GIS files. The dimensions of the Model_B and Model_H predictions are 0.09 x 0.09 degrees and 0.25 x 0.25 degrees, respectively; the second argument of <code>pts2poly_centroids</code> is half the length of one side of the polygon. GIS files already have a defined geometry that is read by <code>st_read</code>. Before overlaying predictions, you must ensure the following:</p>
 <ul>
 <li>All predictions are <code>sf</code> objects. See below for examples of converting a CSV file of grid centroids or a <code>raster</code> object to an <code>sf</code> object.</li>
-<li>The geometries of the predictions are valid; this can be checked using <code><a href="https://rdrr.io/pkg/sf/man/geos_query.html">sf::st_is_valid</a></code>.</li>
+<li>The geometries of the predictions are valid; this can be checked using <code><a href="https://rdrr.io/pkg/sf/man/valid.html">sf::st_is_valid</a></code>.</li>
 <li>The geometries of the predictions have a defined coordinate reference system (crs); this can be checked using <code><a href="https://rdrr.io/pkg/sf/man/st_crs.html">sf::st_crs</a></code>.</li>
 <li>The predictions have the same longitudinal range (i.e., either [0, 360] or [-180, 180]); this can be checked using <code><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">sf::st_bbox</a></code>. You can use <code><a href="https://rdrr.io/pkg/sf/man/st_transform.html">sf::st_wrap_dateline</a></code> to convert an <code>sf</code> object to the longitudinal range [-180, 180], but note that this will cause plots to span [-180, 180] as well.</li>
 </ul>
@@ -228,7 +228,7 @@
 <span class="no">poly.study</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">st_read</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Shapefiles/Study_Area_CCE.shp"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"eSDM"</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_crs.html">st_crs</a></span>(<span class="no">model.r.sf</span>))
-<span class="co">#&gt; Reading layer `Study_Area_CCE' from data source `/tmp/RtmpWqNHpr/temp_libpath4a882478f571/eSDM/extdata/Shapefiles/Study_Area_CCE.shp' using driver `ESRI Shapefile'</span>
+<span class="co">#&gt; Reading layer `Study_Area_CCE' from data source `/tmp/RtmpRW7TpX/temp_libpath64df76a041ba/eSDM/extdata/Shapefiles/Study_Area_CCE.shp' using driver `ESRI Shapefile'</span>
 <span class="co">#&gt; Simple feature collection with 1 feature and 6 fields</span>
 <span class="co">#&gt; geometry type:  POLYGON</span>
 <span class="co">#&gt; dimension:      XY</span>
@@ -310,7 +310,8 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">source</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="kw">pres</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">pres_abs</span> <span class="kw">==</span> <span class="fl">1</span>),
             <span class="kw">abs</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="no">pres_abs</span> <span class="kw">==</span> <span class="fl">0</span>)) <span class="kw">%&gt;%</span>
-  <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Validation data summary"</span>)</pre></body></html></div>
+  <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(<span class="kw">caption</span> <span class="kw">=</span> <span class="st">"Validation data summary"</span>)
+<span class="co">#&gt; `summarise()` ungrouping output (override with `.groups` argument)</span></pre></body></html></div>
 <table class="table">
 <caption>Validation data summary</caption>
 <thead><tr class="header">
@@ -718,7 +719,7 @@
 <p>We can see that the ensemble with weights based on TSS values had the highest scores of the ensemble predictions, and mostly higher scores that the original predictions. We can visualize this ensemble to compare it with known blue whale habitat.</p>
 <div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="co"># Simple code to visualize ensemble created with weights based on TSS values</span>
 <span class="fu">plot_sf_3panel</span>(
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">rename</a></span>(<span class="no">ens.sf.wtss</span>, <span class="kw">se</span> <span class="kw">=</span> <span class="no">SE</span>), <span class="st">"Pred_ens"</span>, <span class="kw">main.txt</span> <span class="kw">=</span> <span class="st">"Ensemble-TSS - "</span>,
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="no">ens.sf.wtss</span>, <span class="kw">se</span> <span class="kw">=</span> <span class="no">SE</span>), <span class="st">"Pred_ens"</span>, <span class="kw">main.txt</span> <span class="kw">=</span> <span class="st">"Ensemble-TSS - "</span>,
   <span class="kw">map.base</span> <span class="kw">=</span> <span class="no">map.world</span>, <span class="kw">x.axis.at</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">130</span>, -<span class="fl">125</span>, -<span class="fl">120</span>)
 )</pre></body></html></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-23-1.png" width="672"></p>
