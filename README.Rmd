@@ -27,13 +27,13 @@ knitr::opts_chunk$set(
 
 You can install the released version of eSDM from [CRAN](https://CRAN.R-project.org) with:
 
-```r
+```{r, eval=FALSE}
 install.packages('eSDM')
 ```
 
 To install the latest version from [GitHub](https://github.com):
 
-```r
+```{r, eval=FALSE}
 # install.packages('devtools')
 devtools::install_github('smwoodman/eSDM', build_vignettes = TRUE)
 ```
@@ -43,7 +43,7 @@ You can access the GUI online at https://swoodman.shinyapps.io/eSDM/. You do not
 
 To run the GUI locally: install `eSDM` as described above, and then run the following code in your RStudio console:
 
-```r
+```{r, eval=FALSE}
 eSDM::eSDM_GUI()
 ```
 
@@ -65,7 +65,7 @@ For code used to create applicable figures from the manuscript:
 
 ## Vignettes
 
-```r
+```{r, eval=FALSE}
 # To see the list of available vignettes
 browseVignettes("eSDM") 
 
