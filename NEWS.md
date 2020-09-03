@@ -1,4 +1,4 @@
-# eSDM 0.3.5 (in development)
+# eSDM 0.3.5
 
 * Use `==` rather than `identical` to check CRS equivalence (#10)
 
