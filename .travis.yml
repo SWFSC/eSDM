@@ -15,7 +15,8 @@ latex: false
 matrix:
   include:
   - r: devel
-  - r: oldrel
+  # - r: oldrel #XML package is only available for R>4.0.0.
+  #   XML reverse imports tmaptools, but tmap is only in suggest
   - r: release
     env:
     # if you use bookdown or blogdown, replace "PKGDOWN" by the respective
