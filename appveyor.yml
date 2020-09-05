@@ -12,6 +12,7 @@ install:
   - cmd: Rscript -e "writeLines('options(repos = \'https://cloud.r-project.org\')', '~/.Rprofile')"
   - cmd: Rscript -e "getOption('repos')"
   - cmd: Rscript -e "if (!requireNamespace('remotes')) install.packages('remotes', type = 'binary')"
+  - cmd: Rscript -e "remotes::install_github('r-lib/vctrs')"
   - cmd: Rscript -e "if (getRversion() < '3.2' && !requireNamespace('curl')) install.packages('curl', type = 'binary')"
   - cmd: Rscript -e "options(pkgType = 'binary'); remotes::install_github('ropensci/tic', upgrade = 'always'); print(tic::dsl_load()); tic::prepare_all_stages()"
 
