@@ -132,7 +132,7 @@
     <p>Calculate AUC, TSS, and RMSE for given density predictions and validation data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>evaluation_metrics</span>(<span class='no'>x</span>, <span class='no'>x.idx</span>, <span class='no'>y</span>, <span class='no'>y.idx</span>, <span class='kw'>count.flag</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>evaluation_metrics</span>(<span class='kw'>x</span>, <span class='kw'>x.idx</span>, <span class='kw'>y</span>, <span class='kw'>y.idx</span>, count.flag = <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -176,8 +176,10 @@ See details for differences in data processing based on this flag.</p></td>
   all rows of <code>y</code> with a value of <code>NA</code> in column <code>y.idx</code> are removed before calculating metrics</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>evaluation_metrics</span>(<span class='no'>preds.1</span>, <span class='fl'>2</span>, <span class='no'>validation.data</span>, <span class='st'>"sight"</span>)</div><div class='output co'>#&gt; [1] 0.6000000 0.4666667        NA</div><div class='input'>
-<span class='fu'>evaluation_metrics</span>(<span class='no'>preds.1</span>, <span class='st'>"Density2"</span>, <span class='no'>validation.data</span>, <span class='st'>"count"</span>, <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1]   0.6000000   0.4666667 275.7506928</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>evaluation_metrics</span>(<span class='kw'>preds.1</span>, <span class='fl'>2</span>, <span class='kw'>validation.data</span>, <span class='st'>"sight"</span>)
+</div><div class='output co'>#&gt; [1] 0.6000000 0.4666667        NA</div><div class='input'>
+<span class='fu'>evaluation_metrics</span>(<span class='kw'>preds.1</span>, <span class='st'>"Density2"</span>, <span class='kw'>validation.data</span>, <span class='st'>"count"</span>, <span class='fl'>TRUE</span>)
+</div><div class='output co'>#&gt; [1]   0.6000000   0.4666667 275.7506928</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -194,7 +196,7 @@ See details for differences in data processing based on this flag.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

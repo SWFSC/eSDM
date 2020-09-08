@@ -132,7 +132,7 @@
     <p>Create polygon(s) from a data frame with the coordinates of the polygon vertices</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pts2poly_vertices</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>pts2poly_vertices</span>(<span class='kw'>x</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,21 +162,23 @@ e.g. for passing named argument <code>crs</code></p></td>
   then the <code>crs</code> attribute of the polygon(s) will be <code>NULL</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
-  <span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>50</span>, <span class='fl'>40</span>),
-  <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>0</span>)
+    <pre class="examples"><div class='input'><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
+  lon = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>50</span>, <span class='fl'>40</span>),
+  lat = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>0</span>)
 )
-<span class='fu'>pts2poly_vertices</span>(<span class='no'>x</span>, <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>)</div><div class='output co'>#&gt; Geometry set for 1 feature 
+<span class='fu'>pts2poly_vertices</span>(<span class='kw'>x</span>, crs = <span class='fl'>4326</span>)
+</div><div class='output co'>#&gt; Geometry set for 1 feature 
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: 40 ymin: 0 xmax: 50 ymax: 10
 #&gt; CRS:            EPSG:4326</div><div class='output co'>#&gt; <span class='message'>POLYGON ((40 0, 40 10, 50 10, 50 0, 40 0))</span></div><div class='input'>
 <span class='co'># Create an sf object</span>
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
-  <span class='kw'>lon</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>50</span>, <span class='fl'>40</span>, <span class='fl'>NA</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>30</span>, <span class='fl'>30</span>, <span class='fl'>20</span>),
-  <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>NA</span>, <span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>0</span>)
+<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
+  lon = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>40</span>, <span class='fl'>40</span>, <span class='fl'>50</span>, <span class='fl'>50</span>, <span class='fl'>40</span>, <span class='fl'>NA</span>, <span class='fl'>20</span>, <span class='fl'>20</span>, <span class='fl'>30</span>, <span class='fl'>30</span>, <span class='fl'>20</span>),
+  lat = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>NA</span>, <span class='fl'>0</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>0</span>, <span class='fl'>0</span>)
 )
-<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/sf.html'>st_sf</a></span>(<span class='kw'>Pred</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>2</span>, <span class='kw'>geometry</span> <span class='kw'>=</span> <span class='fu'>pts2poly_vertices</span>(<span class='no'>x</span>, <span class='kw'>crs</span> <span class='kw'>=</span> <span class='fl'>4326</span>))</div><div class='output co'>#&gt; Simple feature collection with 2 features and 1 field
+<span class='kw'>sf</span>::<span class='fu'><a href='https://rdrr.io/pkg/sf/man/sf.html'>st_sf</a></span>(Pred = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, geometry = <span class='fu'>pts2poly_vertices</span>(<span class='kw'>x</span>, crs = <span class='fl'>4326</span>))
+</div><div class='output co'>#&gt; Simple feature collection with 2 features and 1 field
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: 20 ymin: 0 xmax: 50 ymax: 10
@@ -200,7 +202,7 @@ e.g. for passing named argument <code>crs</code></p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

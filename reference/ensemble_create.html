@@ -132,13 +132,13 @@
     <p>Create a weighted or unweighted ensemble of SDM predictions, including associated uncertainty values</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ensemble_create</span>(<span class='no'>x</span>, <span class='no'>x.idx</span>, <span class='kw'>w</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>x.var.idx</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>ensemble_create</span>(<span class='kw'>x</span>, <span class='kw'>x.idx</span>, w = <span class='kw'>NULL</span>, x.var.idx = <span class='kw'>NULL</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for sf</span>
-<span class='fu'>ensemble_create</span>(<span class='no'>x</span>, <span class='no'>x.idx</span>, <span class='kw'>w</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>x.var.idx</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>ensemble_create</span>(<span class='kw'>x</span>, <span class='kw'>x.idx</span>, w = <span class='kw'>NULL</span>, x.var.idx = <span class='kw'>NULL</span>, <span class='kw'>...</span>)
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>ensemble_create</span>(<span class='no'>x</span>, <span class='no'>x.idx</span>, <span class='kw'>w</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>x.var.idx</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>ensemble_create</span>(<span class='kw'>x</span>, <span class='kw'>x.idx</span>, w = <span class='kw'>NULL</span>, x.var.idx = <span class='kw'>NULL</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,7 +198,8 @@ See the 'Details' section for more information</p></td>
   See the eSDM GUI manual for applicable formulas.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>ensemble_create</span>(<span class='no'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Density"</span>, <span class='st'>"Density2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>, <span class='fl'>0.8</span>))</div><div class='output co'>#&gt; Simple feature collection with 325 features and 6 fields
+    <pre class="examples"><div class='input'><span class='fu'>ensemble_create</span>(<span class='kw'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Density"</span>, <span class='st'>"Density2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>, <span class='fl'>0.8</span>))
+</div><div class='output co'>#&gt; Simple feature collection with 325 features and 6 fields
 #&gt; Attribute-geometry relationship: 6 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
@@ -226,7 +227,8 @@ See the 'Details' section for more information</p></td>
 #&gt; 7  POLYGON ((-121.375 32.125, ...
 #&gt; 8  POLYGON ((-121.125 32.125, ...
 #&gt; 9  POLYGON ((-120.875 32.125, ...
-#&gt; 10 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>ensemble_create</span>(<span class='no'>preds.1</span>, <span class='fl'>1</span>:<span class='fl'>2</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>, <span class='fl'>0.8</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Var1"</span>, <span class='st'>"Var2"</span>))</div><div class='output co'>#&gt; Simple feature collection with 325 features and 6 fields
+#&gt; 10 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>ensemble_create</span>(<span class='kw'>preds.1</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>, <span class='fl'>0.8</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Var1"</span>, <span class='st'>"Var2"</span>))
+</div><div class='output co'>#&gt; Simple feature collection with 325 features and 6 fields
 #&gt; Attribute-geometry relationship: 6 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
@@ -254,14 +256,16 @@ See the 'Details' section for more information</p></td>
 #&gt; 7  POLYGON ((-121.375 32.125, ...
 #&gt; 8  POLYGON ((-121.125 32.125, ...
 #&gt; 9  POLYGON ((-120.875 32.125, ...
-#&gt; 10 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>ensemble_create</span>(<span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>5</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='fl'>3</span>:<span class='fl'>7</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>))</div><div class='output co'>#&gt;   a b Pred_ens Var_ens
+#&gt; 10 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>ensemble_create</span>(<span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(a = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, b = <span class='fl'>3</span><span class='op'>:</span><span class='fl'>7</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>))
+</div><div class='output co'>#&gt;   a b Pred_ens Var_ens
 #&gt; 1 1 3        2       1
 #&gt; 2 2 4        3       1
 #&gt; 3 3 5        4       1
 #&gt; 4 4 6        5       1
 #&gt; 5 5 7        6       1</div><div class='input'>
-<span class='no'>weights.df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>325</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>NA</span>, <span class='fl'>100</span>), <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>225</span>)))
-<span class='fu'>ensemble_create</span>(<span class='no'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Density"</span>, <span class='st'>"Density2"</span>), <span class='no'>weights.df</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Simple feature collection with 325 features and 6 fields
+<span class='kw'>weights.df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>325</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>NA</span>, <span class='fl'>100</span>), <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>225</span>)))
+<span class='fu'>ensemble_create</span>(<span class='kw'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Density"</span>, <span class='st'>"Density2"</span>), <span class='kw'>weights.df</span>, na.rm = <span class='fl'>TRUE</span>)
+</div><div class='output co'>#&gt; Simple feature collection with 325 features and 6 fields
 #&gt; Attribute-geometry relationship: 6 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
@@ -306,7 +310,7 @@ See the 'Details' section for more information</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

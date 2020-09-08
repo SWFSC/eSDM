@@ -132,7 +132,7 @@
     <p>Overlay specified SDM predictions that meet the percent overlap threshold requirement onto base geometry</p>
     </div>
 
-    <pre class="usage"><span class='fu'>overlay_sdm</span>(<span class='no'>base.geom</span>, <span class='no'>sdm</span>, <span class='no'>sdm.idx</span>, <span class='no'>overlap.perc</span>)</pre>
+    <pre class="usage"><span class='fu'>overlay_sdm</span>(<span class='kw'>base.geom</span>, <span class='kw'>sdm</span>, <span class='kw'>sdm.idx</span>, <span class='kw'>overlap.perc</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -184,7 +184,8 @@ not set as NA</p></td>
   a variant of the traditional spatial problem. Geo-Processing, 1, 297-312.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>overlay_sdm</span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>preds.1</span>), <span class='no'>preds.2</span>, <span class='fl'>1</span>, <span class='fl'>50</span>)</div><div class='output co'>#&gt; Simple feature collection with 325 features and 1 field
+    <pre class="examples"><div class='input'><span class='fu'>overlay_sdm</span>(<span class='kw'>sf</span>::<span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='kw'>preds.1</span>), <span class='kw'>preds.2</span>, <span class='fl'>1</span>, <span class='fl'>50</span>)
+</div><div class='output co'>#&gt; Simple feature collection with 325 features and 1 field
 #&gt; Attribute-geometry relationship: 1 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
@@ -201,7 +202,8 @@ not set as NA</p></td>
 #&gt; 7  0.0021131219 POLYGON ((-121.375 32.125, ...
 #&gt; 8  0.0019932582 POLYGON ((-121.125 32.125, ...
 #&gt; 9  0.0020991526 POLYGON ((-120.875 32.125, ...
-#&gt; 10 0.0020968369 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>overlay_sdm</span>(<span class='kw pkg'>sf</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='no'>preds.2</span>), <span class='no'>preds.1</span>, <span class='st'>"Density"</span>, <span class='fl'>50</span>)</div><div class='output co'>#&gt; Simple feature collection with 1891 features and 1 field
+#&gt; 10 0.0020968369 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>overlay_sdm</span>(<span class='kw'>sf</span>::<span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='kw'>preds.2</span>), <span class='kw'>preds.1</span>, <span class='st'>"Density"</span>, <span class='fl'>50</span>)
+</div><div class='output co'>#&gt; Simple feature collection with 1891 features and 1 field
 #&gt; Attribute-geometry relationship: 1 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
@@ -235,7 +237,7 @@ not set as NA</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>

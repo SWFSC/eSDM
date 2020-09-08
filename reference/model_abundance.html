@@ -132,7 +132,7 @@
     <p>Calculates the predicted abundance by multiplying the density prediction values by prediction polygon areas</p>
     </div>
 
-    <pre class="usage"><span class='fu'>model_abundance</span>(<span class='no'>x</span>, <span class='no'>dens.idx</span>, <span class='kw'>sum.abund</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>model_abundance</span>(<span class='kw'>x</span>, <span class='kw'>dens.idx</span>, sum.abund = <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,8 +169,11 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
   x must have a valid crs code to calculate area for these abundance calculations.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>model_abundance</span>(<span class='no'>preds.1</span>, <span class='st'>"Density"</span>)</div><div class='output co'>#&gt;  Density 
-#&gt; 113746.5 </div><div class='input'><span class='fu'>model_abundance</span>(<span class='no'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>))</div><div class='output co'>#&gt; [1] 113746.5 113746.5</div><div class='input'><span class='fu'>model_abundance</span>(<span class='no'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>), <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt;         1.abund     1.abund
+    <pre class="examples"><div class='input'><span class='fu'>model_abundance</span>(<span class='kw'>preds.1</span>, <span class='st'>"Density"</span>)
+</div><div class='output co'>#&gt;  Density 
+#&gt; 113746.5 </div><div class='input'><span class='fu'>model_abundance</span>(<span class='kw'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>))
+</div><div class='output co'>#&gt; [1] 113746.5 113746.5</div><div class='input'><span class='fu'>model_abundance</span>(<span class='kw'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>1</span>), <span class='fl'>FALSE</span>)
+</div><div class='output co'>#&gt;         1.abund     1.abund
 #&gt; 1     29.694694   29.694694
 #&gt; 2      9.206602    9.206602
 #&gt; 3     21.603063   21.603063
@@ -512,7 +515,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
 </div>
 
       </footer>
