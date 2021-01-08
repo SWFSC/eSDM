@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +106,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/smwoodman/eSDM/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -132,7 +132,7 @@
     <p>Create polygon(s) from a data frame with coordinates of the polygon centroid(s)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pts2poly_centroids</span>(<span class='kw'>x</span>, <span class='kw'>y</span>, <span class='kw'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>pts2poly_centroids</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -150,7 +150,7 @@ See 'Details' section for how additional columns are handled</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>passed to <a href='https://rdrr.io/pkg/sf/man/sf.html'>st_sf</a> or to <a href='https://rdrr.io/pkg/sf/man/sfc.html'>st_sfc</a>,
+      <td><p>passed to <a href='https://r-spatial.github.io/sf/reference/sf.html'>st_sf</a> or to <a href='https://r-spatial.github.io/sf/reference/sfc.html'>st_sfc</a>,
 e.g. for passing named arguments <code>crs</code> and <code>agr</code></p></td>
     </tr>
     </table>
@@ -169,37 +169,37 @@ e.g. for passing named arguments <code>crs</code> and <code>agr</code></p></td>
   regardless of if those polygons touch or overlap.
   The created polygons are oriented so that, in a 2D plane, their edges are parallel to either the x or the y axis.</p>
 <p>If <code>x</code> contains more than two column, then additional columns will be treated as simple feature attributes,
-  i.e. passed along as the first argument to <a href='https://rdrr.io/pkg/sf/man/sf.html'>st_sf</a></p>
+  i.e. passed along as the first argument to <a href='https://r-spatial.github.io/sf/reference/sf.html'>st_sf</a></p>
 <p>If a <code>crs</code> is not specified in <code>...</code>,
   then the <code>crs</code> attribute of the polygon(s) will be <code>NULL</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Create an sfc object from a data frame of two columns</span>
-<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
-  lon = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span>),
-  lat = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>)
-)
-<span class='fu'>pts2poly_centroids</span>(<span class='kw'>x</span>, <span class='fl'>2.5</span>, crs = <span class='fl'>4326</span>)
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  lon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span><span class='op'>)</span>,
+  lat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='fu'>pts2poly_centroids</span><span class='op'>(</span><span class='va'>x</span>, <span class='fl'>2.5</span>, crs <span class='op'>=</span> <span class='fl'>4326</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Geometry set for 8 features 
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: 2.5 ymin: 2.5 xmax: 22.5 ymax: 12.5
-#&gt; CRS:            EPSG:4326
+#&gt; geographic CRS: WGS 84
 #&gt; First 5 geometries:</div><div class='output co'>#&gt; <span class='message'>POLYGON ((7.5 7.5, 2.5 7.5, 2.5 2.5, 7.5 2.5, 7...</span></div><div class='output co'>#&gt; <span class='message'>POLYGON ((12.5 7.5, 7.5 7.5, 7.5 2.5, 12.5 2.5,...</span></div><div class='output co'>#&gt; <span class='message'>POLYGON ((17.5 7.5, 12.5 7.5, 12.5 2.5, 17.5 2....</span></div><div class='output co'>#&gt; <span class='message'>POLYGON ((22.5 7.5, 17.5 7.5, 17.5 2.5, 22.5 2....</span></div><div class='output co'>#&gt; <span class='message'>POLYGON ((7.5 12.5, 2.5 12.5, 2.5 7.5, 7.5 7.5,...</span></div><div class='input'>
 <span class='co'># Create an sf object from a data frame of more than two columns</span>
-<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(
-  lon = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span>),
-  lat = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>),
-  sdm.pred = <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>8</span>),
-  sdm.pred2 = <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>8</span>)
-)
-<span class='fu'>pts2poly_centroids</span>(<span class='kw'>x</span>, <span class='fl'>2.5</span>, crs = <span class='fl'>4326</span>, agr = <span class='st'>"constant"</span>)
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+  lon <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>15</span>, <span class='fl'>20</span><span class='op'>)</span>,
+  lat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>5</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span>, <span class='fl'>10</span><span class='op'>)</span>,
+  sdm.pred <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>8</span><span class='op'>)</span>,
+  sdm.pred2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>8</span><span class='op'>)</span>
+<span class='op'>)</span>
+<span class='fu'>pts2poly_centroids</span><span class='op'>(</span><span class='va'>x</span>, <span class='fl'>2.5</span>, crs <span class='op'>=</span> <span class='fl'>4326</span>, agr <span class='op'>=</span> <span class='st'>"constant"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Simple feature collection with 8 features and 2 fields
 #&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: 2.5 ymin: 2.5 xmax: 22.5 ymax: 12.5
-#&gt; CRS:            EPSG:4326
+#&gt; geographic CRS: WGS 84
 #&gt;    sdm.pred  sdm.pred2                       geometry
 #&gt; 1 0.9697919 0.37896074 POLYGON ((7.5 7.5, 2.5 7.5,...
 #&gt; 2 0.6485013 0.35953067 POLYGON ((12.5 7.5, 7.5 7.5...
@@ -225,7 +225,7 @@ e.g. for passing named arguments <code>crs</code> and <code>agr</code></p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

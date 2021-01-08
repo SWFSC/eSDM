@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +106,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/smwoodman/eSDM/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -132,7 +132,7 @@
     <p>Overlay specified SDM predictions that meet the percent overlap threshold requirement onto base geometry</p>
     </div>
 
-    <pre class="usage"><span class='fu'>overlay_sdm</span>(<span class='kw'>base.geom</span>, <span class='kw'>sdm</span>, <span class='kw'>sdm.idx</span>, <span class='kw'>overlap.perc</span>)</pre>
+    <pre class="usage"><span class='fu'>overlay_sdm</span><span class='op'>(</span><span class='va'>base.geom</span>, <span class='va'>sdm</span>, <span class='va'>sdm.idx</span>, <span class='va'>overlap.perc</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -184,13 +184,13 @@ not set as NA</p></td>
   a variant of the traditional spatial problem. Geo-Processing, 1, 297-312.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>overlay_sdm</span>(<span class='kw'>sf</span>::<span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='kw'>preds.1</span>), <span class='kw'>preds.2</span>, <span class='fl'>1</span>, <span class='fl'>50</span>)
+    <pre class="examples"><div class='input'><span class='fu'>overlay_sdm</span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>preds.1</span><span class='op'>)</span>, <span class='va'>preds.2</span>, <span class='fl'>1</span>, <span class='fl'>50</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Simple feature collection with 325 features and 1 field
 #&gt; Attribute-geometry relationship: 1 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: -123 ymin: 32 xmax: -117 ymax: 35
-#&gt; CRS:            EPSG:4326
+#&gt; geographic CRS: WGS 84
 #&gt; First 10 features:
 #&gt;         Density                       geometry
 #&gt; 1  0.0007590157 POLYGON ((-122.875 32.125, ...
@@ -202,13 +202,13 @@ not set as NA</p></td>
 #&gt; 7  0.0021131219 POLYGON ((-121.375 32.125, ...
 #&gt; 8  0.0019932582 POLYGON ((-121.125 32.125, ...
 #&gt; 9  0.0020991526 POLYGON ((-120.875 32.125, ...
-#&gt; 10 0.0020968369 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>overlay_sdm</span>(<span class='kw'>sf</span>::<span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_geometry.html'>st_geometry</a></span>(<span class='kw'>preds.2</span>), <span class='kw'>preds.1</span>, <span class='st'>"Density"</span>, <span class='fl'>50</span>)
+#&gt; 10 0.0020968369 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>overlay_sdm</span><span class='op'>(</span><span class='fu'>sf</span><span class='fu'>::</span><span class='fu'><a href='https://r-spatial.github.io/sf/reference/st_geometry.html'>st_geometry</a></span><span class='op'>(</span><span class='va'>preds.2</span><span class='op'>)</span>, <span class='va'>preds.1</span>, <span class='st'>"Density"</span>, <span class='fl'>50</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Simple feature collection with 1891 features and 1 field
 #&gt; Attribute-geometry relationship: 1 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: -123 ymin: 32 xmax: -117 ymax: 35
-#&gt; CRS:            EPSG:4326
+#&gt; geographic CRS: WGS 84
 #&gt; First 10 features:
 #&gt;       Density                       geometry
 #&gt; 1  0.18149697 POLYGON ((-122.95 32.05, -1...
@@ -237,7 +237,7 @@ not set as NA</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

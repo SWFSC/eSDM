@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -65,7 +65,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/smwoodman/eSDM/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -79,13 +79,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="example-analysis_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Example analysis - Woodman et al 2019</h1>
                         <h4 class="author">Samuel Woodman</h4>
             
-            <h4 class="date">2020-09-08</h4>
+            <h4 class="date">2021-01-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/smwoodman/eSDM/blob/master/vignettes/example-analysis.Rmd"><code>vignettes/example-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>example-analysis.Rmd</code></div>
@@ -94,13 +94,12 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://dplyr.tidyverse.org">dplyr</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://smwoodman.github.io/eSDM">eSDM</a></span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://r-spatial.github.io/sf">sf</a></span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://smwoodman.github.io/eSDM/">eSDM</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/source.html">source</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"eSDM_vignette_helper.R"</span>, package = <span class="st">"eSDM"</span>), local = <span class="fl">TRUE</span>, echo = <span class="fl">FALSE</span>)
-</pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"eSDM_vignette_helper.R"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span>, local <span class="op">=</span> <span class="cn">TRUE</span>, echo <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
@@ -112,29 +111,29 @@
 <div id="import-sdm-predictions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#import-sdm-predictions" class="anchor"></a>Import SDM predictions</h2>
-<p>The first step of the example analysis is to import and process the Model_B, Model_H, and Model_R predictions, along with their standard error (SE) values. Use <code>pts2poly_centroids</code> to create <code>sf</code> objects from polygon centroids from CSV files, <code><a href="https://rdrr.io/pkg/raster/man/raster.html">raster::raster</a></code> to import raster files, and <code><a href="https://rdrr.io/pkg/sf/man/st_read.html">sf::st_read</a></code> to import GIS files. The dimensions of the Model_B and Model_H predictions are 0.09 x 0.09 degrees and 0.25 x 0.25 degrees, respectively; the second argument of <code>pts2poly_centroids</code> is half the length of one side of the polygon. GIS files already have a defined geometry that is read by <code>st_read</code>. Before overlaying predictions, you must ensure the following:</p>
+<p>The first step of the example analysis is to import and process the Model_B, Model_H, and Model_R predictions, along with their standard error (SE) values. Use <code>pts2poly_centroids</code> to create <code>sf</code> objects from polygon centroids from CSV files, <code><a href="https://rdrr.io/pkg/raster/man/raster.html">raster::raster</a></code> to import raster files, and <code><a href="https://r-spatial.github.io/sf/reference/st_read.html">sf::st_read</a></code> to import GIS files. The dimensions of the Model_B and Model_H predictions are 0.09 x 0.09 degrees and 0.25 x 0.25 degrees, respectively; the second argument of <code>pts2poly_centroids</code> is half the length of one side of the polygon. GIS files already have a defined geometry that is read by <code>st_read</code>. Before overlaying predictions, you must ensure the following:</p>
 <ul>
 <li>All predictions are <code>sf</code> objects. See below for examples of converting a CSV file of grid centroids or a <code>raster</code> object to an <code>sf</code> object.</li>
-<li>The geometries of the predictions are valid; this can be checked using <code><a href="https://rdrr.io/pkg/sf/man/valid.html">sf::st_is_valid</a></code>.</li>
-<li>The geometries of the predictions have a defined coordinate reference system (crs); this can be checked using <code><a href="https://rdrr.io/pkg/sf/man/st_crs.html">sf::st_crs</a></code>.</li>
-<li>The predictions have the same longitudinal range (i.e., either [0, 360] or [-180, 180]); this can be checked using <code><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">sf::st_bbox</a></code>. You can use <code><a href="https://rdrr.io/pkg/sf/man/st_transform.html">sf::st_wrap_dateline</a></code> to convert an <code>sf</code> object to the longitudinal range [-180, 180], but note that this will cause plots to span [-180, 180] as well.</li>
+<li>The geometries of the predictions are valid; this can be checked using <code><a href="https://r-spatial.github.io/sf/reference/valid.html">sf::st_is_valid</a></code>.</li>
+<li>The geometries of the predictions have a defined coordinate reference system (crs); this can be checked using <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">sf::st_crs</a></code>.</li>
+<li>The predictions have the same longitudinal range (i.e., either [0, 360] or [-180, 180]); this can be checked using <code><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">sf::st_bbox</a></code>. You can use <code><a href="https://r-spatial.github.io/sf/reference/st_transform.html">sf::st_wrap_dateline</a></code> to convert an <code>sf</code> object to the longitudinal range [-180, 180], but note that this will cause plots to span [-180, 180] as well.</li>
 </ul>
 <p>We can visualize the SDM predictions after importing and processing them. The plots below make up Fig. 3 in Woodman <em>et al.</em> (2019). This vignette uses the custom <code>plot_sf_3panel</code> function (in ‘vignette_helper.R’ located at <code>system.file("vignette_helper.R", package = "eSDM"</code>) for plotting. <code>plot_sf_3panel</code> and <code>tmap_sdm</code> (used later in this vignette) were not included as functions in the <code>eSDM</code> package because they are specific to the example analysis region and SDMs. However, they can provide guidelines and a framework for plotting SDMs using the <code>sf</code> and <code>tmap</code> packages, allowing you to adapt these functions to your specific plotting needs.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># Import, process, and plot Model_B predictions</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Import, process, and plot Model_B predictions</span>
 <span class="co"># model.b &lt;- read.csv("Predictions_Beckeretal2016.csv")</span>
-<span class="kw">model.b.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Predictions_Beckeretal2016.rds"</span>, package = <span class="st">"eSDM"</span>)) <span class="op">%&gt;%</span> 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/pts2poly_centroids.html">pts2poly_centroids</a></span>(<span class="fl">0.09</span> <span class="op">/</span> <span class="fl">2</span>, crs = <span class="fl">4326</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_wrap_dateline</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_agr.html">st_set_agr</a></span>(<span class="st">"constant"</span>)
+<span class="va">model.b.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/Predictions_Beckeretal2016.rds"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/pts2poly_centroids.html">pts2poly_centroids</a></span><span class="op">(</span><span class="fl">0.09</span> <span class="op">/</span> <span class="fl">2</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_wrap_dateline</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_agr.html">st_set_agr</a></span><span class="op">(</span><span class="st">"constant"</span><span class="op">)</span>
 
-<span class="kw">model.b.sf</span>
+<span class="va">model.b.sf</span>
 <span class="co">#&gt; Simple feature collection with 14807 features and 2 fields</span>
 <span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span>
 <span class="co">#&gt; geometry type:  POLYGON</span>
 <span class="co">#&gt; dimension:      XY</span>
 <span class="co">#&gt; bbox:           xmin: -131.085 ymin: 30.045 xmax: -117.135 ymax: 48.585</span>
-<span class="co">#&gt; CRS:            EPSG:4326</span>
+<span class="co">#&gt; geographic CRS: WGS 84</span>
 <span class="co">#&gt; First 10 features:</span>
 <span class="co">#&gt;        pred_bm           se                       geometry</span>
 <span class="co">#&gt; 1  5.45105e-05 5.097233e-05 POLYGON ((-123.525 30.135, ...</span>
@@ -149,32 +148,30 @@
 <span class="co">#&gt; 10 1.07454e-04 1.186867e-04 POLYGON ((-123.345 30.225, ...</span>
 
 <span class="co"># Make base map</span>
-<span class="kw">map.world</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="kw"><a href="../reference/gshhg.l.L16.html">gshhg.l.L16</a></span>
+<span class="va">map.world</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="va"><a href="../reference/gshhg.l.L16.html">gshhg.l.L16</a></span>
 
 <span class="co"># Other option for making base map</span>
-<span class="co"># map.world &lt;- st_geometry(st_as_sf(maps::map('world', plot = FALSE, fill = TRUE)))</span>
-</pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu">plot_sf_3panel</span>(
-  <span class="kw">model.b.sf</span>, <span class="st">"pred_bm"</span>, main.txt = <span class="st">"Model_B - "</span>, map.base = <span class="kw">map.world</span>, 
-  x.axis.at = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">130</span>, <span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">120</span>)
-)
-</pre></div>
+<span class="co"># map.world &lt;- st_geometry(st_as_sf(maps::map('world', plot = FALSE, fill = TRUE)))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">plot_sf_3panel</span><span class="op">(</span>
+  <span class="va">model.b.sf</span>, <span class="st">"pred_bm"</span>, main.txt <span class="op">=</span> <span class="st">"Model_B - "</span>, map.base <span class="op">=</span> <span class="va">map.world</span>, 
+  x.axis.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">130</span>, <span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">120</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="co"># Import, process, and plot Model_H predictions</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Import, process, and plot Model_H predictions</span>
 <span class="co"># model.h &lt;- read.csv("Predictions_Hazenetal2017.csv")</span>
-<span class="kw">model.h.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Predictions_Hazenetal2017.rds"</span>, package = <span class="st">"eSDM"</span>)) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">lon</span>, <span class="kw">lat</span>, <span class="kw">pred_bm</span>, <span class="kw">se</span>) <span class="op">%&gt;%</span>
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/pts2poly_centroids.html">pts2poly_centroids</a></span>(<span class="fl">0.25</span> <span class="op">/</span> <span class="fl">2</span>, crs = <span class="fl">4326</span>, agr = <span class="st">"constant"</span>)
+<span class="va">model.h.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/Predictions_Hazenetal2017.rds"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">lon</span>, <span class="va">lat</span>, <span class="va">pred_bm</span>, <span class="va">se</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/pts2poly_centroids.html">pts2poly_centroids</a></span><span class="op">(</span><span class="fl">0.25</span> <span class="op">/</span> <span class="fl">2</span>, crs <span class="op">=</span> <span class="fl">4326</span>, agr <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span>
 
-<span class="kw">model.h.sf</span>
+<span class="va">model.h.sf</span>
 <span class="co">#&gt; Simple feature collection with 4052 features and 2 fields</span>
 <span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span>
 <span class="co">#&gt; geometry type:  POLYGON</span>
 <span class="co">#&gt; dimension:      XY</span>
 <span class="co">#&gt; bbox:           xmin: -135.125 ymin: 29.875 xmax: -115.875 ymax: 49.125</span>
-<span class="co">#&gt; CRS:            EPSG:4326</span>
+<span class="co">#&gt; geographic CRS: WGS 84</span>
 <span class="co">#&gt; First 10 features:</span>
 <span class="co">#&gt;       pred_bm          se                       geometry</span>
 <span class="co">#&gt; 1  0.04554697 0.053372075 POLYGON ((-134.875 30.125, ...</span>
@@ -186,23 +183,21 @@
 <span class="co">#&gt; 7  0.05754484 0.009460079 POLYGON ((-133.375 30.125, ...</span>
 <span class="co">#&gt; 8  0.03529852 0.017022402 POLYGON ((-133.125 30.125, ...</span>
 <span class="co">#&gt; 9  0.10666410 0.063944752 POLYGON ((-132.875 30.125, ...</span>
-<span class="co">#&gt; 10 0.11393473 0.061255526 POLYGON ((-132.625 30.125, ...</span>
-</pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu">plot_sf_3panel</span>(
-  <span class="kw">model.h.sf</span>, <span class="st">"pred_bm"</span>, main.txt = <span class="st">"Model_H - "</span>, map.base = <span class="kw">map.world</span>, 
-  x.axis.at = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">135</span>, <span class="op">-</span><span class="fl">130</span>, <span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">120</span>)
-)
-</pre></div>
+<span class="co">#&gt; 10 0.11393473 0.061255526 POLYGON ((-132.625 30.125, ...</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">plot_sf_3panel</span><span class="op">(</span>
+  <span class="va">model.h.sf</span>, <span class="st">"pred_bm"</span>, main.txt <span class="op">=</span> <span class="st">"Model_H - "</span>, map.base <span class="op">=</span> <span class="va">map.world</span>, 
+  x.axis.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">135</span>, <span class="op">-</span><span class="fl">130</span>, <span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">120</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="co"># Import, process, and plot Model_R predictions</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Import, process, and plot Model_R predictions</span>
 <span class="co"># model.r &lt;- st_read("Shapefiles/Predictions_Redfernetal2017.shp")</span>
-<span class="kw">model.r.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Predictions_Redfernetal2017.rds"</span>, package = <span class="st">"eSDM"</span>)) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/valid.html">st_make_valid</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_agr.html">st_set_agr</a></span>(<span class="st">"constant"</span>)
+<span class="va">model.r.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/Predictions_Redfernetal2017.rds"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/valid.html">st_make_valid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_agr.html">st_set_agr</a></span><span class="op">(</span><span class="st">"constant"</span><span class="op">)</span>
 
-<span class="kw">model.r.sf</span>
+<span class="va">model.r.sf</span>
 <span class="co">#&gt; Simple feature collection with 11419 features and 2 fields</span>
 <span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span>
 <span class="co">#&gt; geometry type:  MULTIPOLYGON</span>
@@ -220,126 +215,117 @@
 <span class="co">#&gt; 7  0.004953553 0.0012025559 MULTIPOLYGON (((-13196624 3...</span>
 <span class="co">#&gt; 8  0.004699313 0.0014451453 MULTIPOLYGON (((-13177508 3...</span>
 <span class="co">#&gt; 9  0.004930461 0.0011039563 MULTIPOLYGON (((-13197508 3...</span>
-<span class="co">#&gt; 10          NA           NA MULTIPOLYGON (((-13067508 3...</span>
-</pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu">plot_sf_3panel</span>(
-  <span class="kw">model.r.sf</span>, <span class="st">"pred_bm"</span>, main.txt = <span class="st">"Model_R - "</span>, map.base = <span class="kw">map.world</span>, 
-  x.axis.at = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">130</span>, <span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">120</span>)
-)
-</pre></div>
+<span class="co">#&gt; 10          NA           NA MULTIPOLYGON (((-13067508 3...</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">plot_sf_3panel</span><span class="op">(</span>
+  <span class="va">model.r.sf</span>, <span class="st">"pred_bm"</span>, main.txt <span class="op">=</span> <span class="st">"Model_R - "</span>, map.base <span class="op">=</span> <span class="va">map.world</span>, 
+  x.axis.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">130</span>, <span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">120</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="co"># Example code for converting raster to sf object; code not run</span>
-<span class="kw">logo</span> <span class="op">&lt;-</span> <span class="kw">raster</span>::<span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"external/rlogo.grd"</span>, package=<span class="st">"raster"</span>))
-<span class="kw">logo.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/coerce-methods.html">as</a></span>(<span class="kw">logo</span>, <span class="st">"SpatialPolygonsDataFrame"</span>) <span class="op">%&gt;%</span> 
-  <span class="kw">sf</span>::<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_as_sf.html">st_as_sf</a></span>()
-</pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Example code for converting raster to sf object; code not run</span>
+<span class="va">logo</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html">raster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"external/rlogo.grd"</span>, package<span class="op">=</span><span class="st">"raster"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">logo.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/coerce-methods.html">as</a></span><span class="op">(</span><span class="va">logo</span>, <span class="st">"SpatialPolygonsDataFrame"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="overlay-predictions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overlay-predictions" class="anchor"></a>Overlay predictions</h2>
 <p>Because the original predictions have both different spatial resolutions and coordinate systems, we must overlay them onto the same base geometry. See Woodman <em>et al.</em> (2019), the <code>eSDM</code> GUI manual, or the <code>overlay_sdm</code> documentation for details about the overlay process. For the example analysis, we use the geometry of Model_R as the base geometry. However, first we must import and process the study area and erasing polygons, with which we clip and erase land from the base geometry, respectively. We also visualize the base geometry.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="co"># Study area polygon</span>
-<span class="kw">poly.study</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">st_read</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Shapefiles/Study_Area_CCE.shp"</span>, package = <span class="st">"eSDM"</span>)) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>() <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_crs.html">st_crs</a></span>(<span class="kw">model.r.sf</span>))
-<span class="co">#&gt; Reading layer `Study_Area_CCE' from data source `/tmp/Rtmp3ZSUQW/temp_libpath4f8c198dfa83/eSDM/extdata/Shapefiles/Study_Area_CCE.shp' using driver `ESRI Shapefile'</span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Study area polygon</span>
+<span class="va">poly.study</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/Shapefiles/Study_Area_CCE.shp"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">model.r.sf</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Reading layer `Study_Area_CCE' from data source `/Users/runner/work/_temp/Library/eSDM/extdata/Shapefiles/Study_Area_CCE.shp' using driver `ESRI Shapefile'</span>
 <span class="co">#&gt; Simple feature collection with 1 feature and 6 fields</span>
 <span class="co">#&gt; geometry type:  POLYGON</span>
 <span class="co">#&gt; dimension:      XY</span>
 <span class="co">#&gt; bbox:           xmin: -131 ymin: 30.05 xmax: -117.013 ymax: 48.6</span>
-<span class="co">#&gt; CRS:            4326</span>
+<span class="co">#&gt; geographic CRS: WGS 84</span>
 
 <span class="co"># Erasing polygon; clip to the buffered study area polygon reduces future computation time</span>
-<span class="kw">poly.erase</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="kw"><a href="../reference/gshhg.l.L16.html">gshhg.l.L16</a></span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_crs.html">st_crs</a></span>(<span class="kw">model.r.sf</span>)) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/valid.html">st_make_valid</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_crop.html">st_crop</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/geos_unary.html">st_buffer</a></span>(<span class="kw">poly.study</span>, <span class="fl">100000</span>))
+<span class="va">poly.erase</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="va"><a href="../reference/gshhg.l.L16.html">gshhg.l.L16</a></span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">model.r.sf</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/valid.html">st_make_valid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">poly.study</span>, <span class="fl">100000</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Create the base geometry; st_erase() function defined in eSDM_vignette_helper.R</span>
-<span class="kw">base.geom</span> <span class="op">&lt;-</span> <span class="kw">model.r.sf</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_geometry</a></span>() <span class="op">%&gt;%</span>
-  <span class="fu">st_erase</span>(<span class="kw">poly.erase</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/geos_binary_ops.html">st_intersection</a></span>(<span class="kw">poly.study</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_cast.html">st_cast</a></span>(<span class="st">"MULTIPOLYGON"</span>)
-</pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="co"># Visualize the base geometry</span>
-<span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="kw">base.geom</span>, <span class="fl">4326</span>), col = <span class="fl">NA</span>, border = <span class="st">"black"</span>, axes = <span class="fl">TRUE</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="kw">map.world</span>, add = <span class="fl">TRUE</span>, col = <span class="st">"tan"</span>, border = <span class="fl">NA</span>)
-<span class="kw">graphics</span>::<span class="fu"><a href="https://rdrr.io/r/graphics/box.html">box</a></span>()
-</pre></div>
+<span class="va">base.geom</span> <span class="op">&lt;-</span> <span class="va">model.r.sf</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">st_erase</span><span class="op">(</span><span class="va">poly.erase</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html">st_intersection</a></span><span class="op">(</span><span class="va">poly.study</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="st">"MULTIPOLYGON"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Visualize the base geometry</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">base.geom</span>, <span class="fl">4326</span><span class="op">)</span>, col <span class="op">=</span> <span class="cn">NA</span>, border <span class="op">=</span> <span class="st">"black"</span>, axes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">map.world</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"tan"</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
+<span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/box.html">box</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
 <p>Next, we convert any associated uncertainty values to variance. Uncertainty values must be overlaid as variance values to remain statistically valid.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="co"># Convert SE values to variance</span>
-<span class="kw">model.b.sf</span> <span class="op">&lt;-</span> <span class="kw">model.b.sf</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(variance = <span class="kw">se</span><span class="op">^</span><span class="fl">2</span>) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">pred_bm</span>, <span class="kw">se</span>, <span class="kw">variance</span>)
-<span class="kw">model.h.sf</span> <span class="op">&lt;-</span> <span class="kw">model.h.sf</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(variance = <span class="kw">se</span><span class="op">^</span><span class="fl">2</span>) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">pred_bm</span>, <span class="kw">se</span>, <span class="kw">variance</span>)
-<span class="kw">model.r.sf</span> <span class="op">&lt;-</span> <span class="kw">model.r.sf</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(variance = <span class="kw">se</span><span class="op">^</span><span class="fl">2</span>) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">pred_bm</span>, <span class="kw">se</span>, <span class="kw">variance</span>)
-</pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Convert SE values to variance</span>
+<span class="va">model.b.sf</span> <span class="op">&lt;-</span> <span class="va">model.b.sf</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">se</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">pred_bm</span>, <span class="va">se</span>, <span class="va">variance</span><span class="op">)</span>
+<span class="va">model.h.sf</span> <span class="op">&lt;-</span> <span class="va">model.h.sf</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">se</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">pred_bm</span>, <span class="va">se</span>, <span class="va">variance</span><span class="op">)</span>
+<span class="va">model.r.sf</span> <span class="op">&lt;-</span> <span class="va">model.r.sf</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">se</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">pred_bm</span>, <span class="va">se</span>, <span class="va">variance</span><span class="op">)</span></code></pre></div>
 <p>Now we can overlay the original predictions onto the base geometry. Note that because we clipped and erased land from the base geometry, we cannot simply use the original Model_R predictions and geometry. However, we can ‘overlay’ the Model_R predictions by matching indices of base geometry polygons and Model_R prediction values (<code>over3.sfb</code> in the code below).</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="co"># Perform overlay, and convert overlaid uncertainty values to SEs</span>
-<span class="kw">over1.sf</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/overlay_sdm.html">overlay_sdm</a></span>(<span class="kw">base.geom</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="kw">model.b.sf</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_crs.html">st_crs</a></span>(<span class="kw">base.geom</span>)), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"pred_bm"</span>, <span class="st">"variance"</span>), <span class="fl">50</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(se = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">variance</span>))
-<span class="kw">over2.sf</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/overlay_sdm.html">overlay_sdm</a></span>(<span class="kw">base.geom</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="kw">model.h.sf</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_crs.html">st_crs</a></span>(<span class="kw">base.geom</span>)), <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"pred_bm"</span>, <span class="st">"variance"</span>), <span class="fl">50</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(se = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">variance</span>))
-<span class="kw">over3.sf</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/overlay_sdm.html">overlay_sdm</a></span>(<span class="kw">base.geom</span>, <span class="kw">model.r.sf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"pred_bm"</span>, <span class="st">"variance"</span>), <span class="fl">50</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(se = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">variance</span>))
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Perform overlay, and convert overlaid uncertainty values to SEs</span>
+<span class="va">over1.sf</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/overlay_sdm.html">overlay_sdm</a></span><span class="op">(</span><span class="va">base.geom</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">model.b.sf</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">base.geom</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pred_bm"</span>, <span class="st">"variance"</span><span class="op">)</span>, <span class="fl">50</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span>
+<span class="va">over2.sf</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/overlay_sdm.html">overlay_sdm</a></span><span class="op">(</span><span class="va">base.geom</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">model.h.sf</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">base.geom</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pred_bm"</span>, <span class="st">"variance"</span><span class="op">)</span>, <span class="fl">50</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span>
+<span class="va">over3.sf</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/overlay_sdm.html">overlay_sdm</a></span><span class="op">(</span><span class="va">base.geom</span>, <span class="va">model.r.sf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pred_bm"</span>, <span class="st">"variance"</span><span class="op">)</span>, <span class="fl">50</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span>
 
-<span class="kw">over3.sfb</span> <span class="op">&lt;-</span> <span class="kw">model.r.sf</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(<span class="kw">NULL</span>) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">pred_bm</span>, <span class="kw">variance</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/sf.html">st_sf</a></span>(geometry = <span class="kw">base.geom</span>, agr = <span class="st">"constant"</span>) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(se = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">variance</span>))
-<span class="fu"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span>(<span class="kw">over3.sf</span>, <span class="kw">over3.sfb</span>)
+<span class="va">over3.sfb</span> <span class="op">&lt;-</span> <span class="va">model.r.sf</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_set_geometry</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">pred_bm</span>, <span class="va">variance</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html">st_sf</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">base.geom</span>, agr <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>se <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">variance</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span><span class="op">(</span><span class="va">over3.sf</span>, <span class="va">over3.sfb</span><span class="op">)</span>
 <span class="co">#&gt; [1] TRUE</span>
-<span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span>(<span class="kw">over3.sfb</span>)
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span><span class="va">over3.sfb</span><span class="op">)</span></code></pre></div>
 <p>We also could plot the overlaid predictions to show that the overlaid distribution patterns are very similar to those of the original predictions.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="co"># Plot overlaid predictions; code not run</span>
-<span class="fu">plot_sf_3panel</span>(<span class="kw">over1.sf</span>, <span class="st">"pred_bm"</span>, main.txt = <span class="st">"Overlaid Model_B - "</span>, map.base = <span class="kw">map.world</span>)
-<span class="fu">plot_sf_3panel</span>(<span class="kw">over2.sf</span>, <span class="st">"pred_bm"</span>, main.txt = <span class="st">"Overlaid Model_H - "</span>, map.base = <span class="kw">map.world</span>)
-<span class="fu">plot_sf_3panel</span>(<span class="kw">over3.sf</span>, <span class="st">"pred_bm"</span>, main.txt = <span class="st">"Overlaid Model_R - "</span>, map.base = <span class="kw">map.world</span>)
-</pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Plot overlaid predictions; code not run</span>
+<span class="fu">plot_sf_3panel</span><span class="op">(</span><span class="va">over1.sf</span>, <span class="st">"pred_bm"</span>, main.txt <span class="op">=</span> <span class="st">"Overlaid Model_B - "</span>, map.base <span class="op">=</span> <span class="va">map.world</span><span class="op">)</span>
+<span class="fu">plot_sf_3panel</span><span class="op">(</span><span class="va">over2.sf</span>, <span class="st">"pred_bm"</span>, main.txt <span class="op">=</span> <span class="st">"Overlaid Model_H - "</span>, map.base <span class="op">=</span> <span class="va">map.world</span><span class="op">)</span>
+<span class="fu">plot_sf_3panel</span><span class="op">(</span><span class="va">over3.sf</span>, <span class="st">"pred_bm"</span>, main.txt <span class="op">=</span> <span class="st">"Overlaid Model_R - "</span>, map.base <span class="op">=</span> <span class="va">map.world</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="calculate-evaluation-metrics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#calculate-evaluation-metrics" class="anchor"></a>Calculate evaluation metrics</h2>
 <p>To evaluate predictions and create ensembles with weights based on evaluation metrics, we must load and process the validation data sets for use with <code>evaluation_metrics</code>. The validation data must be points of class <code>sf</code> with a column with either binary presence/absence or count data. For the example analysis, we use three validation sets in the example analysis, line transect data (Becker <em>et al.</em> 2016), home range data (Irvine <em>et al.</em> 2014), and these two data sets combined. Because our validation data are binary (i.e., presence/absence), there is a column indicating whether each value is a presence point (1) or absence point (0).</p>
 <p>Note that in this vignette, the validation data are read from .rds files because the original file was too big to be included in the package. However, the original file can be downloaded through the GUI or at <a href="https://github.com/smwoodman/eSDM-data" class="uri">https://github.com/smwoodman/eSDM-data</a></p>
-<p>Use the function <code><a href="https://rdrr.io/pkg/sf/man/st_as_sf.html">sf::st_as_sf</a></code> to convert a data frame with lon/lat coordinates to an <code>sf</code> object.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="co"># Import and process validation data</span>
+<p>Use the function <code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">sf::st_as_sf</a></code> to convert a data frame with lon/lat coordinates to an <code>sf</code> object.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Import and process validation data</span>
 <span class="co"># valid.data &lt;- read.csv("eSDM_Validation_data_all.csv", stringsAsFactors = FALSE)</span>
-<span class="kw">valid.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/eSDM_Validation_data_all.rds"</span>, package = <span class="st">"eSDM"</span>))<span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span>(<span class="kw">source</span>, <span class="kw">lat</span>, <span class="kw">lon</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(pres_abs = <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span>(<span class="kw">pres_abs</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>)) <span class="op">%&gt;%</span> <span class="co">#For demonstration purposes; pres_abs column is already binary</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_as_sf.html">st_as_sf</a></span>(coords = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"lon"</span>, <span class="st">"lat"</span>), crs = <span class="fl">4326</span>, agr = <span class="st">"constant"</span>) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_crs.html">st_crs</a></span>(<span class="kw">base.geom</span>))
+<span class="va">valid.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/eSDM_Validation_data_all.rds"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span><span class="op">)</span><span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">source</span>, <span class="va">lat</span>, <span class="va">lon</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>pres_abs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">pres_abs</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="co">#For demonstration purposes; pres_abs column is already binary</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span>, agr <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">base.geom</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Extract the line transect and home range validation data</span>
-<span class="kw">valid.data.lt</span> <span class="op">&lt;-</span> <span class="kw">valid.data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="kw">source</span> <span class="op">==</span> <span class="st">"Becker_et_al_2016"</span>)
-<span class="kw">valid.data.hr</span> <span class="op">&lt;-</span> <span class="kw">valid.data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="kw">source</span> <span class="op">==</span> <span class="st">"Irvine_et_al_2014"</span>)
+<span class="va">valid.data.lt</span> <span class="op">&lt;-</span> <span class="va">valid.data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">source</span> <span class="op">==</span> <span class="st">"Becker_et_al_2016"</span><span class="op">)</span>
+<span class="va">valid.data.hr</span> <span class="op">&lt;-</span> <span class="va">valid.data</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">source</span> <span class="op">==</span> <span class="st">"Irvine_et_al_2014"</span><span class="op">)</span>
 
 <span class="co"># Summarize the number of presence and absence points</span>
-<span class="kw">valid.data</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(<span class="kw">NULL</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="kw">source</span>) <span class="op">%&gt;%</span>  
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(pres = <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">pres_abs</span> <span class="op">==</span> <span class="fl">1</span>), 
-            abs = <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">pres_abs</span> <span class="op">==</span> <span class="fl">0</span>)) <span class="op">%&gt;%</span> 
-  <span class="kw">knitr</span>::<span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Validation data summary"</span>)
-<span class="co">#&gt; `summarise()` ungrouping output (override with `.groups` argument)</span>
-</pre></div>
+<span class="va">valid.data</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_set_geometry</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span> <span class="op">%&gt;%</span>  
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>pres <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pres_abs</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, 
+            abs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pres_abs</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Validation data summary"</span><span class="op">)</span>
+<span class="co">#&gt; `summarise()` ungrouping output (override with `.groups` argument)</span></code></pre></div>
 <table class="table">
 <caption>Validation data summary</caption>
 <thead><tr class="header">
@@ -361,53 +347,51 @@
 </tbody>
 </table>
 <p>Now we can calculate the AUC and TSS metrics for the original and overlaid predictions. The displayed table is from Table 3 of Woodman <em>et al.</em> (2019). Note that <code>evaluation_metrics</code> requires that validation data have the same coordinate reference system as the predictions being evaluated.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="co"># Calculate evaluation metrics with different validation data sets; code not run</span>
-<span class="kw">names.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Calculate evaluation metrics with different validation data sets; code not run</span>
+<span class="va">names.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
   <span class="st">"Model_B_orig"</span>, <span class="st">"Model_H_orig"</span>, <span class="st">"Model_R_orig"</span>, 
   <span class="st">"Model_B_overlaid"</span>, <span class="st">"Model_H_overlaid"</span>, <span class="st">"Model_R_overlaid"</span>
-)
+<span class="op">)</span>
 
-<span class="kw">eval.lt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="kw">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">model.b.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="kw">valid.data.lt</span>, <span class="fl">4326</span>), <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">model.h.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="kw">valid.data.lt</span>, <span class="fl">4326</span>), <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">model.r.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data.lt</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over1.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data.lt</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over2.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data.lt</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over3.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data.lt</span>, <span class="st">"pres_abs"</span>)
-))) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(Preds = <span class="kw">names.1</span>) <span class="op">%&gt;%</span>
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Preds</span>, AUC_LT = <span class="kw">X1</span>, TSS_LT = <span class="kw">X2</span>)
+<span class="va">eval.lt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">model.b.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">valid.data.lt</span>, <span class="fl">4326</span><span class="op">)</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">model.h.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">valid.data.lt</span>, <span class="fl">4326</span><span class="op">)</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">model.r.sf</span>, <span class="fl">1</span>, <span class="va">valid.data.lt</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over1.sf</span>, <span class="fl">1</span>, <span class="va">valid.data.lt</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over2.sf</span>, <span class="fl">1</span>, <span class="va">valid.data.lt</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over3.sf</span>, <span class="fl">1</span>, <span class="va">valid.data.lt</span>, <span class="st">"pres_abs"</span><span class="op">)</span>
+<span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Preds <span class="op">=</span> <span class="va">names.1</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Preds</span>, AUC_LT <span class="op">=</span> <span class="va">X1</span>, TSS_LT <span class="op">=</span> <span class="va">X2</span><span class="op">)</span>
 
-<span class="kw">eval.hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="kw">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">model.b.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="kw">valid.data.hr</span>, <span class="fl">4326</span>), <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">model.h.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="kw">valid.data.hr</span>, <span class="fl">4326</span>), <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">model.r.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data.hr</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over1.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data.hr</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over2.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data.hr</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over3.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data.hr</span>, <span class="st">"pres_abs"</span>)
-))) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(Preds = <span class="kw">names.1</span>) <span class="op">%&gt;%</span>
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Preds</span>, AUC_HR = <span class="kw">X1</span>, TSS_HR = <span class="kw">X2</span>)
+<span class="va">eval.hr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">model.b.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">valid.data.hr</span>, <span class="fl">4326</span><span class="op">)</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">model.h.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">valid.data.hr</span>, <span class="fl">4326</span><span class="op">)</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">model.r.sf</span>, <span class="fl">1</span>, <span class="va">valid.data.hr</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over1.sf</span>, <span class="fl">1</span>, <span class="va">valid.data.hr</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over2.sf</span>, <span class="fl">1</span>, <span class="va">valid.data.hr</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over3.sf</span>, <span class="fl">1</span>, <span class="va">valid.data.hr</span>, <span class="st">"pres_abs"</span><span class="op">)</span>
+<span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Preds <span class="op">=</span> <span class="va">names.1</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Preds</span>, AUC_HR <span class="op">=</span> <span class="va">X1</span>, TSS_HR <span class="op">=</span> <span class="va">X2</span><span class="op">)</span>
 
-<span class="kw">eval.combo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="kw">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">model.b.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="kw">valid.data</span>, <span class="fl">4326</span>), <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">model.h.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_transform.html">st_transform</a></span>(<span class="kw">valid.data</span>, <span class="fl">4326</span>), <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">model.r.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over1.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over2.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over3.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>)
-))) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(Preds = <span class="kw">names.1</span>) <span class="op">%&gt;%</span>
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Preds</span>, AUC = <span class="kw">X1</span>, TSS = <span class="kw">X2</span>)
-</pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Table3.csv"</span>, package = <span class="st">"eSDM"</span>)) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span>(<span class="st">"Model_"</span>, <span class="kw">Predictions</span>)) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Predictions</span>, <span class="kw">AUC</span>, <span class="kw">TSS</span>, `AUC-LT` = <span class="kw">AUC.LT</span>, `TSS-LT` = <span class="kw">TSS.LT</span>, 
-                `AUC-HR` = <span class="kw">AUC.HR</span>, `TSS-HR` = <span class="kw">TSS.HR</span>) <span class="op">%&gt;%</span> 
-  <span class="kw">knitr</span>::<span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Evaluation metrics"</span>, digits = <span class="fl">3</span>, align = <span class="st">"lcccccc"</span>)
-</pre></div>
+<span class="va">eval.combo</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">model.b.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">valid.data</span>, <span class="fl">4326</span><span class="op">)</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">model.h.sf</span>, <span class="fl">1</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">valid.data</span>, <span class="fl">4326</span><span class="op">)</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">model.r.sf</span>, <span class="fl">1</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over1.sf</span>, <span class="fl">1</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over2.sf</span>, <span class="fl">1</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over3.sf</span>, <span class="fl">1</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>
+<span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Preds <span class="op">=</span> <span class="va">names.1</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Preds</span>, AUC <span class="op">=</span> <span class="va">X1</span>, TSS <span class="op">=</span> <span class="va">X2</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/Table3.csv"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"Model_"</span>, <span class="va">Predictions</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Predictions</span>, <span class="va">AUC</span>, <span class="va">TSS</span>, `AUC-LT` <span class="op">=</span> <span class="va">AUC.LT</span>, `TSS-LT` <span class="op">=</span> <span class="va">TSS.LT</span>, 
+                `AUC-HR` <span class="op">=</span> <span class="va">AUC.HR</span>, `TSS-HR` <span class="op">=</span> <span class="va">TSS.HR</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Evaluation metrics"</span>, digits <span class="op">=</span> <span class="fl">3</span>, align <span class="op">=</span> <span class="st">"lcccccc"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Evaluation metrics</caption>
 <thead><tr class="header">
@@ -483,32 +467,32 @@
 <a href="#create-and-evaluate-ensemble-predictions" class="anchor"></a>Create and evaluate ensemble predictions</h2>
 <p>Before creating the ensembles, we must rescale the overlaid predictions. We rescaled the predictions using the abundance rescaling method and an abundance of 1648 (Becker <em>et al.</em> 2016). Using the sum to 1 rescaling method would result in ensembles with similar distribution patterns, but the actual density values could not be used to provide a meaningful abundance estimate.</p>
 <p><code>ensemble_rescale</code> requires a single <code>sf</code> object that contains all of the data being rescaled. Thus, we extract the prediction and variance values before using the rescaling function.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
-<span class="co"># Rescale predictions</span>
-<span class="kw">over.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span>(
-  <span class="kw">over1.sf</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(<span class="kw">NULL</span>) <span class="op">%&gt;%</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(pred_bm1 = <span class="kw">pred_bm</span>, var1 = <span class="kw">variance</span>), 
-  <span class="kw">over2.sf</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(<span class="kw">NULL</span>) <span class="op">%&gt;%</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(pred_bm2 = <span class="kw">pred_bm</span>, var2 = <span class="kw">variance</span>), 
-  <span class="kw">over3.sf</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(<span class="kw">NULL</span>) <span class="op">%&gt;%</span> <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(pred_bm3 = <span class="kw">pred_bm</span>, var3 = <span class="kw">variance</span>)
-) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/sf.html">st_sf</a></span>(geometry = <span class="kw">base.geom</span>, agr = <span class="st">"constant"</span>)
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Rescale predictions</span>
+<span class="va">over.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span>
+  <span class="va">over1.sf</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_set_geometry</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>pred_bm1 <span class="op">=</span> <span class="va">pred_bm</span>, var1 <span class="op">=</span> <span class="va">variance</span><span class="op">)</span>, 
+  <span class="va">over2.sf</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_set_geometry</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>pred_bm2 <span class="op">=</span> <span class="va">pred_bm</span>, var2 <span class="op">=</span> <span class="va">variance</span><span class="op">)</span>, 
+  <span class="va">over3.sf</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_set_geometry</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>pred_bm3 <span class="op">=</span> <span class="va">pred_bm</span>, var3 <span class="op">=</span> <span class="va">variance</span><span class="op">)</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html">st_sf</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">base.geom</span>, agr <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span>
 
-<span class="kw">over.sf.rescaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ensemble_rescale.html">ensemble_rescale</a></span>(
-  <span class="kw">over.sf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span>), <span class="st">"abundance"</span>, <span class="fl">1648</span>, 
-  x.var.idx = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"var1"</span>, <span class="st">"var2"</span>, <span class="st">"var3"</span>)
-)
+<span class="va">over.sf.rescaled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ensemble_rescale.html">ensemble_rescale</a></span><span class="op">(</span>
+  <span class="va">over.sf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span><span class="op">)</span>, <span class="st">"abundance"</span>, <span class="fl">1648</span>, 
+  x.var.idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"var1"</span>, <span class="st">"var2"</span>, <span class="st">"var3"</span><span class="op">)</span>
+<span class="op">)</span>
 
 <span class="co"># Check that overlaid predictions predict expected abundance</span>
-<span class="kw">eSDM</span>::<span class="fu"><a href="../reference/model_abundance.html">model_abundance</a></span>(<span class="kw">over.sf.rescaled</span>, <span class="st">"pred_bm1"</span>)
+<span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/model_abundance.html">model_abundance</a></span><span class="op">(</span><span class="va">over.sf.rescaled</span>, <span class="st">"pred_bm1"</span><span class="op">)</span>
 <span class="co">#&gt; pred_bm1 </span>
 <span class="co">#&gt;     1648</span>
-<span class="kw">eSDM</span>::<span class="fu"><a href="../reference/model_abundance.html">model_abundance</a></span>(<span class="kw">over.sf.rescaled</span>, <span class="st">"pred_bm2"</span>)
+<span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/model_abundance.html">model_abundance</a></span><span class="op">(</span><span class="va">over.sf.rescaled</span>, <span class="st">"pred_bm2"</span><span class="op">)</span>
 <span class="co">#&gt; pred_bm2 </span>
 <span class="co">#&gt;     1648</span>
-<span class="kw">eSDM</span>::<span class="fu"><a href="../reference/model_abundance.html">model_abundance</a></span>(<span class="kw">over.sf.rescaled</span>, <span class="st">"pred_bm3"</span>)
+<span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/model_abundance.html">model_abundance</a></span><span class="op">(</span><span class="va">over.sf.rescaled</span>, <span class="st">"pred_bm3"</span><span class="op">)</span>
 <span class="co">#&gt; pred_bm3 </span>
 <span class="co">#&gt;     1648</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span>(<span class="kw">over.sf.rescaled</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">over.sf.rescaled</span><span class="op">)</span>
 <span class="co">#&gt;     pred_bm1            var1          pred_bm2            var2   </span>
 <span class="co">#&gt;  Min.   :0.00001   Min.   :0e+00   Min.   :0.00003   Min.   :0   </span>
 <span class="co">#&gt;  1st Qu.:0.00029   1st Qu.:0e+00   1st Qu.:0.00063   1st Qu.:0   </span>
@@ -524,138 +508,132 @@
 <span class="co">#&gt;  Mean   :0.00147   Mean   :0.00000                        </span>
 <span class="co">#&gt;  3rd Qu.:0.00225   3rd Qu.:0.00000                        </span>
 <span class="co">#&gt;  Max.   :0.01866   Max.   :0.00013                        </span>
-<span class="co">#&gt;  NA's   :41        NA's   :41</span>
-</pre></div>
+<span class="co">#&gt;  NA's   :41        NA's   :41</span></code></pre></div>
 <p>We can see that the prediction values are now much more comparable, and thus a subset of the predictions will not contribute disproportionately to an ensemble.</p>
 <p>We also must calculate the ensemble weights, which must be manually created. For the example analysis, we use several weighting methods: equal weights (i.e., unweighted), AUC-based weights, TSS-based weights, and weights calculated as the inverse of the prediction variance. Each set of weights must sum to 1, or each row must sum to 1 in the case of the weights calculated as the inverse of the prediction variance. Note that when calculating evaluation metrics, a message is printed if any of the validation data points do not intersect with a prediction polygon.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit">
-<span class="co"># Calculate ensemble weights</span>
-<span class="kw">e.weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over1.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over2.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">over3.sf</span>, <span class="fl">1</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>)
-)
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Calculate ensemble weights</span>
+<span class="va">e.weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over1.sf</span>, <span class="fl">1</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over2.sf</span>, <span class="fl">1</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">over3.sf</span>, <span class="fl">1</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>
+<span class="op">)</span>
 <span class="co">#&gt; There were 83 validation points that did not overlap with a non-NA prediction polygon</span>
 <span class="co">#&gt; There were 171 validation points that did not overlap with a non-NA prediction polygon</span>
 <span class="co">#&gt; There were 84 validation points that did not overlap with a non-NA prediction polygon</span>
 
-<span class="kw">over.df.resc.var</span> <span class="op">&lt;-</span> <span class="kw">over.sf.rescaled</span> <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">var1</span>, <span class="kw">var2</span>, <span class="kw">var3</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_geometry.html">st_set_geometry</a></span>(<span class="kw">NULL</span>)
+<span class="va">over.df.resc.var</span> <span class="op">&lt;-</span> <span class="va">over.sf.rescaled</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">var1</span>, <span class="va">var2</span>, <span class="va">var3</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_set_geometry</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span>
 
-<span class="kw">e.weights.unw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>) <span class="op">/</span> <span class="fl">3</span>
-<span class="kw">e.weights.auc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="kw">e.weights</span>, <span class="fu">function</span>(<span class="kw">i</span>) <span class="kw">i</span>[<span class="fl">1</span>]) <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="kw">e.weights</span>, <span class="fu">function</span>(<span class="kw">i</span>) <span class="kw">i</span>[<span class="fl">1</span>]))
-<span class="kw">e.weights.tss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="kw">e.weights</span>, <span class="fu">function</span>(<span class="kw">i</span>) <span class="kw">i</span>[<span class="fl">2</span>]) <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span>(<span class="kw">e.weights</span>, <span class="fu">function</span>(<span class="kw">i</span>) <span class="kw">i</span>[<span class="fl">2</span>]))
-<span class="kw">e.weights.var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(
-  <span class="fl">1</span> <span class="op">/</span> <span class="kw">over.df.resc.var</span>, <span class="fl">1</span>, <span class="fu">function</span>(<span class="kw">i</span>) {<span class="kw">i</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(<span class="kw">i</span>, na.rm = <span class="fl">TRUE</span>)}
-)))
+<span class="va">e.weights.unw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span>
+<span class="va">e.weights.auc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">e.weights</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="va">i</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">e.weights</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="va">i</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="va">e.weights.tss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">e.weights</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="va">i</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">e.weights</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="va">i</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="va">e.weights.var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span>
+  <span class="fl">1</span> <span class="op">/</span> <span class="va">over.df.resc.var</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span><span class="va">i</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">i</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">}</span>
+<span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
-<span class="kw">e.weights.unw</span>
+<span class="va">e.weights.unw</span>
 <span class="co">#&gt; [1] 0.3333333 0.3333333 0.3333333</span>
-<span class="kw">e.weights.auc</span>
-<span class="co">#&gt; [1] 0.3564575 0.2859788 0.3575637</span>
-<span class="kw">e.weights.tss</span>
+<span class="va">e.weights.auc</span>
+<span class="co">#&gt; [1] 0.3564575 0.2859789 0.3575637</span>
+<span class="va">e.weights.tss</span>
 <span class="co">#&gt; [1] 0.3897645 0.2127986 0.3974369</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">e.weights.var</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">e.weights.var</span><span class="op">)</span>
 <span class="co">#&gt;         var1      var2        var3</span>
 <span class="co">#&gt; 1 0.30739591 0.6897710 0.002833083</span>
 <span class="co">#&gt; 2 0.99305706        NA 0.006942942</span>
 <span class="co">#&gt; 3 0.99479068        NA 0.005209324</span>
 <span class="co">#&gt; 4 0.06759370 0.3232166 0.609189722</span>
 <span class="co">#&gt; 5 0.05685041 0.8348384 0.108311140</span>
-<span class="co">#&gt; 6 0.04114136 0.4182598 0.540598860</span>
-</pre></div>
+<span class="co">#&gt; 6 0.04114136 0.4182598 0.540598860</span></code></pre></div>
 <p>Finally, we can create the ensembles. We calculate the ensemble uncertainty values with the among-model variance.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="co">### Create ensembles</span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">### Create ensembles</span>
 
 <span class="co"># Unweighted; calculate CV because it is used in Fig. 4 plot</span>
-<span class="kw">ens.sf.unw</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span>(
-  <span class="kw">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span>),  w = <span class="kw">e.weights.unw</span>, 
-  x.var.idx = <span class="kw">NULL</span>
-) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(SE = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">Var_ens</span>), CV = <span class="kw">SE</span> <span class="op">/</span> <span class="kw">Pred_ens</span>) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Pred_ens</span>, <span class="kw">SE</span>, <span class="kw">CV</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_agr.html">st_set_agr</a></span>(<span class="st">"constant"</span>)
+<span class="va">ens.sf.unw</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span><span class="op">(</span>
+  <span class="va">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span><span class="op">)</span>,  w <span class="op">=</span> <span class="va">e.weights.unw</span>, 
+  x.var.idx <span class="op">=</span> <span class="cn">NULL</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">Var_ens</span><span class="op">)</span>, CV <span class="op">=</span> <span class="va">SE</span> <span class="op">/</span> <span class="va">Pred_ens</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Pred_ens</span>, <span class="va">SE</span>, <span class="va">CV</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_agr.html">st_set_agr</a></span><span class="op">(</span><span class="st">"constant"</span><span class="op">)</span>
 
 <span class="co"># Weights based on AUC</span>
-<span class="kw">ens.sf.wauc</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span>(
-  <span class="kw">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span>),  w = <span class="kw">e.weights.auc</span>, 
-  x.var.idx = <span class="kw">NULL</span>
-) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(SE = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">Var_ens</span>)) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Pred_ens</span>, <span class="kw">SE</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_agr.html">st_set_agr</a></span>(<span class="st">"constant"</span>)
+<span class="va">ens.sf.wauc</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span><span class="op">(</span>
+  <span class="va">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span><span class="op">)</span>,  w <span class="op">=</span> <span class="va">e.weights.auc</span>, 
+  x.var.idx <span class="op">=</span> <span class="cn">NULL</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">Var_ens</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Pred_ens</span>, <span class="va">SE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_agr.html">st_set_agr</a></span><span class="op">(</span><span class="st">"constant"</span><span class="op">)</span>
 
 <span class="co"># Weights based on TSS</span>
-<span class="kw">ens.sf.wtss</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span>(
-  <span class="kw">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span>),  w = <span class="kw">e.weights.tss</span>, 
-  x.var.idx = <span class="kw">NULL</span>
-) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(SE = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">Var_ens</span>)) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Pred_ens</span>, <span class="kw">SE</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_agr.html">st_set_agr</a></span>(<span class="st">"constant"</span>)
+<span class="va">ens.sf.wtss</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span><span class="op">(</span>
+  <span class="va">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span><span class="op">)</span>,  w <span class="op">=</span> <span class="va">e.weights.tss</span>, 
+  x.var.idx <span class="op">=</span> <span class="cn">NULL</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">Var_ens</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Pred_ens</span>, <span class="va">SE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_agr.html">st_set_agr</a></span><span class="op">(</span><span class="st">"constant"</span><span class="op">)</span>
 
 <span class="co"># Weights based on the inverse of the variance</span>
-<span class="kw">ens.sf.wvar</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span>(
-  <span class="kw">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span>),  w = <span class="kw">e.weights.var</span>, 
-  x.var.idx = <span class="kw">NULL</span>
-) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(SE = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">Var_ens</span>)) <span class="op">%&gt;%</span> 
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Pred_ens</span>, <span class="kw">SE</span>) <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_agr.html">st_set_agr</a></span>(<span class="st">"constant"</span>)
-</pre></div>
+<span class="va">ens.sf.wvar</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span><span class="op">(</span>
+  <span class="va">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span><span class="op">)</span>,  w <span class="op">=</span> <span class="va">e.weights.var</span>, 
+  x.var.idx <span class="op">=</span> <span class="cn">NULL</span>
+<span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">Var_ens</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Pred_ens</span>, <span class="va">SE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_agr.html">st_set_agr</a></span><span class="op">(</span><span class="st">"constant"</span><span class="op">)</span></code></pre></div>
 <p>We could also have estimated the within-model ensemble uncertainty by using the <code>x.var.idx</code> argument, as demonstrated in the following code (not run).</p>
-<div class="sourceCode" id="cb20"><pre class="downlit">
-<span class="co"># Create an ensemble and calculate within-model uncertainty; code not run</span>
-<span class="kw">ens.sf.unw.wmv</span> <span class="op">&lt;-</span> <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span>(
-  <span class="kw">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span>),  w = <span class="kw">e.weights.unw</span>,
-  x.var.idx = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">var1</span>, <span class="kw">var2</span>, <span class="kw">var3</span>)
-) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(SE = <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span>(<span class="kw">Var_ens</span>)) <span class="op">%&gt;%</span>
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Pred_ens</span> , <span class="kw">SE</span>)
-</pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Create an ensemble and calculate within-model uncertainty; code not run</span>
+<span class="va">ens.sf.unw.wmv</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span><span class="op">(</span>
+  <span class="va">over.sf.rescaled</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pred_bm1"</span>, <span class="st">"pred_bm2"</span>, <span class="st">"pred_bm3"</span><span class="op">)</span>,  w <span class="op">=</span> <span class="va">e.weights.unw</span>,
+  x.var.idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">var1</span>, <span class="va">var2</span>, <span class="va">var3</span><span class="op">)</span>
+<span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">Var_ens</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Pred_ens</span> , <span class="va">SE</span><span class="op">)</span></code></pre></div>
 <p>Now we can calculate AUC and TSS scores for the ensembles and compare them to those of original and ensemble predictions. Again, the evaluation code is not run; the displayed table is Table 3 from Woodman <em>et al.</em> (2019).</p>
-<div class="sourceCode" id="cb21"><pre class="downlit">
-<span class="co"># Calculate evaluation metrics for ensembles; code not run</span>
-<span class="kw">names.2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Calculate evaluation metrics for ensembles; code not run</span>
+<span class="va">names.2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
   <span class="st">"Ensemble – unweighted"</span>, <span class="st">"Ensemble – AUC-based weights"</span>,
   <span class="st">"Ensemble – TSS-based weights"</span>, <span class="st">"Ensemble – variance-based weights"</span>
-)
+<span class="op">)</span>
 
-<span class="kw">eval.lt.ens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="kw">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.unw</span>,  <span class="st">"Pred_ens"</span>, <span class="kw">valid.data.lt</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.wauc</span>, <span class="st">"Pred_ens"</span>, <span class="kw">valid.data.lt</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="kw">valid.data.lt</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.wvar</span>, <span class="st">"Pred_ens"</span>, <span class="kw">valid.data.lt</span>, <span class="st">"pres_abs"</span>)
-))) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(Preds = <span class="kw">names.2</span>) <span class="op">%&gt;%</span>
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Preds</span>, AUC_LT = <span class="kw">X1</span>, TSS_LT = <span class="kw">X2</span>)
+<span class="va">eval.lt.ens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.unw</span>,  <span class="st">"Pred_ens"</span>, <span class="va">valid.data.lt</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.wauc</span>, <span class="st">"Pred_ens"</span>, <span class="va">valid.data.lt</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="va">valid.data.lt</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.wvar</span>, <span class="st">"Pred_ens"</span>, <span class="va">valid.data.lt</span>, <span class="st">"pres_abs"</span><span class="op">)</span>
+<span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Preds <span class="op">=</span> <span class="va">names.2</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Preds</span>, AUC_LT <span class="op">=</span> <span class="va">X1</span>, TSS_LT <span class="op">=</span> <span class="va">X2</span><span class="op">)</span>
 
-<span class="kw">eval.hr.ens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="kw">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.unw</span>,  <span class="st">"Pred_ens"</span>, <span class="kw">valid.data.hr</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.wauc</span>, <span class="st">"Pred_ens"</span>, <span class="kw">valid.data.hr</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="kw">valid.data.hr</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.wvar</span>, <span class="st">"Pred_ens"</span>, <span class="kw">valid.data.hr</span>, <span class="st">"pres_abs"</span>)
-))) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(Preds = <span class="kw">names.2</span>) <span class="op">%&gt;%</span>
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Preds</span>, AUC_HR = <span class="kw">X1</span>, TSS_HR = <span class="kw">X2</span>) 
+<span class="va">eval.hr.ens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.unw</span>,  <span class="st">"Pred_ens"</span>, <span class="va">valid.data.hr</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.wauc</span>, <span class="st">"Pred_ens"</span>, <span class="va">valid.data.hr</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="va">valid.data.hr</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.wvar</span>, <span class="st">"Pred_ens"</span>, <span class="va">valid.data.hr</span>, <span class="st">"pres_abs"</span><span class="op">)</span>
+<span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Preds <span class="op">=</span> <span class="va">names.2</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Preds</span>, AUC_HR <span class="op">=</span> <span class="va">X1</span>, TSS_HR <span class="op">=</span> <span class="va">X2</span><span class="op">)</span> 
 
-<span class="kw">eval.combo.ens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="kw">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.unw</span>,  <span class="st">"Pred_ens"</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.wauc</span>, <span class="st">"Pred_ens"</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>), 
-  <span class="kw">eSDM</span>::<span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span>(<span class="kw">ens.sf.wvar</span>, <span class="st">"Pred_ens"</span>, <span class="kw">valid.data</span>, <span class="st">"pres_abs"</span>)
-))) <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(Preds = <span class="kw">names.2</span>) <span class="op">%&gt;%</span>
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Preds</span>, AUC = <span class="kw">X1</span>, TSS = <span class="kw">X2</span>)
-</pre></div>
-<div class="sourceCode" id="cb22"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/Table3.csv"</span>, package = <span class="st">"eSDM"</span>)) <span class="op">%&gt;%</span>
-  <span class="kw">dplyr</span>::<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="kw">Predictions</span>, <span class="kw">AUC</span>, <span class="kw">TSS</span>, `AUC-LT` = <span class="kw">AUC.LT</span>, `TSS-LT` = <span class="kw">TSS.LT</span>, 
-                `AUC-HR` = <span class="kw">AUC.HR</span>, `TSS-HR` = <span class="kw">TSS.HR</span>) <span class="op">%&gt;%</span> 
-  <span class="kw">knitr</span>::<span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span>(caption = <span class="st">"Evaluation metrics"</span>, digits = <span class="fl">3</span>, align = <span class="st">"lcccccc"</span>)
-</pre></div>
+<span class="va">eval.combo.ens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.unw</span>,  <span class="st">"Pred_ens"</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.wauc</span>, <span class="st">"Pred_ens"</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>, 
+  <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/evaluation_metrics.html">evaluation_metrics</a></span><span class="op">(</span><span class="va">ens.sf.wvar</span>, <span class="st">"Pred_ens"</span>, <span class="va">valid.data</span>, <span class="st">"pres_abs"</span><span class="op">)</span>
+<span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Preds <span class="op">=</span> <span class="va">names.2</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Preds</span>, AUC <span class="op">=</span> <span class="va">X1</span>, TSS <span class="op">=</span> <span class="va">X2</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/Table3.csv"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Predictions</span>, <span class="va">AUC</span>, <span class="va">TSS</span>, `AUC-LT` <span class="op">=</span> <span class="va">AUC.LT</span>, `TSS-LT` <span class="op">=</span> <span class="va">TSS.LT</span>, 
+                `AUC-HR` <span class="op">=</span> <span class="va">AUC.HR</span>, `TSS-HR` <span class="op">=</span> <span class="va">TSS.HR</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Evaluation metrics"</span>, digits <span class="op">=</span> <span class="fl">3</span>, align <span class="op">=</span> <span class="st">"lcccccc"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Evaluation metrics</caption>
 <thead><tr class="header">
@@ -761,104 +739,101 @@
 </tbody>
 </table>
 <p>We can see that the ensemble with weights based on TSS values had the highest scores of the ensemble predictions, and mostly higher scores that the original predictions. We can visualize this ensemble to compare it with known blue whale habitat.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit">
-<span class="co"># Simple code to visualize ensemble created with weights based on TSS values</span>
-<span class="fu">plot_sf_3panel</span>(
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span>(<span class="kw">ens.sf.wtss</span>, se = <span class="kw">SE</span>), <span class="st">"Pred_ens"</span>, main.txt = <span class="st">"Ensemble-TSS - "</span>, 
-  map.base = <span class="kw">map.world</span>, x.axis.at = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">130</span>, <span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">120</span>)
-)
-</pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Simple code to visualize ensemble created with weights based on TSS values</span>
+<span class="fu">plot_sf_3panel</span><span class="op">(</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span><span class="va">ens.sf.wtss</span>, se <span class="op">=</span> <span class="va">SE</span><span class="op">)</span>, <span class="st">"Pred_ens"</span>, main.txt <span class="op">=</span> <span class="st">"Ensemble-TSS - "</span>, 
+  map.base <span class="op">=</span> <span class="va">map.world</span>, x.axis.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">130</span>, <span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">120</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-23-1.png" width="672"></p>
 <p>Below is code to visualize the unweighted ensembles and this ensemble (i.e., create plots similar to Figs. 4 and 5 in Woodman <em>et al.</em>). This code uses custom functions (located at <code><a href="https://rdrr.io/r/base/system.file.html">system.file("eSDM_vignette_helper.R", package = "eSDM")</a></code>) that leverage the <code>tmap</code> package to generate plots. However, by default this code is not run because each plot takes several minutes to generate.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit">
-<span class="co">### Figure 4; code not run</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/mtennekes/tmap">tmap</a></span>)
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">### Figure 4; code not run</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mtennekes/tmap">tmap</a></span><span class="op">)</span>
 
 <span class="co"># Values passed to tmap_sdm - range of map</span>
-<span class="kw">range.poly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sf/man/sfc.html">st_sfc</a></span>(
-  <span class="fu"><a href="https://rdrr.io/pkg/sf/man/st.html">st_polygon</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(
-    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">132</span>, <span class="op">-</span><span class="fl">132</span>, <span class="op">-</span><span class="fl">116</span>, <span class="op">-</span><span class="fl">116</span>, <span class="op">-</span><span class="fl">132</span>, <span class="fl">29.5</span>, <span class="fl">49</span>, <span class="fl">49</span>, <span class="fl">29.5</span>, <span class="fl">29.5</span>), ncol = <span class="fl">2</span>
-  ))),
-  crs = <span class="fl">4326</span>
-)
-<span class="kw">rpoly.mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_bbox.html">st_bbox</a></span>(<span class="kw">range.poly</span>), ncol = <span class="fl">2</span>)
+<span class="va">range.poly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html">st_sfc</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">132</span>, <span class="op">-</span><span class="fl">132</span>, <span class="op">-</span><span class="fl">116</span>, <span class="op">-</span><span class="fl">116</span>, <span class="op">-</span><span class="fl">132</span>, <span class="fl">29.5</span>, <span class="fl">49</span>, <span class="fl">49</span>, <span class="fl">29.5</span>, <span class="fl">29.5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span>
+  <span class="op">)</span><span class="op">)</span><span class="op">)</span>,
+  crs <span class="op">=</span> <span class="fl">4326</span>
+<span class="op">)</span>
+<span class="va">rpoly.mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">range.poly</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 
 <span class="co"># Values passed to tmap_sdm - size of text labels and legend width</span>
-<span class="kw">main.size</span> <span class="op">&lt;-</span> <span class="fl">0.8</span>
-<span class="kw">leg.size</span>  <span class="op">&lt;-</span> <span class="fl">0.55</span>
-<span class="kw">leg.width</span> <span class="op">&lt;-</span> <span class="fl">0.43</span>
-<span class="kw">grid.size</span> <span class="op">&lt;-</span> <span class="fl">0.55</span>
+<span class="va">main.size</span> <span class="op">&lt;-</span> <span class="fl">0.8</span>
+<span class="va">leg.size</span>  <span class="op">&lt;-</span> <span class="fl">0.55</span>
+<span class="va">leg.width</span> <span class="op">&lt;-</span> <span class="fl">0.43</span>
+<span class="va">grid.size</span> <span class="op">&lt;-</span> <span class="fl">0.55</span>
 
 <span class="co"># Values passed to tmap_sdm - color scale info</span>
-<span class="kw">blp1</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm_help</span>(<span class="kw">ens.sf.unw</span>, <span class="st">"Pred_ens"</span>)
-<span class="kw">blp2</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm_help</span>(<span class="kw">ens.sf.unw</span>, <span class="st">"CV"</span>)
+<span class="va">blp1</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm_help</span><span class="op">(</span><span class="va">ens.sf.unw</span>, <span class="st">"Pred_ens"</span><span class="op">)</span>
+<span class="va">blp2</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm_help</span><span class="op">(</span><span class="va">ens.sf.unw</span>, <span class="st">"CV"</span><span class="op">)</span>
 
 <span class="co"># Plot of predictions (whales / km^-2)</span>
-<span class="kw">tmap.obj1</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span>(
-  <span class="kw">ens.sf.unw</span>, <span class="st">"Pred_ens"</span>, <span class="kw">blp1</span>, <span class="kw">map.world</span>, <span class="kw">rpoly.mat</span>, 
+<span class="va">tmap.obj1</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span><span class="op">(</span>
+  <span class="va">ens.sf.unw</span>, <span class="st">"Pred_ens"</span>, <span class="va">blp1</span>, <span class="va">map.world</span>, <span class="va">rpoly.mat</span>, 
   <span class="st">"Unweighted ensemble - predictions"</span>, 
-  <span class="kw">main.size</span>, <span class="kw">leg.size</span>, <span class="kw">leg.width</span>, <span class="kw">grid.size</span>
-)
+  <span class="va">main.size</span>, <span class="va">leg.size</span>, <span class="va">leg.width</span>, <span class="va">grid.size</span>
+<span class="op">)</span>
 <span class="co"># Plot of SE values (with same color sceme as predictions)</span>
-<span class="kw">tmap.obj2</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span>(
-  <span class="kw">ens.sf.unw</span>, <span class="st">"SE"</span>, <span class="kw">blp1</span>, <span class="kw">map.world</span>, <span class="kw">rpoly.mat</span>, 
+<span class="va">tmap.obj2</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span><span class="op">(</span>
+  <span class="va">ens.sf.unw</span>, <span class="st">"SE"</span>, <span class="va">blp1</span>, <span class="va">map.world</span>, <span class="va">rpoly.mat</span>, 
   <span class="st">"Unweighted ensemble - SE"</span>, 
-  <span class="kw">main.size</span>, <span class="kw">leg.size</span>, <span class="kw">leg.width</span>, <span class="kw">grid.size</span>
-)
+  <span class="va">main.size</span>, <span class="va">leg.size</span>, <span class="va">leg.width</span>, <span class="va">grid.size</span>
+<span class="op">)</span>
 <span class="co"># Plot of CV values</span>
-<span class="kw">tmap.obj3</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span>(
-  <span class="kw">ens.sf.unw</span>, <span class="st">"CV"</span>, <span class="kw">blp2</span>, <span class="kw">map.world</span>, <span class="kw">rpoly.mat</span>, 
+<span class="va">tmap.obj3</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span><span class="op">(</span>
+  <span class="va">ens.sf.unw</span>, <span class="st">"CV"</span>, <span class="va">blp2</span>, <span class="va">map.world</span>, <span class="va">rpoly.mat</span>, 
   <span class="st">"Unweighted ensemble - CV"</span>, 
-  <span class="kw">main.size</span>, <span class="kw">leg.size</span>, <span class="kw">leg.width</span>, <span class="kw">grid.size</span>
-)
+  <span class="va">main.size</span>, <span class="va">leg.size</span>, <span class="va">leg.width</span>, <span class="va">grid.size</span>
+<span class="op">)</span>
 
 <span class="co"># Generate plot</span>
-<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_arrange.html">tmap_arrange</a></span>(
-  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">tmap.obj1</span>, <span class="kw">tmap.obj2</span>, <span class="kw">tmap.obj3</span>), ncol = <span class="fl">3</span>, asp = <span class="kw">NULL</span>, outer.margins = <span class="fl">0.05</span>
-)
-</pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit">
-<span class="co">### Figure 5; code not run</span>
+<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_arrange.html">tmap_arrange</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tmap.obj1</span>, <span class="va">tmap.obj2</span>, <span class="va">tmap.obj3</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, asp <span class="op">=</span> <span class="cn">NULL</span>, outer.margins <span class="op">=</span> <span class="fl">0.05</span>
+<span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">### Figure 5; code not run</span>
 
 <span class="co"># Values passed to tmap_sdm - size of text labels and legend width</span>
-<span class="kw">main.size</span> <span class="op">&lt;-</span> <span class="fl">1.1</span>
-<span class="kw">leg.size</span>  <span class="op">&lt;-</span> <span class="fl">0.7</span>
-<span class="kw">leg.width</span> <span class="op">&lt;-</span> <span class="fl">0.6</span>
-<span class="kw">grid.size</span> <span class="op">&lt;-</span> <span class="fl">0.7</span>
+<span class="va">main.size</span> <span class="op">&lt;-</span> <span class="fl">1.1</span>
+<span class="va">leg.size</span>  <span class="op">&lt;-</span> <span class="fl">0.7</span>
+<span class="va">leg.width</span> <span class="op">&lt;-</span> <span class="fl">0.6</span>
+<span class="va">grid.size</span> <span class="op">&lt;-</span> <span class="fl">0.7</span>
 
 <span class="co"># Values passed to tmap_sdm - color scale info</span>
-<span class="kw">blp1b</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm_help</span>(<span class="kw">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>)
-<span class="kw">blp2b</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm_help_perc</span>(<span class="kw">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>)
+<span class="va">blp1b</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm_help</span><span class="op">(</span><span class="va">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span><span class="op">)</span>
+<span class="va">blp2b</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm_help_perc</span><span class="op">(</span><span class="va">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span><span class="op">)</span>
 
 <span class="co"># Plot of predictions (whales / km^-2)</span>
-<span class="kw">tmap.obj1</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span>(
-  <span class="kw">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="kw">blp1</span>, <span class="kw">map.world</span>, <span class="kw">rpoly.mat</span>, <span class="st">"Ensemble-TSS - Predictions"</span>, 
-  <span class="kw">main.size</span>, <span class="kw">leg.size</span>, <span class="kw">leg.width</span>, <span class="kw">grid.size</span>
-)
+<span class="va">tmap.obj1</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span><span class="op">(</span>
+  <span class="va">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="va">blp1</span>, <span class="va">map.world</span>, <span class="va">rpoly.mat</span>, <span class="st">"Ensemble-TSS - Predictions"</span>, 
+  <span class="va">main.size</span>, <span class="va">leg.size</span>, <span class="va">leg.width</span>, <span class="va">grid.size</span>
+<span class="op">)</span>
 <span class="co"># Plot of SE values (with same color sceme as predictions)</span>
-<span class="kw">tmap.obj2</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span>(
-  <span class="kw">ens.sf.wtss</span>, <span class="st">"SE"</span>, <span class="kw">blp1</span>, <span class="kw">map.world</span>, <span class="kw">rpoly.mat</span>, <span class="st">"Ensemble-TSS - SE"</span>, 
-  <span class="kw">main.size</span>, <span class="kw">leg.size</span>, <span class="kw">leg.width</span>, <span class="kw">grid.size</span>
-)
+<span class="va">tmap.obj2</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span><span class="op">(</span>
+  <span class="va">ens.sf.wtss</span>, <span class="st">"SE"</span>, <span class="va">blp1</span>, <span class="va">map.world</span>, <span class="va">rpoly.mat</span>, <span class="st">"Ensemble-TSS - SE"</span>, 
+  <span class="va">main.size</span>, <span class="va">leg.size</span>, <span class="va">leg.width</span>, <span class="va">grid.size</span>
+<span class="op">)</span>
 <span class="co"># Plot of predictions (percentiles)</span>
-<span class="kw">tmap.obj3</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span>(
-  <span class="kw">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="kw">blp2b</span>, <span class="kw">map.world</span>, <span class="kw">rpoly.mat</span>, <span class="st">"Ensemble-TSS - Predictions"</span>, 
-  <span class="kw">main.size</span>, <span class="kw">leg.size</span>, <span class="kw">leg.width</span>, <span class="kw">grid.size</span>
-)
+<span class="va">tmap.obj3</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span><span class="op">(</span>
+  <span class="va">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="va">blp2b</span>, <span class="va">map.world</span>, <span class="va">rpoly.mat</span>, <span class="st">"Ensemble-TSS - Predictions"</span>, 
+  <span class="va">main.size</span>, <span class="va">leg.size</span>, <span class="va">leg.width</span>, <span class="va">grid.size</span>
+<span class="op">)</span>
 <span class="co"># Plot of predictions (percentiles) with combined validation data presence points</span>
-<span class="kw">tmap.obj4</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span>(
-  <span class="kw">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="kw">blp2b</span>, <span class="kw">map.world</span>, <span class="kw">rpoly.mat</span>, <span class="st">"Ensemble-TSS - Predictions"</span>, 
-  <span class="kw">main.size</span>, <span class="kw">leg.size</span>, <span class="kw">leg.width</span>, <span class="kw">grid.size</span>
-) <span class="op">+</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span>(<span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="kw">valid.data</span>, <span class="kw">pres_abs</span> <span class="op">==</span> <span class="fl">1</span>)) <span class="op">+</span> 
-  <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html">tm_dots</a></span>(col = <span class="st">"black"</span>, size = <span class="fl">0.04</span>, shape = <span class="fl">19</span>)
+<span class="va">tmap.obj4</span> <span class="op">&lt;-</span> <span class="fu">tmap_sdm</span><span class="op">(</span>
+  <span class="va">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="va">blp2b</span>, <span class="va">map.world</span>, <span class="va">rpoly.mat</span>, <span class="st">"Ensemble-TSS - Predictions"</span>, 
+  <span class="va">main.size</span>, <span class="va">leg.size</span>, <span class="va">leg.width</span>, <span class="va">grid.size</span>
+<span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">valid.data</span>, <span class="va">pres_abs</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html">tm_dots</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"black"</span>, size <span class="op">=</span> <span class="fl">0.04</span>, shape <span class="op">=</span> <span class="fl">19</span><span class="op">)</span>
 
 <span class="co"># Generate plot</span>
-<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_arrange.html">tmap_arrange</a></span>(
-  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">tmap.obj1</span>, <span class="kw">tmap.obj2</span>, <span class="kw">tmap.obj3</span>, <span class="kw">tmap.obj4</span>), ncol = <span class="fl">2</span>, nrow = <span class="fl">2</span>, 
-  asp = <span class="kw">NULL</span>, outer.margins = <span class="fl">0.05</span>
-)
-</pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_arrange.html">tmap_arrange</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">tmap.obj1</span>, <span class="va">tmap.obj2</span>, <span class="va">tmap.obj3</span>, <span class="va">tmap.obj4</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span>, nrow <span class="op">=</span> <span class="fl">2</span>, 
+  asp <span class="op">=</span> <span class="cn">NULL</span>, outer.margins <span class="op">=</span> <span class="fl">0.05</span>
+<span class="op">)</span></code></pre></div>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
@@ -886,7 +861,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

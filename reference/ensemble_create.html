@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +106,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/smwoodman/eSDM/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -132,13 +132,13 @@
     <p>Create a weighted or unweighted ensemble of SDM predictions, including associated uncertainty values</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ensemble_create</span>(<span class='kw'>x</span>, <span class='kw'>x.idx</span>, w = <span class='kw'>NULL</span>, x.var.idx = <span class='kw'>NULL</span>, <span class='kw'>...</span>)
+    <pre class="usage"><span class='fu'>ensemble_create</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>x.idx</span>, w <span class='op'>=</span> <span class='cn'>NULL</span>, x.var.idx <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for sf</span>
-<span class='fu'>ensemble_create</span>(<span class='kw'>x</span>, <span class='kw'>x.idx</span>, w = <span class='kw'>NULL</span>, x.var.idx = <span class='kw'>NULL</span>, <span class='kw'>...</span>)
+<span class='fu'>ensemble_create</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>x.idx</span>, w <span class='op'>=</span> <span class='cn'>NULL</span>, x.var.idx <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>ensemble_create</span>(<span class='kw'>x</span>, <span class='kw'>x.idx</span>, w = <span class='kw'>NULL</span>, x.var.idx = <span class='kw'>NULL</span>, <span class='kw'>...</span>)</pre>
+<span class='fu'>ensemble_create</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>x.idx</span>, w <span class='op'>=</span> <span class='cn'>NULL</span>, x.var.idx <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -198,13 +198,13 @@ See the 'Details' section for more information</p></td>
   See the eSDM GUI manual for applicable formulas.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>ensemble_create</span>(<span class='kw'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Density"</span>, <span class='st'>"Density2"</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>, <span class='fl'>0.8</span>))
+    <pre class="examples"><div class='input'><span class='fu'>ensemble_create</span><span class='op'>(</span><span class='va'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Density"</span>, <span class='st'>"Density2"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.8</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Simple feature collection with 325 features and 6 fields
 #&gt; Attribute-geometry relationship: 6 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: -123 ymin: 32 xmax: -117 ymax: 35
-#&gt; CRS:            EPSG:4326
+#&gt; geographic CRS: WGS 84
 #&gt; First 10 features:
 #&gt;       Density   Density2         Var1         Var2   Pred_ens      Var_ens
 #&gt; 1  0.18149697 0.28017854 0.0006178977 6.782811e-03 0.26044222 1.558088e-03
@@ -227,13 +227,13 @@ See the 'Details' section for more information</p></td>
 #&gt; 7  POLYGON ((-121.375 32.125, ...
 #&gt; 8  POLYGON ((-121.125 32.125, ...
 #&gt; 9  POLYGON ((-120.875 32.125, ...
-#&gt; 10 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>ensemble_create</span>(<span class='kw'>preds.1</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.2</span>, <span class='fl'>0.8</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Var1"</span>, <span class='st'>"Var2"</span>))
+#&gt; 10 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>ensemble_create</span><span class='op'>(</span><span class='va'>preds.1</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.2</span>, <span class='fl'>0.8</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Var1"</span>, <span class='st'>"Var2"</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Simple feature collection with 325 features and 6 fields
 #&gt; Attribute-geometry relationship: 6 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: -123 ymin: 32 xmax: -117 ymax: 35
-#&gt; CRS:            EPSG:4326
+#&gt; geographic CRS: WGS 84
 #&gt; First 10 features:
 #&gt;       Density   Density2         Var1         Var2   Pred_ens      Var_ens
 #&gt; 1  0.18149697 0.28017854 0.0006178977 6.782811e-03 0.26044222 0.0043657149
@@ -256,21 +256,21 @@ See the 'Details' section for more information</p></td>
 #&gt; 7  POLYGON ((-121.375 32.125, ...
 #&gt; 8  POLYGON ((-121.125 32.125, ...
 #&gt; 9  POLYGON ((-120.875 32.125, ...
-#&gt; 10 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>ensemble_create</span>(<span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(a = <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, b = <span class='fl'>3</span><span class='op'>:</span><span class='fl'>7</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>))
+#&gt; 10 POLYGON ((-120.625 32.125, ...</div><div class='input'><span class='fu'>ensemble_create</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>a <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, b <span class='op'>=</span> <span class='fl'>3</span><span class='op'>:</span><span class='fl'>7</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   a b Pred_ens Var_ens
 #&gt; 1 1 3        2       1
 #&gt; 2 2 4        3       1
 #&gt; 3 3 5        4       1
 #&gt; 4 4 6        5       1
 #&gt; 5 5 7        6       1</div><div class='input'>
-<span class='kw'>weights.df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>325</span>), <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>NA</span>, <span class='fl'>100</span>), <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>225</span>)))
-<span class='fu'>ensemble_create</span>(<span class='kw'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Density"</span>, <span class='st'>"Density2"</span>), <span class='kw'>weights.df</span>, na.rm = <span class='fl'>TRUE</span>)
+<span class='va'>weights.df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>325</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='cn'>NA</span>, <span class='fl'>100</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>225</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>ensemble_create</span><span class='op'>(</span><span class='va'>preds.1</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Density"</span>, <span class='st'>"Density2"</span><span class='op'>)</span>, <span class='va'>weights.df</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Simple feature collection with 325 features and 6 fields
 #&gt; Attribute-geometry relationship: 6 constant, 0 aggregate, 0 identity
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
 #&gt; bbox:           xmin: -123 ymin: 32 xmax: -117 ymax: 35
-#&gt; CRS:            EPSG:4326
+#&gt; geographic CRS: WGS 84
 #&gt; First 10 features:
 #&gt;       Density   Density2         Var1         Var2   Pred_ens Var_ens
 #&gt; 1  0.18149697 0.28017854 0.0006178977 6.782811e-03 0.18149697       0
@@ -310,7 +310,7 @@ See the 'Details' section for more information</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
