@@ -7,6 +7,7 @@
 
 [![CRAN
 version](http://www.r-pkg.org/badges/version/eSDM)](https://cran.r-project.org/package=eSDM)
+[![R-CMD-check](https://github.com/smwoodman/eSDM/workflows/R-CMD-check/badge.svg)](https://github.com/smwoodman/eSDM/actions)
 [![Travis build
 status](https://travis-ci.com/smwoodman/eSDM.svg?branch=master)](https://travis-ci.com/smwoodman/eSDM)
 [![AppVeyor Build

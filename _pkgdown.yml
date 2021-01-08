@@ -1,6 +1,0 @@
-destination: docs
-
-home:
-  links:
-  - text: Access the eSDM GUI online
-    href: https://swoodman.shinyapps.io/eSDM
