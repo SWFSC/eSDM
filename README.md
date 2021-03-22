@@ -54,6 +54,16 @@ faster than running in online. If text or images overlap within the GUI,
 please make the browser window full screen or adjust the text size in
 your browser (e.g., Ctrl - minus (‘-’) on Windows systems)
 
+## Vignettes
+
+``` r
+# To see the list of available vignettes
+browseVignettes("eSDM") 
+
+# To open a specific vignette
+vignette("example-analysis")
+```
+
 ## Manuscript reference
 
 The paper can be obtained
@@ -75,12 +85,18 @@ For code used to create applicable figures from the manuscript:
 [Figure 4](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure4.R),
 [Figure 5](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure5.R)
 
-## Vignettes
+## Disclaimer
 
-``` r
-# To see the list of available vignettes
-browseVignettes("eSDM") 
-
-# To open a specific vignette
-vignette("example-analysis")
-```
+This repository is a scientific product and is not official
+communication of the National Oceanic and Atmospheric Administration, or
+the United States Department of Commerce. All NOAA GitHub project code
+is provided on an ‘as is’ basis and the user assumes responsibility for
+its use. Any claims against the Department of Commerce or Department of
+Commerce bureaus stemming from the use of this GitHub project will be
+governed by all applicable Federal law. Any reference to specific
+commercial products, processes, or services by service mark, trademark,
+manufacturer, or otherwise, does not constitute or imply their
+endorsement, recommendation or favoring by the Department of Commerce.
+The Department of Commerce seal and logo, or the seal and logo of a DOC
+bureau, shall not be used in any manner to imply endorsement of any
+commercial product or activity by DOC or the United States Government.

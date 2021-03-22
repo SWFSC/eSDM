@@ -237,10 +237,11 @@ eval_data_gis <- eventReactive(input$eval_gis_execute, {
   validate(
     need(inherits(st_geometry(x), "sfc_POINT"),
          paste("Error: Please ensure that the uploaded object",
-               "only consists of points")) %then%
-      need(!is.na(st_crs(x)$proj4string),
-           paste("Error: The uploaded object does not have a",
-                 "defined coordinate system"))
+               "only consists of points")))
+  validate(
+    need(!is.na(st_crs(x)$proj4string),
+         paste("Error: The uploaded object does not have a",
+               "defined coordinate system"))
   )
 
   # Prep for processing

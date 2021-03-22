@@ -136,10 +136,11 @@ create_sf_csv_sfc <- reactive({
     validate(
       need(!(lon.idx == lat.idx),
            paste("Error: The longitude and latitude data columns",
-                 "cannot be the same")) %then%
-        need(!anyNA(csv.data$Lon),
-             paste("Error: At least one of the points in the longitude data",
-                   "column has a value of 'NA'")),
+                 "cannot be the same")))
+    validate(
+      need(!anyNA(csv.data$Lon),
+           paste("Error: At least one of the points in the longitude data",
+                 "column has a value of 'NA'")),
       need(!anyNA(csv.data$Lat),
            paste("Error: At least one of the points in the latitude data",
                  "column has a value of 'NA'"))

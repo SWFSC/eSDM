@@ -60,9 +60,10 @@ pts2poly_vertices_shiny <- function(x, crs.prov, progress.detail) {
 check_gis_crs <- function(x) {
   validate(
     need(inherits(x, "sf"),
-         "Error: GIS object was not read in properly") %then%
-      need(st_crs(x)$proj4string,
-           "Error: GIS object does not have defined projection")
+         "Error: GIS object was not read in properly"))
+  validate(
+    need(st_crs(x)$proj4string,
+         "Error: GIS object does not have defined projection")
   )
 
   list(st_transform(x, crs.ll), x)

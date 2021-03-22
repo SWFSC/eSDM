@@ -219,10 +219,11 @@ create_ens_reg_add <- eventReactive(
     validate(
       need(inherits(poly.sfc, "sfc"),
            paste("Error: There was an error processing the exclusion polygon;",
-                 "please make sure the polygon is formatted correctly")) %then%
-        need(length(poly.sfc) == 1,
-             paste("Error: An exclusion polygon must be a single polygon;",
-                   "please ensure that your file only has one polygon"))
+                 "please make sure the polygon is formatted correctly")))
+    validate(
+      need(length(poly.sfc) == 1,
+           paste("Error: An exclusion polygon must be a single polygon;",
+                 "please ensure that your file only has one polygon"))
     )
 
     poly.sf <- st_sf(Weight = weight.val, geometry = poly.sfc, agr = "constant")

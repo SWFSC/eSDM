@@ -147,9 +147,6 @@ ui <- dashboardPage(
 # Max file upload size is now 150MB
 options(shiny.maxRequestSize = 150 * 1024^2)
 
-# Use to perform sequential rather than concurrent validate checks
-`%then%` <- shiny:::`%OR%`
-
 # Server-wide CRS code
 crs.ll <- st_crs(4326) # WGS 84
 

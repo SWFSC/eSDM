@@ -1,3 +1,8 @@
+# eSDM 0.3.6
+
+* Fixed a bug to stay current with the `shiny` package (not using the `%OR%` function) - no changes to user functionality
+
+
 # eSDM 0.3.5
 
 * Use `==` rather than `identical` to check CRS equivalence (#10)

@@ -2,9 +2,11 @@
 overlay_gis_check <- function(gis.loaded) {
   validate(
     need(inherits(gis.loaded, "sfc"),
-         "Error: Error in import, please report this as an issue") %then%
-      need(!is.na(st_crs(gis.loaded)$proj4string),
-           "Error: The provided object does not have a defined coordinate system")
+         "Error: Error in import, please report this as an issue")
+  )
+  validate(
+    need(!is.na(st_crs(gis.loaded)$proj4string),
+         "Error: The provided object does not have a defined coordinate system")
   )
 
   sf.ll <- st_transform(gis.loaded, crs.ll)

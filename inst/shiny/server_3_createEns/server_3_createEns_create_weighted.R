@@ -29,11 +29,15 @@ create_ens_weights_manual <- reactive({
   validate(
     need(length(preds.weights) == models.num,
          paste("Error: The number of entered weights does not",
-               "match the number of selected overlaid predictions")) %then%
-      need(all(preds.weights > 0),
-           "Error: All entered weights must be greater than zero") %then%
-      need(round(sum(preds.weights), 3) == 1,
-           "Error: The entered weights do not sum to 1")
+               "match the number of selected overlaid predictions"))
+  )
+  validate(
+    need(all(preds.weights > 0),
+         "Error: All entered weights must be greater than zero")
+  )
+  validate(
+    need(round(sum(preds.weights), 3) == 1,
+         "Error: The entered weights do not sum to 1")
   )
 
   preds.weights

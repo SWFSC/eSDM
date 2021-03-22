@@ -1,11 +1,12 @@
 ## Release summary
-* Fixed several bugs, both in the Shiny app and exported functions
+This is a minor release to remove the use of shiny:::%OR%, which is not supported anymore, in the eSDM package
 
-## Test environments
-* Windows 10, R 4.0.2 (local)
-* win-builder (devel and release)
-* OS X, R 4.0.2 (local)
-* ubuntu 14.04.5 (on travis-ci.com, R devel and release)
+## Test environments (R-release = v4.0.4)
+* Windows 10, R-release (local)
+* win-builder (devel)
+* Microsoft Windows Server 2019 10.0.17763 (on github actions) R-release
+* mac OS 10.15.7 (on github actions) R-release
+* ubuntu 20.04 (on github actions) R-devel and release
 
 ## R CMD check results
 There were no ERRORs, WARNINGs, or NOTES

@@ -46,11 +46,12 @@ overlay_bound_csv <- reactive({
                  "Please ensure that the .csv file has the longitude points",
                  "in the first column, the latitude points in the second",
                  "column, and that the provided points form a closed",
-                 "and valid polygon")) %then%
-        need(st_is_valid(bound.sfc),
-             paste("Error: The provided study area polygon is invalid;",
-                   "please ensure that the provided points form a closed",
-                   "and valid polygon (no self-intersections)"))
+                 "and valid polygon")))
+    validate(
+      need(st_is_valid(bound.sfc),
+           paste("Error: The provided study area polygon is invalid;",
+                 "please ensure that the provided points form a closed",
+                 "and valid polygon (no self-intersections)"))
     )
 
     bound.sfc <- check_dateline(bound.sfc, 60, progress.detail = TRUE)
