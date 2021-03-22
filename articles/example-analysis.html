@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">eSDM</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@
       <h1 data-toc-skip>Example analysis - Woodman et al 2019</h1>
                         <h4 class="author">Samuel Woodman</h4>
             
-            <h4 class="date">2021-01-08</h4>
+            <h4 class="date">2021-03-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/smwoodman/eSDM/blob/master/vignettes/example-analysis.Rmd"><code>vignettes/example-analysis.Rmd</code></a></small>
       <div class="hidden name"><code>example-analysis.Rmd</code></div>
@@ -130,10 +130,10 @@
 <span class="va">model.b.sf</span>
 <span class="co">#&gt; Simple feature collection with 14807 features and 2 fields</span>
 <span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span>
-<span class="co">#&gt; geometry type:  POLYGON</span>
-<span class="co">#&gt; dimension:      XY</span>
-<span class="co">#&gt; bbox:           xmin: -131.085 ymin: 30.045 xmax: -117.135 ymax: 48.585</span>
-<span class="co">#&gt; geographic CRS: WGS 84</span>
+<span class="co">#&gt; Geometry type: POLYGON</span>
+<span class="co">#&gt; Dimension:     XY</span>
+<span class="co">#&gt; Bounding box:  xmin: -131.085 ymin: 30.045 xmax: -117.135 ymax: 48.585</span>
+<span class="co">#&gt; Geodetic CRS:  WGS 84</span>
 <span class="co">#&gt; First 10 features:</span>
 <span class="co">#&gt;        pred_bm           se                       geometry</span>
 <span class="co">#&gt; 1  5.45105e-05 5.097233e-05 POLYGON ((-123.525 30.135, ...</span>
@@ -168,10 +168,10 @@
 <span class="va">model.h.sf</span>
 <span class="co">#&gt; Simple feature collection with 4052 features and 2 fields</span>
 <span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span>
-<span class="co">#&gt; geometry type:  POLYGON</span>
-<span class="co">#&gt; dimension:      XY</span>
-<span class="co">#&gt; bbox:           xmin: -135.125 ymin: 29.875 xmax: -115.875 ymax: 49.125</span>
-<span class="co">#&gt; geographic CRS: WGS 84</span>
+<span class="co">#&gt; Geometry type: POLYGON</span>
+<span class="co">#&gt; Dimension:     XY</span>
+<span class="co">#&gt; Bounding box:  xmin: -135.125 ymin: 29.875 xmax: -115.875 ymax: 49.125</span>
+<span class="co">#&gt; Geodetic CRS:  WGS 84</span>
 <span class="co">#&gt; First 10 features:</span>
 <span class="co">#&gt;       pred_bm          se                       geometry</span>
 <span class="co">#&gt; 1  0.04554697 0.053372075 POLYGON ((-134.875 30.125, ...</span>
@@ -200,10 +200,10 @@
 <span class="va">model.r.sf</span>
 <span class="co">#&gt; Simple feature collection with 11419 features and 2 fields</span>
 <span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span>
-<span class="co">#&gt; geometry type:  MULTIPOLYGON</span>
-<span class="co">#&gt; dimension:      XY</span>
-<span class="co">#&gt; bbox:           xmin: -14587510 ymin: 3176115 xmax: -13037510 ymax: 4766115</span>
-<span class="co">#&gt; CRS:            +proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</span>
+<span class="co">#&gt; Geometry type: MULTIPOLYGON</span>
+<span class="co">#&gt; Dimension:     XY</span>
+<span class="co">#&gt; Bounding box:  xmin: -14587510 ymin: 3176115 xmax: -13037510 ymax: 4766115</span>
+<span class="co">#&gt; CRS:           +proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</span>
 <span class="co">#&gt; First 10 features:</span>
 <span class="co">#&gt;        pred_bm           se                       geometry</span>
 <span class="co">#&gt; 1  0.008025090 0.0064684470 MULTIPOLYGON (((-13037935 3...</span>
@@ -239,10 +239,10 @@
   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">model.r.sf</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Reading layer `Study_Area_CCE' from data source `/Users/runner/work/_temp/Library/eSDM/extdata/Shapefiles/Study_Area_CCE.shp' using driver `ESRI Shapefile'</span>
 <span class="co">#&gt; Simple feature collection with 1 feature and 6 fields</span>
-<span class="co">#&gt; geometry type:  POLYGON</span>
-<span class="co">#&gt; dimension:      XY</span>
-<span class="co">#&gt; bbox:           xmin: -131 ymin: 30.05 xmax: -117.013 ymax: 48.6</span>
-<span class="co">#&gt; geographic CRS: WGS 84</span>
+<span class="co">#&gt; Geometry type: POLYGON</span>
+<span class="co">#&gt; Dimension:     XY</span>
+<span class="co">#&gt; Bounding box:  xmin: -131 ymin: 30.05 xmax: -117.013 ymax: 48.6</span>
+<span class="co">#&gt; Geodetic CRS:  WGS 84</span>
 
 <span class="co"># Erasing polygon; clip to the buffered study area polygon reduces future computation time</span>
 <span class="va">poly.erase</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="va"><a href="../reference/gshhg.l.L16.html">gshhg.l.L16</a></span> <span class="op">%&gt;%</span>
@@ -324,8 +324,7 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span> <span class="op">%&gt;%</span>  
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>pres <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pres_abs</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, 
             abs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pres_abs</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Validation data summary"</span><span class="op">)</span>
-<span class="co">#&gt; `summarise()` ungrouping output (override with `.groups` argument)</span></code></pre></div>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Validation data summary"</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <caption>Validation data summary</caption>
 <thead><tr class="header">
