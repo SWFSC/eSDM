@@ -8,10 +8,10 @@
 [![CRAN
 version](http://www.r-pkg.org/badges/version/eSDM)](https://cran.r-project.org/package=eSDM)
 [![R-CMD-check](https://github.com/smwoodman/eSDM/workflows/R-CMD-check/badge.svg)](https://github.com/smwoodman/eSDM/actions)
-[![Travis build
-status](https://travis-ci.com/smwoodman/eSDM.svg?branch=master)](https://travis-ci.com/smwoodman/eSDM)
-[![AppVeyor Build
-Status](https://ci.appveyor.com/api/projects/status/github/smwoodman/eSDM?branch=master&svg=true)](https://ci.appveyor.com/project/smwoodman/eSDM)
+<!-- [![Travis build
+status](https://travis-ci.com/smwoodman/eSDM.svg?branch=master)](https://travis-ci.com/smwoodman/eSDM)  -->
+<!-- [![AppVeyor Build
+Status](https://ci.appveyor.com/api/projects/status/github/smwoodman/eSDM?branch=master&svg=true)](https://ci.appveyor.com/project/smwoodman/eSDM)  -->
 <!-- badges: end -->
 
 `eSDM` is an R package designed to allow users to create ensembles of
