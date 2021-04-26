@@ -140,17 +140,23 @@ check_valid <- function(x, progress.detail = FALSE) {
     incProgress(0, detail = "Checking if the object's geometry is valid")
   }
 
-  x.valid <- st_is_valid(x, reason = TRUE)
+  # update b/c 'reason only works for projected coordinates'
+  x.valid <- st_is_valid(x)
 
-  if (!isTruthy(all(x.valid == "Valid Geometry"))) { #isTruthy() is for NA cases
+  if (all(isTruthy(all(x.valid)))) {
+    x
+
+  } else {
     if (progress.detail) {
       incProgress(0, detail = "Making the object's geometry valid")
     }
-    x.message <- x.valid[x.valid != "Valid Geometry"]
-
+    if (!st_is_longlat(x)) {
+      x.valid <- st_is_valid(x, reason = TRUE)
+      x.message <- x.valid[x.valid != "Valid Geometry"]
+    } else {
+      x.message <- "Invalid geometry"
+    }
     make_geom_valid(x, message.invalid = x.message)
-  } else {
-    x
   }
 }
 

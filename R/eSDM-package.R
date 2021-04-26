@@ -23,14 +23,14 @@
 #' @author Sam Woodman \email{sam.woodman@@noaa.gov}
 #' @seealso \url{https://smwoodman.github.io/eSDM/}
 #'
-#' @importFrom dplyr arrange between bind_rows filter group_by left_join mutate rename select summarise
+#' @importFrom dplyr all_of arrange between bind_rows filter group_by left_join mutate rename select summarise
 #' @importFrom magrittr %>%
 #' @importFrom methods slot
 #' @importFrom purrr map map2_df set_names
 #' @importFrom rlang .data sym
 #' @importFrom ROCR performance prediction
 #' @importFrom sf st_agr st_set_agr st_area st_bbox st_crop st_crs st_geometry st_intersection st_intersects
-#'   st_polygon st_set_geometry st_sf st_sfc
+#'   st_polygon st_set_geometry st_sf st_sfc st_is_valid st_make_valid
 #' @importFrom shiny runApp
 #' @importFrom stats na.omit
 #' @importFrom units set_units

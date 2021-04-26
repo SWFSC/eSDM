@@ -65,6 +65,12 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
     stop("Units of st_area(sdm.area.m2) must be m^2")
   }
 
+  # sdm.orig <- sdm
+  # base.geom.orig <- base.geom
+  # all(st_is_valid(sdm))
+  # all(st_is_valid(base.geom))
+  # browser()
+
   #--------------------------------------------------------
   ### Other input checks and some processing
   # Throw warning if base.geom and geometry of sdm are identical
@@ -119,11 +125,13 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
   )
 
   sdm <- sdm %>%
-    select(sdm.idx) %>%
+    select(all_of(sdm.idx)) %>%
     filter(!is.na(!!sym(sdm.idx[1]))) %>%
     st_set_agr("constant")
-  sdm <- suppressMessages(st_crop(sdm, st_bbox(base.geom))) %>%
-    st_set_agr("constant")
+
+  # sdm <- suppressMessages(st_crop(sdm, st_bbox(base.geom))) %>%
+  #   st_set_agr("constant") %>%
+  #   st_make_valid()
   # ^ separate so that suppressMessages() can be used
   # ^^ Will throw a waring if st_agr(sdm) != "constant" for all provided data
 
@@ -135,6 +143,13 @@ overlay_sdm <- function(base.geom, sdm, sdm.idx, overlap.perc) {
     stop("Unable to successfully run 'st_intersection(sdm, base.geom)'; ",
          "make sure that base.geom and sdm are valid objects of ",
          "class sfc and sf, respectively")
+  }
+
+  if (!all(st_is_valid(int))) {
+    warning("The output of st_intersection(sdm, base.geom) was invalid - ",
+            "this was corrected via ",
+            "sf::st_make_valid(st_intersection(sdm, base.geom))")
+    int <- st_make_valid(int)
   }
 
   int <- int %>%

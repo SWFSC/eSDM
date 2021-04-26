@@ -19,7 +19,7 @@ if (!all(p.check))
        "install.packages(c(\"", paste(list.packages[!p.check],
                                     collapse = "\", \""), "\"))")
 
-sapply(list.packages, require, character.only = TRUE)
+sapply(list.packages, require, character.only = TRUE, warn.conflicts = FALSE)
 
 
 ###############################################################################

@@ -131,11 +131,17 @@ poly.erase <- eSDM::gshhg.l.L16 %>%
   st_crop(st_buffer(poly.study, 100000))
 
 # Create the base geometry; st_erase() function defined in eSDM_vignette_helper.R
-base.geom <- model.r.sf %>%
-  st_geometry() %>%
+#   Keep base.geom.sf so we don't have to run overlay function on model.r.sf
+base.geom.sf <- model.r.sf %>%
+  mutate(idx = 1:nrow(model.r.sf)) %>% 
+  select(idx) %>% 
+  st_set_agr("constant") %>% 
+  # st_geometry() %>%
   st_erase(poly.erase) %>% 
   st_intersection(poly.study) %>%
   st_cast("MULTIPOLYGON")
+
+base.geom <- st_geometry(base.geom.sf)
 ```
 
 ```{r, fig.width=5, fig.height=7}
@@ -160,7 +166,7 @@ model.r.sf <- model.r.sf %>%
   dplyr::select(pred_bm, se, variance)
 ```
 
-Now we can overlay the original predictions onto the base geometry. Note that because we clipped and erased land from the base geometry, we cannot simply use the original Model_R predictions and geometry. However, we can 'overlay' the Model_R predictions by matching indices of base geometry polygons and Model_R prediction values (`over3.sfb` in the code below).
+Now we can overlay the original predictions onto the base geometry. Note that because we clipped and erased land from the base geometry, we cannot simply use the original Model_R predictions and geometry. However, we can 'overlay' the Model_R predictions by matching indices of base geometry polygons and Model_R prediction values. This, i.e., not running `overlay_sdm(base.geom, model.r.sf, ...)`, is important because intersecting a complex polygon with (basically) itself is very computationally complex.
 
 ```{r}
 # Perform overlay, and convert overlaid uncertainty values to SEs
@@ -168,20 +174,17 @@ over1.sf <- eSDM::overlay_sdm(base.geom, st_transform(model.b.sf, st_crs(base.ge
   mutate(se = sqrt(variance))
 over2.sf <- eSDM::overlay_sdm(base.geom, st_transform(model.h.sf, st_crs(base.geom)), c("pred_bm", "variance"), 50) %>% 
   mutate(se = sqrt(variance))
-over3.sf <- eSDM::overlay_sdm(base.geom, model.r.sf, c("pred_bm", "variance"), 50) %>% 
-  mutate(se = sqrt(variance))
+# over3.sf <- eSDM::overlay_sdm(base.geom, model.r.sf, c("pred_bm", "variance"), 50) %>% 
+#   mutate(se = sqrt(variance))
 
-over3.sfb <- model.r.sf %>% 
-  st_set_geometry(NULL) %>% 
-  dplyr::select(pred_bm, variance) %>% 
-  st_sf(geometry = base.geom, agr = "constant") %>% 
-  dplyr::mutate(se = sqrt(variance))
-all.equal(over3.sf, over3.sfb)
-rm(over3.sfb)
-
+over3.sf <- st_drop_geometry(model.r.sf) %>% 
+  mutate(idx = 1:nrow(model.r.sf)) %>% 
+  left_join(base.geom.sf, by = "idx") %>% 
+  select(-idx) %>% 
+  st_as_sf()
 ```
 
-We also could plot the overlaid predictions to show that the overlaid distribution patterns are very similar to those of the original predictions.
+We can plot the overlaid predictions to show that the overlaid distribution patterns are very similar to those of the original predictions.
 
 ```{r, fig.width=7, fig.height=3, eval=FALSE}
 # Plot overlaid predictions; code not run

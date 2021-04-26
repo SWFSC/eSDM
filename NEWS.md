@@ -1,3 +1,8 @@
+# eSDM 0.3.7
+
+* Updated `overlay_sdm` to stay current with `sf` 1.0 (rather than `lwgeom` (#12)
+
+
 # eSDM 0.3.6
 
 * Fixed a bug to stay current with the `shiny` package (not using the `%OR%` function) - no changes to user functionality
