@@ -1,6 +1,6 @@
 # eSDM 0.3.7
 
-* Updated `overlay_sdm` to stay current with `sf` 1.0 (rather than `lwgeom` (#12)
+* Updated `overlay_sdm` to stay current with `sf` 1.0 (#12)
 
 
 # eSDM 0.3.6
