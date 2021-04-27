@@ -33,16 +33,16 @@
 #'   a variant of the traditional spatial problem. Geo-Processing, 1, 297-312.
 #'
 #' @examples
-#' pol.geom <- sf::st_sfc(sf::st_polygon(list(rbind(c(1,1), c(3,1), c(3,3), c(1,3), c(1,1)))), crs = 4326)
-#' pol <- sf::st_sf(
+#' pol1.geom <- sf::st_sfc(sf::st_polygon(list(rbind(c(1,1), c(3,1), c(3,3), c(1,3), c(1,1)))), crs = 4326)
+#' pol2.sf <- sf::st_sf(
 #'   data.frame(Dens = 0.5),
 #'   geometry = sf::st_sfc(sf::st_polygon(list(rbind(c(0,0), c(2,0), c(2,2), c(0,2), c(0,0))))),
 #'   crs = 4326
 #' )
-#' overlay_sdm(pol2, pol, 1, 25)
+#' overlay_sdm(pol1.geom, pol2.sf, 1, 25)
 #'
 #' # Output 'Dens' value is NA because of higher overlap.perc value
-#' overlay_sdm(pol2, pol, 1, 50)
+#' overlay_sdm(pol1.geom, pol2.sf, 1, 50)
 #'
 #' # These examples take longer to run
 #' overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
