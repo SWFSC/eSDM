@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-  
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -168,7 +168,8 @@ model.r.sf <- model.r.sf %>%
 
 Now we can overlay the original predictions onto the base geometry. Note that because we clipped and erased land from the base geometry, we cannot simply use the original Model_R predictions and geometry. However, we can 'overlay' the Model_R predictions by matching indices of base geometry polygons and Model_R prediction values. This, i.e., not running `overlay_sdm(base.geom, model.r.sf, ...)`, is important because intersecting a complex polygon with (basically) itself is very computationally complex.
 
-```{r}
+```{r, eval=FALSE}
+### CODE BLOCK NOT RUN
 # Perform overlay, and convert overlaid uncertainty values to SEs
 over1.sf <- eSDM::overlay_sdm(base.geom, st_transform(model.b.sf, st_crs(base.geom)), c("pred_bm", "variance"), 50) %>% 
   mutate(se = sqrt(variance))
@@ -176,6 +177,17 @@ over2.sf <- eSDM::overlay_sdm(base.geom, st_transform(model.h.sf, st_crs(base.ge
   mutate(se = sqrt(variance))
 # over3.sf <- eSDM::overlay_sdm(base.geom, model.r.sf, c("pred_bm", "variance"), 50) %>% 
 #   mutate(se = sqrt(variance))
+
+# ## Save these results for CRAN
+# saveRDS(over1.sf, file = "../inst/extdata/Predictions_Beckeretal2016_overlaid.rds")
+# saveRDS(over2.sf, file = "../inst/extdata/Predictions_Hazenetal2017_overlaid.rds")
+```
+
+NOTE: the above code block is not run in the vignette because of processing times. The relevant, pre-computed outputs are loaded in the following code block:
+
+```{r}
+over1.sf <- readRDS(system.file("extdata/Predictions_Beckeretal2016_overlaid.rds", package = "eSDM"))
+over2.sf <- readRDS(system.file("extdata/Predictions_Hazenetal2017_overlaid.rds", package = "eSDM"))
 
 over3.sf <- st_drop_geometry(model.r.sf) %>% 
   mutate(idx = 1:nrow(model.r.sf)) %>% 
