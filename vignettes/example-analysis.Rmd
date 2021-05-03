@@ -186,8 +186,10 @@ over2.sf <- eSDM::overlay_sdm(base.geom, st_transform(model.h.sf, st_crs(base.ge
 NOTE: the above code block is not run in the vignette because of processing times. The relevant, pre-computed outputs are loaded in the following code block:
 
 ```{r}
-over1.sf <- readRDS(system.file("extdata/Predictions_Beckeretal2016_overlaid.rds", package = "eSDM"))
-over2.sf <- readRDS(system.file("extdata/Predictions_Hazenetal2017_overlaid.rds", package = "eSDM"))
+over1.sf <- readRDS(system.file("extdata/Predictions_Beckeretal2016_overlaid.rds", package = "eSDM")) %>% 
+  st_set_crs(st_crs(base.geom))
+over2.sf <- readRDS(system.file("extdata/Predictions_Hazenetal2017_overlaid.rds", package = "eSDM")) %>% 
+  st_set_crs(st_crs(base.geom))
 
 over3.sf <- st_drop_geometry(model.r.sf) %>% 
   mutate(idx = 1:nrow(model.r.sf)) %>% 
