@@ -1,8 +1,6 @@
 ## Resubmission
 This is a resubmission. In this version, I have provided precomputed reuslts for the lengthy parts of the vignette.
 
-There is now one NOTE: "installed size is 5.1Mb". This increase in size is because of the precomputed results
-
 ## Release summary
 This is a minor release to address an upcoming change in sf that broke eSDM
 
