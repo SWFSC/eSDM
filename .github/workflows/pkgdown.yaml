@@ -31,7 +31,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           # add XML, per https://github.com/r-lib/actions/issues/559
-          extra-packages: any::pkgdown, any:XML, local::.
+          extra-packages: any::pkgdown, any::XML, local::.
           needs: website
 
       - name: Build site

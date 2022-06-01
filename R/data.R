@@ -42,15 +42,12 @@
 
 
 #' @rdname preds
-#' @format
 "preds.1"
 
 #' @rdname preds
-#' @format
 "preds.2"
 
 #' @rdname preds
-#' @format
 "preds.3"
 
 

@@ -19,11 +19,9 @@ Objects of class \code{sf} with a column of density predictions (name: \code{Den
 
   \code{preds3}: An object of class sf (inherits from data.frame) with 1445 rows and 2 columns.
 
+An object of class \code{sf} (inherits from \code{data.frame}) with 1891 rows and 2 columns.
 
-
-
-
-
+An object of class \code{sf} (inherits from \code{data.frame}) with 1445 rows and 2 columns.
 }
 \usage{
 preds.1
