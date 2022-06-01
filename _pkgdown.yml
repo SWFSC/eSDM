@@ -2,3 +2,7 @@ url: https://smwoodman.github.io/eSDM/
 template:
   bootstrap: 5
 
+home:
+  links:
+  - text: eSDM manuscript
+    href: https://doi.org/10.1111/2041-210X.13283
