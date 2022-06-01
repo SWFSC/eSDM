@@ -1,7 +1,10 @@
-pandoc: 2.7.3
-pkgdown: 1.6.1
+pandoc: 2.14.2
+pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   example-analysis: example-analysis.html
-last_built: 2021-05-04T16:21Z
+last_built: 2022-06-01T22:01Z
+urls:
+  reference: https://smwoodman.github.io/eSDM/reference
+  article: https://smwoodman.github.io/eSDM/articles
 
