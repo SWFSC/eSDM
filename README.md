@@ -7,7 +7,7 @@
 
 [![CRAN
 version](http://www.r-pkg.org/badges/version/eSDM)](https://cran.r-project.org/package=eSDM)
-[![R-CMD-check](https://github.com/smwoodman/eSDM/workflows/R-CMD-check/badge.svg)](https://github.com/smwoodman/eSDM/actions)
+[![R-CMD-check](https://github.com/smwoodman/eSDM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/smwoodman/eSDM/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `eSDM` is an R package designed to allow users to create ensembles of

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![CRAN version](http://www.r-pkg.org/badges/version/eSDM)](https://cran.r-project.org/package=eSDM)
-[![R-CMD-check](https://github.com/smwoodman/eSDM/workflows/R-CMD-check/badge.svg)](https://github.com/smwoodman/eSDM/actions)
+[![R-CMD-check](https://github.com/smwoodman/eSDM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/smwoodman/eSDM/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `eSDM` is an R package designed to allow users to create ensembles of predictions from species distribution models (SDMs) made at different spatial scales or with different prediction units. Included in the package is the eSDM GUI, an R Shiny tool that provides the user with a graphical user interface that they can use to import, overlay, and create ensembles of SDM predictions.
