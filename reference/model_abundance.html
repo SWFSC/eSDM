@@ -57,7 +57,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">model_abundance</span><span class="op">(</span><span class="va">x</span>, <span class="va">dens.idx</span>, sum.abund <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">model_abundance</span><span class="op">(</span><span class="va">x</span>, <span class="va">dens.idx</span>, sum.abund <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,18 +65,32 @@
     <dl><dt>x</dt>
 <dd><p>object of class <code>sf</code>; SDM with density predictions.
 Must have a valid crs code</p></dd>
+
+
 <dt>dens.idx</dt>
 <dd><p>name or index of column(s) in <code>x</code> with density predictions.
 Can be a character vector (column names) or numeric vector (column indices)</p></dd>
+
+
 <dt>sum.abund</dt>
 <dd><p>logical; whether or not to sum all of the predicted abundances</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>If <code>sum.abund == TRUE</code>, then a vector of the same length as <code>dens.idx</code>  representing the predicted abundance for the density values in each column.
-  If <code>sum.abund == FALSE</code> and the length of <code>dens.idx</code> is 1,
-  then a numeric vector with the predicted abundance of each prediction polygon of <code>x</code>.
-  If <code>sum.abund == FALSE</code> and the length of <code>dens.idx</code> is greater than 1,
+    
+
+<p>If <code>sum.abund == TRUE</code>, then a vector of the same length as <code>dens.idx</code></p>
+
+
+<p>representing the predicted abundance for the density values in each column.</p>
+
+
+<p>If <code>sum.abund == FALSE</code> and the length of <code>dens.idx</code> is 1,
+  then a numeric vector with the predicted abundance of each prediction polygon of <code>x</code>.</p>
+
+
+<p>If <code>sum.abund == FALSE</code> and the length of <code>dens.idx</code> is greater than 1,
   then a data frame with <code>length(dens.idx)</code> columns of the predicted abundance of prediction polygons</p>
     </div>
     <div class="section level2">
@@ -89,7 +103,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">model_abundance</span><span class="op">(</span><span class="va">preds.1</span>, <span class="st">"Density"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">model_abundance</span><span class="op">(</span><span class="va">preds.1</span>, <span class="st">"Density"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
@@ -98,7 +112,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Density </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 113798.7 </span>
-<span class="r-in"><span class="fu">model_abundance</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">model_abundance</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
@@ -106,7 +120,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 113798.7 113798.7</span>
-<span class="r-in"><span class="fu">model_abundance</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">model_abundance</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
@@ -439,7 +453,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 323          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 324          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 325          NA          NA</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -451,7 +465,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

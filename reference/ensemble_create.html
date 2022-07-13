@@ -57,27 +57,33 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">x</span>, <span class="va">x.idx</span>, w <span class="op">=</span> <span class="cn">NULL</span>, x.var.idx <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for sf</span>
-<span class="fu">ensemble_create</span><span class="op">(</span><span class="va">x</span>, <span class="va">x.idx</span>, w <span class="op">=</span> <span class="cn">NULL</span>, x.var.idx <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for data.frame</span>
-<span class="fu">ensemble_create</span><span class="op">(</span><span class="va">x</span>, <span class="va">x.idx</span>, w <span class="op">=</span> <span class="cn">NULL</span>, x.var.idx <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">x</span>, <span class="va">x.idx</span>, w <span class="op">=</span> <span class="cn">NULL</span>, x.var.idx <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for sf</span></span>
+<span><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">x</span>, <span class="va">x.idx</span>, w <span class="op">=</span> <span class="cn">NULL</span>, x.var.idx <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for data.frame</span></span>
+<span><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">x</span>, <span class="va">x.idx</span>, w <span class="op">=</span> <span class="cn">NULL</span>, x.var.idx <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>object of class <code>sf</code> or class <code>data.frame</code></p></dd>
+
+
 <dt>x.idx</dt>
 <dd><p>vector of column names or numerical indices;
 indicates which columns in <code>x</code> will be used to create the ensemble</p></dd>
+
+
 <dt>w</dt>
 <dd><p>weights for the ensemble; either a numeric vector the same length as <code>x</code> or
 a data frame (or tibble) with the same number of rows as <code>x</code> and <code>ncol(w) == length(x.idx)</code>.
 If w is a numeric vector, its values (i.e. the weights) must sum to 1.
 The default value is <code>1 / length(x.idx)</code>, i.e. an unweighted ensemble</p></dd>
+
+
 <dt>x.var.idx</dt>
 <dd><p>vector of column names or column indices;
 indicates columns in <code>x</code> with variance values with which to
@@ -86,13 +92,20 @@ If <code>x.var.idx</code> is specified, it must be the same length as <code>x.id
 Use <code>x.var.idx = NULL</code> (the default) if none of the predictions have associated uncertainty values;
 in this case the uncertainty values for the ensemble will be calculated using the among-model uncertainty.
 See the 'Details' section for more information</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Arguments to be passed to methods; specifically designed for passing
 <code>na.rm</code> argument to <code>sum</code></p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of the same class as <code>x</code> with two columns appended to the data frame:</p><ul><li><p>'Pred_ens' - The ensemble predictions</p></li>
+    
+
+<p>An object of the same class as <code>x</code> with two columns appended to the data frame:</p>
+<p></p>
+<ul><li><p>'Pred_ens' - The ensemble predictions</p></li>
 <li><p>'Var_ens' - The variance of the ensemble predictions,
       calculated using either the within-model uncertainty (if <code>x.var.idx</code> is specified) or
       the among-model uncertainty (if <code>x.var.idx</code> is <code>NULL</code>)</p></li>
@@ -114,7 +127,7 @@ See the 'Details' section for more information</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Density"</span>, <span class="st">"Density2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Density"</span>, <span class="st">"Density2"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 325 features and 6 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Attribute-geometry relationship: 6 constant, 0 aggregate, 0 identity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
@@ -147,7 +160,7 @@ See the 'Details' section for more information</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8  POLYGON ((-121.125 32.125, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9  POLYGON ((-120.875 32.125, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 POLYGON ((-120.625 32.125, ...</span>
-<span class="r-in"><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Var1"</span>, <span class="st">"Var2"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Var1"</span>, <span class="st">"Var2"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 325 features and 6 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Attribute-geometry relationship: 6 constant, 0 aggregate, 0 identity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
@@ -180,16 +193,16 @@ See the 'Details' section for more information</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8  POLYGON ((-121.125 32.125, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9  POLYGON ((-120.875 32.125, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 POLYGON ((-120.625 32.125, ...</span>
-<span class="r-in"><span class="fu">ensemble_create</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, b <span class="op">=</span> <span class="fl">3</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">ensemble_create</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, b <span class="op">=</span> <span class="fl">3</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   a b Pred_ens Var_ens</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 1 3        2       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 2 4        3       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 3 5        4       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 4 6        5       1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5 5 7        6       1</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">weights.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">325</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">225</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Density"</span>, <span class="st">"Density2"</span><span class="op">)</span>, <span class="va">weights.df</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">weights.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">325</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">225</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">ensemble_create</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Density"</span>, <span class="st">"Density2"</span><span class="op">)</span>, <span class="va">weights.df</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 325 features and 6 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Attribute-geometry relationship: 6 constant, 0 aggregate, 0 identity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
@@ -222,7 +235,7 @@ See the 'Details' section for more information</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8  POLYGON ((-121.125 32.125, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9  POLYGON ((-120.875 32.125, ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 POLYGON ((-120.625 32.125, ...</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -234,7 +247,7 @@ See the 'Details' section for more information</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>
