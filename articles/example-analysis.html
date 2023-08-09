@@ -8,10 +8,10 @@
 <meta name="description" content="eSDM">
 <title>Example analysis - Woodman et al 2019 • eSDM</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Example analysis - Woodman et al 2019">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Example analysis - Woodman et al 2019">
 <meta property="og:description" content="eSDM">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -72,9 +72,10 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Example analysis - Woodman et al 2019</h1>
-                        <h4 data-toc-skip class="author">Samuel Woodman</h4>
+                        <h4 data-toc-skip class="author">Samuel
+Woodman</h4>
             
-            <h4 data-toc-skip class="date">2022-07-13</h4>
+            <h4 data-toc-skip class="date">2023-08-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/smwoodman/eSDM/blob/HEAD/vignettes/example-analysis.Rmd" class="external-link"><code>vignettes/example-analysis.Rmd</code></a></small>
       <div class="d-none name"><code>example-analysis.Rmd</code></div>
@@ -91,22 +92,77 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p><code>eSDM</code> allows users to create ensembles of predictions from species distribution models (SDMs), either using the <code>eSDM</code> GUI or manually in R using <code>eSDM</code> functions. This vignette demonstrates creating and evaluating ensembles using <code>eSDM</code> functions by manually performing the example analysis from Woodman <em>et al.</em> (2019). The example analysis explores differences between blue whale SDM predictions for the California Current Ecosystem (CCE) from Becker <em>et al.</em> (2016; i.e., Model_B), Hazen <em>et al.</em> (2017; i.e., Model_H), and Redfern <em>et al.</em> (2017; i.e., Model_R). It also creates and evaluates ensembles of the predictions, with associated uncertainty. See Woodman <em>et al.</em> (2019) for additional details, and in particular Table 1 for details about differences between the models.</p>
-<p>In this vignette, the three sets of predictions and the validation data are read from .rds files because the original files were too large to be included in the package. The sections where these data are imported includes the code for reading the data from their original files, although this code has been commented out. The original files can be downloaded through the GUI or at <a href="https://github.com/smwoodman/eSDM-data" class="external-link uri">https://github.com/smwoodman/eSDM-data</a>.</p>
-<p>This document contains code for plotting predictions. However, by default some of the plotting code is not run because it can take several minutes (these code chunks contain the comment “code not run”). If desired, you may run these code chunks manually in R.</p>
-<p>Before using data from this example analysis, please see the README.txt file for proper citation information (located at <code>system.file("extdata/README.txt", package = "eSDM"</code>) and contact the author.</p>
+<p><code>eSDM</code> allows users to create ensembles of predictions
+from species distribution models (SDMs), either using the
+<code>eSDM</code> GUI or manually in R using <code>eSDM</code>
+functions. This vignette demonstrates creating and evaluating ensembles
+using <code>eSDM</code> functions by manually performing the example
+analysis from Woodman <em>et al.</em> (2019). The example analysis
+explores differences between blue whale SDM predictions for the
+California Current Ecosystem (CCE) from Becker <em>et al.</em> (2016;
+i.e., Model_B), Hazen <em>et al.</em> (2017; i.e., Model_H), and Redfern
+<em>et al.</em> (2017; i.e., Model_R). It also creates and evaluates
+ensembles of the predictions, with associated uncertainty. See Woodman
+<em>et al.</em> (2019) for additional details, and in particular Table 1
+for details about differences between the models.</p>
+<p>In this vignette, the three sets of predictions and the validation
+data are read from .rds files because the original files were too large
+to be included in the package. The sections where these data are
+imported includes the code for reading the data from their original
+files, although this code has been commented out. The original files can
+be downloaded through the GUI or at <a href="https://github.com/smwoodman/eSDM-data" class="external-link uri">https://github.com/smwoodman/eSDM-data</a>.</p>
+<p>This document contains code for plotting predictions. However, by
+default some of the plotting code is not run because it can take several
+minutes (these code chunks contain the comment “code not run”). If
+desired, you may run these code chunks manually in R.</p>
+<p>Before using data from this example analysis, please see the
+README.txt file for proper citation information (located at
+<code>system.file("extdata/README.txt", package = "eSDM"</code>) and
+contact the author.</p>
 </div>
 <div class="section level2">
 <h2 id="import-sdm-predictions">Import SDM predictions<a class="anchor" aria-label="anchor" href="#import-sdm-predictions"></a>
 </h2>
-<p>The first step of the example analysis is to import and process the Model_B, Model_H, and Model_R predictions, along with their standard error (SE) values. Use <code>pts2poly_centroids</code> to create <code>sf</code> objects from polygon centroids from CSV files, <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster::raster</a></code> to import raster files, and <code><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">sf::st_read</a></code> to import GIS files. The dimensions of the Model_B and Model_H predictions are 0.09 x 0.09 degrees and 0.25 x 0.25 degrees, respectively; the second argument of <code>pts2poly_centroids</code> is half the length of one side of the polygon. GIS files already have a defined geometry that is read by <code>st_read</code>. Before overlaying predictions, you must ensure the following:</p>
+<p>The first step of the example analysis is to import and process the
+Model_B, Model_H, and Model_R predictions, along with their standard
+error (SE) values. Use <code>pts2poly_centroids</code> to create
+<code>sf</code> objects from polygon centroids from CSV files,
+<code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster::raster</a></code> to import raster files, and
+<code><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">sf::st_read</a></code> to import GIS files. The dimensions of the
+Model_B and Model_H predictions are 0.09 x 0.09 degrees and 0.25 x 0.25
+degrees, respectively; the second argument of
+<code>pts2poly_centroids</code> is half the length of one side of the
+polygon. GIS files already have a defined geometry that is read by
+<code>st_read</code>. Before overlaying predictions, you must ensure the
+following:</p>
 <ul>
-<li>All predictions are <code>sf</code> objects. See below for examples of converting a CSV file of grid centroids or a <code>raster</code> object to an <code>sf</code> object.</li>
-<li>The geometries of the predictions are valid; this can be checked using <code><a href="https://r-spatial.github.io/sf/reference/valid.html" class="external-link">sf::st_is_valid</a></code>.</li>
-<li>The geometries of the predictions have a defined coordinate reference system (crs); this can be checked using <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs</a></code>.</li>
-<li>The predictions have the same longitudinal range (i.e., either [0, 360] or [-180, 180]); this can be checked using <code><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">sf::st_bbox</a></code>. You can use <code><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">sf::st_wrap_dateline</a></code> to convert an <code>sf</code> object to the longitudinal range [-180, 180], but note that this will cause plots to span [-180, 180] as well.</li>
+<li>All predictions are <code>sf</code> objects. See below for examples
+of converting a CSV file of grid centroids or a <code>raster</code>
+object to an <code>sf</code> object.</li>
+<li>The geometries of the predictions are valid; this can be checked
+using <code><a href="https://r-spatial.github.io/sf/reference/valid.html" class="external-link">sf::st_is_valid</a></code>.</li>
+<li>The geometries of the predictions have a defined coordinate
+reference system (crs); this can be checked using
+<code><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">sf::st_crs</a></code>.</li>
+<li>The predictions have the same longitudinal range (i.e., either [0,
+360] or [-180, 180]); this can be checked using
+<code><a href="https://r-spatial.github.io/sf/reference/st_bbox.html" class="external-link">sf::st_bbox</a></code>. You can use <code><a href="https://r-spatial.github.io/sf/reference/st_transform.html" class="external-link">sf::st_wrap_dateline</a></code>
+to convert an <code>sf</code> object to the longitudinal range [-180,
+180], but note that this will cause plots to span [-180, 180] as
+well.</li>
 </ul>
-<p>We can visualize the SDM predictions after importing and processing them. The plots below make up Fig. 3 in Woodman <em>et al.</em> (2019). This vignette uses the custom <code>plot_sf_3panel</code> function (in ‘vignette_helper.R’ located at <code>system.file("vignette_helper.R", package = "eSDM"</code>) for plotting. <code>plot_sf_3panel</code> and <code>tmap_sdm</code> (used later in this vignette) were not included as functions in the <code>eSDM</code> package because they are specific to the example analysis region and SDMs. However, they can provide guidelines and a framework for plotting SDMs using the <code>sf</code> and <code>tmap</code> packages, allowing you to adapt these functions to your specific plotting needs.</p>
+<p>We can visualize the SDM predictions after importing and processing
+them. The plots below make up Fig. 3 in Woodman <em>et al.</em> (2019).
+This vignette uses the custom <code>plot_sf_3panel</code> function (in
+‘vignette_helper.R’ located at
+<code>system.file("vignette_helper.R", package = "eSDM"</code>) for
+plotting. <code>plot_sf_3panel</code> and <code>tmap_sdm</code> (used
+later in this vignette) were not included as functions in the
+<code>eSDM</code> package because they are specific to the example
+analysis region and SDMs. However, they can provide guidelines and a
+framework for plotting SDMs using the <code>sf</code> and
+<code>tmap</code> packages, allowing you to adapt these functions to
+your specific plotting needs.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import, process, and plot Model_B predictions</span></span>
 <span><span class="co"># model.b &lt;- read.csv("Predictions_Beckeretal2016.csv")</span></span>
@@ -117,7 +173,7 @@
 <span></span>
 <span><span class="va">model.b.sf</span></span>
 <span><span class="co">#&gt; Simple feature collection with 14807 features and 2 fields</span></span>
-<span><span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span></span>
+<span><span class="co">#&gt; Attribute-geometry relationships: constant (2)</span></span>
 <span><span class="co">#&gt; Geometry type: POLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -131.085 ymin: 30.045 xmax: -117.135 ymax: 48.585</span></span>
@@ -155,7 +211,7 @@
 <span></span>
 <span><span class="va">model.h.sf</span></span>
 <span><span class="co">#&gt; Simple feature collection with 4052 features and 2 fields</span></span>
-<span><span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span></span>
+<span><span class="co">#&gt; Attribute-geometry relationships: constant (2)</span></span>
 <span><span class="co">#&gt; Geometry type: POLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -135.125 ymin: 29.875 xmax: -115.875 ymax: 49.125</span></span>
@@ -189,23 +245,23 @@
 <span></span>
 <span><span class="va">model.r.sf</span></span>
 <span><span class="co">#&gt; Simple feature collection with 11419 features and 2 fields</span></span>
-<span><span class="co">#&gt; Attribute-geometry relationship: 2 constant, 0 aggregate, 0 identity</span></span>
-<span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
+<span><span class="co">#&gt; Attribute-geometry relationships: constant (2)</span></span>
+<span><span class="co">#&gt; Geometry type: GEOMETRY</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -14587510 ymin: 3176115 xmax: -13037510 ymax: 4766115</span></span>
-<span><span class="co">#&gt; CRS:           +proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</span></span>
+<span><span class="co">#&gt; Projected CRS: +proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</span></span>
 <span><span class="co">#&gt; First 10 features:</span></span>
 <span><span class="co">#&gt;        pred_bm           se                       geometry</span></span>
-<span><span class="co">#&gt; 1  0.008025090 0.0064684470 MULTIPOLYGON (((-13037935 3...</span></span>
-<span><span class="co">#&gt; 2  0.009190831 0.0074858911 MULTIPOLYGON (((-13047508 3...</span></span>
-<span><span class="co">#&gt; 3  0.007789538 0.0063127310 MULTIPOLYGON (((-13046258 3...</span></span>
-<span><span class="co">#&gt; 4  0.004794084 0.0007867314 MULTIPOLYGON (((-13197508 3...</span></span>
-<span><span class="co">#&gt; 5  0.004978912 0.0015665607 MULTIPOLYGON (((-13177508 3...</span></span>
-<span><span class="co">#&gt; 6  0.004869921 0.0008426572 MULTIPOLYGON (((-13197508 3...</span></span>
-<span><span class="co">#&gt; 7  0.004953553 0.0012025559 MULTIPOLYGON (((-13196624 3...</span></span>
-<span><span class="co">#&gt; 8  0.004699313 0.0014451453 MULTIPOLYGON (((-13177508 3...</span></span>
-<span><span class="co">#&gt; 9  0.004930461 0.0011039563 MULTIPOLYGON (((-13197508 3...</span></span>
-<span><span class="co">#&gt; 10          NA           NA MULTIPOLYGON (((-13067508 3...</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  0.008025090 0.0064684470 POLYGON ((-13037935 3406115...</span></span>
+<span><span class="co">#&gt; 2  0.009190831 0.0074858911 POLYGON ((-13047508 3426031...</span></span>
+<span><span class="co">#&gt; 3  0.007789538 0.0063127310 MULTIPOLYGON (((-13046190 3...</span></span>
+<span><span class="co">#&gt; 4  0.004794084 0.0007867314 POLYGON ((-13197508 3446115...</span></span>
+<span><span class="co">#&gt; 5  0.004978912 0.0015665607 POLYGON ((-13177508 3446115...</span></span>
+<span><span class="co">#&gt; 6  0.004869921 0.0008426572 MULTIPOLYGON (((-13207508 3...</span></span>
+<span><span class="co">#&gt; 7  0.004953553 0.0012025559 MULTIPOLYGON (((-13196471 3...</span></span>
+<span><span class="co">#&gt; 8  0.004699313 0.0014451453 POLYGON ((-13177508 3446115...</span></span>
+<span><span class="co">#&gt; 9  0.004930461 0.0011039563 POLYGON ((-13198089 3456115...</span></span>
+<span><span class="co">#&gt; 10          NA           NA POLYGON ((-13067508 3466115...</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">plot_sf_3panel</span><span class="op">(</span></span>
 <span>  <span class="va">model.r.sf</span>, <span class="st">"pred_bm"</span>, main.txt <span class="op">=</span> <span class="st">"Model_R - "</span>, map.base <span class="op">=</span> <span class="va">map.world</span>, </span>
@@ -221,7 +277,15 @@
 <div class="section level2">
 <h2 id="overlay-predictions">Overlay predictions<a class="anchor" aria-label="anchor" href="#overlay-predictions"></a>
 </h2>
-<p>Because the original predictions have both different spatial resolutions and coordinate systems, we must overlay them onto the same base geometry. See Woodman <em>et al.</em> (2019), the <code>eSDM</code> GUI manual, or the <code>overlay_sdm</code> documentation for details about the overlay process. For the example analysis, we use the geometry of Model_R as the base geometry. However, first we must import and process the study area and erasing polygons, with which we clip and erase land from the base geometry, respectively. We also visualize the base geometry.</p>
+<p>Because the original predictions have both different spatial
+resolutions and coordinate systems, we must overlay them onto the same
+base geometry. See Woodman <em>et al.</em> (2019), the <code>eSDM</code>
+GUI manual, or the <code>overlay_sdm</code> documentation for details
+about the overlay process. For the example analysis, we use the geometry
+of Model_R as the base geometry. However, first we must import and
+process the study area and erasing polygons, with which we clip and
+erase land from the base geometry, respectively. We also visualize the
+base geometry.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Study area polygon</span></span>
 <span><span class="va">poly.study</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Shapefiles/Study_Area_CCE.shp"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -253,8 +317,8 @@
 <span>  <span class="fu">st_erase</span><span class="op">(</span><span class="va">poly.erase</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html" class="external-link">st_intersection</a></span><span class="op">(</span><span class="va">poly.study</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html" class="external-link">st_cast</a></span><span class="op">(</span><span class="st">"MULTIPOLYGON"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout all</span></span>
-<span><span class="co">#&gt; geometries</span></span>
+<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
+<span><span class="co">#&gt; all geometries</span></span>
 <span></span>
 <span><span class="va">base.geom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">base.geom.sf</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -263,7 +327,9 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">map.world</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"tan"</span>, border <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
 <span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/box.html" class="external-link">box</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-10-1.png" width="480"></p>
-<p>Next, we convert any associated uncertainty values to variance. Uncertainty values must be overlaid as variance values to remain statistically valid.</p>
+<p>Next, we convert any associated uncertainty values to variance.
+Uncertainty values must be overlaid as variance values to remain
+statistically valid.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert SE values to variance</span></span>
 <span><span class="va">model.b.sf</span> <span class="op">&lt;-</span> <span class="va">model.b.sf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -275,7 +341,14 @@
 <span><span class="va">model.r.sf</span> <span class="op">&lt;-</span> <span class="va">model.r.sf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">se</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">pred_bm</span>, <span class="va">se</span>, <span class="va">variance</span><span class="op">)</span></span></code></pre></div>
-<p>Now we can overlay the original predictions onto the base geometry. Note that because we clipped and erased land from the base geometry, we cannot simply use the original Model_R predictions and geometry. However, we can ‘overlay’ the Model_R predictions by matching indices of base geometry polygons and Model_R prediction values. This, i.e., not running <code>overlay_sdm(base.geom, model.r.sf, ...)</code>, is important because intersecting a complex polygon with (basically) itself is very computationally complex.</p>
+<p>Now we can overlay the original predictions onto the base geometry.
+Note that because we clipped and erased land from the base geometry, we
+cannot simply use the original Model_R predictions and geometry.
+However, we can ‘overlay’ the Model_R predictions by matching indices of
+base geometry polygons and Model_R prediction values. This, i.e., not
+running <code>overlay_sdm(base.geom, model.r.sf, ...)</code>, is
+important because intersecting a complex polygon with (basically) itself
+is very computationally complex.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### CODE BLOCK NOT RUN</span></span>
 <span><span class="co"># Perform overlay, and convert overlaid uncertainty values to SEs</span></span>
@@ -289,7 +362,9 @@
 <span><span class="co"># ## Save these results for CRAN</span></span>
 <span><span class="co"># saveRDS(over1.sf, file = "../inst/extdata/Predictions_Beckeretal2016_overlaid.rds")</span></span>
 <span><span class="co"># saveRDS(over2.sf, file = "../inst/extdata/Predictions_Hazenetal2017_overlaid.rds")</span></span></code></pre></div>
-<p>NOTE: the above code block is not run in the vignette because of processing times. The relevant, pre-computed outputs are loaded in the following code block:</p>
+<p>NOTE: the above code block is not run in the vignette because of
+processing times. The relevant, pre-computed outputs are loaded in the
+following code block:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">over1.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/Predictions_Beckeretal2016_overlaid.rds"</span>, package <span class="op">=</span> <span class="st">"eSDM"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_set_crs</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="va">base.geom</span><span class="op">)</span><span class="op">)</span></span>
@@ -301,7 +376,9 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">base.geom.sf</span>, by <span class="op">=</span> <span class="st">"idx"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">idx</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>We can plot the overlaid predictions to show that the overlaid distribution patterns are very similar to those of the original predictions.</p>
+<p>We can plot the overlaid predictions to show that the overlaid
+distribution patterns are very similar to those of the original
+predictions.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot overlaid predictions; code not run</span></span>
 <span><span class="fu">plot_sf_3panel</span><span class="op">(</span><span class="va">over1.sf</span>, <span class="st">"pred_bm"</span>, main.txt <span class="op">=</span> <span class="st">"Overlaid Model_B - "</span>, map.base <span class="op">=</span> <span class="va">map.world</span><span class="op">)</span></span>
@@ -311,9 +388,22 @@
 <div class="section level2">
 <h2 id="calculate-evaluation-metrics">Calculate evaluation metrics<a class="anchor" aria-label="anchor" href="#calculate-evaluation-metrics"></a>
 </h2>
-<p>To evaluate predictions and create ensembles with weights based on evaluation metrics, we must load and process the validation data sets for use with <code>evaluation_metrics</code>. The validation data must be points of class <code>sf</code> with a column with either binary presence/absence or count data. For the example analysis, we use three validation sets in the example analysis, line transect data (Becker <em>et al.</em> 2016), home range data (Irvine <em>et al.</em> 2014), and these two data sets combined. Because our validation data are binary (i.e., presence/absence), there is a column indicating whether each value is a presence point (1) or absence point (0).</p>
-<p>Note that in this vignette, the validation data are read from .rds files because the original file was too big to be included in the package. However, the original file can be downloaded through the GUI or at <a href="https://github.com/smwoodman/eSDM-data" class="external-link uri">https://github.com/smwoodman/eSDM-data</a></p>
-<p>Use the function <code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">sf::st_as_sf</a></code> to convert a data frame with lon/lat coordinates to an <code>sf</code> object.</p>
+<p>To evaluate predictions and create ensembles with weights based on
+evaluation metrics, we must load and process the validation data sets
+for use with <code>evaluation_metrics</code>. The validation data must
+be points of class <code>sf</code> with a column with either binary
+presence/absence or count data. For the example analysis, we use three
+validation sets in the example analysis, line transect data (Becker
+<em>et al.</em> 2016), home range data (Irvine <em>et al.</em> 2014),
+and these two data sets combined. Because our validation data are binary
+(i.e., presence/absence), there is a column indicating whether each
+value is a presence point (1) or absence point (0).</p>
+<p>Note that in this vignette, the validation data are read from .rds
+files because the original file was too big to be included in the
+package. However, the original file can be downloaded through the GUI or
+at <a href="https://github.com/smwoodman/eSDM-data" class="external-link uri">https://github.com/smwoodman/eSDM-data</a></p>
+<p>Use the function <code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">sf::st_as_sf</a></code> to convert a data frame
+with lon/lat coordinates to an <code>sf</code> object.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import and process validation data</span></span>
 <span><span class="co"># valid.data &lt;- read.csv("eSDM_Validation_data_all.csv", stringsAsFactors = FALSE)</span></span>
@@ -354,7 +444,11 @@
 </tr>
 </tbody>
 </table>
-<p>Now we can calculate the AUC and TSS metrics for the original and overlaid predictions. The displayed table is from Table 3 of Woodman <em>et al.</em> (2019). Note that <code>evaluation_metrics</code> requires that validation data have the same coordinate reference system as the predictions being evaluated.</p>
+<p>Now we can calculate the AUC and TSS metrics for the original and
+overlaid predictions. The displayed table is from Table 3 of Woodman
+<em>et al.</em> (2019). Note that <code>evaluation_metrics</code>
+requires that validation data have the same coordinate reference system
+as the predictions being evaluated.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate evaluation metrics with different validation data sets; code not run</span></span>
 <span><span class="va">names.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -402,6 +496,15 @@
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Evaluation metrics"</span>, digits <span class="op">=</span> <span class="fl">3</span>, align <span class="op">=</span> <span class="st">"lcccccc"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <caption>Evaluation metrics</caption>
+<colgroup>
+<col width="29%">
+<col width="10%">
+<col width="10%">
+<col width="12%">
+<col width="12%">
+<col width="12%">
+<col width="12%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">Predictions</th>
 <th align="center">AUC</th>
@@ -468,16 +571,26 @@
 </tr>
 </tbody>
 </table>
-<p>We can see that for each set of predictions, the original and overlaid evaluation metrics are quite similar, again showing that the overlay conserved the predicted blue whale distributions.</p>
+<p>We can see that for each set of predictions, the original and
+overlaid evaluation metrics are quite similar, again showing that the
+overlay conserved the predicted blue whale distributions.</p>
 </div>
 <div class="section level2">
 <h2 id="create-and-evaluate-ensemble-predictions">Create and evaluate ensemble predictions<a class="anchor" aria-label="anchor" href="#create-and-evaluate-ensemble-predictions"></a>
 </h2>
-<p>Before creating the ensembles, we must rescale the overlaid predictions. We rescaled the predictions using the abundance rescaling method and an abundance of 1648 (Becker <em>et al.</em> 2016). Using the sum to 1 rescaling method would result in ensembles with similar distribution patterns, but the actual density values could not be used to provide a meaningful abundance estimate.</p>
-<p><code>ensemble_rescale</code> requires a single <code>sf</code> object that contains all of the data being rescaled. Thus, we extract the prediction and variance values before using the rescaling function.</p>
+<p>Before creating the ensembles, we must rescale the overlaid
+predictions. We rescaled the predictions using the abundance rescaling
+method and an abundance of 1648 (Becker <em>et al.</em> 2016). Using the
+sum to 1 rescaling method would result in ensembles with similar
+distribution patterns, but the actual density values could not be used
+to provide a meaningful abundance estimate.</p>
+<p><code>ensemble_rescale</code> requires a single <code>sf</code>
+object that contains all of the data being rescaled. Thus, we extract
+the prediction and variance values before using the rescaling
+function.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Rescale predictions</span></span>
-<span><span class="va">over.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html" class="external-link">bind_cols</a></span><span class="op">(</span></span>
+<span><span class="va">over.sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span></span>
 <span>  <span class="va">over1.sf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_set_geometry</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>pred_bm1 <span class="op">=</span> <span class="va">pred_bm</span>, var1 <span class="op">=</span> <span class="va">variance</span><span class="op">)</span>, </span>
 <span>  <span class="va">over2.sf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_set_geometry</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>pred_bm2 <span class="op">=</span> <span class="va">pred_bm</span>, var2 <span class="op">=</span> <span class="va">variance</span><span class="op">)</span>, </span>
 <span>  <span class="va">over3.sf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_set_geometry</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>pred_bm3 <span class="op">=</span> <span class="va">pred_bm</span>, var3 <span class="op">=</span> <span class="va">variance</span><span class="op">)</span></span>
@@ -517,8 +630,18 @@
 <span><span class="co">#&gt;  3rd Qu.:0.00225   3rd Qu.:0.00000                        </span></span>
 <span><span class="co">#&gt;  Max.   :0.01866   Max.   :0.00013                        </span></span>
 <span><span class="co">#&gt;  NA's   :41        NA's   :41</span></span></code></pre></div>
-<p>We can see that the prediction values are now much more comparable, and thus a subset of the predictions will not contribute disproportionately to an ensemble.</p>
-<p>We also must calculate the ensemble weights, which must be manually created. For the example analysis, we use several weighting methods: equal weights (i.e., unweighted), AUC-based weights, TSS-based weights, and weights calculated as the inverse of the prediction variance. Each set of weights must sum to 1, or each row must sum to 1 in the case of the weights calculated as the inverse of the prediction variance. Note that when calculating evaluation metrics, a message is printed if any of the validation data points do not intersect with a prediction polygon.</p>
+<p>We can see that the prediction values are now much more comparable,
+and thus a subset of the predictions will not contribute
+disproportionately to an ensemble.</p>
+<p>We also must calculate the ensemble weights, which must be manually
+created. For the example analysis, we use several weighting methods:
+equal weights (i.e., unweighted), AUC-based weights, TSS-based weights,
+and weights calculated as the inverse of the prediction variance. Each
+set of weights must sum to 1, or each row must sum to 1 in the case of
+the weights calculated as the inverse of the prediction variance. Note
+that when calculating evaluation metrics, a message is printed if any of
+the validation data points do not intersect with a prediction
+polygon.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate ensemble weights</span></span>
 <span><span class="va">e.weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -555,7 +678,8 @@
 <span><span class="co">#&gt; 4 0.06759370 0.3232166 0.609189722</span></span>
 <span><span class="co">#&gt; 5 0.05685041 0.8348384 0.108311140</span></span>
 <span><span class="co">#&gt; 6 0.04114136 0.4182598 0.540598860</span></span></code></pre></div>
-<p>Finally, we can create the ensembles. We calculate the ensemble uncertainty values with the among-model variance.</p>
+<p>Finally, we can create the ensembles. We calculate the ensemble
+uncertainty values with the among-model variance.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### Create ensembles</span></span>
 <span></span>
@@ -594,7 +718,9 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">Var_ens</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Pred_ens</span>, <span class="va">SE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_agr.html" class="external-link">st_set_agr</a></span><span class="op">(</span><span class="st">"constant"</span><span class="op">)</span></span></code></pre></div>
-<p>We could also have estimated the within-model ensemble uncertainty by using the <code>x.var.idx</code> argument, as demonstrated in the following code (not run).</p>
+<p>We could also have estimated the within-model ensemble uncertainty by
+using the <code>x.var.idx</code> argument, as demonstrated in the
+following code (not run).</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create an ensemble and calculate within-model uncertainty; code not run</span></span>
 <span><span class="va">ens.sf.unw.wmv</span> <span class="op">&lt;-</span> <span class="fu">eSDM</span><span class="fu">::</span><span class="fu"><a href="../reference/ensemble_create.html">ensemble_create</a></span><span class="op">(</span></span>
@@ -603,7 +729,10 @@
 <span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">Var_ens</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Pred_ens</span> , <span class="va">SE</span><span class="op">)</span></span></code></pre></div>
-<p>Now we can calculate AUC and TSS scores for the ensembles and compare them to those of original and ensemble predictions. Again, the evaluation code is not run; the displayed table is Table 3 from Woodman <em>et al.</em> (2019).</p>
+<p>Now we can calculate AUC and TSS scores for the ensembles and compare
+them to those of original and ensemble predictions. Again, the
+evaluation code is not run; the displayed table is Table 3 from Woodman
+<em>et al.</em> (2019).</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculate evaluation metrics for ensembles; code not run</span></span>
 <span><span class="va">names.2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -642,8 +771,17 @@
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Predictions</span>, <span class="va">AUC</span>, <span class="va">TSS</span>, `AUC-LT` <span class="op">=</span> <span class="va">AUC.LT</span>, `TSS-LT` <span class="op">=</span> <span class="va">TSS.LT</span>, </span>
 <span>                `AUC-HR` <span class="op">=</span> <span class="va">AUC.HR</span>, `TSS-HR` <span class="op">=</span> <span class="va">TSS.HR</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>caption <span class="op">=</span> <span class="st">"Evaluation metrics"</span>, digits <span class="op">=</span> <span class="fl">3</span>, align <span class="op">=</span> <span class="st">"lcccccc"</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <caption>Evaluation metrics</caption>
+<colgroup>
+<col width="42%">
+<col width="8%">
+<col width="8%">
+<col width="10%">
+<col width="10%">
+<col width="10%">
+<col width="10%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">Predictions</th>
 <th align="center">AUC</th>
@@ -746,7 +884,10 @@
 </tr>
 </tbody>
 </table>
-<p>We can see that the ensemble with weights based on TSS values had the highest scores of the ensemble predictions, and mostly higher scores that the original predictions. We can visualize this ensemble to compare it with known blue whale habitat.</p>
+<p>We can see that the ensemble with weights based on TSS values had the
+highest scores of the ensemble predictions, and mostly higher scores
+that the original predictions. We can visualize this ensemble to compare
+it with known blue whale habitat.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Simple code to visualize ensemble created with weights based on TSS values</span></span>
 <span><span class="fu">plot_sf_3panel</span><span class="op">(</span></span>
@@ -754,7 +895,13 @@
 <span>  map.base <span class="op">=</span> <span class="va">map.world</span>, x.axis.at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">130</span>, <span class="op">-</span><span class="fl">125</span>, <span class="op">-</span><span class="fl">120</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="example-analysis_files/figure-html/unnamed-chunk-24-1.png" width="672"></p>
-<p>Below is code to visualize the unweighted ensembles and this ensemble (i.e., create plots similar to Figs. 4 and 5 in Woodman <em>et al.</em>). This code uses custom functions (located at <code>system.file("eSDM_vignette_helper.R", package = "eSDM")</code>) that leverage the <code>tmap</code> package to generate plots. However, by default this code is not run because each plot takes several minutes to generate.</p>
+<p>Below is code to visualize the unweighted ensembles and this ensemble
+(i.e., create plots similar to Figs. 4 and 5 in Woodman <em>et
+al.</em>). This code uses custom functions (located at
+<code>system.file("eSDM_vignette_helper.R", package = "eSDM")</code>)
+that leverage the <code>tmap</code> package to generate plots. However,
+by default this code is not run because each plot takes several minutes
+to generate.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### Figure 4; code not run</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span>
@@ -846,11 +993,27 @@
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Becker, E., Forney, K., Fiedler, P., Barlow, J., Chivers, S., Edwards, C., … Redfern, J. (2016). Moving towards dynamic ocean management: how well do modeled ocean products predict species distributions? Remote Sensing, 8, 149. <a href="https://doi.org/10.3390/rs8020149" class="external-link uri">https://doi.org/10.3390/rs8020149</a></p>
-<p>Hazen, E.L., Palacios, D.M., Forney, K.A., Howell, E.A., Becker, E., Hoover, A.L., … Bailey, H. (2017). WhaleWatch: a dynamic management tool for predicting blue whale density in the California Current. Journal of Applied Ecology, 54, 1415-1428. <a href="https://doi.org/10.1111/1365-2664.12820" class="external-link uri">https://doi.org/10.1111/1365-2664.12820</a></p>
-<p>Irvine, L.M., Mate, B.R., Winsor, M.H., Palacios, D.M., Bograd, S.J., Costa, D.P. &amp; Bailey, H. (2014). Spatial and temporal occurrence of blue whales off the U.S. West Coast, with implications for management. PLoS One, 9, e102959. <a href="https://doi.org/10.1371/journal.pone.0109485" class="external-link uri">https://doi.org/10.1371/journal.pone.0109485</a></p>
-<p>Redfern, J.V., Moore, T.J., Fiedler, P.C., de Vos, A., Brownell, R.L., Forney, K.A., … Heikkinen, R. (2017). Predicting cetacean distributions in data-poor marine ecosystems. Diversity and Distributions, 23, 394-408. <a href="https://doi.org/10.1111/ddi.12537" class="external-link uri">https://doi.org/10.1111/ddi.12537</a></p>
-<p>Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. Methods in Ecology and Evolution. 2019;10:1923-1933. <a href="https://doi.org/10.1111/2041-210X.13283" class="external-link uri">https://doi.org/10.1111/2041-210X.13283</a></p>
+<p>Becker, E., Forney, K., Fiedler, P., Barlow, J., Chivers, S.,
+Edwards, C., … Redfern, J. (2016). Moving towards dynamic ocean
+management: how well do modeled ocean products predict species
+distributions? Remote Sensing, 8, 149. <a href="https://doi.org/10.3390/rs8020149" class="external-link uri">https://doi.org/10.3390/rs8020149</a></p>
+<p>Hazen, E.L., Palacios, D.M., Forney, K.A., Howell, E.A., Becker, E.,
+Hoover, A.L., … Bailey, H. (2017). WhaleWatch: a dynamic management tool
+for predicting blue whale density in the California Current. Journal of
+Applied Ecology, 54, 1415-1428. <a href="https://doi.org/10.1111/1365-2664.12820" class="external-link uri">https://doi.org/10.1111/1365-2664.12820</a></p>
+<p>Irvine, L.M., Mate, B.R., Winsor, M.H., Palacios, D.M., Bograd, S.J.,
+Costa, D.P. &amp; Bailey, H. (2014). Spatial and temporal occurrence of
+blue whales off the U.S. West Coast, with implications for management.
+PLoS One, 9, e102959. <a href="https://doi.org/10.1371/journal.pone.0109485" class="external-link uri">https://doi.org/10.1371/journal.pone.0109485</a></p>
+<p>Redfern, J.V., Moore, T.J., Fiedler, P.C., de Vos, A., Brownell,
+R.L., Forney, K.A., … Heikkinen, R. (2017). Predicting cetacean
+distributions in data-poor marine ecosystems. Diversity and
+Distributions, 23, 394-408. <a href="https://doi.org/10.1111/ddi.12537" class="external-link uri">https://doi.org/10.1111/ddi.12537</a></p>
+<p>Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen,
+E.L., Palacios, D.M., Redfern, J.V. (2019). eSDM: A tool for creating
+and exploring ensembles of predictions from species distribution and
+abundance models. Methods in Ecology and Evolution. 2019;10:1923-1933.
+<a href="https://doi.org/10.1111/2041-210X.13283" class="external-link uri">https://doi.org/10.1111/2041-210X.13283</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
@@ -865,7 +1028,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
     </footer>
