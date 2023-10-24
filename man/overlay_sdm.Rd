@@ -58,10 +58,11 @@ overlay_sdm(pol1.geom, pol2.sf, 1, 25)
 # Output 'Dens' value is NA because of higher overlap.perc value
 overlay_sdm(pol1.geom, pol2.sf, 1, 50)
 
+\dontshow{if (FALSE) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # These examples take longer to run
 overlay_sdm(sf::st_geometry(preds.1), preds.2, 1, 50)
 overlay_sdm(sf::st_geometry(preds.2), preds.1, "Density", 50)
-
+\dontshow{\}) # examplesIf}
 }
 \references{
 Goodchild, M.F. & Lam, N.S.-N. (1980) Areal interpolation:

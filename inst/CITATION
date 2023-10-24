@@ -1,10 +1,10 @@
 citHeader("To cite eSDM in publications use:")
 
-citEntry(
-  entry = "Article",
+bibentry(
+  bibtype = "Article",
   title = "eSDM: A tool for creating and exploring ensembles of predictions from species distribution and abundance models",
   year = "2019",
-  author = personList(
+  author = c(
     as.person("Samuel M. Woodman"),
     as.person("Karin A. Forney"),
     as.person("Elizabeth A. Becker"),

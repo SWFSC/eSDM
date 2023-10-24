@@ -1,3 +1,8 @@
+# eSDM 0.4.0.9000 (in development)
+
+* Removed maptools as a dependency (#13)
+
+
 # eSDM 0.3.7
 
 * Updated `overlay_sdm` to stay current with `sf` 1.0 (#12)

@@ -70,7 +70,7 @@ ui <- dashboardPage(
       menuItem("Overlay Predictions", tabName = "overlay", icon = icon("cogs")),
       menuItem("Create Ensemble Predictions", tabName = "createEns", icon = icon("cog")),
       menuItem("Evaluation Metrics", tabName = "evalMetrics", icon = icon("check")),
-      menuItem("High Quality Maps", tabName = "prettyPlot", icon = icon("file-image-o")),
+      menuItem("High Quality Maps", tabName = "prettyPlot", icon = icon("map")),
       menuItem("Export Predictions", tabName = "export", icon = icon("cloud-download")),
       menuItem("Manual", tabName = "manual", icon = icon("book"))
     ),
