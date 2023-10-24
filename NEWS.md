@@ -1,6 +1,8 @@
-# eSDM 0.4.0.9000 (in development)
+# eSDM 0.4.0
 
-* Removed maptools as a dependency (#13)
+* Removed `maptools` as a dependency (#13). This Import was a relic as `eSDM` did not actually use `maptools` functions, so no functionality should change.
+
+* eSDM depends on R >= 4.0.0
 
 
 # eSDM 0.3.7

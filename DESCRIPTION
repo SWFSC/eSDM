@@ -6,12 +6,12 @@ Description: A tool which allows users to create and evaluate ensembles
     This tool can assist users in identifying spatial uncertainties and 
     making informed conservation and management decisions. The package is 
     further described in Woodman et al (2019) <doi:10.1111/2041-210X.13283>.
-Version: 0.4.0.9000
+Version: 0.4.0
 Authors@R: person("Sam", "Woodman", email = "sam.woodman@noaa.gov", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-6071-8186"))
 URL: https://smwoodman.github.io/eSDM/,
     https://github.com/smwoodman/eSDM/
 BugReports: https://github.com/smwoodman/eSDM/issues/
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.0.0)
 Imports:
     dplyr (>= 0.7-0), 
     magrittr,
