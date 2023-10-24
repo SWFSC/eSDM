@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">eSDM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
                         <h4 data-toc-skip class="author">Samuel
 Woodman</h4>
             
-            <h4 data-toc-skip class="date">2023-08-09</h4>
+            <h4 data-toc-skip class="date">2023-10-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/smwoodman/eSDM/blob/HEAD/vignettes/example-analysis.Rmd" class="external-link"><code>vignettes/example-analysis.Rmd</code></a></small>
       <div class="d-none name"><code>example-analysis.Rmd</code></div>
@@ -904,7 +904,7 @@ by default this code is not run because each plot takes several minutes
 to generate.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">### Figure 4; code not run</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap" class="external-link">tmap</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-tmap.github.io/tmap/" class="external-link">tmap</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Values passed to tmap_sdm - range of map</span></span>
 <span><span class="va">range.poly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html" class="external-link">st_sfc</a></span><span class="op">(</span></span>
@@ -945,7 +945,7 @@ to generate.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Generate plot</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_arrange.html" class="external-link">tmap_arrange</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_arrange.html" class="external-link">tmap_arrange</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">tmap.obj1</span>, <span class="va">tmap.obj2</span>, <span class="va">tmap.obj3</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, asp <span class="op">=</span> <span class="cn">NULL</span>, outer.margins <span class="op">=</span> <span class="fl">0.05</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
@@ -981,11 +981,11 @@ to generate.</p>
 <span>  <span class="va">ens.sf.wtss</span>, <span class="st">"Pred_ens"</span>, <span class="va">blp2b</span>, <span class="va">map.world</span>, <span class="va">rpoly.mat</span>, <span class="st">"Ensemble-TSS - Predictions"</span>, </span>
 <span>  <span class="va">main.size</span>, <span class="va">leg.size</span>, <span class="va">leg.width</span>, <span class="va">grid.size</span></span>
 <span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">valid.data</span>, <span class="va">pres_abs</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tm_symbols.html" class="external-link">tm_dots</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"black"</span>, size <span class="op">=</span> <span class="fl">0.04</span>, shape <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">valid.data</span>, <span class="va">pres_abs</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html" class="external-link">tm_dots</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"black"</span>, size <span class="op">=</span> <span class="fl">0.04</span>, shape <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Generate plot</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/tmap/man/tmap_arrange.html" class="external-link">tmap_arrange</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_arrange.html" class="external-link">tmap_arrange</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">tmap.obj1</span>, <span class="va">tmap.obj2</span>, <span class="va">tmap.obj3</span>, <span class="va">tmap.obj4</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span>, nrow <span class="op">=</span> <span class="fl">2</span>, </span>
 <span>  asp <span class="op">=</span> <span class="cn">NULL</span>, outer.margins <span class="op">=</span> <span class="fl">0.05</span></span>
 <span><span class="op">)</span></span></code></pre></div>
