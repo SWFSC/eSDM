@@ -1,3 +1,8 @@
+# eSDM 0.4.1
+
+* Updated shiny app URL to https://connect.fisheries.noaa.gov/eSDM/
+
+
 # eSDM 0.4.0
 
 * Removed `maptools` as a dependency (#13). This Import was a relic as `eSDM` did not actually use `maptools` functions, so no functionality should change.

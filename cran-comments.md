@@ -1,7 +1,7 @@
 ## Release summary
-This is a minor release to remove maptools as a dependency after maptools was archived. eSDM now also requires R >= 4.0
+This is a minor patch to include update documentation links. There are no changes to package code or functionality
 
-## Test environments (R-release = v4.3.1)
+## Test environments (R-release = v4.3.2)
 * Windows 10, R-release (local)
 * win-builder (devel)
 * windows-latest (on github actions) R-release

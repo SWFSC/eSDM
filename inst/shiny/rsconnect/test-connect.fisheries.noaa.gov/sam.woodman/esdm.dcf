@@ -1,0 +1,12 @@
+name: esdm
+title: eSDM
+username: sam.woodman
+account: sam.woodman
+server: test-connect.fisheries.noaa.gov
+hostUrl: https://test-connect.fisheries.noaa.gov/__api__
+appId: 232
+bundleId: 985
+url: https://test-connect.fisheries.noaa.gov/content/bbcc55cc-b9ad-43a2-b714-8d8c770b0c75/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

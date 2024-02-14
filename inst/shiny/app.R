@@ -4,22 +4,47 @@
 ###############################################################################
 # Check for and attach packages
 stopifnot(require(eSDM))
-list.packages <- list(
-  "DT", "shiny", "shinybusy", "shinydashboard", "shinyjs",
-  "colorRamps", "colourpicker", "dichromat", "dplyr", "leaflet", "leafem",
-  "methods", "purrr", "RColorBrewer", "raster", "rlang", "ROCR",
-  "sf", "stats", "tmap", "units", "viridis", "zip"
+# list.packages <- list(
+#   "DT", "shiny", "shinybusy", "shinydashboard", "shinyjs",
+#   "colorRamps", "colourpicker", "dichromat", "dplyr", "leaflet", "leafem",
+#   "methods", "purrr", "RColorBrewer", "raster", "rlang", "ROCR",
+#   "sf", "stats", "tmap", "units", "viridis", "zip"
+# )
+#
+# p.check <- vapply(list.packages, requireNamespace, as.logical(1), quietly = TRUE)
+# if (!all(p.check))
+#   stop("To use the eSDM GUI, the following packages must be installed: ",
+#        paste(list.packages, collapse = ", "), "\n",
+#        "To install the missing packages, run the following:\n",
+#        "install.packages(c(\"", paste(list.packages[!p.check],
+#                                     collapse = "\", \""), "\"))")
+#
+# sapply(list.packages, require, character.only = TRUE, warn.conflicts = FALSE)
+stopifnot(
+  require(DT),
+  require(shiny),
+  require(shinybusy),
+  require(shinydashboard),
+  require(shinyjs),
+  require(colorRamps),
+  require(colourpicker),
+  require(dichromat),
+  require(dplyr),
+  require(leaflet),
+  require(leafem),
+  require(methods),
+  require(purrr),
+  require(RColorBrewer),
+  require(raster),
+  require(rlang),
+  require(ROCR),
+  require(sf),
+  require(stats),
+  require(tmap),
+  require(units),
+  require(viridis),
+  require(zip)
 )
-
-p.check <- vapply(list.packages, requireNamespace, as.logical(1), quietly = TRUE)
-if (!all(p.check))
-  stop("To use the eSDM GUI, the following packages must be installed: ",
-       paste(list.packages, collapse = ", "), "\n",
-       "To install the missing packages, run the following:\n",
-       "install.packages(c(\"", paste(list.packages[!p.check],
-                                    collapse = "\", \""), "\"))")
-
-sapply(list.packages, require, character.only = TRUE, warn.conflicts = FALSE)
 
 
 ###############################################################################

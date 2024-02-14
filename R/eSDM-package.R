@@ -18,7 +18,6 @@
 #'
 #' @name eSDM-package
 #' @aliases eSDM
-#' @docType package
 #' @title Ensemble tool for predictions from Species Distribution Models
 #' @author Sam Woodman \email{sam.woodman@@noaa.gov}
 #' @seealso \url{https://smwoodman.github.io/eSDM/}
