@@ -1,5 +1,5 @@
 ## Release summary
-This is a minor patch to include update documentation links. There are no changes to package code or functionality
+This is a minor patch to include update documentation links, including to the Shiny app's hosted url. There are no changes to package code or functionality
 
 ## Test environments (R-release = v4.3.2)
 * Windows 10, R-release (local)
