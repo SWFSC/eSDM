@@ -8,6 +8,7 @@
 ^inst/shiny/rsconnect$
 ^README\.Rmd$
 README.md
+License.md
 
 ^CRAN-RELEASE$
 ^_pkgdown\.yml$
