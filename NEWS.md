@@ -1,3 +1,11 @@
+# eSDM 0.4.2.9000
+
+* Moved repo to https://github.com/swfsc, and updated all associated documentation
+
+* Corrected license files (still GPL3 + [addendum](https://github.com/SWFSC/eSDM/blob/main/LICENSE)), based on https://nmfs-opensci.github.io/GitHub-Guide
+
+
+
 # eSDM 0.4.1
 
 * Updated shiny app URL to https://connect.fisheries.noaa.gov/eSDM/

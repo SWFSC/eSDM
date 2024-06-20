@@ -36,4 +36,4 @@
 #' @importFrom utils head tail
 #'
 #' @keywords package
-NULL
+"_PACKAGE"

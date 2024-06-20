@@ -17,3 +17,4 @@ License.md
 ^tic\.R$
 ^\.github$
 ^CRAN-SUBMISSION$
+^LICENSE\.md$
