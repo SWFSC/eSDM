@@ -14,6 +14,3 @@ argument of \code{\link[shiny]{runApp}}}
 Open the eSDM graphical user interface (GUI);
   an R Shiny app for creating ensemble predictions using SDM predictions.
 }
-\seealso{
-\url{https://smwoodman.github.io/eSDM/}
-}

@@ -60,7 +60,7 @@ Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacio
 
 For data used in the example analysis, see <https://github.com/smwoodman/eSDM-data>
 
-For code used to create applicable figures from the manuscript: [Figure 2](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure2_overlay.R), [Figure 3](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure3.R), [Figure 4](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure4.R), [Figure 5](https://github.com/smwoodman/eSDM/blob/master/data-raw/figure5.R)
+For code used to create applicable figures from the manuscript: [Figure 2](https://github.com/swfsc/eSDM/blob/master/data-raw/figure2_overlay.R), [Figure 3](https://github.com/swfsc/eSDM/blob/master/data-raw/figure3.R), [Figure 4](https://github.com/swfsc/eSDM/blob/master/data-raw/figure4.R), [Figure 5](https://github.com/swfsc/eSDM/blob/master/data-raw/figure5.R)
 
 ## Disclaimer
 

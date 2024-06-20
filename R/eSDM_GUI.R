@@ -8,8 +8,6 @@
 #'
 #' @usage eSDM_GUI(launch.browser = TRUE)
 #'
-#' @seealso \url{https://smwoodman.github.io/eSDM/}
-#'
 #' @export
 eSDM_GUI <- function(launch.browser = TRUE) {
   appDir <- system.file("shiny", package = "eSDM")

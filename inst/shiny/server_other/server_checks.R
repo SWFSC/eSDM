@@ -16,7 +16,7 @@ modal.attr <- function(x) {
   modalDialog(
     title = x,
     paste("Please either contact Sam (sam.woodman@noaa.gov) or report this",
-          "as an issue on GitHub (https://github.com/smwoodman/eSDM/issues)"),
+          "as an issue on GitHub (https://github.com/swfsc/eSDM/issues)"),
     footer = tagList(modalButton("Close"))
   )
 }

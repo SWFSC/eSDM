@@ -140,8 +140,8 @@ observe({
 
       tags$h5("There was an error in eSDM GUI data storage and processing.",
               "Please report this as an issue at",
-              tags$a("https://github.com/smwoodman/eSDM/issues",
-                     href = "https://github.com/smwoodman/eSDM/issues"),
+              tags$a("https://github.com/swfsc/eSDM/issues",
+                     href = "https://github.com/swfsc/eSDM/issues"),
               "and then restart the GUI."),
 
       footer = tagList(actionButton("close_gui_error", "Close GUI"))

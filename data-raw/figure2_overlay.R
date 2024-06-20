@@ -1,7 +1,7 @@
 # Code for creating Figure 2 for eSDM manuscript
 
 ###################################################################################################
-library(eSDM) #devtools::install_github("smwoodman/eSDM")
+library(eSDM)
 library(RColorBrewer)
 library(sf)
 library(tmap)

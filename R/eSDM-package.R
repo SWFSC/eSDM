@@ -20,7 +20,7 @@
 #' @aliases eSDM
 #' @title Ensemble tool for predictions from Species Distribution Models
 #' @author Sam Woodman \email{sam.woodman@@noaa.gov}
-#' @seealso \url{https://smwoodman.github.io/eSDM/}
+#' @seealso \url{https://swfsc.github.io/eSDM/}
 #'
 #' @importFrom dplyr all_of arrange between bind_rows filter group_by left_join mutate rename select summarise
 #' @importFrom magrittr %>%
