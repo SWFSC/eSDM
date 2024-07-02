@@ -2,8 +2,7 @@
 
 * Moved repo to https://github.com/swfsc, and updated all associated documentation
 
-* Corrected license files (still GPL3 + [addendum](https://github.com/SWFSC/eSDM/blob/main/LICENSE)), based on https://nmfs-opensci.github.io/GitHub-Guide
-
+* Changed license to Apache License (== 2), based on NMFS guidance at https://nmfs-opensci.github.io/GitHub-Guide
 
 
 # eSDM 0.4.1
