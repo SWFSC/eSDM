@@ -100,7 +100,8 @@ ui <- dashboardPage(
       menuItem("Manual", tabName = "manual", icon = icon("book"))
     ),
     tags$br(),
-    actionButton("close_gui", label = "Close GUI")
+    actionButton("close_gui", label = "Close GUI"),
+    tags$h5(paste0("eSDM v", packageVersion("eSDM")))
   ),
 
   dashboardBody(
