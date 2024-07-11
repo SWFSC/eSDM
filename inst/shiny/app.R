@@ -101,7 +101,7 @@ ui <- dashboardPage(
     ),
     tags$br(),
     actionButton("close_gui", label = "Close GUI"),
-    tags$h5(paste0("eSDM v", packageVersion("eSDM")))
+    column(12, tags$h5(paste0("eSDM v", packageVersion("eSDM"))))
   ),
 
   dashboardBody(
