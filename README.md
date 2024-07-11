@@ -27,7 +27,7 @@ devtools::install_github('smwoodman/eSDM', build_vignettes = TRUE)
 
 ## eSDM GUI
 
-You can access the GUI online at <https://connect.fisheries.noaa.gov/eSDM>. (NOTE: this app is currently down - we are working to redeploy eSDM). You do not need to have R or RStudio installed to access the GUI online.
+You can access the GUI online at <https://connect.fisheries.noaa.gov/eSDM>. You do not need to have R or RStudio installed to access the GUI online.
 
 To run the GUI locally: install `eSDM` as described above, and then run the following code in your RStudio console:
 
