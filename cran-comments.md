@@ -1,7 +1,7 @@
 ## Release summary
-This is a minor patch to include update documentation links, including to the Shiny app's hosted url. There are no changes to package code or functionality
+This is a minor patch to include update documentation links after moving GitHub repo to a an organization, as well as a license update. There are no changes to package code or functionality
 
-## Test environments (R-release = v4.3.2)
+## Test environments (R-release = v4.4.1)
 * Windows 10, R-release (local)
 * win-builder (devel)
 * windows-latest (on github actions) R-release

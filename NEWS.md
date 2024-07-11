@@ -1,4 +1,4 @@
-# eSDM 0.4.2.9000
+# eSDM 0.4.2
 
 * Moved repo to https://github.com/swfsc, and updated all associated documentation
 
