@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">eSDM</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.3.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,12 @@ not set as NA</p></dd>
   geometry. Note that this means all columns of <code>sdm</code> not in
   <code>sdm.idx</code> will not be in the returned object.
   Because the data are considered spatially intensive, the <code>agr</code>
-  attribute will be set as 'constant' for all columns in the returned object</p>
+  attribute will be set as 'constant' for all columns in the returned object.</p>
+<p>Additionally, the output will match the class of <code>sdm</code>, with regards
+  to the classes tbl_df, tbl, and data.frame. This means that, in addition to
+  being an <code>sf</code> object, if <code>sdm</code> is a tibble then the output will
+  also be a tibble, while if <code>sdm</code> is just a data frame then the output
+  will not be a tibble.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -146,7 +151,7 @@ not set as NA</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>
