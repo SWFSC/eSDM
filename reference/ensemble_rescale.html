@@ -101,131 +101,98 @@ see the 'Details' section for more information</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">ensemble_rescale</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Density"</span>, <span class="st">"Density2"</span><span class="op">)</span>, <span class="st">"abundance"</span>, <span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 325 features and 4 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Attribute-geometry relationships: constant (4)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -123 ymin: 32 xmax: -117 ymax: 35</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -123 ymin: 32 xmax: -117 ymax: 35.03686</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First 10 features:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Density     Density2         Var1         Var2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  7.974472e-05 1.529132e-04 0.0006178977 6.782811e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1.236210e-05 2.112553e-04 0.0041072496 7.100138e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  2.900737e-05 1.013395e-04 0.0060756461 2.152463e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1.276122e-05 5.107520e-04 0.0030639979 7.415022e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  1.609208e-05 9.854752e-06 0.0009543514 2.318842e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  2.054191e-05 3.323853e-04 0.0081108828 1.309096e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  1.032142e-05 3.907932e-04 0.0068363941 2.566385e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  1.270168e-05 5.116246e-04 0.0047392882 7.242310e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  1.872979e-05 2.752257e-05 0.0038668358 5.157556e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 6.482159e-05 3.565201e-04 0.0071928494 7.077782e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Density     Density2        Var1         Var2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  8.014377e-05 0.0003903286 0.004881167 5.813315e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1.242396e-05 0.0002700312 0.008067182 4.260565e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  2.915252e-05 0.0001959982 0.002044914 8.936224e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1.282508e-05 0.0003877259 0.004061446 4.281218e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  1.617261e-05 0.0003516557 0.009396155 6.683912e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  2.064470e-05 0.0004962905 0.008085898 9.530925e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  1.037307e-05 0.0001445535 0.008159037 6.253449e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  1.276524e-05 0.0005284574 0.008667279 1.936805e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  1.882351e-05 0.0001335137 0.001207384 4.332171e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 6.514596e-05 0.0002387673 0.003063388 7.799161e-03</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  POLYGON ((-122.875 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  POLYGON ((-122.625 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  POLYGON ((-122.375 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  POLYGON ((-122.125 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  POLYGON ((-121.875 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  POLYGON ((-121.625 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  POLYGON ((-121.375 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  POLYGON ((-121.125 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  POLYGON ((-120.875 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 POLYGON ((-120.625 32.125, ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  POLYGON ((-123 32, -122.875...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  POLYGON ((-122.625 32.00828...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  POLYGON ((-122.375 32.01319...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  POLYGON ((-122.125 32.0176,...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  POLYGON ((-121.875 32.02153...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  POLYGON ((-121.625 32.02496...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  POLYGON ((-121.375 32.0279,...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  POLYGON ((-121.125 32.03036...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  POLYGON ((-120.875 32.03232...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 POLYGON ((-120.625 32.03379...</span>
 <span class="r-in"><span><span class="fu">ensemble_rescale</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">"sumto1"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 325 features and 4 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Attribute-geometry relationships: constant (4)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -123 ymin: 32 xmax: -117 ymax: 35</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -123 ymin: 32 xmax: -117 ymax: 35.03686</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First 10 features:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Density     Density2         Var1         Var2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.0009493594 0.0017608119 0.0006178977 6.782811e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.0001471706 0.0024326274 0.0041072496 7.100138e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.0003453322 0.0011669347 0.0060756461 2.152463e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.0001519221 0.0058813643 0.0030639979 7.415022e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.0001915759 0.0001134785 0.0009543514 2.318842e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.0002445511 0.0038274525 0.0081108828 1.309096e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.0001228764 0.0045000253 0.0068363941 2.566385e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.0001512133 0.0058914121 0.0047392882 7.242310e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.0002229778 0.0003169253 0.0038668358 5.157556e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.0007716998 0.0041053668 0.0071928494 7.077782e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Density    Density2        Var1         Var2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.0009493594 0.004478398 0.004881167 5.813315e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.0001471706 0.003098178 0.008067182 4.260565e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.0003453322 0.002248767 0.002044914 8.936224e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.0001519221 0.004448537 0.004061446 4.281218e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.0001915759 0.004034689 0.009396155 6.683912e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.0002445511 0.005694143 0.008085898 9.530925e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.0001228764 0.001658521 0.008159037 6.253449e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.0001512133 0.006063207 0.008667279 1.936805e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.0002229778 0.001531857 0.001207384 4.332171e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.0007716998 0.002739474 0.003063388 7.799161e-03</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  POLYGON ((-122.875 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  POLYGON ((-122.625 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  POLYGON ((-122.375 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  POLYGON ((-122.125 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  POLYGON ((-121.875 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  POLYGON ((-121.625 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  POLYGON ((-121.375 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  POLYGON ((-121.125 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  POLYGON ((-120.875 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 POLYGON ((-120.625 32.125, ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  POLYGON ((-123 32, -122.875...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  POLYGON ((-122.625 32.00828...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  POLYGON ((-122.375 32.01319...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  POLYGON ((-122.125 32.0176,...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  POLYGON ((-121.875 32.02153...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  POLYGON ((-121.625 32.02496...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  POLYGON ((-121.375 32.0279,...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  POLYGON ((-121.125 32.03036...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  POLYGON ((-120.875 32.03232...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 POLYGON ((-120.625 32.03379...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">ensemble_rescale</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Density"</span>, <span class="st">"Density2"</span><span class="op">)</span>, <span class="st">"abundance"</span>, <span class="fl">100</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 325 features and 4 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Attribute-geometry relationships: constant (4)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -123 ymin: 32 xmax: -117 ymax: 35</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -123 ymin: 32 xmax: -117 ymax: 35.03686</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First 10 features:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Density     Density2         Var1         Var2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1.594894e-04 3.058264e-04 4.771354e-10 8.081463e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2.472421e-05 4.225106e-04 3.171583e-09 8.459546e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  5.801473e-05 2.026789e-04 4.691563e-09 2.564579e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  2.552245e-05 1.021504e-03 2.365993e-09 8.834719e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  3.218416e-05 1.970950e-05 7.369421e-10 2.762813e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  4.108382e-05 6.647706e-04 6.263155e-09 1.559739e-11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  2.064285e-05 7.815864e-04 5.279006e-09 3.057751e-10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  2.540336e-05 1.023249e-03 3.659638e-09 8.628939e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  3.745958e-05 5.504514e-05 2.985938e-09 6.145034e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 1.296432e-04 7.130402e-04 5.554258e-09 8.432909e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1.602875e-04 0.0007806571 3.807013e-09 7.130261e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2.484793e-05 0.0005400624 6.291912e-09 5.225751e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  5.830505e-05 0.0003919964 1.594909e-09 1.096063e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  2.565017e-05 0.0007754518 3.167681e-09 5.251084e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  3.234522e-05 0.0007033113 7.328429e-09 8.198083e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  4.128941e-05 0.0009925810 6.306508e-09 1.169006e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  2.074615e-05 0.0002891069 6.363553e-09 7.670103e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  2.553049e-05 0.0010569148 6.759950e-09 2.375568e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  3.764703e-05 0.0002670274 9.416861e-10 5.313579e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 1.302919e-04 0.0004775345 2.389256e-09 9.565980e-09</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          geometry</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  POLYGON ((-122.875 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  POLYGON ((-122.625 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  POLYGON ((-122.375 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  POLYGON ((-122.125 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  POLYGON ((-121.875 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  POLYGON ((-121.625 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  POLYGON ((-121.375 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  POLYGON ((-121.125 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  POLYGON ((-120.875 32.125, ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 POLYGON ((-120.625 32.125, ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  POLYGON ((-123 32, -122.875...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  POLYGON ((-122.625 32.00828...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  POLYGON ((-122.375 32.01319...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  POLYGON ((-122.125 32.0176,...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  POLYGON ((-121.875 32.02153...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  POLYGON ((-121.625 32.02496...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  POLYGON ((-121.375 32.0279,...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  POLYGON ((-121.125 32.03036...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  POLYGON ((-120.875 32.03232...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 POLYGON ((-120.625 32.03379...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

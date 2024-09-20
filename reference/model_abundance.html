@@ -84,56 +84,38 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">model_abundance</span><span class="op">(</span><span class="va">preds.1</span>, <span class="st">"Density"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Density </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 113798.7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113232.1 </span>
 <span class="r-in"><span><span class="fu">model_abundance</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 113798.7 113798.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 113232.1 113232.1</span>
 <span class="r-in"><span><span class="fu">model_abundance</span><span class="op">(</span><span class="va">preds.1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> old-style crs object detected; please recreate object with a recent sf::st_crs()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         1.abund     1.abund</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     29.715617   29.715617</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      9.213089    9.213089</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     21.618285   21.618285</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      9.510542    9.510542</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     11.992925   11.992925</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     15.309244   15.309244</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7      7.692235    7.692235</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8      9.466167    9.466167</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9     13.958726   13.958726</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10    48.309506   48.309506</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11    81.283063   81.283063</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12    37.782909   37.782909</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13    21.123915   21.123915</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14    29.372347   29.372347</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15   308.682325  308.682325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16   511.227249  511.227249</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17   558.302197  558.302197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18   654.233399  654.233399</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   438.531888  438.531888</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20   142.804115  142.804115</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21   393.110499  393.110499</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22   496.567451  496.567451</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23   639.749943  639.749943</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24   670.310612  670.310612</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25   251.498152  251.498152</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26    49.120715   49.120715</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     29.380042   29.380042</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      8.801462    8.801462</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     19.760931   19.760931</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      8.338632    8.338632</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     10.114850   10.114850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     12.461019   12.461019</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      6.064823    6.064823</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      7.259058    7.259058</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     10.457556   10.457556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10    35.528634   35.528634</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11    58.980966   58.980966</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12    27.193733   27.193733</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13    15.162191   15.162191</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14    21.140346   21.140346</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15   223.987397  223.987397</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   375.975817  375.975817</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17   418.267150  418.267150</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18   501.693896  501.693896</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19   345.753660  345.753660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   116.235967  116.235967</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21   331.549944  331.549944</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22   435.379325  435.379325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23   584.785273  584.785273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   640.362099  640.362099</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25   248.658012  248.658012</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26    49.120724   49.120724</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 27    51.353557   51.353557</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 28    21.130448   21.130448</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 29    18.536482   18.536482</span>
@@ -157,8 +139,8 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 47  1178.278788 1178.278788</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 48  1266.595181 1266.595181</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 49   831.628443  831.628443</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50   724.295329  724.295329</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51    48.423352   48.423352</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50   724.295455  724.295455</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51    48.423360   48.423360</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 52    22.295281   22.295281</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 53    13.507420   13.507420</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 54    13.379502   13.379502</span>
@@ -183,7 +165,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 73  1007.831360 1007.831360</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 74  1395.035148 1395.035148</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 75           NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 76    49.212468   49.212468</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76    49.212475   49.212475</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 77    14.911804   14.911804</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 78     5.148820    5.148820</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 79     4.751022    4.751022</span>
@@ -208,7 +190,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 98  1199.583989 1199.583989</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 99           NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 100          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 101  100.022644  100.022644</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101  100.022657  100.022657</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 102   20.635956   20.635956</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 103    2.824256    2.824256</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 104    2.987275    2.987275</span>
@@ -233,7 +215,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 123 1338.141997 1338.141997</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 124          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 125          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 126   93.047002   93.047002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126   93.047013   93.047013</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 127   31.513009   31.513009</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 128    1.278419    1.278419</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 129    1.442568    1.442568</span>
@@ -258,7 +240,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 148 1287.174988 1287.174988</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 149          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 150          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 151   73.927147   73.927147</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 151   73.927155   73.927155</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 152   40.608258   40.608258</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 153    3.911921    3.911921</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 154    4.826559    4.826559</span>
@@ -283,7 +265,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 173          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 174          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 175          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 176  118.826124  118.826124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 176  118.826135  118.826135</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 177   18.126000   18.126000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 178   15.503924   15.503924</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 179   14.565953   14.565953</span>
@@ -308,7 +290,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 198          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 199          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 200          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 201  123.686541  123.686541</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 201  123.686550  123.686550</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 202  145.158254  145.158254</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 203   48.059915   48.059915</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 204   60.376694   60.376694</span>
@@ -333,7 +315,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 223          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 224          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 225          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 226  148.446042  148.446042</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 226  148.446050  148.446050</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 227  277.553154  277.553154</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 228   97.285115   97.285115</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 229   90.077503   90.077503</span>
@@ -358,7 +340,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 248          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 249          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 250          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 251  219.868673  219.868673</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 251  219.868683  219.868683</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 252  253.205760  253.205760</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 253  161.427434  161.427434</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 254  233.535451  233.535451</span>
@@ -383,7 +365,7 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 273          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 274          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 275          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 276  221.746544  221.746544</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 276  221.746551  221.746551</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 277  332.734815  332.734815</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 278  213.490583  213.490583</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 279  243.151612  243.151612</span>
@@ -408,16 +390,16 @@ Can be a character vector (column names) or numeric vector (column indices)</p><
 <span class="r-out co"><span class="r-pr">#&gt;</span> 298          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 299          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 300          NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 301   95.561780   95.561780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 302  126.699175  126.699175</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 303   52.809529   52.809529</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 304   41.876884   41.876884</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 305    9.223000    9.223000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 306  120.776751  120.776751</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 307  241.916685  241.916685</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 308  477.663640  477.663640</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 309  307.556457  307.556457</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 310  214.001827  214.001827</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 301   96.688439   96.688439</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 302  132.608850  132.608850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 303   57.546168   57.546168</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 304   47.263826   47.263826</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 305   10.730766   10.730766</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 306  144.233802  144.233802</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 307  295.345601  295.345601</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 308  593.924674  593.924674</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 309  388.085391  388.085391</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 310  273.103934  273.103934</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 311          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 312          NA          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 313          NA          NA</span>
