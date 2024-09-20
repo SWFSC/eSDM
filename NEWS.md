@@ -1,4 +1,4 @@
-# eSDM 0.4.3.9000
+# eSDM 0.4.3
 
 * `overlay_sdm` maintains data.frame/tbl/tbl_df class consistency [#17]
 
