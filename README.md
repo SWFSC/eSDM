@@ -2,7 +2,6 @@
 
 <!-- badges: start -->
 [![CRAN version](https://www.r-pkg.org/badges/version/eSDM)](https://cran.r-project.org/package=eSDM)
-[![R-CMD-check](https://github.com/smwoodman/eSDM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/smwoodman/eSDM/actions/workflows/R-CMD-check.yaml)
 [![R-CMD-check](https://github.com/SWFSC/eSDM/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/SWFSC/eSDM/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
