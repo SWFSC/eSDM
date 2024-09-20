@@ -1,3 +1,10 @@
+# eSDM 0.4.3.9000
+
+* `overlay_sdm` maintains data.frame/tbl/tbl_df class consistency [#17]
+
+* `eSDM` now officially requires `dplyr>=1.1` and `sf>=1.0`
+
+
 # eSDM 0.4.2
 
 * Moved repo to https://github.com/swfsc, and updated all associated documentation
