@@ -13,7 +13,7 @@ output$download_data_manuscript <- downloadHandler(
     withProgress(message = "Downloading manuscript data", value = 0.6, {
       sample.try <- try(
         download.file(
-          "https://github.com/smwoodman/eSDM-data/raw/master/eSDM_data_manuscript.zip",
+          "https://github.com/SWFSC/eSDM-data/raw/master/eSDM_data_manuscript.zip",
           destfile = file, quiet = TRUE
         ),
         silent = TRUE
@@ -35,7 +35,7 @@ output$download_data_sample <- downloadHandler(
     withProgress(message = "Downloading sample data", value = 0.6, {
       sample.try <- try(
         download.file(
-          "https://github.com/smwoodman/eSDM-data/raw/master/eSDM_data_sample.zip",
+          "https://github.com/SWFSC/eSDM-data/raw/master/eSDM_data_sample.zip",
           destfile = file, quiet = TRUE
         ),
         silent = TRUE
@@ -57,7 +57,7 @@ output$download_manual <- downloadHandler(
     withProgress(message = "Downloading manual", value = 0.6, {
       sample.try <- try(
         download.file(
-          "https://github.com/smwoodman/eSDM/raw/master/inst/shiny/www/eSDM_manual.pdf",
+          "https://github.com/SWFSC/eSDM/raw/master/inst/shiny/www/eSDM_manual.pdf",
           destfile = file, quiet = TRUE, mode = "wb"
         ),
         silent = TRUE

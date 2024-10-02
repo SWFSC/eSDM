@@ -138,7 +138,7 @@ ui.roadmap <- function() {
                     "R Shiny applications such as the GUI can be hosted and used online;",
                     "however, running the R Shiny apps locally can be faster than running from them online.",
                     "Instructions for installing and running the eSDM GUI locally can be found at ",
-                    tags$a("https://github.com/smwoodman/eSDM", href = "https://github.com/smwoodman/eSDM"),
+                    tags$a("https://github.com/SWFSC/eSDM", href = "https://github.com/SWFSC/eSDM"),
                     "and in the 'Running the GUI locally' section of the GUI manual."),
             tags$br(),
             #------------------------------------------------------------------
@@ -160,7 +160,7 @@ ui.roadmap <- function() {
             ),
             tags$br(),
             tags$h5("Submit suggestions and bug reports at",
-                    tags$a("https://github.com/smwoodman/eSDM/issues,", href = "https://github.com/smwoodman/eSDM/issues"),
+                    tags$a("https://github.com/SWFSC/eSDM/issues,", href = "https://github.com/SWFSC/eSDM/issues"),
                     "or contact Sam Woodman (sam.woodman@noaa.gov) with any questions"),
             tags$br(),
             downloadButton("download_data_manuscript", "Download manuscript data"),

@@ -1,3 +1,8 @@
+# eSDM 0.4.4 (dev)
+
+* Updated all links to the [SWFSC](https://github.com/SWFSC) organization, after transferring over the [eSDM-data](https://github.com/SWFSC/eSDM-data) repo
+
+
 # eSDM 0.4.3
 
 * `overlay_sdm` maintains data.frame/tbl/tbl_df class consistency [#17]

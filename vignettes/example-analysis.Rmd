@@ -29,7 +29,7 @@ source(system.file("eSDM_vignette_helper.R", package = "eSDM"), local = TRUE, ec
 ## Overview
 `eSDM` allows users to create ensembles of predictions from species distribution models (SDMs), either using the `eSDM` GUI or manually in R using `eSDM` functions. This vignette demonstrates creating and evaluating ensembles using `eSDM` functions by manually performing the example analysis from Woodman _et al._ (2019). The example analysis explores differences between blue whale SDM predictions for the California Current Ecosystem (CCE) from Becker _et al._ (2016; i.e., Model_B), Hazen _et al._ (2017; i.e., Model_H), and Redfern _et al._ (2017; i.e., Model_R). It also creates and evaluates ensembles of the predictions, with associated uncertainty. See Woodman _et al._ (2019) for additional details, and in particular Table 1 for details about differences between the models.
 
-In this vignette, the three sets of predictions and the validation data are read from .rds files because the original files were too large to be included in the package. The sections where these data are imported includes the code for reading the data from their original files, although this code has been commented out. The original files can be downloaded through the GUI or at https://github.com/smwoodman/eSDM-data. 
+In this vignette, the three sets of predictions and the validation data are read from .rds files because the original files were too large to be included in the package. The sections where these data are imported includes the code for reading the data from their original files, although this code has been commented out. The original files can be downloaded through the GUI or at https://github.com/SWFSC/eSDM-data. 
 
 This document contains code for plotting predictions. However, by default some of the plotting code is not run because it can take several minutes (these code chunks contain the comment "code not run"). If desired, you may run these code chunks manually in R. 
 
@@ -212,7 +212,7 @@ plot_sf_3panel(over3.sf, "pred_bm", main.txt = "Overlaid Model_R - ", map.base =
 
 To evaluate predictions and create ensembles with weights based on evaluation metrics, we must load and process the validation data sets for use with `evaluation_metrics`. The validation data must be points of class `sf` with a column with either binary presence/absence or count data. For the example analysis, we use three validation sets in the example analysis, line transect data (Becker _et al._ 2016), home range data (Irvine _et al._ 2014), and these two data sets combined. Because our validation data are binary (i.e., presence/absence), there is a column indicating whether each value is a presence point (1) or absence point (0).
 
-Note that in this vignette, the validation data are read from .rds files because the original file was too big to be included in the package. However, the original file can be downloaded through the GUI or at https://github.com/smwoodman/eSDM-data
+Note that in this vignette, the validation data are read from .rds files because the original file was too big to be included in the package. However, the original file can be downloaded through the GUI or at https://github.com/SWFSC/eSDM-data
 
 Use the function `sf::st_as_sf` to convert a data frame with lon/lat coordinates to an `sf` object.
 
