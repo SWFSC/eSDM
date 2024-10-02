@@ -19,7 +19,7 @@ To install the latest version from [GitHub](https://github.com):
 
 ``` r
 # install.packages('devtools')
-devtools::install_github('smwoodman/eSDM', build_vignettes = TRUE)
+devtools::install_github('SWFSC/eSDM', build_vignettes = TRUE)
 ```
 
 ## eSDM GUI
@@ -50,7 +50,7 @@ The paper can be obtained [here](https://doi.org/10.1111/2041-210X.13283), and i
 
 Woodman, S.M., Forney, K.A., Becker, E.A., DeAngelis, M.L., Hazen, E.L., Palacios, D.M., Redfern, J.V. (2019). *eSDM*: A tool for creating and exploring ensembles of predictions from species distribution and abundance models. *Methods Ecol Evol*. 2019;10:1923-1933. <doi:10.1111/2041-210X.13283>
 
-For data used in the example analysis, see <https://github.com/smwoodman/eSDM-data>
+For data used in the example analysis, see <https://github.com/SWFSC/eSDM-Data>
 
 For code used to create applicable figures from the manuscript: [Figure 2](https://github.com/swfsc/eSDM/blob/master/data-raw/figure2_overlay.R), [Figure 3](https://github.com/swfsc/eSDM/blob/master/data-raw/figure3.R), [Figure 4](https://github.com/swfsc/eSDM/blob/master/data-raw/figure4.R), [Figure 5](https://github.com/swfsc/eSDM/blob/master/data-raw/figure5.R)
 
