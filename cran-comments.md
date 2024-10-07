@@ -1,5 +1,5 @@
 ## Release summary
-This is a minor update to keep up with the sf package and fix the problems shown on <https://cran.r-project.org/web/checks/check_results_eSDM.html>.
+This is a minor update to update documentation links after transferring a related repository to a new GitHub organization
 
 ## Test environments (R-release = v4.4.1)
 * Windows 10, R-release (local)
